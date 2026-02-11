@@ -171,23 +171,23 @@ export function kakegoePageHTML() {
 
   <div class="cast-row" id="cast-row">
     <div class="cast-card" data-char="benten">
-      <img src="/assets/shiranami/benten.png" alt="弁天小僧">
+      <img src="https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/benten.png" alt="弁天小僧">
       <div class="name"><span>弁天小僧</span><small>ふきや</small></div>
     </div>
     <div class="cast-card" data-char="tadanobu">
-      <img src="/assets/shiranami/tadanobu.png" alt="忠信利平">
+      <img src="https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/tadanobu.png" alt="忠信利平">
       <div class="name"><span>忠信利平</span><small>おんじ</small></div>
     </div>
     <div class="cast-card" data-char="akaboshi">
-      <img src="/assets/shiranami/akaboshi.png" alt="赤星十三郎">
+      <img src="https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/akaboshi.png" alt="赤星十三郎">
       <div class="name"><span>赤星十三郎</span><small>よそべさ</small></div>
     </div>
     <div class="cast-card" data-char="nango">
-      <img src="/assets/shiranami/nango.png" alt="南郷力丸">
+      <img src="https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/nango.png" alt="南郷力丸">
       <div class="name"><span>南郷力丸</span><small>さわ</small></div>
     </div>
     <div class="cast-card" data-char="dayemon">
-      <img src="/assets/shiranami/dayemon.png" alt="日本駄右衛門">
+      <img src="https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/dayemon.png" alt="日本駄右衛門">
       <div class="name"><span>日本駄右衛門</span><small>もはっつぁ</small></div>
     </div>
   </div>
@@ -212,7 +212,7 @@ export function kakegoePageHTML() {
 
 <div id="now-playing">
   <div id="now-char">
-    <img id="now-char-img" src="/assets/shiranami/benten.png" alt="">
+    <img id="now-char-img" src="https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/benten.png" alt="">
     <span id="now-char-name">弁天小僧</span>
   </div>
 </div>
@@ -261,11 +261,11 @@ export function kakegoePageHTML() {
 // キャラクターデータ
 // =========================================================
 const CHARS = {
-  benten:   { name: "弁天小僧",   actor: "ふきや",     img: "/assets/shiranami/benten.png" },
-  tadanobu: { name: "忠信利平",   actor: "おんじ",     img: "/assets/shiranami/tadanobu.png" },
-  akaboshi: { name: "赤星十三郎", actor: "よそべさ",   img: "/assets/shiranami/akaboshi.png" },
-  nango:    { name: "南郷力丸",   actor: "さわ",       img: "/assets/shiranami/nango.png" },
-  dayemon:  { name: "日本駄右衛門", actor: "もはっつぁ", img: "/assets/shiranami/dayemon.png" },
+  benten:   { name: "弁天小僧",   actor: "ふきや",     img: "https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/benten.png" },
+  tadanobu: { name: "忠信利平",   actor: "おんじ",     img: "https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/tadanobu.png" },
+  akaboshi: { name: "赤星十三郎", actor: "よそべさ",   img: "https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/akaboshi.png" },
+  nango:    { name: "南郷力丸",   actor: "さわ",       img: "https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/nango.png" },
+  dayemon:  { name: "日本駄右衛門", actor: "もはっつぁ", img: "https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/dayemon.png" },
 };
 
 // =========================================================
