@@ -268,12 +268,12 @@ export function kakegoePageHTML() {
     <div class="cast-card" data-char="tadanobu">
       <span class="role role-kakegoe">🎤 掛け声</span>
       <img src="https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/tadanobu.png" alt="忠信利平">
-      <div class="name"><span>忠信利平</span><small>市役所課長</small></div>
+      <div class="name"><span>忠信利平</span><small>郡上市役所</small></div>
     </div>
     <div class="cast-card" data-char="akaboshi">
       <span class="role role-kakegoe">🎤 掛け声</span>
       <img src="https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/akaboshi.png" alt="赤星十三郎">
-      <div class="name"><span>赤星十三郎</span><small>トップセールスマン</small></div>
+      <div class="name"><span>赤星十三郎</span><small>イケメン営業</small></div>
     </div>
     <div class="cast-card" data-char="nango">
       <span class="role role-kakegoe">🎤 掛け声</span>
@@ -393,8 +393,8 @@ export function kakegoePageHTML() {
 const IMG_BASE = "https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/";
 const CHARS = {
   benten:   { name: "弁天小僧",     actor: "気良歌舞伎座長", kakegoe: "よっ座長！",             img: IMG_BASE + "benten.png" },
-  tadanobu: { name: "忠信利平",     actor: "市役所課長",     kakegoe: "よっ市役所課長！",       img: IMG_BASE + "tadanobu.png" },
-  akaboshi: { name: "赤星十三郎",   actor: "トップセールスマン", kakegoe: "よっトップセールスマン！", img: IMG_BASE + "akaboshi.png" },
+  tadanobu: { name: "忠信利平",     actor: "郡上市役所",     kakegoe: "よっ郡上市役所！",       img: IMG_BASE + "tadanobu.png" },
+  akaboshi: { name: "赤星十三郎",   actor: "イケメン営業",   kakegoe: "よっイケメン営業！",     img: IMG_BASE + "akaboshi.png" },
   nango:    { name: "南郷力丸",     actor: "信用金庫",       kakegoe: "よっ信用金庫！",         img: IMG_BASE + "nango.png" },
   dayemon:  { name: "日本駄右衛門", actor: "太っ腹社長",     kakegoe: "よっ太っ腹社長！",       img: IMG_BASE + "dayemon.png" },
   all:      { name: "白浪五人男",   actor: "勢揃い",         kakegoe: "日本一！",               img: IMG_BASE + "complete.png" },
@@ -413,10 +413,10 @@ const SCENE = {
     { time: 12.1,  type: "kakegoe", text: "よっ座長！",             hint: "弁天小僧　花道登場",     char: "benten" },
     { time: 20,    type: "hakushu",                                 hint: "弁天小僧　花道見得",     char: "benten" },
 
-    { time: 53.4,  type: "kakegoe", text: "よっ市役所課長！",       hint: "忠信利平　花道登場",     char: "tadanobu" },
+    { time: 53.4,  type: "kakegoe", text: "よっ郡上市役所！",       hint: "忠信利平　花道登場",     char: "tadanobu" },
     { time: 59,    type: "hakushu",                                 hint: "忠信利平　花道見得",     char: "tadanobu" },
 
-    { time: 77.9,  type: "kakegoe", text: "よっトップセールスマン！", hint: "赤星十三郎　花道登場",   char: "akaboshi" },
+    { time: 77.9,  type: "kakegoe", text: "よっイケメン営業！",     hint: "赤星十三郎　花道登場",   char: "akaboshi" },
     { time: 82,    type: "hakushu",                                 hint: "赤星十三郎　花道見得",   char: "akaboshi" },
 
     { time: 99.8,  type: "kakegoe", text: "よっ信用金庫！",         hint: "南郷力丸　花道登場",     char: "nango" },
@@ -459,6 +459,29 @@ const SCENE = {
     { time: 757.8, type: "hakushu",                         hint: "勢揃い",           char: "all" },
   ]
 };
+
+// =========================================================
+// キャラクター表示タイムライン（カードずれ防止用）
+// ツラネ中など、cues にキャラ情報がない期間も正しく表示する
+// =========================================================
+const CHAR_TIMELINE = [
+  // 花道 ─ 登場
+  { time: 0,     char: "benten"  },   // 幕開き〜弁天小僧
+  { time: 50,    char: "tadanobu" },  // 忠信利平 花道
+  { time: 75,    char: "akaboshi" },  // 赤星十三郎 花道
+  { time: 97,    char: "nango"   },   // 南郷力丸 花道
+  { time: 120,   char: "dayemon" },   // 日本駄右衛門 花道
+  // 勢揃い
+  { time: 150,   char: "all"     },   // 五人男勢揃い
+  // ツラネ
+  { time: 320,   char: "dayemon" },   // 日本駄右衛門 ツラネ
+  { time: 401,   char: "benten"  },   // 弁天小僧 ツラネ
+  { time: 465,   char: "tadanobu" },  // 忠信利平 ツラネ
+  { time: 531,   char: "akaboshi" },  // 赤星十三郎 ツラネ
+  { time: 609,   char: "nango"   },   // 南郷力丸 ツラネ
+  // クライマックス
+  { time: 674,   char: "all"     },   // 勢揃いの見得
+];
 
 // =========================================================
 // グローバル変数
@@ -564,12 +587,12 @@ function tick() {
   }
 }
 
-// 現在のキャラクター表示を更新
+// 現在のキャラクター表示を更新（CHAR_TIMELINE で判定）
 function updateNowPlaying(t) {
   let currentChar = null;
-  for (let i = cues.length - 1; i >= 0; i--) {
-    if (cues[i].char && cues[i].time <= t + 5) {
-      currentChar = cues[i].char;
+  for (let i = CHAR_TIMELINE.length - 1; i >= 0; i--) {
+    if (CHAR_TIMELINE[i].time <= t) {
+      currentChar = CHAR_TIMELINE[i].char;
       break;
     }
   }
