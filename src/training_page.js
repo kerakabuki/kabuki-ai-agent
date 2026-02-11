@@ -22,78 +22,86 @@ export function trainingPageHTML() {
     background: var(--kuro);
     color: var(--shiro);
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
   }
 
-  /* ── 定式幕ストライプ ── */
+  /* ── 定式幕ストライプ（細め） ── */
   .joshikimaku {
-    height: 10px;
+    height: 5px;
     background: repeating-linear-gradient(
       90deg,
       var(--kuro) 0%, var(--kuro) 33.33%,
       var(--moegi) 33.33%, var(--moegi) 66.66%,
       var(--aka) 66.66%, var(--aka) 100%
     );
+    flex-shrink: 0;
   }
 
-  /* ── ヘッダー ── */
+  /* ── ヘッダー（コンパクトに） ── */
   header {
     text-align: center;
-    padding: 2.5rem 1rem 1.5rem;
+    padding: 1.5rem 1rem 1rem;
     background: linear-gradient(180deg, rgba(26,26,26,1) 0%, rgba(40,20,20,0.95) 100%);
-    border-bottom: 3px solid var(--kin);
-    position: relative;
-  }
-  header::before {
-    content: "🎭";
-    font-size: 3rem;
-    display: block;
-    margin-bottom: 0.5rem;
-    filter: drop-shadow(0 0 12px rgba(197,165,90,0.6));
+    border-bottom: 2px solid var(--kin);
   }
   header h1 {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     letter-spacing: 0.3em;
     color: var(--kin);
     text-shadow: 0 2px 8px rgba(0,0,0,0.7);
   }
+  header h1::before {
+    content: "🎭 ";
+    font-size: 1.3rem;
+  }
   header p {
-    margin-top: 0.5rem;
-    font-size: 0.9rem;
-    color: #bbb;
+    margin-top: 0.3rem;
+    font-size: 0.85rem;
+    color: #999;
     letter-spacing: 0.1em;
   }
 
-  /* ── メインコンテンツ ── */
+  /* ── メイン ── */
   main {
-    max-width: 720px;
+    max-width: 780px;
     margin: 0 auto;
-    padding: 2rem 1.2rem 4rem;
+    padding: 1.5rem 1rem 1.5rem;
+    flex: 1;
+    width: 100%;
   }
 
   .section-title {
-    font-size: 1.1rem;
+    font-size: 1rem;
     color: var(--kin);
     border-left: 4px solid var(--aka);
     padding-left: 0.8rem;
-    margin: 2rem 0 1rem;
+    margin: 0 0 1rem;
     letter-spacing: 0.15em;
   }
 
-  /* ── カード ── */
+  /* ── カードグリッド（大きく） ── */
   .card-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 1rem;
+    grid-template-columns: repeat(2, 1fr);
   }
+  @media (max-width: 540px) {
+    .card-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ── カード共通 ── */
   .card {
     background: linear-gradient(135deg, #2a2020 0%, #1e1e1e 100%);
-    border: 1px solid #333;
-    border-radius: 12px;
-    padding: 1.3rem;
-    cursor: pointer;
+    border: 2px solid #333;
+    border-radius: 14px;
+    padding: 1.5rem 1.3rem;
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 200px;
   }
   .card::before {
     content: "";
@@ -102,44 +110,103 @@ export function trainingPageHTML() {
     height: 3px;
     background: linear-gradient(90deg, var(--aka), var(--moegi));
   }
-  .card:hover {
-    border-color: var(--kin);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(197,165,90,0.15);
-  }
-  .card .icon { font-size: 2rem; margin-bottom: 0.6rem; }
-  .card h3 {
-    font-size: 1rem;
-    color: var(--shiro);
-    margin-bottom: 0.3rem;
-  }
-  .card p {
-    font-size: 0.78rem;
-    color: #999;
-    line-height: 1.5;
-  }
+
+  /* バッジ右上 */
   .card .badge {
-    display: inline-block;
-    margin-top: 0.6rem;
+    position: absolute;
+    top: 10px; right: 10px;
     font-size: 0.7rem;
-    padding: 2px 8px;
+    padding: 3px 10px;
     border-radius: 999px;
     background: var(--aka);
     color: #fff;
+    letter-spacing: 0.05em;
   }
-  .card .badge.green { background: var(--moegi); }
+  .card .badge.gray { background: #555; }
 
-  /* ── 来たる公演バナー ── */
+  .card .icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+  .card h3 {
+    font-size: 1.15rem;
+    color: var(--shiro);
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.1em;
+  }
+  .card .catch {
+    font-size: 0.95rem;
+    color: var(--kin);
+    margin-bottom: 0.3rem;
+    font-weight: bold;
+  }
+  .card .desc {
+    font-size: 0.8rem;
+    color: #999;
+    line-height: 1.5;
+  }
+  .card .spacer { flex: 1; }
+
+  /* CTAボタン */
+  .card .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.8rem;
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    letter-spacing: 0.1em;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .cta-primary {
+    background: linear-gradient(135deg, var(--aka) 0%, #8B0000 100%);
+    color: #fff;
+    border: 1px solid var(--kin) !important;
+  }
+  .cta-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(197,165,90,0.3);
+  }
+  .cta-disabled {
+    background: #333;
+    color: #777;
+    cursor: not-allowed;
+  }
+
+  /* アクティブカード */
+  .card-active {
+    border-color: var(--kin);
+    cursor: pointer;
+  }
+  .card-active:hover {
+    border-color: var(--kin);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 28px rgba(197,165,90,0.2);
+  }
+
+  /* 無効カード */
+  .card-disabled {
+    opacity: 0.55;
+    filter: grayscale(0.2);
+    cursor: not-allowed;
+  }
+  .card-disabled:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* ── バナー ── */
   .banner {
-    margin-top: 2.5rem;
+    margin-top: 1.5rem;
     background: linear-gradient(135deg, var(--aka) 0%, #8B0000 100%);
     border-radius: 14px;
-    padding: 1.5rem;
+    padding: 1.3rem 1.5rem;
     text-align: center;
     border: 1px solid rgba(197,165,90,0.3);
   }
   .banner h2 {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     color: var(--kin);
     margin-bottom: 0.4rem;
   }
@@ -148,31 +215,47 @@ export function trainingPageHTML() {
     color: rgba(255,255,255,0.85);
     line-height: 1.6;
   }
+  .banner .banner-cta {
+    display: inline-block;
+    margin-top: 0.8rem;
+    padding: 0.5rem 1.5rem;
+    background: var(--kin);
+    color: var(--kuro);
+    font-size: 0.9rem;
+    font-family: inherit;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .banner .banner-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(197,165,90,0.4);
+  }
 
   /* ── フッター ── */
   footer {
     text-align: center;
-    padding: 1.5rem;
-    font-size: 0.75rem;
+    padding: 1rem;
+    font-size: 0.8rem;
     color: #555;
     border-top: 1px solid #333;
+    flex-shrink: 0;
   }
   footer a { color: var(--kin); text-decoration: none; }
   footer a:hover { text-decoration: underline; }
 
   /* ── アニメーション ── */
   @keyframes fadeUp {
-    from { opacity:0; transform: translateY(20px); }
+    from { opacity:0; transform: translateY(16px); }
     to   { opacity:1; transform: translateY(0); }
   }
-  .card, .banner {
-    animation: fadeUp 0.5s ease both;
-  }
-  .card:nth-child(2) { animation-delay: 0.08s; }
-  .card:nth-child(3) { animation-delay: 0.16s; }
-  .card:nth-child(4) { animation-delay: 0.24s; }
-  .card:nth-child(5) { animation-delay: 0.32s; }
-  .card:nth-child(6) { animation-delay: 0.40s; }
+  .card { animation: fadeUp 0.5s ease both; }
+  .card:nth-child(2) { animation-delay: 0.1s; }
+  .banner { animation: fadeUp 0.5s ease 0.2s both; }
 </style>
 </head>
 <body>
@@ -184,32 +267,39 @@ export function trainingPageHTML() {
   <p>気良歌舞伎 ── 学びの間</p>
 </header>
 
-<div class="joshikimaku"></div>
-
 <main>
   <h2 class="section-title">稽古メニュー</h2>
   <div class="card-grid">
-    <div class="card" onclick="location.href='/training/kakegoe'" style="border-color:var(--kin);">
+
+    <div class="card card-active" onclick="location.href='/training/kakegoe'">
+      <span class="badge">NEW</span>
       <div class="icon">📣</div>
       <h3>大向こう稽古</h3>
-      <p>白浪五人男「稲瀬川勢揃い」の動画で掛け声＆拍手のタイミングを練習！</p>
-      <span class="badge">NEW</span>
+      <div class="catch">掛け声と拍手のタイミングを体で覚える</div>
+      <div class="desc">白浪五人男「稲瀬川勢揃い」</div>
+      <div class="spacer"></div>
+      <div><button class="cta cta-primary" onclick="location.href='/training/kakegoe'">始める →</button></div>
     </div>
-    <div class="card" onclick="alert('台詞稽古：準備中だよ🙂')">
+
+    <div class="card card-disabled">
+      <span class="badge gray">準備中</span>
       <div class="icon">🎙️</div>
       <h3>台詞稽古</h3>
-      <p>名台詞を覚えて、声に出して稽古しよう</p>
-      <span class="badge">準備中</span>
+      <div class="catch">名台詞を声に出して稽古する</div>
+      <div class="desc">近日公開</div>
+      <div class="spacer"></div>
+      <div><button class="cta cta-disabled" disabled>近日公開</button></div>
     </div>
+
   </div>
 
   <div class="banner">
     <h2>🏯 次回公演に向けて</h2>
     <p>
-      お稽古モードで大向こうや台詞を練習して、<br>
-      本番の舞台をもっと楽しもう！<br>
+      大向こうを練習して、本番の舞台をもっと楽しもう！<br>
       <strong style="color:var(--kin);">「知る」から「観る」へ ── そして「演る」へ。</strong>
     </p>
+    <a href="/training/kakegoe" class="banner-cta">大向こう稽古を始める →</a>
   </div>
 </main>
 
