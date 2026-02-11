@@ -167,12 +167,15 @@ export function kakegoePageHTML() {
   .cue-marker.missed{background:#555;box-shadow:none;filter:none;}
 
   /* ── スコア ── */
-  #score-bar{max-width:720px;margin:0 auto;padding:0.6rem 1rem;
-    display:none;text-align:center;}
-  #score-bar span{font-size:1rem;margin:0 0.8rem;}
-  .s-label{color:#999;} .s-val{color:var(--kin);font-weight:bold;}
-  .s-great{color:var(--moegi)!important;} .s-good{color:var(--kin)!important;}
-  .s-miss{color:var(--aka)!important;}
+  #score-bar{max-width:720px;margin:0 auto;padding:0.4rem 1rem;
+    display:none;}
+  .score-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.2rem 1rem;
+    background:#222;border-radius:10px;padding:0.5rem 1rem;}
+  .score-row{display:flex;justify-content:space-between;align-items:center;
+    font-size:0.95rem;}
+  .s-label{color:#999;} .s-val{font-weight:bold;}
+  .s-great .s-val{color:var(--moegi);} .s-good .s-val{color:var(--kin);}
+  .s-miss .s-val{color:var(--aka);} .s-ohineri .s-val{color:var(--kin);}
 
   /* ── 結果画面 ── */
   #result{max-width:720px;margin:2rem auto;padding:2rem;text-align:center;
@@ -363,10 +366,12 @@ export function kakegoePageHTML() {
 </div>
 
 <div id="score-bar">
-  <span><span class="s-label">大当たり </span><span class="s-val s-great" id="s-great">0</span></span>
-  <span><span class="s-label">良し </span><span class="s-val s-good" id="s-good">0</span></span>
-  <span><span class="s-label">空振り </span><span class="s-val s-miss" id="s-miss">0</span></span>
-  <span><span class="s-label">🪙 </span><span class="s-val" style="color:var(--kin);" id="s-ohineri">0</span></span>
+  <div class="score-grid">
+    <div class="score-row s-great"><span class="s-label">大当たり</span><span class="s-val" id="s-great">0</span></div>
+    <div class="score-row s-good"><span class="s-label">良し</span><span class="s-val" id="s-good">0</span></div>
+    <div class="score-row s-miss"><span class="s-label">空振り</span><span class="s-val" id="s-miss">0</span></div>
+    <div class="score-row s-ohineri"><span class="s-label">🪙 おひねり</span><span class="s-val" id="s-ohineri">0</span></div>
+  </div>
 </div>
 
 <div id="result">
@@ -486,7 +491,7 @@ document.getElementById("start-btn").addEventListener("click", startScene);
 function startScene() {
   cues = SCENE.cues.map(c => ({ ...c, result: null }));
   cueIndex = 0;
-  score = { great: 0, good: 0, miss: 0 };
+  score = { great: 0, good: 0, miss: 0, ohineri: 0 };
   updateScoreUI();
 
   // UI切替
