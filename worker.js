@@ -531,12 +531,19 @@ async function handleEvent(event, env, ctx) {
     // ① postback を先に処理
     // -------------------------
     if (event.type === "postback") {
-      const data = event.postback?.data || "";
+      const data = String(event.postback?.data ?? "").trim();
       const p = parsePostback(data);
 
       console.log("POSTBACK parsed:", JSON.stringify(p), "raw data:", JSON.stringify(data));
 
-      // step=menu は最優先でメニューを返す
+      // ガード: data が空または解析不能なときだけデフォルトでメニューを表示
+      const hasKnownAction = p.step != null || p.mode != null || p.quiz != null || /^(mode|step|quiz)=/.test(data);
+      if (!data || !hasKnownAction) {
+        await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env)]);
+        return;
+      }
+
+      // step=menu のみ：メニュー表示（明示的なメニュー戻り）
       if (p.step === "menu") {
         await env.CHAT_HISTORY.delete(modeKey);
         await env.CHAT_HISTORY.delete(enmokuKey);
@@ -544,57 +551,49 @@ async function handleEvent(event, env, ctx) {
         return;
       }
 
-      // メニューからの「mode=のみ」の postback（気良歌舞伎ナビ・おすすめ演目等）をここで処理
-      const modeOnly = !p.step && (p.mode || /mode=([^&]+)/.test(data));
-      if (modeOnly) {
-        const m = (p.mode || (data.match(/mode=([^&]+)/) || [])[1] || "").trim();
-        if (m) {
-          await env.CHAT_HISTORY.put(modeKey, m);
-          try {
-            if (m === "kera") {
-              const topics = await loadTalkTopics(env);
-              await respondLineMessages(env, replyToken, destId, [talkMenuFlex(topics, 1)]);
-              return;
-            }
-            if (m === "performance") {
-              await respondLineMessages(env, replyToken, destId, [await enmokuListFlex(env)]);
-              return;
-            }
-            if (m === "general") {
-              const glossary = await loadGlossary(env);
-              await respondLineMessages(env, replyToken, destId, [glossaryCategoryFlex(glossary)]);
-              return;
-            }
-            if (m === "recommend") {
-              const recData = await loadRecommend(env);
-              await respondLineMessages(env, replyToken, destId, [recommendListFlex(recData.faqs)]);
-              return;
-            }
-            if (m === "quiz") {
-              const qst = await loadQuizState(env, userId || sourceKey);
-              const introText = qst.answered_total > 0
-                ? quizIntroText("line") + `\n\n📊 前回の成績：${qst.correct_total}/${qst.answered_total}問正解`
-                : quizIntroText("line");
-              await respondLineMessages(env, replyToken, destId, [
-                { type: "text", text: introText, quickReply: startQuickReplyForMode("quiz", qst) }
-              ]);
-              return;
-            }
-            if (m === "comingsoon") {
-              await respondLine(env, replyToken, destId, "6は準備中だよ🙂 もうちょっと待っててね！");
-              return;
-            }
-          } catch (err) {
-            console.error("LINE postback mode handler error:", String(err?.stack || err));
-            await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env)]);
-            return;
-          }
-          await respondLine(env, replyToken, destId, exampleTextForMode(m, "line"));
+      // mode= のみの postback（ナビ・おすすめ等）→ R2 専用 Flex を直接返す。Dify には行かない。
+      const modeVal = (p.mode || (data.match(/mode=([^&]+)/) || [])[1] || "").trim();
+      if (modeVal && !p.step) {
+        await env.CHAT_HISTORY.put(modeKey, modeVal);
+
+        if (modeVal === "kera") {
+          const topics = await loadTalkTopics(env);
+          await respondLineMessages(env, replyToken, destId, [talkMenuFlex(topics, 1)]);
           return;
         }
+        if (modeVal === "recommend") {
+          const recData = await loadRecommend(env);
+          await respondLineMessages(env, replyToken, destId, [recommendListFlex(recData.faqs)]);
+          return;
+        }
+        if (modeVal === "performance") {
+          await respondLineMessages(env, replyToken, destId, [await enmokuListFlex(env)]);
+          return;
+        }
+        if (modeVal === "general") {
+          const glossary = await loadGlossary(env);
+          await respondLineMessages(env, replyToken, destId, [glossaryCategoryFlex(glossary)]);
+          return;
+        }
+        if (modeVal === "quiz") {
+          const qst = await loadQuizState(env, userId || sourceKey);
+          const introText = qst.answered_total > 0
+            ? quizIntroText("line") + `\n\n📊 前回の成績：${qst.correct_total}/${qst.answered_total}問正解`
+            : quizIntroText("line");
+          await respondLineMessages(env, replyToken, destId, [
+            { type: "text", text: introText, quickReply: startQuickReplyForMode("quiz", qst) }
+          ]);
+          return;
+        }
+        if (modeVal === "comingsoon") {
+          await respondLine(env, replyToken, destId, "6は準備中だよ🙂 もうちょっと待っててね！");
+          return;
+        }
+        await respondLine(env, replyToken, destId, exampleTextForMode(modeVal, "line"));
+        return;
       }
 
-      // stepがある場合はここで完結（modeより優先）
+      // step がある場合（talk_*, recommend_*, glossary_*, enmoku 等）
       if (p.step) {
 
         // ★ 追加：talk（kera FAQ）
@@ -781,7 +780,8 @@ async function handleEvent(event, env, ctx) {
         return;
       }
 
-      console.log("POSTBACK unhandled:", { sourceKey, data });
+      // ここに到達した = 解析はできたがどの分岐にも一致しなかった → デフォルトでメニューのみ表示
+      console.log("POSTBACK unhandled branch:", { sourceKey, data, p: JSON.stringify(p) });
       await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env)]);
       return;
     }
