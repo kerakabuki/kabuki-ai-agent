@@ -281,14 +281,14 @@ export function trainingPageHTML() {
       <div><button class="cta cta-primary" onclick="location.href='/training/kakegoe'">始める →</button></div>
     </div>
 
-    <div class="card card-disabled">
-      <span class="badge gray">準備中</span>
+    <div class="card card-active">
+      <span class="badge new">NEW</span>
       <div class="icon">🎙️</div>
       <h3>台詞稽古</h3>
       <div class="catch">名台詞を声に出して稽古する</div>
-      <div class="desc">近日公開</div>
+      <div class="desc">弁天小僧「知らざぁ言って聞かせやしょう」</div>
       <div class="spacer"></div>
-      <div><button class="cta cta-disabled" disabled>近日公開</button></div>
+      <div><button class="cta cta-primary" onclick="location.href='/training/serifu/editor'">エディターを開く →</button></div>
     </div>
 
   </div>
