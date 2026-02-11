@@ -73,6 +73,10 @@ export function kakegoePageHTML() {
     border-left:3px solid var(--kin);border-radius:4px;font-size:0.85rem;
     color:#bbb;line-height:1.5;}
   .how-to .tip b{color:var(--kin);}
+  .how-to .caution{margin-top:0.7rem;padding:0.6rem 0.7rem;
+    background:rgba(196,30,58,0.12);border-left:3px solid var(--aka);
+    border-radius:4px;font-size:0.82rem;color:#ccc;line-height:1.6;}
+  .how-to .caution b{color:var(--aka);}
 
   /* ── 動画エリア ── */
   #stage{max-width:720px;margin:0 auto;position:relative;display:none;}
@@ -221,6 +225,11 @@ export function kakegoePageHTML() {
     <div class="tip">
       💡 <b>大当たり</b>＝ぴったりのタイミング、<b>良し</b>＝ちょっとずれ、<b>空振り</b>＝タイミング逃し。<br>
       掛け声と拍手の<b>種類を間違えない</b>ようにしてね！
+    </div>
+    <div class="caution">
+      ⚠️ <b>大事なお願い</b><br>
+      この大向こう稽古は<b>気良歌舞伎の公演</b>を楽しむための練習です。<br>
+      プロの歌舞伎公演や他の舞台では、勝手な掛け声はお客さんや役者さんの迷惑になります。<b>気良歌舞伎以外の公演では大向こうを控えましょう。</b>
     </div>
   </div>
 
