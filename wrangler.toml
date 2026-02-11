@@ -1,0 +1,25 @@
+name = "kerakabuki"
+main = "worker.js"
+compatibility_date = "2026-02-11"
+
+# R2バケット（動画やクイズ画像用）の紐付け
+[[r2_buckets]]
+binding = "ASSETS_BUCKET"
+bucket_name = "ASSETS_BUCKET"
+
+[[r2_buckets]]
+binding = "CONTENT_BUCKET"
+bucket_name = "CONTENT_BUCKET"
+
+[[r2_buckets]]
+binding = "ENMOKU_BUCKET"
+bucket_name = "ENMOKU_BUCKET"
+
+[[r2_buckets]]
+binding = "QUIZ_BUCKET"
+bucket_name = "QUIZ_BUCKET"
+
+# KV（会話履歴用）の紐付け
+[[kv_namespaces]]
+binding = "CHAT_HISTORY"
+id = "43434a4b6414475ca08dd72b84c62b72"
