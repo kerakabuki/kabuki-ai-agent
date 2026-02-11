@@ -45,7 +45,7 @@ import { kakegoePageHTML } from "./src/kakegoe_page.js";
 import { kakegoeEditorHTML } from "./src/kakegoe_editor.js";
 
 // ★ WEBウィジェットJS（R2ではなくバンドルから配信）
-import WIDGET_JS from "./src/keranosuke_widget.txt";
+import WIDGET_JS from "./src/keranosuke_widget.js";
 
 /* =========================================================
    Utils
