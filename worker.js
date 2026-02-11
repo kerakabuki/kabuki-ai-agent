@@ -195,9 +195,10 @@ export default {
         await env.CHAT_HISTORY.delete(modeKey);
         await env.CHAT_HISTORY.delete(`enmoku:${sourceKey}`);
 
+        const trainingUrl = url.origin + "/training";
         return corsResponse(
           request,
-          jsonResponse({ reply: "", session_id: sid || null, ui: { type: "menu", trainingUrl: url.origin + "/training" } })
+          jsonResponse({ reply: menuText(), session_id: sid || null, ui: webMenuUI(trainingUrl) })
         );
       }
 
@@ -220,9 +221,10 @@ export default {
             jsonResponse({ ...initResult, session_id: sid || null, mode })
           );
         }
+        const trainingUrl2 = url.origin + "/training";
         return corsResponse(
           request,
-          jsonResponse({ reply: "", session_id: sid || null, ui: { type: "menu", trainingUrl: url.origin + "/training" } })
+          jsonResponse({ reply: menuText(), session_id: sid || null, ui: webMenuUI(trainingUrl2) })
         );
       }
 
@@ -1173,6 +1175,22 @@ function menuText() {
 ※ 0でいつでもこのメニューに戻れるよ`;
 }
 
+/** WEBウィジェット用メニューUI（ボタン付き） */
+function webMenuUI(trainingUrl) {
+  return {
+    type: "menu",
+    trainingUrl,
+    items: [
+      { label: "🏠 気良歌舞伎ナビ",   action: "1" },
+      { label: "🎭 演目・人物ガイド",  action: "2" },
+      { label: "📖 歌舞伎用語のいろは", action: "3" },
+      { label: "⭐ おすすめ演目",       action: "4" },
+      { label: "🧩 挑戦！歌舞伎クイズ", action: "5" },
+      { label: "📣 お稽古モード",       action: "link:" + trainingUrl },
+    ]
+  };
+}
+
 /* =========================================================
    モード番号
 ========================================================= */
@@ -1671,7 +1689,8 @@ async function handleWebPostback(env, sourceKey, pbData) {
   if (step === "menu") {
     await env.CHAT_HISTORY.delete(modeKey);
     await env.CHAT_HISTORY.delete(enmokuKey);
-    return { reply: "", ui: { type: "menu", trainingUrl: (env._origin || "") + "/training" } };
+    const trainingUrl = (env._origin || "") + "/training";
+    return { reply: menuText(), ui: webMenuUI(trainingUrl) };
   }
 
   // talk
