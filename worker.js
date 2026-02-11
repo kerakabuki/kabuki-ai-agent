@@ -969,9 +969,9 @@ async function handleEvent(event, env, ctx) {
       return;
     }
 
-    // Dify呼び出し（performance等 kera以外）
+    // Dify呼び出し（performance等 kera以外）→ 演目カードと同じ respondLine で返信
     try {
-      await replyLine(env, replyToken, "OK🙂 いま調べてるよ…");
+      await respondLine(env, replyToken, destId, "OK🙂 いま調べてるよ…");
 
       const data = await callDifyRaw(env, {
         userId: userId || sourceKey,
@@ -983,13 +983,12 @@ async function handleEvent(event, env, ctx) {
       const base = pickDifyAnswer(data) || "返答を取得できませんでした。";
       const outText = base + footerHint(mode, "line");
 
-      if (destId) await pushLine(env, destId, outText);
-      else await replyLine(env, replyToken, outText);
+      await respondLine(env, replyToken, destId, outText);
 
     } catch (e) {
+      console.log("LINE Dify error:", String(e?.stack || e));
       const errText = "エラーが発生したよ🙏 もう一度試してね。";
-      if (destId) await pushLine(env, destId, errText);
-      else await replyLine(env, replyToken, errText);
+      await respondLine(env, replyToken, destId, errText);
     }
 
   } catch (e) {
