@@ -1924,23 +1924,37 @@ async function handleWebPostback(env, sourceKey, pbData) {
 }
 
 /* =========================================================
-   Dify
+   Dify（env を明示的に参照・演目カード経路と同じ扱い）
 ========================================================= */
 async function callDifyRaw(env, { userId, query, mode, channel }) {
-  const res = await fetch(`${env.DIFY_BASE_URL}${env.DIFY_CHAT_ENDPOINT}`, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${env.DIFY_API_KEY}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      inputs: { mode, channel },
-      query,
-      response_mode: "blocking",
-      user: userId
-    })
-  });
-  return res.ok ? res.json() : {};
+  const baseUrl = env?.DIFY_BASE_URL ?? "";
+  const endpoint = env?.DIFY_CHAT_ENDPOINT ?? "";
+  const apiKey = env?.DIFY_API_KEY ?? "";
+  if (!apiKey || !baseUrl || !endpoint) {
+    console.error("Dify config missing. Set DIFY_API_KEY, DIFY_BASE_URL, DIFY_CHAT_ENDPOINT in wrangler secret.");
+    return {};
+  }
+  const url = `${baseUrl.replace(/\/$/, "")}/${endpoint.replace(/^\//, "")}`;
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        inputs: { mode, channel },
+        query,
+        response_mode: "blocking",
+        user: userId
+      })
+    });
+    const data = res.ok ? await res.json().catch(() => ({})) : {};
+    return data;
+  } catch (e) {
+    console.error("Dify request error:", String(e?.stack || e));
+    return {};
+  }
 }
 
 function pickDifyAnswer(data) {
