@@ -3,21 +3,22 @@ main = "worker.js"
 compatibility_date = "2026-02-11"
 
 # R2バケット（動画やクイズ画像用）の紐付け
+# Cloudflare R2 で同名のバケットを作成してください
 [[r2_buckets]]
 binding = "ASSETS_BUCKET"
-bucket_name = "ASSETS_BUCKET"
+bucket_name = "kerakabuki-assets"
 
 [[r2_buckets]]
 binding = "CONTENT_BUCKET"
-bucket_name = "CONTENT_BUCKET"
+bucket_name = "kerakabuki-content"
 
 [[r2_buckets]]
 binding = "ENMOKU_BUCKET"
-bucket_name = "ENMOKU_BUCKET"
+bucket_name = "kerakabuki-enmoku"
 
 [[r2_buckets]]
 binding = "QUIZ_BUCKET"
-bucket_name = "QUIZ_BUCKET"
+bucket_name = "kerakabuki-quiz"
 
 # KV（会話履歴用）の紐付け
 [[kv_namespaces]]
