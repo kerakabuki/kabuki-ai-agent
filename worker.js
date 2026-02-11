@@ -43,6 +43,7 @@ import {
 import { trainingPageHTML } from "./src/training_page.js";
 import { kakegoePageHTML } from "./src/kakegoe_page.js";
 import { kakegoeEditorHTML } from "./src/kakegoe_editor.js";
+import { serifuEditorHTML } from "./src/serifu_editor.js";
 
 // ★ WEBウィジェットJS（R2ではなくバンドルから配信）
 import WIDGET_JS from "./src/keranosuke_widget.js";
@@ -133,6 +134,12 @@ export default {
 
     if (path === "/training/kakegoe/editor") {
       return new Response(kakegoeEditorHTML(), {
+        headers: { "Content-Type": "text/html; charset=utf-8" },
+      });
+    }
+
+    if (path === "/training/serifu/editor") {
+      return new Response(serifuEditorHTML(), {
         headers: { "Content-Type": "text/html; charset=utf-8" },
       });
     }
