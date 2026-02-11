@@ -54,6 +54,12 @@ export default {
       return corsResponse(request, new Response("", { status: 204 }));
     }
 
+    // 必須バインドの存在確認（undefined.get エラー防止）
+    if (!env?.CHAT_HISTORY) {
+      console.error("CHAT_HISTORY binding missing. Add kv_namespaces in wrangler.toml.");
+      return new Response(JSON.stringify({ error: "Server misconfiguration" }), { status: 500, headers: { "Content-Type": "application/json" } });
+    }
+
     const url = new URL(request.url);
     const path = url.pathname;
 
