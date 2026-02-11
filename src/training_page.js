@@ -196,6 +196,83 @@ export function trainingPageHTML() {
     box-shadow: none;
   }
 
+  /* ── 舞台設営中（Coming Soon）看板 ── */
+  .construction-panel {
+    margin-bottom: 1.5rem;
+    padding: 1.5rem 1.2rem;
+    background: linear-gradient(145deg, #1f1814 0%, #2a2020 50%, #1a1512 100%);
+    border: 2px solid rgba(197,165,90,0.4);
+    border-radius: 14px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .construction-panel::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      -35deg,
+      transparent,
+      transparent 8px,
+      rgba(197,165,90,0.03) 8px,
+      rgba(197,165,90,0.03) 10px
+    );
+    pointer-events: none;
+  }
+  .construction-panel .main-msg {
+    font-size: 1.25rem;
+    color: var(--kin);
+    letter-spacing: 0.2em;
+    margin-bottom: 0.25rem;
+    position: relative;
+  }
+  .construction-panel .sub-msg {
+    font-size: 0.85rem;
+    color: #999;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+  .benten-quote {
+    position: relative;
+    display: inline-block;
+    max-width: 320px;
+    margin: 0 auto;
+    padding: 0.9rem 1.4rem;
+    background: linear-gradient(135deg, #2a1a1a 0%, #1a1512 100%);
+    border-left: 4px solid var(--aka);
+    border-radius: 0 12px 12px 0;
+    text-align: left;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  }
+  .benten-quote .text {
+    font-size: 1.05rem;
+    color: var(--shiro);
+    font-style: italic;
+    letter-spacing: 0.08em;
+    line-height: 1.6;
+  }
+  .benten-quote .role {
+    font-size: 0.7rem;
+    color: var(--kin);
+    margin-top: 0.5rem;
+    letter-spacing: 0.15em;
+  }
+  .beta-recruit {
+    margin-top: 1rem;
+    padding: 0.8rem 1rem;
+    background: rgba(107,142,35,0.12);
+    border: 1px solid rgba(107,142,35,0.35);
+    border-radius: 10px;
+    font-size: 0.8rem;
+    color: #b8c9a0;
+    line-height: 1.6;
+    text-align: center;
+    position: relative;
+  }
+  .beta-recruit strong { color: var(--moegi); }
+
   /* ── バナー ── */
   .banner {
     margin-top: 1.5rem;
@@ -256,6 +333,7 @@ export function trainingPageHTML() {
   .card { animation: fadeUp 0.5s ease both; }
   .card:nth-child(2) { animation-delay: 0.1s; }
   .banner { animation: fadeUp 0.5s ease 0.2s both; }
+  .construction-panel { animation: fadeUp 0.5s ease 0.05s both; }
 </style>
 </head>
 <body>
@@ -268,6 +346,19 @@ export function trainingPageHTML() {
 </header>
 
 <main>
+  <section class="construction-panel">
+    <p class="main-msg">ただいま舞台設営中</p>
+    <p class="sub-msg">お稽古の準備をしています</p>
+    <div class="benten-quote">
+      <p class="text">「ちょっと待ってな。いい舞台、見せてやるからさ。」</p>
+      <p class="role">── 弁天小僧（予告）</p>
+    </div>
+    <div class="beta-recruit">
+      <strong>🛠️ ベータテスター募集</strong><br>
+      地歌舞伎役者の方で、開発中の修行モードを試してみたい方はDMください。
+    </div>
+  </section>
+
   <h2 class="section-title">稽古メニュー</h2>
   <div class="card-grid">
 
@@ -281,14 +372,14 @@ export function trainingPageHTML() {
       <div><button class="cta cta-primary" onclick="location.href='/training/kakegoe'">始める →</button></div>
     </div>
 
-    <div class="card card-active">
-      <span class="badge new">NEW</span>
+    <div class="card card-disabled">
+      <span class="badge gray">準備中</span>
       <div class="icon">🎙️</div>
-      <h3>台詞稽古</h3>
+      <h3>台詞道場</h3>
       <div class="catch">名台詞を声に出して稽古する</div>
       <div class="desc">弁天小僧「知らざぁ言って聞かせやしょう」</div>
       <div class="spacer"></div>
-      <div><button class="cta cta-primary" onclick="location.href='/training/serifu/editor'">エディターを開く →</button></div>
+      <div><button class="cta cta-disabled" disabled>準備中</button></div>
     </div>
 
   </div>

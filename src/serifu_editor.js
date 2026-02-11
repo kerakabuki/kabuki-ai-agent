@@ -1,5 +1,5 @@
 // =============================================================
-// 台詞稽古 キュー編集ツール — /training/serifu/editor
+// 台詞道場 キュー編集ツール — /training/serifu/editor
 // =============================================================
 export function serifuEditorHTML() {
   return `<!DOCTYPE html>
