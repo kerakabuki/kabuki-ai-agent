@@ -198,9 +198,6 @@ const SCENES = [
     videoId: "I5QncXeoIm0",
     duration: 780,
     cues: [
-      // ===== 幕開き =====
-      { time: 9.4,   type: "kakegoe", text: "待ってました！", hint: "幕開き" },
-
       // ===== 花道 ─ 登場と見得 =====
       { time: 12.1,  type: "kakegoe", text: "ふきや！",       hint: "弁天小僧　花道登場" },
       { time: 20,    type: "hakushu",                         hint: "弁天小僧　花道見得" },
@@ -229,24 +226,20 @@ const SCENES = [
       { time: 394.3, type: "kakegoe", text: "よっ！",         hint: "日本駄右衛門　見得" },
       { time: 400.2, type: "hakushu",                         hint: "日本駄右衛門　ツラネ終わり" },
 
-      // 弁天小僧
-      { time: 402.4, type: "kakegoe", text: "待ってました！", hint: "弁天小僧　ツラネ" },
+      // 弁天小僧（ツラネ開始の掛け声は省略 ─ 拍手直後で近すぎるため）
       { time: 458.4, type: "kakegoe", text: "よっ！",         hint: "弁天小僧　見得" },
       { time: 464.5, type: "hakushu",                         hint: "弁天小僧　ツラネ終わり" },
 
       // 忠信利平
-      { time: 466.5, type: "kakegoe", text: "たっぷりと！",   hint: "忠信利平　ツラネ" },
       { time: 525.7, type: "kakegoe", text: "よっ！",         hint: "忠信利平　見得" },
       { time: 530.8, type: "hakushu",                         hint: "忠信利平　ツラネ終わり" },
 
       // 赤星十三郎
-      { time: 532.8, type: "kakegoe", text: "待ってました！", hint: "赤星十三郎　ツラネ" },
       { time: 588.1, type: "kakegoe", text: "しっとりと！",   hint: "赤星十三郎　ツラネ２" },
       { time: 602.5, type: "kakegoe", text: "よっ！",         hint: "赤星十三郎　決め" },
       { time: 608.8, type: "hakushu",                         hint: "赤星十三郎　ツラネ終わり" },
 
       // 南郷力丸
-      { time: 611.1, type: "kakegoe", text: "たっぷりと！",   hint: "南郷力丸　ツラネ" },
       { time: 667.3, type: "kakegoe", text: "よっ！",         hint: "南郷力丸　見得" },
       { time: 673.9, type: "hakushu",                         hint: "南郷力丸　ツラネ終わり" },
 
