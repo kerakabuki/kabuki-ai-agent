@@ -1949,61 +1949,108 @@ function pickDifyAnswer(data) {
 }
 
 /* =========================================================
-   LINE send helpers
+   LINE send helpers（LINE専用: Messaging API）
+   env のシークレット: LINE_CHANNEL_ACCESS_TOKEN または LINE_ACCESS_TOKEN
 ========================================================= */
+function getLineChannelAccessToken(env) {
+  return env.LINE_CHANNEL_ACCESS_TOKEN || env.LINE_ACCESS_TOKEN || "";
+}
+
 async function respondLine(env, replyToken, destId, text) {
   const ok = await replyLine(env, replyToken, text);
   if (!ok && destId) await pushLine(env, destId, text);
 }
 
 async function replyLine(env, replyToken, text) {
-  return fetch("https://api.line.me/v2/bot/message/reply", {
+  const token = getLineChannelAccessToken(env);
+  if (!token) {
+    console.error("LINE: Channel access token missing. Set LINE_CHANNEL_ACCESS_TOKEN or LINE_ACCESS_TOKEN in wrangler secret.");
+    return false;
+  }
+  const res = await fetch("https://api.line.me/v2/bot/message/reply", {
     method: "POST",
     headers: {
-      "Authorization": `Bearer ${env.LINE_ACCESS_TOKEN}`,
+      "Authorization": `Bearer ${token}`,
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
       replyToken,
       messages: [{ type: "text", text }]
     })
-  }).then(r => r.ok).catch(() => false);
+  });
+  if (!res.ok) console.error("LINE reply error:", res.status, await res.text());
+  return res.ok;
 }
 
 async function pushLine(env, userId, text) {
-  return fetch("https://api.line.me/v2/bot/message/push", {
+  const token = getLineChannelAccessToken(env);
+  if (!token) {
+    console.error("LINE: Channel access token missing. Set LINE_CHANNEL_ACCESS_TOKEN or LINE_ACCESS_TOKEN in wrangler secret.");
+    return false;
+  }
+  const res = await fetch("https://api.line.me/v2/bot/message/push", {
     method: "POST",
     headers: {
-      "Authorization": `Bearer ${env.LINE_ACCESS_TOKEN}`,
+      "Authorization": `Bearer ${token}`,
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
       to: userId,
       messages: [{ type: "text", text }]
     })
-  }).then(r => r.ok).catch(() => false);
+  });
+  if (!res.ok) console.error("LINE push error:", res.status, await res.text());
+  return res.ok;
 }
 
 async function replyLineMessages(env, replyToken, messages) {
-  return fetch("https://api.line.me/v2/bot/message/reply", {
+  const token = getLineChannelAccessToken(env);
+  if (!token) {
+    console.error("LINE: Channel access token missing. Set LINE_CHANNEL_ACCESS_TOKEN or LINE_ACCESS_TOKEN in wrangler secret.");
+    return false;
+  }
+  const normalized = normalizeLineMessages(messages);
+  const res = await fetch("https://api.line.me/v2/bot/message/reply", {
     method: "POST",
     headers: {
-      "Authorization": `Bearer ${env.LINE_ACCESS_TOKEN}`,
+      "Authorization": `Bearer ${token}`,
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ replyToken, messages })
-  }).then(r => r.ok).catch(() => false);
+    body: JSON.stringify({ replyToken, messages: normalized })
+  });
+  if (!res.ok) console.error("LINE reply(messages) error:", res.status, await res.text());
+  return res.ok;
 }
 
 async function pushLineMessages(env, to, messages) {
-  return fetch("https://api.line.me/v2/bot/message/push", {
+  const token = getLineChannelAccessToken(env);
+  if (!token) {
+    console.error("LINE: Channel access token missing. Set LINE_CHANNEL_ACCESS_TOKEN or LINE_ACCESS_TOKEN in wrangler secret.");
+    return false;
+  }
+  const normalized = normalizeLineMessages(messages);
+  const res = await fetch("https://api.line.me/v2/bot/message/push", {
     method: "POST",
     headers: {
-      "Authorization": `Bearer ${env.LINE_ACCESS_TOKEN}`,
+      "Authorization": `Bearer ${token}`,
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ to, messages })
-  }).then(r => r.ok).catch(() => false);
+    body: JSON.stringify({ to, messages: normalized })
+  });
+  if (!res.ok) console.error("LINE push(messages) error:", res.status, await res.text());
+  return res.ok;
+}
+
+/** LINE Messaging API 用にメッセージ配列を正規化（Flexは type/altText/contents 形式に） */
+function normalizeLineMessages(messages) {
+  if (!Array.isArray(messages)) return [];
+  return messages.map(m => {
+    if (!m || typeof m !== "object") return { type: "text", text: "" };
+    if (m.type === "text") return m;
+    if (m.type === "flex" && m.altText != null && m.contents) return m;
+    if (m.contents && m.altText === undefined) return { type: "flex", altText: "メッセージ", contents: m.contents };
+    return { type: "flex", altText: m.altText || "メッセージ", contents: m.contents || m };
+  });
 }
 
 async function respondLineMessages(env, replyToken, destId, messages) {
