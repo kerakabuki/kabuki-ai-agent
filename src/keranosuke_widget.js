@@ -1,4 +1,5 @@
-/* keranosuke-widget v4.1 - Card UI + Worker bundled */
+// Auto-generated: widget code wrapped as ES module
+export default String.raw`/* keranosuke-widget v4.1 - Card UI + Worker bundled */
 (function(){
   "use strict";
 
@@ -960,4 +961,4 @@
   sendButton.addEventListener("click", handleSend);
   input.addEventListener("keydown", function(e) { if (e.key === "Enter") handleSend(); });
 
-})();
+})();`;
