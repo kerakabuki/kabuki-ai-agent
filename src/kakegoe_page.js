@@ -1,6 +1,6 @@
 // =============================================================
 // 大向こう稽古 — /training/kakegoe
-// YouTube動画を再生しながら掛け声・拍手のタイミングでタップ！
+// 白浪五人男「稲瀬川勢揃い」専用レイアウト
 // =============================================================
 export function kakegoePageHTML() {
   return `<!DOCTYPE html>
@@ -8,7 +8,7 @@ export function kakegoePageHTML() {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>大向こう稽古 - 気良歌舞伎</title>
+<title>大向こう稽古 ─ 白浪五人男 | 気良歌舞伎</title>
 <style>
   :root {
     --kuro:#1a1a1a; --aka:#C41E3A; --moegi:#6B8E23;
@@ -24,25 +24,41 @@ export function kakegoePageHTML() {
     var(--moegi) 33.33%,var(--moegi) 66.66%,
     var(--aka) 66.66%,var(--aka) 100%);}
 
-  header{text-align:center;padding:1.2rem 1rem;
-    border-bottom:2px solid var(--kin);}
-  header h1{font-size:1.3rem;letter-spacing:0.2em;color:var(--kin);}
-  header p{font-size:0.8rem;color:#999;margin-top:0.3rem;}
+  /* ── イントロ画面 ── */
+  #intro{max-width:760px;margin:0 auto;padding:1rem;text-align:center;}
+  #intro h1{font-size:1.5rem;letter-spacing:0.25em;color:var(--kin);
+    margin:1rem 0 0.3rem;text-shadow:0 2px 8px rgba(0,0,0,0.7);}
+  #intro .subtitle{font-size:0.85rem;color:#bbb;letter-spacing:0.1em;margin-bottom:1rem;}
 
-  /* ── 動画セレクタ ── */
-  #scene-select{max-width:720px;margin:1rem auto;padding:0 1rem;}
-  #scene-select h2{font-size:1rem;color:var(--kin);margin-bottom:0.6rem;
-    border-left:3px solid var(--aka);padding-left:0.6rem;}
-  .scene-list{display:flex;flex-wrap:wrap;gap:0.5rem;}
-  .scene-btn{background:#2a2020;border:1px solid #444;color:var(--shiro);
-    padding:0.5rem 1rem;border-radius:8px;cursor:pointer;font-size:0.85rem;
-    font-family:inherit;transition:all 0.2s;}
-  .scene-btn:hover,.scene-btn.active{border-color:var(--kin);
-    background:#3a2a1a;color:var(--kin);}
+  /* 五人カード */
+  .cast-row{display:flex;gap:0.4rem;justify-content:center;margin:0.8rem 0;
+    overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .cast-card{flex:0 0 auto;width:120px;border-radius:10px;overflow:hidden;
+    border:2px solid #333;transition:all 0.3s;position:relative;cursor:default;}
+  .cast-card img{width:100%;display:block;}
+  .cast-card .name{position:absolute;bottom:0;left:0;right:0;
+    background:linear-gradient(transparent,rgba(0,0,0,0.85));
+    padding:0.5rem 0.3rem 0.3rem;text-align:center;}
+  .cast-card .name span{display:block;font-size:0.7rem;color:var(--kin);
+    letter-spacing:0.1em;}
+  .cast-card .name small{font-size:0.6rem;color:#999;}
+  .cast-card.active{border-color:var(--kin);
+    box-shadow:0 0 16px rgba(197,165,90,0.4);transform:scale(1.05);}
+
+  /* スタートボタン */
+  #start-btn{display:inline-block;margin:1.2rem 0;padding:1rem 3rem;
+    background:linear-gradient(135deg,var(--aka) 0%,#8B0000 100%);
+    color:#fff;border:2px solid var(--kin);border-radius:14px;
+    font-size:1.2rem;font-family:inherit;letter-spacing:0.2em;
+    cursor:pointer;transition:all 0.2s;text-shadow:0 2px 4px rgba(0,0,0,0.5);}
+  #start-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(197,165,90,0.3);}
+  #start-btn:active{transform:scale(0.97);}
+
+  .intro-hint{font-size:0.75rem;color:#777;margin-top:0.5rem;line-height:1.6;}
+  .intro-hint b{color:var(--kin);}
 
   /* ── 動画エリア ── */
-  #stage{max-width:720px;margin:0 auto;position:relative;
-    display:none;}
+  #stage{max-width:720px;margin:0 auto;position:relative;display:none;}
   #player-wrap{position:relative;width:100%;padding-top:56.25%;background:#000;}
   #player-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;}
 
@@ -58,14 +74,24 @@ export function kakegoePageHTML() {
   #kakegoe-text.show{opacity:1;transform:scale(1);}
   #kakegoe-text.fade{opacity:0;transform:scale(1.3);transition:all 0.8s ease-in;}
 
+  /* ── 現在のキャラ表示バー ── */
+  #now-playing{max-width:720px;margin:0.3rem auto;padding:0 1rem;
+    display:none;text-align:center;}
+  #now-char{display:inline-flex;align-items:center;gap:0.5rem;
+    background:#2a2020;border:1px solid #444;border-radius:20px;
+    padding:0.3rem 1rem;}
+  #now-char img{width:28px;height:28px;border-radius:50%;object-fit:cover;
+    border:1px solid var(--kin);}
+  #now-char span{font-size:0.8rem;color:var(--kin);}
+
   /* ── タップエリア ── */
-  #tap-zone{max-width:720px;margin:0.8rem auto;padding:0 1rem;
-    display:none;}
+  #tap-zone{max-width:720px;margin:0.8rem auto;padding:0 1rem;display:none;}
   .tap-buttons{display:flex;gap:0.6rem;}
   .tap-btn{flex:1;padding:1.2rem;border-radius:14px;
     color:var(--shiro);font-size:1.2rem;font-family:inherit;
     cursor:pointer;letter-spacing:0.15em;transition:all 0.15s;
-    text-align:center;position:relative;overflow:hidden;border-width:3px;border-style:solid;}
+    text-align:center;position:relative;overflow:hidden;
+    border-width:3px;border-style:solid;}
   #btn-kakegoe-play{background:linear-gradient(135deg,#3a1515 0%,#1e1e1e 100%);
     border-color:var(--aka);}
   #btn-kakegoe-play:active{background:var(--aka);transform:scale(0.97);}
@@ -75,7 +101,7 @@ export function kakegoePageHTML() {
   .tap-btn .sub{display:block;font-size:0.65rem;color:#999;margin-top:0.3rem;
     letter-spacing:0.05em;}
 
-  /* ── 次の掛け声ヒント ── */
+  /* ── 次のヒント ── */
   #next-hint{max-width:720px;margin:0 auto;padding:0.5rem 1rem;
     text-align:center;font-size:0.85rem;color:#777;display:none;
     min-height:2rem;}
@@ -108,6 +134,7 @@ export function kakegoePageHTML() {
   #result h2{color:var(--kin);font-size:1.5rem;margin-bottom:1rem;}
   #result .big-score{font-size:3rem;color:var(--kin);}
   #result .detail{margin-top:1rem;font-size:0.9rem;color:#bbb;line-height:1.8;}
+  #result .cast-row{margin-top:1.2rem;}
   #result button{margin-top:1.5rem;padding:0.7rem 2rem;background:var(--aka);
     color:#fff;border:none;border-radius:8px;font-size:1rem;cursor:pointer;
     font-family:inherit;}
@@ -123,28 +150,70 @@ export function kakegoePageHTML() {
   }
   .ripple{position:absolute;border-radius:50%;background:rgba(197,165,90,0.4);
     width:60px;height:60px;pointer-events:none;animation:ripple 0.6s ease-out forwards;}
+
+  /* ── アニメーション ── */
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+  .cast-card{animation:fadeUp 0.5s ease both;}
+  .cast-card:nth-child(2){animation-delay:0.08s;}
+  .cast-card:nth-child(3){animation-delay:0.16s;}
+  .cast-card:nth-child(4){animation-delay:0.24s;}
+  .cast-card:nth-child(5){animation-delay:0.32s;}
 </style>
 </head>
 <body>
 
 <div class="joshikimaku"></div>
-<header>
-  <h1>大向こう稽古</h1>
-  <p>動画に合わせて掛け声のタイミングを練習しよう</p>
-</header>
-<div class="joshikimaku"></div>
 
-<div id="scene-select">
-  <h2>演目をえらぶ</h2>
-  <div class="scene-list" id="scene-list"></div>
+<!-- ===== イントロ画面 ===== -->
+<div id="intro">
+  <h1>大向こう稽古</h1>
+  <div class="subtitle">白浪五人男「稲瀬川勢揃い」</div>
+
+  <div class="cast-row" id="cast-row">
+    <div class="cast-card" data-char="benten">
+      <img src="/assets/shiranami/benten.png" alt="弁天小僧">
+      <div class="name"><span>弁天小僧</span><small>ふきや</small></div>
+    </div>
+    <div class="cast-card" data-char="tadanobu">
+      <img src="/assets/shiranami/tadanobu.png" alt="忠信利平">
+      <div class="name"><span>忠信利平</span><small>おんじ</small></div>
+    </div>
+    <div class="cast-card" data-char="akaboshi">
+      <img src="/assets/shiranami/akaboshi.png" alt="赤星十三郎">
+      <div class="name"><span>赤星十三郎</span><small>よそべさ</small></div>
+    </div>
+    <div class="cast-card" data-char="nango">
+      <img src="/assets/shiranami/nango.png" alt="南郷力丸">
+      <div class="name"><span>南郷力丸</span><small>さわ</small></div>
+    </div>
+    <div class="cast-card" data-char="dayemon">
+      <img src="/assets/shiranami/dayemon.png" alt="日本駄右衛門">
+      <div class="name"><span>日本駄右衛門</span><small>もはっつぁ</small></div>
+    </div>
+  </div>
+
+  <button id="start-btn">🎭 稽古をはじめる</button>
+
+  <div class="intro-hint">
+    動画を見ながら <b>🎤 掛け声</b> と <b>👏 拍手</b> のタイミングでタップ！<br>
+    ヒントを見て、ちょうどいいタイミングを狙ってね。
+  </div>
 </div>
 
+<!-- ===== プレイ画面 ===== -->
 <div id="stage">
   <div id="player-wrap">
     <div id="player"></div>
     <div id="kakegoe-overlay">
       <div id="kakegoe-text"></div>
     </div>
+  </div>
+</div>
+
+<div id="now-playing">
+  <div id="now-char">
+    <img id="now-char-img" src="/assets/shiranami/benten.png" alt="">
+    <span id="now-char-name">弁天小僧</span>
   </div>
 </div>
 
@@ -179,142 +248,133 @@ export function kakegoePageHTML() {
   <h2>お稽古おつかれさま！</h2>
   <div class="big-score" id="result-score"></div>
   <div class="detail" id="result-detail"></div>
-  <button onclick="location.reload()">もう一度えらぶ</button>
+  <div class="cast-row" id="result-cast"></div>
+  <button onclick="location.reload()">もう一度やる</button>
 </div>
 
 <footer>
   <a href="/training">お稽古メニューへ戻る</a>
 </footer>
 
-<!-- YouTube IFrame API -->
 <script>
 // =========================================================
-// 演目データ（YouTube動画ID + 掛け声タイミング）
+// キャラクターデータ
 // =========================================================
-const SCENES = [
-  {
-    id: "shiranami",
-    title: "白浪五人男「稲瀬川勢揃い」",
-    videoId: "I5QncXeoIm0",
-    duration: 780,
-    cues: [
-      // ===== 花道 ─ 登場と見得 =====
-      { time: 12.1,  type: "kakegoe", text: "ふきや！",       hint: "弁天小僧　花道登場" },
-      { time: 20,    type: "hakushu",                         hint: "弁天小僧　花道見得" },
+const CHARS = {
+  benten:   { name: "弁天小僧",   actor: "ふきや",     img: "/assets/shiranami/benten.png" },
+  tadanobu: { name: "忠信利平",   actor: "おんじ",     img: "/assets/shiranami/tadanobu.png" },
+  akaboshi: { name: "赤星十三郎", actor: "よそべさ",   img: "/assets/shiranami/akaboshi.png" },
+  nango:    { name: "南郷力丸",   actor: "さわ",       img: "/assets/shiranami/nango.png" },
+  dayemon:  { name: "日本駄右衛門", actor: "もはっつぁ", img: "/assets/shiranami/dayemon.png" },
+};
 
-      { time: 53.4,  type: "kakegoe", text: "おんじ！",       hint: "忠信利平　花道登場" },
-      { time: 59,    type: "hakushu",                         hint: "忠信利平　花道見得" },
+// =========================================================
+// 演目データ
+// =========================================================
+const SCENE = {
+  id: "shiranami",
+  title: "白浪五人男「稲瀬川勢揃い」",
+  videoId: "I5QncXeoIm0",
+  duration: 780,
+  cues: [
+    // ===== 花道 ─ 登場と見得 =====
+    { time: 12.1,  type: "kakegoe", text: "ふきや！",       hint: "弁天小僧　花道登場",     char: "benten" },
+    { time: 20,    type: "hakushu",                         hint: "弁天小僧　花道見得",     char: "benten" },
 
-      { time: 77.9,  type: "kakegoe", text: "よそべさ！",     hint: "赤星十三郎　花道登場" },
-      { time: 82,    type: "hakushu",                         hint: "赤星十三郎　花道見得" },
+    { time: 53.4,  type: "kakegoe", text: "おんじ！",       hint: "忠信利平　花道登場",     char: "tadanobu" },
+    { time: 59,    type: "hakushu",                         hint: "忠信利平　花道見得",     char: "tadanobu" },
 
-      { time: 99.8,  type: "kakegoe", text: "さわ！",         hint: "南郷力丸　花道登場" },
-      { time: 106.3, type: "hakushu",                         hint: "南郷力丸　花道見得" },
+    { time: 77.9,  type: "kakegoe", text: "よそべさ！",     hint: "赤星十三郎　花道登場",   char: "akaboshi" },
+    { time: 82,    type: "hakushu",                         hint: "赤星十三郎　花道見得",   char: "akaboshi" },
 
-      { time: 122.9, type: "kakegoe", text: "もはっつぁ！",   hint: "日本駄右衛門　花道登場" },
-      { time: 133.1, type: "hakushu",                         hint: "日本駄右衛門　花道見得" },
+    { time: 99.8,  type: "kakegoe", text: "さわ！",         hint: "南郷力丸　花道登場",     char: "nango" },
+    { time: 106.3, type: "hakushu",                         hint: "南郷力丸　花道見得",     char: "nango" },
 
-      // ===== 勢揃い =====
-      { time: 154,   type: "kakegoe", text: "たっぷりと！",   hint: "五人男勢揃い" },
-      { time: 227.9, type: "kakegoe", text: "よっ！",         hint: "五人男渡り台詞終わり" },
-      { time: 233.6, type: "hakushu",                         hint: "五人男渡り台詞終わり" },
-      { time: 267.8, type: "kakegoe", text: "待ってました！", hint: "捕手勢揃い" },
+    { time: 122.9, type: "kakegoe", text: "もはっつぁ！",   hint: "日本駄右衛門　花道登場", char: "dayemon" },
+    { time: 133.1, type: "hakushu",                         hint: "日本駄右衛門　花道見得", char: "dayemon" },
 
-      // ===== つらね =====
-      // 日本駄右衛門
-      { time: 327.7, type: "kakegoe", text: "たっぷりと！",   hint: "日本駄右衛門　ツラネ" },
-      { time: 394.3, type: "kakegoe", text: "よっ！",         hint: "日本駄右衛門　見得" },
-      { time: 400.2, type: "hakushu",                         hint: "日本駄右衛門　ツラネ終わり" },
+    // ===== 勢揃い =====
+    { time: 154,   type: "kakegoe", text: "たっぷりと！",   hint: "五人男勢揃い" },
+    { time: 227.9, type: "kakegoe", text: "よっ！",         hint: "五人男渡り台詞終わり" },
+    { time: 233.6, type: "hakushu",                         hint: "五人男渡り台詞終わり" },
+    { time: 267.8, type: "kakegoe", text: "待ってました！", hint: "捕手勢揃い" },
 
-      // 弁天小僧（ツラネ開始の掛け声は省略 ─ 拍手直後で近すぎるため）
-      { time: 458.4, type: "kakegoe", text: "よっ！",         hint: "弁天小僧　見得" },
-      { time: 464.5, type: "hakushu",                         hint: "弁天小僧　ツラネ終わり" },
+    // ===== つらね =====
+    // 日本駄右衛門
+    { time: 327.7, type: "kakegoe", text: "たっぷりと！",   hint: "日本駄右衛門　ツラネ",     char: "dayemon" },
+    { time: 394.3, type: "kakegoe", text: "よっ！",         hint: "日本駄右衛門　見得",       char: "dayemon" },
+    { time: 400.2, type: "hakushu",                         hint: "日本駄右衛門　ツラネ終わり", char: "dayemon" },
 
-      // 忠信利平
-      { time: 525.7, type: "kakegoe", text: "よっ！",         hint: "忠信利平　見得" },
-      { time: 530.8, type: "hakushu",                         hint: "忠信利平　ツラネ終わり" },
+    // 弁天小僧
+    { time: 458.4, type: "kakegoe", text: "よっ！",         hint: "弁天小僧　見得",           char: "benten" },
+    { time: 464.5, type: "hakushu",                         hint: "弁天小僧　ツラネ終わり",   char: "benten" },
 
-      // 赤星十三郎
-      { time: 588.1, type: "kakegoe", text: "しっとりと！",   hint: "赤星十三郎　ツラネ２" },
-      { time: 602.5, type: "kakegoe", text: "よっ！",         hint: "赤星十三郎　決め" },
-      { time: 608.8, type: "hakushu",                         hint: "赤星十三郎　ツラネ終わり" },
+    // 忠信利平
+    { time: 525.7, type: "kakegoe", text: "よっ！",         hint: "忠信利平　見得",           char: "tadanobu" },
+    { time: 530.8, type: "hakushu",                         hint: "忠信利平　ツラネ終わり",   char: "tadanobu" },
 
-      // 南郷力丸
-      { time: 667.3, type: "kakegoe", text: "よっ！",         hint: "南郷力丸　見得" },
-      { time: 673.9, type: "hakushu",                         hint: "南郷力丸　ツラネ終わり" },
+    // 赤星十三郎
+    { time: 588.1, type: "kakegoe", text: "しっとりと！",   hint: "赤星十三郎　ツラネ２",     char: "akaboshi" },
+    { time: 602.5, type: "kakegoe", text: "よっ！",         hint: "赤星十三郎　決め",         char: "akaboshi" },
+    { time: 608.8, type: "hakushu",                         hint: "赤星十三郎　ツラネ終わり", char: "akaboshi" },
 
-      // ===== クライマックス =====
-      { time: 753,   type: "kakegoe", text: "日本一！",       hint: "勢揃いの見得" },
-      { time: 757.8, type: "hakushu",                         hint: "" },
-    ]
-  }
-  // ★ 他の演目を追加するには、同じ形式で SCENES に追加
-];
+    // 南郷力丸
+    { time: 667.3, type: "kakegoe", text: "よっ！",         hint: "南郷力丸　見得",           char: "nango" },
+    { time: 673.9, type: "hakushu",                         hint: "南郷力丸　ツラネ終わり",   char: "nango" },
+
+    // ===== クライマックス =====
+    { time: 753,   type: "kakegoe", text: "日本一！",       hint: "勢揃いの見得" },
+    { time: 757.8, type: "hakushu",                         hint: "" },
+  ]
+};
 
 // =========================================================
 // グローバル変数
 // =========================================================
 let player = null;
-let currentScene = null;
 let cues = [];
 let cueIndex = 0;
 let score = { great: 0, good: 0, miss: 0 };
 let ticker = null;
-// 掛け声の判定幅
-const WINDOW_GREAT = 1.0;   // ±1秒 = 大当たり
-const WINDOW_GOOD  = 2.5;   // ±2.5秒 = 良し
-// 拍手の判定幅（広め）
-const WINDOW_GREAT_H = 2.0; // ±2秒 = 大当たり
-const WINDOW_GOOD_H  = 4.0; // ±4秒 = 良し
+const WINDOW_GREAT = 1.0;
+const WINDOW_GOOD  = 2.5;
+const WINDOW_GREAT_H = 2.0;
+const WINDOW_GOOD_H  = 4.0;
 
 // =========================================================
-// シーン選択ボタンを生成
-// =========================================================
-(function buildSceneList() {
-  const list = document.getElementById("scene-list");
-  SCENES.forEach(s => {
-    const btn = document.createElement("button");
-    btn.className = "scene-btn";
-    btn.textContent = s.title;
-    btn.onclick = () => startScene(s);
-    list.appendChild(btn);
-  });
-})();
-
-// =========================================================
-// YouTube IFrame API 読み込み
+// YouTube IFrame API
 // =========================================================
 const tag = document.createElement("script");
 tag.src = "https://www.youtube.com/iframe_api";
 document.head.appendChild(tag);
-
-window.onYouTubeIframeAPIReady = function() {
-  console.log("YouTube API ready");
-};
+window.onYouTubeIframeAPIReady = () => console.log("YT API ready");
 
 // =========================================================
-// シーン開始
+// スタート
 // =========================================================
-function startScene(scene) {
-  currentScene = scene;
-  cues = scene.cues.map(c => ({ ...c, result: null }));
+document.getElementById("start-btn").addEventListener("click", startScene);
+
+function startScene() {
+  cues = SCENE.cues.map(c => ({ ...c, result: null }));
   cueIndex = 0;
   score = { great: 0, good: 0, miss: 0 };
   updateScoreUI();
 
-  document.getElementById("scene-select").style.display = "none";
+  // UI切替
+  document.getElementById("intro").style.display = "none";
   document.getElementById("stage").style.display = "block";
   document.getElementById("tap-zone").style.display = "block";
   document.getElementById("next-hint").style.display = "block";
   document.getElementById("timeline").style.display = "block";
   document.getElementById("score-bar").style.display = "block";
+  document.getElementById("now-playing").style.display = "block";
   document.getElementById("result").style.display = "none";
 
-  buildTimeline(scene);
+  buildTimeline();
 
   if (player) player.destroy();
   player = new YT.Player("player", {
-    videoId: scene.videoId,
+    videoId: SCENE.videoId,
     playerVars: { autoplay: 1, playsinline: 1, rel: 0, modestbranding: 1 },
     events: {
       onReady: () => { player.playVideo(); startTicker(); },
@@ -324,12 +384,12 @@ function startScene(scene) {
 }
 
 // =========================================================
-// タイムラインを構築
+// タイムライン
 // =========================================================
-function buildTimeline(scene) {
+function buildTimeline() {
   const bar = document.getElementById("timeline-bar");
   bar.querySelectorAll(".cue-marker").forEach(el => el.remove());
-  const dur = scene.duration || 120;
+  const dur = SCENE.duration || 120;
   cues.forEach((c, i) => {
     const m = document.createElement("div");
     m.className = "cue-marker" + (c.type === "hakushu" ? " hakushu-marker" : "");
@@ -352,12 +412,13 @@ function startTicker() {
 function tick() {
   if (!player || typeof player.getCurrentTime !== "function") return;
   const t = player.getCurrentTime();
-  const dur = currentScene.duration || 120;
+  const dur = SCENE.duration || 120;
 
   document.getElementById("timeline-progress").style.width =
     Math.min(100, (t / dur) * 100) + "%";
 
   updateHint(t);
+  updateNowPlaying(t);
 
   while (cueIndex < cues.length && cues[cueIndex].result === null &&
          t > cues[cueIndex].time + (cues[cueIndex].type === "hakushu" ? WINDOW_GOOD_H : WINDOW_GOOD)) {
@@ -366,6 +427,27 @@ function tick() {
     markCue(cueIndex, "missed");
     cueIndex++;
     updateScoreUI();
+  }
+}
+
+// 現在のキャラクター表示を更新
+function updateNowPlaying(t) {
+  let currentChar = null;
+  for (let i = cues.length - 1; i >= 0; i--) {
+    if (cues[i].char && cues[i].time <= t + 5) {
+      currentChar = cues[i].char;
+      break;
+    }
+  }
+  const el = document.getElementById("now-char");
+  if (currentChar && CHARS[currentChar]) {
+    const ch = CHARS[currentChar];
+    document.getElementById("now-char-img").src = ch.img;
+    document.getElementById("now-char-name").textContent = ch.name + "（" + ch.actor + "）";
+    // イントロのカードもハイライト
+    document.querySelectorAll(".cast-card").forEach(c => c.classList.remove("active"));
+    const card = document.querySelector('.cast-card[data-char="' + currentChar + '"]');
+    if (card) card.classList.add("active");
   }
 }
 
@@ -494,6 +576,7 @@ function onPlayerState(e) {
 function showResult() {
   document.getElementById("tap-zone").style.display = "none";
   document.getElementById("next-hint").style.display = "none";
+  document.getElementById("now-playing").style.display = "none";
   const total = cues.length;
   const pct = total > 0 ? Math.round(((score.great * 1.0 + score.good * 0.5) / total) * 100) : 0;
 
@@ -506,7 +589,20 @@ function showResult() {
   document.getElementById("result-score").textContent = pct + "点（" + rank + "）";
   document.getElementById("result-detail").innerHTML =
     "大当たり: " + score.great + " / 良し: " + score.good + " / 空振り: " + score.miss +
-    "<br>全" + total + "回の掛け声";
+    "<br>全" + total + "回の掛け声・拍手";
+
+  // 結果画面にもキャラカードを表示
+  const rc = document.getElementById("result-cast");
+  rc.innerHTML = "";
+  Object.values(CHARS).forEach(ch => {
+    const div = document.createElement("div");
+    div.className = "cast-card";
+    div.style.width = "80px";
+    div.innerHTML = '<img src="' + ch.img + '" alt="' + ch.name + '">' +
+      '<div class="name"><span>' + ch.name + '</span></div>';
+    rc.appendChild(div);
+  });
+
   document.getElementById("result").style.display = "block";
 }
 <\/script>

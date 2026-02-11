@@ -213,10 +213,10 @@ export function trainingPageHTML() {
       <p>初心者向けやジャンル別に、気良歌舞伎の推し演目を紹介</p>
       <span class="badge green">厳選</span>
     </div>
-    <div class="card" onclick="location.href='/training/kakegoe'">
+    <div class="card" onclick="location.href='/training/kakegoe'" style="border-color:var(--kin);">
       <div class="icon">📣</div>
       <h3>大向こう稽古</h3>
-      <p>公演動画を見ながら掛け声のタイミングを練習しよう</p>
+      <p>白浪五人男「稲瀬川勢揃い」の動画で掛け声＆拍手のタイミングを練習！</p>
       <span class="badge">NEW</span>
     </div>
     <div class="card" onclick="alert('ナビ：準備中だよ🙂')">
