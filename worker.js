@@ -554,43 +554,56 @@ async function handleEvent(event, env, ctx) {
       // mode= のみの postback（ナビ・おすすめ等）→ R2 専用 Flex を直接返す。Dify には行かない。
       const modeVal = (p.mode || (data.match(/mode=([^&]+)/) || [])[1] || "").trim();
       if (modeVal && !p.step) {
-        await env.CHAT_HISTORY.put(modeKey, modeVal);
+        try {
+          await env.CHAT_HISTORY.put(modeKey, modeVal);
+          console.log("LINE postback mode=", modeVal, "CONTENT_BUCKET?", !!env?.CONTENT_BUCKET, "ENMOKU_BUCKET?", !!env?.ENMOKU_BUCKET);
 
-        if (modeVal === "kera") {
-          const topics = await loadTalkTopics(env);
-          await respondLineMessages(env, replyToken, destId, [talkMenuFlex(topics, 1)]);
+          if (modeVal === "kera") {
+            const topics = await loadTalkTopics(env);
+            console.log("kera topics loaded:", topics?.length || 0);
+            await respondLineMessages(env, replyToken, destId, [talkMenuFlex(topics, 1)]);
+            return;
+          }
+          if (modeVal === "recommend") {
+            const recData = await loadRecommend(env);
+            console.log("recommend loaded:", recData?.faqs?.length || 0);
+            await respondLineMessages(env, replyToken, destId, [recommendListFlex(recData.faqs)]);
+            return;
+          }
+          if (modeVal === "performance") {
+            await respondLineMessages(env, replyToken, destId, [await enmokuListFlex(env)]);
+            return;
+          }
+          if (modeVal === "general") {
+            const glossary = await loadGlossary(env);
+            console.log("glossary loaded:", glossary?.length || 0);
+            await respondLineMessages(env, replyToken, destId, [glossaryCategoryFlex(glossary)]);
+            return;
+          }
+          if (modeVal === "quiz") {
+            const qst = await loadQuizState(env, userId || sourceKey);
+            const introText = qst.answered_total > 0
+              ? quizIntroText("line") + `\n\n📊 前回の成績：${qst.correct_total}/${qst.answered_total}問正解`
+              : quizIntroText("line");
+            await respondLineMessages(env, replyToken, destId, [
+              { type: "text", text: introText, quickReply: startQuickReplyForMode("quiz", qst) }
+            ]);
+            return;
+          }
+          if (modeVal === "comingsoon") {
+            await respondLine(env, replyToken, destId, "6は準備中だよ🙂 もうちょっと待っててね！");
+            return;
+          }
+          await respondLine(env, replyToken, destId, exampleTextForMode(modeVal, "line"));
+          return;
+        } catch (err) {
+          console.error("LINE postback mode=" + modeVal + " error:", String(err?.stack || err));
+          // エラー時もLINEに何か返す（無応答を防ぐ）
+          await respondLine(env, replyToken, destId,
+            `ごめん、${modeVal === "kera" ? "ナビ" : modeVal === "recommend" ? "おすすめ" : modeVal}の読み込みでエラーが起きたよ🙏\nもう一度試してみてね。`
+          );
           return;
         }
-        if (modeVal === "recommend") {
-          const recData = await loadRecommend(env);
-          await respondLineMessages(env, replyToken, destId, [recommendListFlex(recData.faqs)]);
-          return;
-        }
-        if (modeVal === "performance") {
-          await respondLineMessages(env, replyToken, destId, [await enmokuListFlex(env)]);
-          return;
-        }
-        if (modeVal === "general") {
-          const glossary = await loadGlossary(env);
-          await respondLineMessages(env, replyToken, destId, [glossaryCategoryFlex(glossary)]);
-          return;
-        }
-        if (modeVal === "quiz") {
-          const qst = await loadQuizState(env, userId || sourceKey);
-          const introText = qst.answered_total > 0
-            ? quizIntroText("line") + `\n\n📊 前回の成績：${qst.correct_total}/${qst.answered_total}問正解`
-            : quizIntroText("line");
-          await respondLineMessages(env, replyToken, destId, [
-            { type: "text", text: introText, quickReply: startQuickReplyForMode("quiz", qst) }
-          ]);
-          return;
-        }
-        if (modeVal === "comingsoon") {
-          await respondLine(env, replyToken, destId, "6は準備中だよ🙂 もうちょっと待っててね！");
-          return;
-        }
-        await respondLine(env, replyToken, destId, exampleTextForMode(modeVal, "line"));
-        return;
       }
 
       // step がある場合（talk_*, recommend_*, glossary_*, enmoku 等）
@@ -1052,7 +1065,15 @@ async function handleEvent(event, env, ctx) {
     }
 
   } catch (e) {
-    console.log("handleEvent exception:", String(e?.stack || e));
+    console.error("handleEvent exception:", String(e?.stack || e));
+    // 外側でキャッチ = どの分岐でも無応答を防ぐ
+    try {
+      const replyToken = event?.replyToken;
+      const destId = (event?.source?.type === "user" ? event?.source?.userId : event?.source?.groupId) || null;
+      if (replyToken || destId) {
+        await respondLine(env, replyToken, destId, "エラーが発生したよ🙏 もう一度試してね。");
+      }
+    } catch (_) { /* 最終フォールバック: ここで更にエラーなら諦める */ }
   }
 }
 
