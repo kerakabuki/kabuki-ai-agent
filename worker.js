@@ -1288,7 +1288,8 @@ async function handleEnmokuGuidePostback(env, sourceKey, p) {
     }
 
     if (section === "cast") {
-      return { messages: [castListFlex(shortTitle, data.cast || [], 1)] };
+      const cast = Array.isArray(data.cast) ? data.cast : [];
+      return { messages: [castListFlex(shortTitle, cast, 1)] };
     }
 
     return { messages: [sectionMenuFlex(shortTitle)] };
@@ -1303,7 +1304,8 @@ async function handleEnmokuGuidePostback(env, sourceKey, p) {
     if (!data) return { messages: [await enmokuListFlex(env)] };
 
     const shortTitle = data.title_short || data.title;
-    return { messages: [castListFlex(shortTitle, data.cast || [], page)] };
+    const castForList = Array.isArray(data.cast) ? data.cast : [];
+    return { messages: [castListFlex(shortTitle, castForList, page)] };
   }
 
   if (step === "cast") {
@@ -1315,8 +1317,9 @@ async function handleEnmokuGuidePostback(env, sourceKey, p) {
     if (!data) return { messages: [await enmokuListFlex(env)] };
 
     const shortTitle = data.title_short || data.title;
-    const person = (data.cast || []).find(x => x.id === personId);
-    if (!person) return { messages: [castListFlex(shortTitle, data.cast || [], 1)] };
+    const castArr = Array.isArray(data.cast) ? data.cast : [];
+    const person = castArr.find(x => x.id === personId);
+    if (!person) return { messages: [castListFlex(shortTitle, castArr, 1)] };
 
     return {
       messages: [
@@ -1784,7 +1787,7 @@ async function handleWebPostback(env, sourceKey, pbData) {
     }
 
     if (section === "cast") {
-      const cast = data.cast || [];
+      const cast = Array.isArray(data.cast) ? data.cast : [];
       return {
         reply: `【${title}｜登場人物】\n気になる人物をタップしてね🙂`,
         mode: "performance",
@@ -1815,7 +1818,8 @@ async function handleWebPostback(env, sourceKey, pbData) {
     if (!data) return await getWebModeInit(env, "performance", sourceKey);
 
     const title = data.title_short || data.title;
-    const person = (data.cast || []).find(x => x.id === personId);
+    const castArr = Array.isArray(data.cast) ? data.cast : [];
+    const person = castArr.find(x => x.id === personId);
     if (!person) return { reply: "人物が見つからなかったよ🙏", mode: "performance" };
 
     return {

@@ -383,11 +383,12 @@ export function enmokuSectionDetailFlex(title, sectionLabel, icon, body) {
    登場人物一覧
 ========================================================= */
 export function castListFlex(enmokuTitle, cast, page = 1, perPage = 10) {
-  const total = cast.length;
+  const list = Array.isArray(cast) ? cast : [];
+  const total = list.length;
   const maxPage = Math.max(1, Math.ceil(total / perPage));
   const p = Math.min(Math.max(1, page), maxPage);
   const start = (p - 1) * perPage;
-  const items = cast.slice(start, start + perPage);
+  const items = list.slice(start, start + perPage);
 
   const rows = items.map(c => {
     const { name, kana } = splitNameKana(c.name);
