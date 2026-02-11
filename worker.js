@@ -536,6 +536,14 @@ async function handleEvent(event, env, ctx) {
 
       console.log("POSTBACK parsed:", JSON.stringify(p));
 
+      // step=menu は最優先でメニューを返す
+      if (p.step === "menu") {
+        await env.CHAT_HISTORY.delete(modeKey);
+        await env.CHAT_HISTORY.delete(enmokuKey);
+        await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env)]);
+        return;
+      }
+
       // stepがある場合はここで完結（modeより優先）
       if (p.step) {
 
@@ -623,8 +631,9 @@ async function handleEvent(event, env, ctx) {
         return;
       }
 
-      // mode=... を受け取る
+      // mode=... を受け取る（ナビ・おすすめ等のボタン: p.mode または data から取得）
       const mm = data.match(/(?:^|&)mode=([^&]+)/);
+      const pickedMode = p.mode || (mm && mm[1] ? decodeURIComponent(mm[1]) : null);
 
       // ★ クイズ用postback（Quick Reply）
       const qm = data.match(/(?:^|&)quiz=([^&]+)/);
@@ -634,7 +643,7 @@ async function handleEvent(event, env, ctx) {
         // 0=メニュー
         if (quizInput === "0") {
           await env.CHAT_HISTORY.delete(modeKey);
-          await respondLineMessages(env, replyToken, destId, [mainMenuFlex()]);
+          await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env)]);
           return;
         }
 
@@ -671,8 +680,8 @@ async function handleEvent(event, env, ctx) {
         return;
       }
 
-      if (mm) {
-        const picked = decodeURIComponent(mm[1]);
+      if (pickedMode) {
+        const picked = typeof pickedMode === "string" ? pickedMode.trim() : "";
 
         if (picked === "comingsoon") {
           await respondLine(env, replyToken, destId, "6は準備中だよ🙂 もうちょっと待っててね！");
@@ -739,7 +748,7 @@ async function handleEvent(event, env, ctx) {
     if (isMenuCommand(text)) {
       await env.CHAT_HISTORY.delete(modeKey);
       await env.CHAT_HISTORY.delete(enmokuKey);
-      await respondLineMessages(env, replyToken, destId, [mainMenuFlex()]);
+      await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env)]);
       return;
     }
 
@@ -790,7 +799,7 @@ async function handleEvent(event, env, ctx) {
         return;
       }
 
-      await respondLineMessages(env, replyToken, destId, [mainMenuFlex()]);
+      await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env)]);
       return;
     }
 
@@ -1214,7 +1223,7 @@ async function handleEnmokuGuidePostback(env, sourceKey, p) {
   if (step === "menu") {
     await env.CHAT_HISTORY.delete(modeKey);
     await env.CHAT_HISTORY.delete(enmokuKey);
-    return { messages: [mainMenuFlex()] };
+    return { messages: [mainMenuFlex(env)] };
   }
 
   if (step === "enmoku_list") {
