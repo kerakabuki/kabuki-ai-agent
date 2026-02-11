@@ -190,30 +190,50 @@ export function kakegoePageHTML() {
   footer a{color:var(--kin);text-decoration:none;}
 
   /* ── おひねりボーナス ── */
-  #ohineri-zone{max-width:720px;margin:0.3rem auto;text-align:center;
+  #ohineri-zone{max-width:720px;margin:0.4rem auto;text-align:center;
     display:none;padding:0 1rem;}
-  #btn-ohineri{padding:0.8rem 2rem;border-radius:14px;font-size:1.2rem;
-    font-family:inherit;letter-spacing:0.1em;cursor:pointer;
-    background:linear-gradient(135deg,#4a3a10 0%,#2a2010 100%);
-    color:var(--kin);border:3px solid var(--kin);
+  #ohineri-inner{position:relative;display:inline-block;}
+  #btn-ohineri{padding:1rem 2.5rem;border-radius:50px;font-size:1.3rem;
+    font-family:inherit;letter-spacing:0.15em;cursor:pointer;
+    background:linear-gradient(135deg,#8B6914 0%,#C5A55A 50%,#8B6914 100%);
+    background-size:200% 100%;
+    color:#1a1a1a;font-weight:bold;border:none;
+    box-shadow:0 0 20px rgba(197,165,90,0.5),0 0 60px rgba(197,165,90,0.2),
+      inset 0 1px 0 rgba(255,255,255,0.3);
     transition:all 0.15s;position:relative;overflow:hidden;
-    animation:ohineriPulse 0.5s ease infinite alternate;}
-  #btn-ohineri:active{background:var(--kin);color:var(--kuro);transform:scale(0.95);}
-  @keyframes ohineriPulse{
-    from{box-shadow:0 0 8px rgba(197,165,90,0.3);}
-    to{box-shadow:0 0 24px rgba(197,165,90,0.7);}
+    animation:ohineriShine 1s ease infinite;}
+  #btn-ohineri:hover{transform:scale(1.05);}
+  #btn-ohineri:active{transform:scale(0.93);
+    box-shadow:0 0 30px rgba(197,165,90,0.8);}
+  @keyframes ohineriShine{
+    0%{background-position:100% 0;box-shadow:0 0 20px rgba(197,165,90,0.4),
+      0 0 60px rgba(197,165,90,0.15);}
+    50%{background-position:0% 0;box-shadow:0 0 30px rgba(197,165,90,0.7),
+      0 0 80px rgba(197,165,90,0.3);}
+    100%{background-position:100% 0;box-shadow:0 0 20px rgba(197,165,90,0.4),
+      0 0 60px rgba(197,165,90,0.15);}
   }
-  #ohineri-timer{height:3px;background:var(--kin);border-radius:2px;
-    margin-top:0.3rem;transition:width linear;}
+  #ohineri-label{display:block;font-size:0.7rem;color:#999;margin-top:0.3rem;
+    letter-spacing:0.05em;}
+  #ohineri-timer{height:4px;background:linear-gradient(90deg,var(--kin),var(--aka));
+    border-radius:2px;margin-top:0.4rem;max-width:200px;
+    display:inline-block;transition:width linear;}
 
-  /* 飛ぶおひねりコイン */
-  @keyframes coinFly{
+  /* 飛ぶおひねり（紙に包んだ小銭イメージ） */
+  @keyframes coinArc{
     0%{opacity:1;transform:translate(0,0) rotate(0deg) scale(1);}
-    50%{opacity:1;transform:translate(var(--tx),-120px) rotate(360deg) scale(1.2);}
-    100%{opacity:0;transform:translate(var(--tx2),-200px) rotate(720deg) scale(0.5);}
+    30%{opacity:1;transform:translate(calc(var(--tx) * 0.4), -160px) rotate(180deg) scale(1.3);}
+    70%{opacity:0.9;transform:translate(calc(var(--tx) * 0.8), -80px) rotate(480deg) scale(1);}
+    100%{opacity:0;transform:translate(var(--tx), 20px) rotate(720deg) scale(0.6);}
   }
-  .coin{position:fixed;font-size:1.8rem;pointer-events:none;z-index:100;
-    animation:coinFly 1s ease-out forwards;}
+  .coin{position:fixed;pointer-events:none;z-index:100;
+    animation:coinArc 1.2s ease-out forwards;
+    text-shadow:0 2px 8px rgba(0,0,0,0.5);}
+  .coin-emoji{font-size:2rem;}
+  .coin-wrap{font-size:1.4rem;background:var(--kin);color:var(--kuro);
+    width:28px;height:28px;border-radius:50%;display:flex;
+    align-items:center;justify-content:center;font-weight:bold;
+    box-shadow:0 2px 8px rgba(0,0,0,0.4);}
 
   /* ── リップル ── */
   @keyframes ripple{
@@ -340,8 +360,11 @@ export function kakegoePageHTML() {
 </div>
 
 <div id="ohineri-zone">
-  <button id="btn-ohineri">🪙 おひねり！</button>
-  <div id="ohineri-timer" style="width:100%;"></div>
+  <div id="ohineri-inner">
+    <button id="btn-ohineri">🪙 投げろ！おひねり！</button>
+    <span id="ohineri-label">拍手成功！今だけのチャンス</span>
+    <div id="ohineri-timer" style="width:200px;"></div>
+  </div>
 </div>
 
 <div id="score-bar">
@@ -684,11 +707,10 @@ function startOhineriChance() {
   const timerBar = document.getElementById("ohineri-timer");
   zone.style.display = "block";
   timerBar.style.transition = "none";
-  timerBar.style.width = "100%";
-  // タイマーバーのアニメーション開始
+  timerBar.style.width = "200px";
   requestAnimationFrame(() => {
     timerBar.style.transition = "width " + OHINERI_WINDOW + "ms linear";
-    timerBar.style.width = "0%";
+    timerBar.style.width = "0px";
   });
   ohineriTimer = setTimeout(() => {
     ohineriActive = false;
@@ -703,25 +725,30 @@ document.getElementById("btn-ohineri").addEventListener("click", function(e) {
   document.getElementById("ohineri-zone").style.display = "none";
   score.ohineri++;
   updateScoreUI();
-  // コイン演出
-  spawnCoins(e.clientX, e.clientY, 5);
+  // 舞台に向かっておひねりが飛ぶ演出
+  const stage = document.getElementById("player-wrap");
+  const stageRect = stage ? stage.getBoundingClientRect() : null;
+  spawnOhineri(e.clientX, e.clientY, stageRect, 8);
   showKakegoe("🪙 おひねり！", "var(--kin)");
 });
 
-function spawnCoins(cx, cy, count) {
+function spawnOhineri(cx, cy, stageRect, count) {
+  const coins = ["🪙", "💰", "🪙", "✨", "🪙", "💫", "🪙", "🪙"];
   for (let i = 0; i < count; i++) {
-    const coin = document.createElement("div");
-    coin.className = "coin";
-    coin.textContent = "🪙";
-    coin.style.left = cx + "px";
-    coin.style.top = cy + "px";
-    const tx = (Math.random() - 0.5) * 200;
-    const tx2 = tx + (Math.random() - 0.5) * 60;
-    coin.style.setProperty("--tx", tx + "px");
-    coin.style.setProperty("--tx2", tx2 + "px");
-    coin.style.animationDelay = (i * 0.08) + "s";
-    document.body.appendChild(coin);
-    setTimeout(() => coin.remove(), 1200);
+    const el = document.createElement("div");
+    el.className = "coin";
+    // ステージ（動画）に向かって飛ぶ軌道
+    const targetX = stageRect
+      ? (stageRect.left + stageRect.width * (0.2 + Math.random() * 0.6)) - cx
+      : (Math.random() - 0.5) * 300;
+    el.style.left = cx + "px";
+    el.style.top = cy + "px";
+    el.style.setProperty("--tx", targetX + "px");
+    el.style.animationDelay = (i * 0.06) + "s";
+    el.style.animationDuration = (0.9 + Math.random() * 0.5) + "s";
+    el.innerHTML = '<span class="coin-emoji">' + coins[i % coins.length] + '</span>';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1600);
   }
 }
 
