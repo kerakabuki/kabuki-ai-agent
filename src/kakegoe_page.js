@@ -26,9 +26,9 @@ export function kakegoePageHTML() {
 
   /* ── イントロ画面 ── */
   #intro{max-width:760px;margin:0 auto;padding:1rem;text-align:center;}
-  #intro h1{font-size:1.5rem;letter-spacing:0.25em;color:var(--kin);
+  #intro h1{font-size:1.8rem;letter-spacing:0.25em;color:var(--kin);
     margin:1rem 0 0.3rem;text-shadow:0 2px 8px rgba(0,0,0,0.7);}
-  #intro .subtitle{font-size:0.85rem;color:#bbb;letter-spacing:0.1em;margin-bottom:1rem;}
+  #intro .subtitle{font-size:1rem;color:#bbb;letter-spacing:0.1em;margin-bottom:1rem;}
 
   /* 五人カード */
   .cast-row{display:flex;gap:0.4rem;justify-content:center;margin:0.8rem 0;
@@ -39,9 +39,9 @@ export function kakegoePageHTML() {
   .cast-card .name{position:absolute;bottom:0;left:0;right:0;
     background:linear-gradient(transparent,rgba(0,0,0,0.85));
     padding:0.5rem 0.3rem 0.3rem;text-align:center;}
-  .cast-card .name span{display:block;font-size:0.7rem;color:var(--kin);
+  .cast-card .name span{display:block;font-size:0.8rem;color:var(--kin);
     letter-spacing:0.1em;}
-  .cast-card .name small{font-size:0.6rem;color:#999;}
+  .cast-card .name small{font-size:0.7rem;color:#999;}
   .cast-card.active{border-color:var(--kin);
     box-shadow:0 0 16px rgba(197,165,90,0.4);transform:scale(1.05);}
 
@@ -54,8 +54,25 @@ export function kakegoePageHTML() {
   #start-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(197,165,90,0.3);}
   #start-btn:active{transform:scale(0.97);}
 
-  .intro-hint{font-size:0.75rem;color:#777;margin-top:0.5rem;line-height:1.6;}
+  .intro-hint{font-size:0.85rem;color:#777;margin-top:0.5rem;line-height:1.6;}
   .intro-hint b{color:var(--kin);}
+
+  /* 操作説明 */
+  .how-to{max-width:520px;margin:1rem auto 0;padding:1rem 1.2rem;
+    background:#222;border:1px solid #444;border-radius:12px;text-align:left;}
+  .how-to h3{font-size:1rem;color:var(--kin);margin-bottom:0.6rem;text-align:center;
+    letter-spacing:0.15em;}
+  .how-to ol{padding-left:1.5rem;list-style:none;counter-reset:step;}
+  .how-to ol li{counter-increment:step;margin-bottom:0.5rem;font-size:0.9rem;
+    color:#ccc;line-height:1.6;position:relative;}
+  .how-to ol li::before{content:counter(step);position:absolute;left:-1.5rem;
+    width:1.3rem;height:1.3rem;background:var(--aka);color:#fff;
+    border-radius:50%;font-size:0.7rem;display:flex;align-items:center;
+    justify-content:center;top:0.15rem;}
+  .how-to .tip{margin-top:0.7rem;padding:0.5rem 0.7rem;background:#2a2020;
+    border-left:3px solid var(--kin);border-radius:4px;font-size:0.85rem;
+    color:#bbb;line-height:1.5;}
+  .how-to .tip b{color:var(--kin);}
 
   /* ── 動画エリア ── */
   #stage{max-width:720px;margin:0 auto;position:relative;display:none;}
@@ -80,15 +97,15 @@ export function kakegoePageHTML() {
   #now-char{display:inline-flex;align-items:center;gap:0.5rem;
     background:#2a2020;border:1px solid #444;border-radius:20px;
     padding:0.3rem 1rem;}
-  #now-char img{width:28px;height:28px;border-radius:50%;object-fit:cover;
+  #now-char img{width:32px;height:32px;border-radius:50%;object-fit:cover;
     border:1px solid var(--kin);}
-  #now-char span{font-size:0.8rem;color:var(--kin);}
+  #now-char span{font-size:0.95rem;color:var(--kin);}
 
   /* ── タップエリア ── */
   #tap-zone{max-width:720px;margin:0.8rem auto;padding:0 1rem;display:none;}
   .tap-buttons{display:flex;gap:0.6rem;}
-  .tap-btn{flex:1;padding:1.2rem;border-radius:14px;
-    color:var(--shiro);font-size:1.2rem;font-family:inherit;
+  .tap-btn{flex:1;padding:1.4rem;border-radius:14px;
+    color:var(--shiro);font-size:1.3rem;font-family:inherit;
     cursor:pointer;letter-spacing:0.15em;transition:all 0.15s;
     text-align:center;position:relative;overflow:hidden;
     border-width:3px;border-style:solid;}
@@ -98,13 +115,13 @@ export function kakegoePageHTML() {
   #btn-hakushu-play{background:linear-gradient(135deg,#1a2a1a 0%,#1e1e1e 100%);
     border-color:var(--moegi);}
   #btn-hakushu-play:active{background:var(--moegi);transform:scale(0.97);}
-  .tap-btn .sub{display:block;font-size:0.65rem;color:#999;margin-top:0.3rem;
+  .tap-btn .sub{display:block;font-size:0.75rem;color:#999;margin-top:0.3rem;
     letter-spacing:0.05em;}
 
   /* ── 次のヒント ── */
   #next-hint{max-width:720px;margin:0 auto;padding:0.5rem 1rem;
-    text-align:center;font-size:0.85rem;color:#777;display:none;
-    min-height:2rem;}
+    text-align:center;font-size:1rem;color:#777;display:none;
+    min-height:2.5rem;}
   #next-hint .hint-text{color:var(--kin);}
 
   /* ── タイムライン ── */
@@ -123,7 +140,7 @@ export function kakegoePageHTML() {
   /* ── スコア ── */
   #score-bar{max-width:720px;margin:0 auto;padding:0.6rem 1rem;
     display:none;text-align:center;}
-  #score-bar span{font-size:0.9rem;margin:0 0.8rem;}
+  #score-bar span{font-size:1rem;margin:0 0.8rem;}
   .s-label{color:#999;} .s-val{color:var(--kin);font-weight:bold;}
   .s-great{color:var(--moegi)!important;} .s-good{color:var(--kin)!important;}
   .s-miss{color:var(--aka)!important;}
@@ -133,13 +150,13 @@ export function kakegoePageHTML() {
     display:none;background:#2a2020;border-radius:14px;border:1px solid var(--kin);}
   #result h2{color:var(--kin);font-size:1.5rem;margin-bottom:1rem;}
   #result .big-score{font-size:3rem;color:var(--kin);}
-  #result .detail{margin-top:1rem;font-size:0.9rem;color:#bbb;line-height:1.8;}
+  #result .detail{margin-top:1rem;font-size:1rem;color:#bbb;line-height:1.8;}
   #result .cast-row{margin-top:1.2rem;}
   #result button{margin-top:1.5rem;padding:0.7rem 2rem;background:var(--aka);
     color:#fff;border:none;border-radius:8px;font-size:1rem;cursor:pointer;
     font-family:inherit;}
 
-  footer{text-align:center;padding:1.2rem;font-size:0.75rem;color:#555;
+  footer{text-align:center;padding:1.2rem;font-size:0.85rem;color:#555;
     border-top:1px solid #333;margin-top:2rem;}
   footer a{color:var(--kin);text-decoration:none;}
 
@@ -192,12 +209,22 @@ export function kakegoePageHTML() {
     </div>
   </div>
 
-  <button id="start-btn">🎭 稽古をはじめる</button>
-
-  <div class="intro-hint">
-    動画を見ながら <b>🎤 掛け声</b> と <b>👏 拍手</b> のタイミングでタップ！<br>
-    ヒントを見て、ちょうどいいタイミングを狙ってね。
+  <div class="how-to">
+    <h3>📖 あそびかた</h3>
+    <ol>
+      <li>下の <b>「稽古をはじめる」</b> ボタンを押すと動画がスタート</li>
+      <li>画面の <b>ヒント</b> を見ながらタイミングを待つ</li>
+      <li>役者の登場やツラネの見せ場で <b style="color:var(--aka);">🎤 掛け声！</b> をタップ</li>
+      <li>見得やツラネの終わりで <b style="color:var(--moegi);">👏 拍手！</b> をタップ</li>
+      <li>タイミングが良いほど高得点！全28回の掛け声＆拍手に挑戦</li>
+    </ol>
+    <div class="tip">
+      💡 <b>大当たり</b>＝ぴったりのタイミング、<b>良し</b>＝ちょっとずれ、<b>空振り</b>＝タイミング逃し。<br>
+      掛け声と拍手の<b>種類を間違えない</b>ようにしてね！
+    </div>
   </div>
+
+  <button id="start-btn">🎭 稽古をはじめる</button>
 </div>
 
 <!-- ===== プレイ画面 ===== -->
