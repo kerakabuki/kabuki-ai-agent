@@ -189,6 +189,32 @@ export function kakegoePageHTML() {
     border-top:1px solid #333;margin-top:2rem;}
   footer a{color:var(--kin);text-decoration:none;}
 
+  /* ── おひねりボーナス ── */
+  #ohineri-zone{max-width:720px;margin:0.3rem auto;text-align:center;
+    display:none;padding:0 1rem;}
+  #btn-ohineri{padding:0.8rem 2rem;border-radius:14px;font-size:1.2rem;
+    font-family:inherit;letter-spacing:0.1em;cursor:pointer;
+    background:linear-gradient(135deg,#4a3a10 0%,#2a2010 100%);
+    color:var(--kin);border:3px solid var(--kin);
+    transition:all 0.15s;position:relative;overflow:hidden;
+    animation:ohineriPulse 0.5s ease infinite alternate;}
+  #btn-ohineri:active{background:var(--kin);color:var(--kuro);transform:scale(0.95);}
+  @keyframes ohineriPulse{
+    from{box-shadow:0 0 8px rgba(197,165,90,0.3);}
+    to{box-shadow:0 0 24px rgba(197,165,90,0.7);}
+  }
+  #ohineri-timer{height:3px;background:var(--kin);border-radius:2px;
+    margin-top:0.3rem;transition:width linear;}
+
+  /* 飛ぶおひねりコイン */
+  @keyframes coinFly{
+    0%{opacity:1;transform:translate(0,0) rotate(0deg) scale(1);}
+    50%{opacity:1;transform:translate(var(--tx),-120px) rotate(360deg) scale(1.2);}
+    100%{opacity:0;transform:translate(var(--tx2),-200px) rotate(720deg) scale(0.5);}
+  }
+  .coin{position:fixed;font-size:1.8rem;pointer-events:none;z-index:100;
+    animation:coinFly 1s ease-out forwards;}
+
   /* ── リップル ── */
   @keyframes ripple{
     0%{transform:scale(0);opacity:0.6;}
@@ -245,7 +271,7 @@ export function kakegoePageHTML() {
 
   <div class="how-to">
     <div class="summary-box">
-      動画を見ながら <b>🎤 掛け声</b> と <b>👏 拍手</b> をタイミングよくタップ！
+      動画を見ながら <b>🎤 掛け声</b> と <b>👏 拍手</b> をタイミングよくタップ！拍手の後は <b>🪙 おひねり</b> チャンスも！
     </div>
     <details>
       <summary>📖 くわしいあそびかた</summary>
@@ -255,6 +281,7 @@ export function kakegoePageHTML() {
           <li>画面の <b>ヒント</b> を見ながらタイミングを待つ</li>
           <li>役者の登場やツラネの見せ場で <b style="color:var(--aka);">🎤 掛け声！</b> をタップ</li>
           <li>見得やツラネの終わりで <b style="color:var(--moegi);">👏 拍手！</b> をタップ</li>
+          <li>拍手が成功すると <b style="color:var(--kin);">🪙 おひねり</b> チャンス！タップでボーナス</li>
           <li>タイミングが良いほど高得点！全28回の掛け声＆拍手に挑戦</li>
         </ol>
         <div class="tip">
@@ -312,10 +339,16 @@ export function kakegoePageHTML() {
   </div>
 </div>
 
+<div id="ohineri-zone">
+  <button id="btn-ohineri">🪙 おひねり！</button>
+  <div id="ohineri-timer" style="width:100%;"></div>
+</div>
+
 <div id="score-bar">
   <span><span class="s-label">大当たり </span><span class="s-val s-great" id="s-great">0</span></span>
   <span><span class="s-label">良し </span><span class="s-val s-good" id="s-good">0</span></span>
   <span><span class="s-label">空振り </span><span class="s-val s-miss" id="s-miss">0</span></span>
+  <span><span class="s-label">🪙 </span><span class="s-val" style="color:var(--kin);" id="s-ohineri">0</span></span>
 </div>
 
 <div id="result">
@@ -410,8 +443,10 @@ const SCENE = {
 let player = null;
 let cues = [];
 let cueIndex = 0;
-let score = { great: 0, good: 0, miss: 0 };
+let score = { great: 0, good: 0, miss: 0, ohineri: 0 };
 let ticker = null;
+let ohineriTimer = null;
+let ohineriActive = false;
 const WINDOW_GREAT = 1.0;
 const WINDOW_GOOD  = 2.5;
 const WINDOW_GREAT_H = 3.5;
@@ -580,16 +615,19 @@ function handleTap(tapType, e, btn) {
   const wGreat = cueType === "hakushu" ? WINDOW_GREAT_H : WINDOW_GREAT;
   const wGood  = cueType === "hakushu" ? WINDOW_GOOD_H  : WINDOW_GOOD;
 
+  let wasHakushuHit = false;
   if (bestDiff <= wGreat && typeMatch) {
     cue.result = "great";
     score.great++;
     showKakegoe(cueType === "kakegoe" ? cue.text : "👏", "var(--kin)");
     markCue(bestIdx, "hit");
+    if (cueType === "hakushu") wasHakushuHit = true;
   } else if (bestDiff <= wGood && typeMatch) {
     cue.result = "good";
     score.good++;
     showKakegoe(cueType === "kakegoe" ? cue.text : "👏", "var(--moegi)");
     markCue(bestIdx, "hit");
+    if (cueType === "hakushu") wasHakushuHit = true;
   } else if (bestDiff <= wGood && !typeMatch) {
     showKakegoe("種類が違うよ！", "var(--aka)");
     return;
@@ -600,6 +638,9 @@ function handleTap(tapType, e, btn) {
 
   while (cueIndex < cues.length && cues[cueIndex].result !== null) cueIndex++;
   updateScoreUI();
+
+  // 拍手成功 → おひねりチャンス！
+  if (wasHakushuHit) startOhineriChance();
 }
 
 document.getElementById("btn-kakegoe-play").addEventListener("click", function(e) {
@@ -628,6 +669,60 @@ function updateScoreUI() {
   document.getElementById("s-great").textContent = score.great;
   document.getElementById("s-good").textContent = score.good;
   document.getElementById("s-miss").textContent = score.miss;
+  document.getElementById("s-ohineri").textContent = score.ohineri;
+}
+
+// =========================================================
+// おひねりボーナス
+// =========================================================
+const OHINERI_WINDOW = 2500; // ms
+
+function startOhineriChance() {
+  if (ohineriTimer) clearTimeout(ohineriTimer);
+  ohineriActive = true;
+  const zone = document.getElementById("ohineri-zone");
+  const timerBar = document.getElementById("ohineri-timer");
+  zone.style.display = "block";
+  timerBar.style.transition = "none";
+  timerBar.style.width = "100%";
+  // タイマーバーのアニメーション開始
+  requestAnimationFrame(() => {
+    timerBar.style.transition = "width " + OHINERI_WINDOW + "ms linear";
+    timerBar.style.width = "0%";
+  });
+  ohineriTimer = setTimeout(() => {
+    ohineriActive = false;
+    zone.style.display = "none";
+  }, OHINERI_WINDOW);
+}
+
+document.getElementById("btn-ohineri").addEventListener("click", function(e) {
+  if (!ohineriActive) return;
+  ohineriActive = false;
+  if (ohineriTimer) clearTimeout(ohineriTimer);
+  document.getElementById("ohineri-zone").style.display = "none";
+  score.ohineri++;
+  updateScoreUI();
+  // コイン演出
+  spawnCoins(e.clientX, e.clientY, 5);
+  showKakegoe("🪙 おひねり！", "var(--kin)");
+});
+
+function spawnCoins(cx, cy, count) {
+  for (let i = 0; i < count; i++) {
+    const coin = document.createElement("div");
+    coin.className = "coin";
+    coin.textContent = "🪙";
+    coin.style.left = cx + "px";
+    coin.style.top = cy + "px";
+    const tx = (Math.random() - 0.5) * 200;
+    const tx2 = tx + (Math.random() - 0.5) * 60;
+    coin.style.setProperty("--tx", tx + "px");
+    coin.style.setProperty("--tx2", tx2 + "px");
+    coin.style.animationDelay = (i * 0.08) + "s";
+    document.body.appendChild(coin);
+    setTimeout(() => coin.remove(), 1200);
+  }
 }
 
 function markCue(idx, cls) {
@@ -641,6 +736,9 @@ function markCue(idx, cls) {
 function onPlayerState(e) {
   if (e.data === YT.PlayerState.ENDED) {
     if (ticker) clearInterval(ticker);
+    if (ohineriTimer) clearTimeout(ohineriTimer);
+    ohineriActive = false;
+    document.getElementById("ohineri-zone").style.display = "none";
     cues.forEach((c, i) => {
       if (c.result === null) { c.result = "miss"; score.miss++; markCue(i, "missed"); }
     });
@@ -653,6 +751,7 @@ function showResult() {
   document.getElementById("tap-zone").style.display = "none";
   document.getElementById("next-hint").style.display = "none";
   document.getElementById("now-playing").style.display = "none";
+  document.getElementById("ohineri-zone").style.display = "none";
   const total = cues.length;
   const pct = total > 0 ? Math.round(((score.great * 1.0 + score.good * 0.5) / total) * 100) : 0;
 
@@ -663,9 +762,10 @@ function showResult() {
   else if (pct >= 30) rank = "稽古中";
 
   document.getElementById("result-score").textContent = pct + "点（" + rank + "）";
+  const ohineriLine = score.ohineri > 0 ? "<br>🪙 おひねり: " + score.ohineri + "回" : "";
   document.getElementById("result-detail").innerHTML =
     "大当たり: " + score.great + " / 良し: " + score.good + " / 空振り: " + score.miss +
-    "<br>全" + total + "回の掛け声・拍手";
+    "<br>全" + total + "回の掛け声・拍手" + ohineriLine;
 
   // 結果画面にもキャラカードを表示
   const rc = document.getElementById("result-cast");
