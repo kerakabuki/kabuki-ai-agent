@@ -108,6 +108,12 @@ export default {
       });
     }
 
+    if (path === "/training/ookawa/editor") {
+      return new Response(ookawaCueEditorHTML(), {
+        headers: { "Content-Type": "text/html; charset=utf-8" },
+      });
+    }
+
     /* =====================================================
        1) LINE webhook（署名検証あり）
     ===================================================== */
@@ -2443,6 +2449,306 @@ function trainingPageHTML() {
    大向こう稽古 HTML（/training/ookawa）
    YouTube動画を再生しながら掛け声タイミングでタップ！
 ========================================================= */
+// =============================================================
+// タイミング記録エディタ — /training/ookawa/editor
+// =============================================================
+function ookawaCueEditorHTML() {
+  return `<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>大向こう キュー編集 - 気良歌舞伎</title>
+<style>
+  :root{--kuro:#1a1a1a;--aka:#C41E3A;--moegi:#6B8E23;--kin:#C5A55A;--shiro:#F5F0E8;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:"Noto Sans JP","Hiragino Sans",sans-serif;
+    background:var(--kuro);color:var(--shiro);min-height:100vh;}
+  .bar{height:6px;background:repeating-linear-gradient(90deg,
+    var(--kuro) 0%,var(--kuro) 33.33%,
+    var(--moegi) 33.33%,var(--moegi) 66.66%,
+    var(--aka) 66.66%,var(--aka) 100%);}
+  header{text-align:center;padding:1rem;border-bottom:2px solid var(--kin);}
+  header h1{font-size:1.2rem;color:var(--kin);letter-spacing:0.15em;}
+  header p{font-size:0.75rem;color:#999;margin-top:0.3rem;}
+
+  /* ── 入力エリア ── */
+  .input-row{max-width:760px;margin:1rem auto;padding:0 1rem;display:flex;gap:0.5rem;flex-wrap:wrap;}
+  .input-row input{flex:1;min-width:200px;padding:0.5rem 0.8rem;border:1px solid #555;
+    border-radius:6px;background:#222;color:var(--shiro);font-size:0.9rem;font-family:inherit;}
+  .input-row button{padding:0.5rem 1.2rem;border:none;border-radius:6px;
+    font-size:0.9rem;font-family:inherit;cursor:pointer;}
+  #btn-load{background:var(--kin);color:var(--kuro);font-weight:bold;}
+
+  /* ── 動画エリア ── */
+  #stage{max-width:760px;margin:0 auto;position:relative;display:none;}
+  #player-wrap{position:relative;width:100%;padding-top:56.25%;background:#000;}
+  #player-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;}
+
+  /* ── 現在時間 ── */
+  #time-display{text-align:center;font-size:1.4rem;color:var(--kin);
+    font-variant-numeric:tabular-nums;padding:0.5rem 0;font-weight:bold;}
+
+  /* ── タップボタン ── */
+  .tap-row{max-width:760px;margin:0 auto;padding:0 1rem;
+    display:none;gap:0.6rem;}
+  .tap-row button{flex:1;padding:1rem;border-radius:12px;font-size:1.1rem;
+    font-family:inherit;cursor:pointer;border:2px solid;transition:transform 0.1s;}
+  .tap-row button:active{transform:scale(0.95);}
+  #btn-kakegoe{background:#3a1515;color:var(--shiro);border-color:var(--aka);}
+  #btn-kakegoe:active{background:var(--aka);}
+  #btn-hakushu{background:#1a2a1a;color:var(--shiro);border-color:var(--moegi);}
+  #btn-hakushu:active{background:var(--moegi);}
+
+  /* ── キューリスト ── */
+  #cue-list-wrap{max-width:760px;margin:1rem auto;padding:0 1rem;}
+  #cue-list-wrap h2{font-size:0.95rem;color:var(--kin);margin-bottom:0.5rem;
+    border-left:3px solid var(--aka);padding-left:0.6rem;}
+  table{width:100%;border-collapse:collapse;font-size:0.8rem;}
+  th{text-align:left;color:#999;padding:0.3rem 0.4rem;border-bottom:1px solid #333;}
+  td{padding:0.3rem 0.4rem;border-bottom:1px solid #222;vertical-align:middle;}
+  .time-cell{color:var(--kin);font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:bold;}
+  .type-kakegoe{color:var(--aka);} .type-hakushu{color:var(--moegi);}
+  td input,td select{background:#222;color:var(--shiro);border:1px solid #444;
+    border-radius:4px;padding:0.25rem 0.4rem;font-size:0.8rem;font-family:inherit;width:100%;}
+  td select{width:auto;}
+  .del-btn{background:none;border:none;color:#666;cursor:pointer;font-size:1rem;}
+  .del-btn:hover{color:var(--aka);}
+
+  /* ── エクスポート ── */
+  #export-area{max-width:760px;margin:1rem auto;padding:0 1rem;}
+  #export-area h2{font-size:0.95rem;color:var(--kin);margin-bottom:0.5rem;
+    border-left:3px solid var(--moegi);padding-left:0.6rem;}
+  #export-box{width:100%;min-height:120px;background:#111;color:#ccc;
+    border:1px solid #333;border-radius:6px;padding:0.6rem;font-family:"Consolas","Courier New",monospace;
+    font-size:0.75rem;resize:vertical;}
+  .export-btns{margin-top:0.5rem;display:flex;gap:0.5rem;}
+  .export-btns button{padding:0.4rem 1rem;border:none;border-radius:6px;
+    cursor:pointer;font-size:0.85rem;font-family:inherit;}
+  #btn-export{background:var(--kin);color:var(--kuro);font-weight:bold;}
+  #btn-copy{background:var(--moegi);color:#fff;font-weight:bold;}
+  #copy-msg{color:var(--moegi);font-size:0.8rem;margin-left:0.5rem;opacity:0;transition:opacity 0.3s;}
+
+  footer{text-align:center;padding:1rem;font-size:0.75rem;color:#555;
+    border-top:1px solid #333;margin-top:2rem;}
+  footer a{color:var(--kin);text-decoration:none;}
+</style>
+</head>
+<body>
+
+<div class="bar"></div>
+<header>
+  <h1>大向こう キュー編集ツール</h1>
+  <p>動画を再生しながらタップ → タイミングを自動記録</p>
+</header>
+<div class="bar"></div>
+
+<div class="input-row">
+  <input id="video-id" placeholder="YouTube動画ID（例: I5QncXeoIm0）" value="I5QncXeoIm0">
+  <button id="btn-load">動画を読み込む</button>
+</div>
+
+<div id="stage">
+  <div id="player-wrap"><div id="player"></div></div>
+</div>
+<div id="time-display">0:00.0</div>
+
+<div class="tap-row" id="tap-row">
+  <button id="btn-kakegoe">🎤 掛け声</button>
+  <button id="btn-hakushu">👏 拍手</button>
+</div>
+
+<div id="cue-list-wrap">
+  <h2>記録されたキュー (<span id="cue-count">0</span>)</h2>
+  <table>
+    <thead><tr><th>時間</th><th>種類</th><th>テキスト</th><th>ヒント</th><th></th></tr></thead>
+    <tbody id="cue-tbody"></tbody>
+  </table>
+</div>
+
+<div id="export-area">
+  <h2>エクスポート</h2>
+  <textarea id="export-box" readonly></textarea>
+  <div class="export-btns">
+    <button id="btn-export">生成</button>
+    <button id="btn-copy">📋 コピー</button>
+    <span id="copy-msg">コピーしました！</span>
+  </div>
+</div>
+
+<footer><a href="/training/ookawa">大向こう稽古へ戻る</a></footer>
+
+<script>
+// ── state ──
+let player = null;
+let cueData = []; // { time, type, text, hint }
+let ticker = null;
+
+const kakegoeTexts = ["待ってました！","たっぷりと！","よっ！","日本一！","大統領！"];
+const defaultKakegoe = "待ってました！";
+
+// ── YouTube API ──
+const tag = document.createElement("script");
+tag.src = "https://www.youtube.com/iframe_api";
+document.head.appendChild(tag);
+window.onYouTubeIframeAPIReady = () => console.log("YT API ready");
+
+// ── 動画読み込み ──
+document.getElementById("btn-load").onclick = () => {
+  const vid = document.getElementById("video-id").value.trim();
+  if (!vid) return;
+  document.getElementById("stage").style.display = "block";
+  document.getElementById("tap-row").style.display = "flex";
+  if (player) player.destroy();
+  player = new YT.Player("player", {
+    videoId: vid,
+    playerVars: { playsinline: 1, rel: 0, modestbranding: 1 },
+    events: { onReady: () => startTicker() }
+  });
+};
+
+function startTicker() {
+  if (ticker) clearInterval(ticker);
+  ticker = setInterval(() => {
+    if (!player || typeof player.getCurrentTime !== "function") return;
+    const t = player.getCurrentTime();
+    document.getElementById("time-display").textContent = fmtTime(t);
+  }, 100);
+}
+
+function fmtTime(s) {
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  return m + ":" + sec.toFixed(1).padStart(4, "0");
+}
+
+function fmtTimeShort(s) {
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return m + ":" + String(sec).padStart(2, "0");
+}
+
+// ── タップ記録 ──
+function recordCue(type) {
+  if (!player || typeof player.getCurrentTime !== "function") return;
+  const t = parseFloat(player.getCurrentTime().toFixed(1));
+  const entry = {
+    time: t,
+    type: type,
+    text: type === "kakegoe" ? defaultKakegoe : "",
+    hint: ""
+  };
+  cueData.push(entry);
+  cueData.sort((a, b) => a.time - b.time);
+  renderTable();
+}
+
+document.getElementById("btn-kakegoe").onclick = () => recordCue("kakegoe");
+document.getElementById("btn-hakushu").onclick = () => recordCue("hakushu");
+
+// ── キーボードショートカット ──
+document.addEventListener("keydown", (e) => {
+  if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.tagName === "SELECT") return;
+  if (e.key === "k" || e.key === "K") recordCue("kakegoe");
+  if (e.key === "h" || e.key === "H") recordCue("hakushu");
+});
+
+// ── テーブル描画 ──
+function renderTable() {
+  const tbody = document.getElementById("cue-tbody");
+  document.getElementById("cue-count").textContent = cueData.length;
+  tbody.innerHTML = "";
+  cueData.forEach((c, i) => {
+    const tr = document.createElement("tr");
+
+    // 時間
+    const tdTime = document.createElement("td");
+    tdTime.className = "time-cell";
+    tdTime.textContent = fmtTimeShort(c.time) + " (" + c.time + "s)";
+    tr.appendChild(tdTime);
+
+    // 種類
+    const tdType = document.createElement("td");
+    const sel = document.createElement("select");
+    ["kakegoe","hakushu"].forEach(v => {
+      const opt = document.createElement("option");
+      opt.value = v; opt.textContent = v === "kakegoe" ? "🎤 掛け声" : "👏 拍手";
+      if (v === c.type) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    sel.onchange = () => { c.type = sel.value; if (c.type === "hakushu") c.text = ""; renderTable(); };
+    tdType.appendChild(sel);
+    tr.appendChild(tdType);
+
+    // テキスト
+    const tdText = document.createElement("td");
+    if (c.type === "kakegoe") {
+      const selT = document.createElement("select");
+      kakegoeTexts.forEach(t => {
+        const opt = document.createElement("option");
+        opt.value = t; opt.textContent = t;
+        if (t === c.text) opt.selected = true;
+        selT.appendChild(opt);
+      });
+      selT.onchange = () => { c.text = selT.value; };
+      tdText.appendChild(selT);
+    } else {
+      tdText.innerHTML = "<span style='color:#666'>（拍手）</span>";
+    }
+    tr.appendChild(tdText);
+
+    // ヒント
+    const tdHint = document.createElement("td");
+    const inp = document.createElement("input");
+    inp.value = c.hint; inp.placeholder = "例: 弁天小僧 登場";
+    inp.oninput = () => { c.hint = inp.value; };
+    tdHint.appendChild(inp);
+    tr.appendChild(tdHint);
+
+    // 削除
+    const tdDel = document.createElement("td");
+    const btnDel = document.createElement("button");
+    btnDel.className = "del-btn"; btnDel.textContent = "✕";
+    btnDel.onclick = () => { cueData.splice(i, 1); renderTable(); };
+    tdDel.appendChild(btnDel);
+    tr.appendChild(tdDel);
+
+    tbody.appendChild(tr);
+  });
+}
+
+// ── エクスポート ──
+document.getElementById("btn-export").onclick = () => {
+  const lines = cueData.map(c => {
+    if (c.type === "kakegoe") {
+      return '      { time: ' + c.time + ', type: "kakegoe", text: "' + c.text + '", hint: "' + c.hint + '" }';
+    } else {
+      return '      { time: ' + c.time + ', type: "hakushu", hint: "' + c.hint + '" }';
+    }
+  });
+  const vid = document.getElementById("video-id").value.trim();
+  const out = "cues: [\\n" + lines.join(",\\n") + "\\n    ]";
+  document.getElementById("export-box").value = out;
+};
+
+document.getElementById("btn-copy").onclick = () => {
+  const box = document.getElementById("export-box");
+  navigator.clipboard.writeText(box.value).then(() => {
+    const msg = document.getElementById("copy-msg");
+    msg.style.opacity = "1";
+    setTimeout(() => { msg.style.opacity = "0"; }, 2000);
+  });
+};
+
+renderTable();
+<\/script>
+</body>
+</html>`;
+}
+
+// =============================================================
+// 大向こう稽古 — /training/ookawa
+// =============================================================
 function ookawaPageHTML() {
   return `<!DOCTYPE html>
 <html lang="ja">
@@ -2502,14 +2808,18 @@ function ookawaPageHTML() {
   /* ── タップエリア ── */
   #tap-zone{max-width:720px;margin:0.8rem auto;padding:0 1rem;
     display:none;}
-  #tap-btn{width:100%;padding:1.4rem;border:3px solid var(--aka);
-    border-radius:14px;background:linear-gradient(135deg,#3a1515 0%,#1e1e1e 100%);
-    color:var(--shiro);font-size:1.3rem;font-family:inherit;
-    cursor:pointer;letter-spacing:0.2em;transition:all 0.15s;
-    text-align:center;position:relative;overflow:hidden;}
-  #tap-btn:active{background:var(--aka);transform:scale(0.97);
-    border-color:var(--kin);}
-  #tap-btn .sub{display:block;font-size:0.7rem;color:#999;margin-top:0.3rem;
+  .tap-buttons{display:flex;gap:0.6rem;}
+  .tap-btn{flex:1;padding:1.2rem;border-radius:14px;
+    color:var(--shiro);font-size:1.2rem;font-family:inherit;
+    cursor:pointer;letter-spacing:0.15em;transition:all 0.15s;
+    text-align:center;position:relative;overflow:hidden;border-width:3px;border-style:solid;}
+  #btn-kakegoe-play{background:linear-gradient(135deg,#3a1515 0%,#1e1e1e 100%);
+    border-color:var(--aka);}
+  #btn-kakegoe-play:active{background:var(--aka);transform:scale(0.97);}
+  #btn-hakushu-play{background:linear-gradient(135deg,#1a2a1a 0%,#1e1e1e 100%);
+    border-color:var(--moegi);}
+  #btn-hakushu-play:active{background:var(--moegi);transform:scale(0.97);}
+  .tap-btn .sub{display:block;font-size:0.65rem;color:#999;margin-top:0.3rem;
     letter-spacing:0.05em;}
 
   /* ── 次の掛け声ヒント ── */
@@ -2527,8 +2837,9 @@ function ookawaPageHTML() {
   .cue-marker{position:absolute;top:-4px;width:14px;height:14px;
     background:var(--kin);border-radius:50%;transform:translateX(-50%);
     border:2px solid var(--kuro);z-index:2;}
-  .cue-marker.hit{background:var(--moegi);box-shadow:0 0 8px var(--moegi);}
-  .cue-marker.missed{background:#555;}
+  .cue-marker.hakushu-marker{background:var(--moegi);}
+  .cue-marker.hit{box-shadow:0 0 8px var(--moegi);filter:brightness(1.3);}
+  .cue-marker.missed{background:#555;box-shadow:none;filter:none;}
 
   /* ── スコア ── */
   #score-bar{max-width:720px;margin:0 auto;padding:0.6rem 1rem;
@@ -2593,10 +2904,16 @@ function ookawaPageHTML() {
 <div id="next-hint"></div>
 
 <div id="tap-zone">
-  <button id="tap-btn">
-    🎭 ここだ！掛け声！
-    <span class="sub">タイミングに合わせてタップしよう</span>
-  </button>
+  <div class="tap-buttons">
+    <button class="tap-btn" id="btn-kakegoe-play">
+      🎤 掛け声！
+      <span class="sub">声を掛けるタイミングで</span>
+    </button>
+    <button class="tap-btn" id="btn-hakushu-play">
+      👏 拍手！
+      <span class="sub">一区切りのタイミングで</span>
+    </button>
+  </div>
 </div>
 
 <div id="score-bar">
@@ -2630,41 +2947,41 @@ const SCENES = [
     duration: 780,  // 約13分
     cues: [
       // ===== 花道 ─ 一人ずつ登場 =====
-      { time: 20,  text: "待ってました！", hint: "弁天小僧 登場" },
-      { time: 59,  text: "待ってました！", hint: "忠信利平 登場" },
-      { time: 81,  text: "待ってました！", hint: "赤星十三郎 登場" },
-      { time: 106, text: "待ってました！", hint: "南郷力丸 登場" },
-      { time: 132, text: "待ってました！", hint: "日本駄右衛門 登場" },
+      { time: 20,  type: "kakegoe", text: "待ってました！", hint: "弁天小僧 登場" },
+      { time: 59,  type: "kakegoe", text: "待ってました！", hint: "忠信利平 登場" },
+      { time: 81,  type: "kakegoe", text: "待ってました！", hint: "赤星十三郎 登場" },
+      { time: 106, type: "kakegoe", text: "待ってました！", hint: "南郷力丸 登場" },
+      { time: 132, type: "kakegoe", text: "待ってました！", hint: "日本駄右衛門 登場" },
 
       // 勢揃い（03:53）── 五人が並んでの見得
-      { time: 233, text: "日本一！",       hint: "五人勢揃いの見得" },
+      { time: 233, type: "kakegoe", text: "日本一！",       hint: "五人勢揃いの見得" },
 
       // ===== つらね ─ 名乗りの開始と終わり =====
-      // 日本駄右衛門（05:26〜）「問われて名乗るもおこがましいが…」
-      { time: 326, text: "待ってました！", hint: "日本駄右衛門のつらね" },
-      { time: 395, text: "たっぷりと！",   hint: "駄右衛門のつらね終わり" },
+      // 日本駄右衛門（05:26〜）
+      { time: 326, type: "kakegoe", text: "待ってました！", hint: "日本駄右衛門のつらね" },
+      { time: 395, type: "hakushu",                         hint: "駄右衛門のつらね終わり" },
 
-      // 弁天小僧菊之助（06:41〜）「続いて次に控えしは…」
-      { time: 401, text: "待ってました！", hint: "弁天小僧のつらね" },
-      { time: 457, text: "たっぷりと！",   hint: "弁天小僧のつらね終わり" },
+      // 弁天小僧菊之助（06:41〜）
+      { time: 401, type: "kakegoe", text: "待ってました！", hint: "弁天小僧のつらね" },
+      { time: 457, type: "hakushu",                         hint: "弁天小僧のつらね終わり" },
 
-      // 忠信利平（07:43〜）「またその次に連なるは…」
-      { time: 463, text: "待ってました！", hint: "忠信利平のつらね" },
-      { time: 528, text: "たっぷりと！",   hint: "忠信利平のつらね終わり" },
+      // 忠信利平（07:43〜）
+      { time: 463, type: "kakegoe", text: "待ってました！", hint: "忠信利平のつらね" },
+      { time: 528, type: "hakushu",                         hint: "忠信利平のつらね終わり" },
 
-      // 赤星十三郎（08:54〜）「またまたその次居並ぶは…」
-      { time: 534, text: "待ってました！", hint: "赤星十三郎のつらね" },
-      { time: 604, text: "たっぷりと！",   hint: "赤星十三郎のつらね終わり" },
+      // 赤星十三郎（08:54〜）
+      { time: 534, type: "kakegoe", text: "待ってました！", hint: "赤星十三郎のつらね" },
+      { time: 604, type: "hakushu",                         hint: "赤星十三郎のつらね終わり" },
 
       // 南郷力丸（10:10〜）
-      { time: 610, text: "待ってました！", hint: "南郷力丸のつらね" },
-      { time: 668, text: "たっぷりと！",   hint: "南郷力丸のつらね終わり" },
+      { time: 610, type: "kakegoe", text: "待ってました！", hint: "南郷力丸のつらね" },
+      { time: 668, type: "hakushu",                         hint: "南郷力丸のつらね終わり" },
 
       // ===== クライマックス =====
-      { time: 674, text: "日本一！",       hint: "五人揃いの大見得" },
+      { time: 674, type: "kakegoe", text: "日本一！",       hint: "五人揃いの大見得" },
 
       // 立ち回り → 幕切れ
-      { time: 760, text: "よっ！",         hint: "幕切れ" },
+      { time: 760, type: "hakushu",                         hint: "幕切れ" },
     ]
   }
   // ★ 他の演目を追加するには、同じ形式で SCENES に追加してね
@@ -2752,10 +3069,10 @@ function buildTimeline(scene) {
   const dur = scene.duration || 120;
   cues.forEach((c, i) => {
     const m = document.createElement("div");
-    m.className = "cue-marker";
+    m.className = "cue-marker" + (c.type === "hakushu" ? " hakushu-marker" : "");
     m.id = "marker-" + i;
     m.style.left = ((c.time / dur) * 100) + "%";
-    m.title = c.text;
+    m.title = (c.type === "hakushu" ? "👏 " : "🎤 ") + (c.hint || c.text || "");
     bar.appendChild(m);
   });
   document.getElementById("timeline-progress").style.width = "0%";
@@ -2794,41 +3111,43 @@ function tick() {
 
 function updateHint(t) {
   const el = document.getElementById("next-hint");
-  // 次の未判定キュー
   const next = cues.find(c => c.result === null);
   if (!next) {
-    el.innerHTML = "掛け声はもうないよ！";
+    el.innerHTML = "もうキューはないよ！おつかれさま！";
     return;
   }
+  const isKake = next.type !== "hakushu";
+  const icon = isKake ? "🎤" : "👏";
+  const label = isKake ? ("「" + (next.text || "掛け声") + "」") : "拍手";
   const diff = next.time - t;
   if (diff > 10) {
-    el.innerHTML = "次の掛け声まで… <span class='hint-text'>" + next.hint + "</span>";
+    el.innerHTML = "次は… " + icon + " <span class='hint-text'>" + next.hint + "</span>";
   } else if (diff > 3) {
-    el.innerHTML = "もうすぐ！ <span class='hint-text'>「" + next.text + "」</span>";
+    el.innerHTML = "もうすぐ！ " + icon + " <span class='hint-text'>" + label + "</span>";
   } else if (diff > 0) {
-    el.innerHTML = "<span style='color:var(--aka);font-size:1.1rem;font-weight:bold;'>くるよ…！</span>";
+    el.innerHTML = "<span style='color:var(--aka);font-size:1.1rem;font-weight:bold;'>くるよ…！ " + icon + "</span>";
   } else {
-    el.innerHTML = "<span style='color:var(--kin);font-size:1.1rem;font-weight:bold;'>今だ！！</span>";
+    el.innerHTML = "<span style='color:var(--kin);font-size:1.1rem;font-weight:bold;'>今だ！！ " + icon + "</span>";
   }
 }
 
 // =========================================================
 // タップ処理
 // =========================================================
-document.getElementById("tap-btn").addEventListener("click", function(e) {
+function handleTap(tapType, e, btn) {
   // リップル演出
-  const rect = this.getBoundingClientRect();
+  const rect = btn.getBoundingClientRect();
   const rip = document.createElement("div");
   rip.className = "ripple";
   rip.style.left = (e.clientX - rect.left - 30) + "px";
   rip.style.top = (e.clientY - rect.top - 30) + "px";
-  this.appendChild(rip);
+  btn.appendChild(rip);
   setTimeout(() => rip.remove(), 600);
 
   if (!player || typeof player.getCurrentTime !== "function") return;
   const t = player.getCurrentTime();
 
-  // 最も近い未判定キューを探す
+  // 最も近い未判定キューを探す（同じタイプ優先）
   let bestIdx = -1;
   let bestDiff = Infinity;
   for (let i = 0; i < cues.length; i++) {
@@ -2837,27 +3156,40 @@ document.getElementById("tap-btn").addEventListener("click", function(e) {
     if (d < bestDiff) { bestDiff = d; bestIdx = i; }
   }
 
-  if (bestIdx < 0) return; // もうキューがない
+  if (bestIdx < 0) return;
 
-  if (bestDiff <= WINDOW_GREAT) {
-    cues[bestIdx].result = "great";
+  const cue = cues[bestIdx];
+  const cueType = cue.type || "kakegoe";
+  const typeMatch = (tapType === cueType);
+
+  if (bestDiff <= WINDOW_GREAT && typeMatch) {
+    cue.result = "great";
     score.great++;
-    showKakegoe(cues[bestIdx].text, "var(--kin)");
+    showKakegoe(cueType === "kakegoe" ? cue.text : "👏", "var(--kin)");
     markCue(bestIdx, "hit");
-  } else if (bestDiff <= WINDOW_GOOD) {
-    cues[bestIdx].result = "good";
+  } else if (bestDiff <= WINDOW_GOOD && typeMatch) {
+    cue.result = "good";
     score.good++;
-    showKakegoe(cues[bestIdx].text, "var(--moegi)");
+    showKakegoe(cueType === "kakegoe" ? cue.text : "👏", "var(--moegi)");
     markCue(bestIdx, "hit");
+  } else if (bestDiff <= WINDOW_GOOD && !typeMatch) {
+    // タイミングは合ってるが種類が違う
+    showKakegoe("種類が違うよ！", "var(--aka)");
+    return;
   } else {
-    // 遠すぎる → 空振り扱いにはしない（無視）
     showKakegoe("…", "#555");
     return;
   }
 
-  // cueIndex を進める
   while (cueIndex < cues.length && cues[cueIndex].result !== null) cueIndex++;
   updateScoreUI();
+}
+
+document.getElementById("btn-kakegoe-play").addEventListener("click", function(e) {
+  handleTap("kakegoe", e, this);
+});
+document.getElementById("btn-hakushu-play").addEventListener("click", function(e) {
+  handleTap("hakushu", e, this);
 });
 
 // =========================================================
