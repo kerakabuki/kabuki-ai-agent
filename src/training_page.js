@@ -189,55 +189,25 @@ export function trainingPageHTML() {
 <main>
   <h2 class="section-title">稽古メニュー</h2>
   <div class="card-grid">
-    <div class="card" onclick="alert('演目ガイド：準備中だよ🙂')">
-      <div class="icon">📖</div>
-      <h3>演目を学ぶ</h3>
-      <p>20演目のあらすじ・みどころ・登場人物を予習しよう</p>
-      <span class="badge">20演目収録</span>
-    </div>
-    <div class="card" onclick="alert('用語いろは：準備中だよ🙂')">
-      <div class="icon">📝</div>
-      <h3>用語いろは</h3>
-      <p>歌舞伎の専門用語を 8カテゴリ 126語で解説</p>
-      <span class="badge green">126語</span>
-    </div>
-    <div class="card" onclick="alert('クイズ：準備中だよ🙂')">
-      <div class="icon">🎯</div>
-      <h3>歌舞伎クイズ</h3>
-      <p>全100問の三択クイズ。目指せ「名人」昇進！</p>
-      <span class="badge">100問</span>
-    </div>
-    <div class="card" onclick="alert('おすすめ：準備中だよ🙂')">
-      <div class="icon">🌟</div>
-      <h3>おすすめ演目</h3>
-      <p>初心者向けやジャンル別に、気良歌舞伎の推し演目を紹介</p>
-      <span class="badge green">厳選</span>
-    </div>
     <div class="card" onclick="location.href='/training/kakegoe'" style="border-color:var(--kin);">
       <div class="icon">📣</div>
       <h3>大向こう稽古</h3>
       <p>白浪五人男「稲瀬川勢揃い」の動画で掛け声＆拍手のタイミングを練習！</p>
       <span class="badge">NEW</span>
     </div>
-    <div class="card" onclick="alert('ナビ：準備中だよ🙂')">
-      <div class="icon">💬</div>
-      <h3>気良歌舞伎ナビ</h3>
-      <p>公演・会場・アクセス・参加方法をAIがご案内</p>
-      <span class="badge">FAQ</span>
-    </div>
-    <div class="card" onclick="alert('動画：準備中だよ🙂')">
-      <div class="icon">🎬</div>
-      <h3>公演動画</h3>
-      <p>過去の公演映像で演目の雰囲気をつかもう</p>
-      <span class="badge green">映像</span>
+    <div class="card" onclick="alert('台詞稽古：準備中だよ🙂')">
+      <div class="icon">🎙️</div>
+      <h3>台詞稽古</h3>
+      <p>名台詞を覚えて、声に出して稽古しよう</p>
+      <span class="badge">準備中</span>
     </div>
   </div>
 
   <div class="banner">
     <h2>🏯 次回公演に向けて</h2>
     <p>
-      お稽古モードで演目や用語を予習しておくと、<br>
-      本番の舞台がもっと楽しくなるよ！<br>
+      お稽古モードで大向こうや台詞を練習して、<br>
+      本番の舞台をもっと楽しもう！<br>
       <strong style="color:var(--kin);">「知る」から「観る」へ ── そして「演る」へ。</strong>
     </p>
   </div>
