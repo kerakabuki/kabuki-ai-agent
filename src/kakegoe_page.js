@@ -30,20 +30,32 @@ export function kakegoePageHTML() {
     margin:1rem 0 0.3rem;text-shadow:0 2px 8px rgba(0,0,0,0.7);}
   #intro .subtitle{font-size:1rem;color:#bbb;letter-spacing:0.1em;margin-bottom:1rem;}
 
-  /* 五人カード */
-  .cast-row{display:flex;gap:0.4rem;justify-content:center;margin:0.8rem 0;
-    overflow-x:auto;-webkit-overflow-scrolling:touch;}
-  .cast-card{flex:0 0 auto;width:120px;border-radius:10px;overflow:hidden;
-    border:2px solid #333;transition:all 0.3s;position:relative;cursor:default;}
+  /* 五人カード（モバイルはカルーセル） */
+  .cast-row{display:flex;gap:0.5rem;justify-content:center;margin:0.8rem 0;
+    overflow-x:auto;-webkit-overflow-scrolling:touch;
+    scroll-snap-type:x mandatory;padding:0.3rem 0;}
+  .cast-row::-webkit-scrollbar{display:none;}
+  .cast-card{flex:0 0 auto;width:125px;border-radius:10px;overflow:hidden;
+    border:2px solid #333;transition:all 0.3s;position:relative;
+    scroll-snap-align:center;}
   .cast-card img{width:100%;display:block;}
   .cast-card .name{position:absolute;bottom:0;left:0;right:0;
     background:linear-gradient(transparent,rgba(0,0,0,0.85));
-    padding:0.5rem 0.3rem 0.3rem;text-align:center;}
+    padding:0.5rem 0.3rem 0.25rem;text-align:center;}
   .cast-card .name span{display:block;font-size:0.8rem;color:var(--kin);
     letter-spacing:0.1em;}
   .cast-card .name small{font-size:0.7rem;color:#999;}
+  .cast-card .role{position:absolute;top:6px;left:6px;
+    font-size:0.6rem;padding:2px 6px;border-radius:4px;
+    letter-spacing:0.05em;}
+  .role-kakegoe{background:var(--aka);color:#fff;}
+  .role-hakushu{background:var(--moegi);color:#fff;}
   .cast-card.active{border-color:var(--kin);
     box-shadow:0 0 16px rgba(197,165,90,0.4);transform:scale(1.05);}
+  @media(max-width:640px){
+    .cast-row{justify-content:flex-start;padding:0.3rem 1rem;}
+    .cast-card{width:110px;}
+  }
 
   /* スタートボタン */
   #start-btn{display:inline-block;margin:1.2rem 0;padding:1rem 3rem;
@@ -57,26 +69,39 @@ export function kakegoePageHTML() {
   .intro-hint{font-size:0.85rem;color:#777;margin-top:0.5rem;line-height:1.6;}
   .intro-hint b{color:var(--kin);}
 
-  /* 操作説明 */
-  .how-to{max-width:520px;margin:1rem auto 0;padding:1rem 1.2rem;
-    background:#222;border:1px solid #444;border-radius:12px;text-align:left;}
-  .how-to h3{font-size:1rem;color:var(--kin);margin-bottom:0.6rem;text-align:center;
-    letter-spacing:0.15em;}
+  /* 操作説明（折りたたみ） */
+  .how-to{max-width:540px;margin:1rem auto 0;text-align:left;}
+  .how-to .summary-box{font-size:0.9rem;color:#ccc;line-height:1.7;
+    text-align:center;margin-bottom:0.5rem;}
+  .how-to .summary-box b{color:var(--kin);}
+  .how-to details{background:#222;border:1px solid #444;border-radius:12px;
+    padding:0.8rem 1.2rem;}
+  .how-to details summary{font-size:0.9rem;color:var(--kin);cursor:pointer;
+    text-align:center;letter-spacing:0.1em;list-style:none;padding:0.2rem 0;}
+  .how-to details summary::-webkit-details-marker{display:none;}
+  .how-to details summary::after{content:" ▼";font-size:0.7rem;}
+  .how-to details[open] summary::after{content:" ▲";}
+  .how-to details .detail-body{margin-top:0.6rem;padding-top:0.6rem;
+    border-top:1px solid #444;}
   .how-to ol{padding-left:1.5rem;list-style:none;counter-reset:step;}
-  .how-to ol li{counter-increment:step;margin-bottom:0.5rem;font-size:0.9rem;
+  .how-to ol li{counter-increment:step;margin-bottom:0.5rem;font-size:0.85rem;
     color:#ccc;line-height:1.6;position:relative;}
   .how-to ol li::before{content:counter(step);position:absolute;left:-1.5rem;
     width:1.3rem;height:1.3rem;background:var(--aka);color:#fff;
     border-radius:50%;font-size:0.7rem;display:flex;align-items:center;
     justify-content:center;top:0.15rem;}
   .how-to .tip{margin-top:0.7rem;padding:0.5rem 0.7rem;background:#2a2020;
-    border-left:3px solid var(--kin);border-radius:4px;font-size:0.85rem;
+    border-left:3px solid var(--kin);border-radius:4px;font-size:0.82rem;
     color:#bbb;line-height:1.5;}
   .how-to .tip b{color:var(--kin);}
-  .how-to .caution{margin-top:0.7rem;padding:0.6rem 0.7rem;
-    background:rgba(196,30,58,0.12);border-left:3px solid var(--aka);
-    border-radius:4px;font-size:0.82rem;color:#ccc;line-height:1.6;}
-  .how-to .caution b{color:var(--aka);}
+  .how-to .caution{margin-top:0.8rem;padding:0.7rem 0.8rem;
+    background:rgba(196,30,58,0.15);border:1px solid rgba(196,30,58,0.4);
+    border-left:4px solid var(--aka);
+    border-radius:6px;font-size:0.82rem;color:#e8e0d8;line-height:1.7;}
+  .how-to .caution b{color:#ff6b6b;}
+
+  /* ボタン前の安心テキスト */
+  .pre-btn{font-size:0.8rem;color:#777;margin-bottom:0.3rem;}
 
   /* ── 動画エリア ── */
   #stage{max-width:720px;margin:0 auto;position:relative;display:none;}
@@ -192,40 +217,52 @@ export function kakegoePageHTML() {
 
   <div class="cast-row" id="cast-row">
     <div class="cast-card" data-char="benten">
+      <span class="role role-kakegoe">🎤 掛け声</span>
       <img src="https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/benten.png" alt="弁天小僧">
       <div class="name"><span>弁天小僧</span><small>ふきや</small></div>
     </div>
     <div class="cast-card" data-char="tadanobu">
+      <span class="role role-kakegoe">🎤 掛け声</span>
       <img src="https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/tadanobu.png" alt="忠信利平">
       <div class="name"><span>忠信利平</span><small>おんじ</small></div>
     </div>
     <div class="cast-card" data-char="akaboshi">
+      <span class="role role-kakegoe">🎤 掛け声</span>
       <img src="https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/akaboshi.png" alt="赤星十三郎">
       <div class="name"><span>赤星十三郎</span><small>よそべさ</small></div>
     </div>
     <div class="cast-card" data-char="nango">
+      <span class="role role-kakegoe">🎤 掛け声</span>
       <img src="https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/nango.png" alt="南郷力丸">
       <div class="name"><span>南郷力丸</span><small>さわ</small></div>
     </div>
     <div class="cast-card" data-char="dayemon">
+      <span class="role role-kakegoe">🎤 掛け声</span>
       <img src="https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/dayemon.png" alt="日本駄右衛門">
       <div class="name"><span>日本駄右衛門</span><small>もはっつぁ</small></div>
     </div>
   </div>
 
   <div class="how-to">
-    <h3>📖 あそびかた</h3>
-    <ol>
-      <li>下の <b>「稽古をはじめる」</b> ボタンを押すと動画がスタート</li>
-      <li>画面の <b>ヒント</b> を見ながらタイミングを待つ</li>
-      <li>役者の登場やツラネの見せ場で <b style="color:var(--aka);">🎤 掛け声！</b> をタップ</li>
-      <li>見得やツラネの終わりで <b style="color:var(--moegi);">👏 拍手！</b> をタップ</li>
-      <li>タイミングが良いほど高得点！全28回の掛け声＆拍手に挑戦</li>
-    </ol>
-    <div class="tip">
-      💡 <b>大当たり</b>＝ぴったりのタイミング、<b>良し</b>＝ちょっとずれ、<b>空振り</b>＝タイミング逃し。<br>
-      掛け声と拍手の<b>種類を間違えない</b>ようにしてね！
+    <div class="summary-box">
+      動画を見ながら <b>🎤 掛け声</b> と <b>👏 拍手</b> をタイミングよくタップ！
     </div>
+    <details>
+      <summary>📖 くわしいあそびかた</summary>
+      <div class="detail-body">
+        <ol>
+          <li>下の <b>「稽古をはじめる」</b> ボタンを押すと動画がスタート</li>
+          <li>画面の <b>ヒント</b> を見ながらタイミングを待つ</li>
+          <li>役者の登場やツラネの見せ場で <b style="color:var(--aka);">🎤 掛け声！</b> をタップ</li>
+          <li>見得やツラネの終わりで <b style="color:var(--moegi);">👏 拍手！</b> をタップ</li>
+          <li>タイミングが良いほど高得点！全28回の掛け声＆拍手に挑戦</li>
+        </ol>
+        <div class="tip">
+          💡 <b>大当たり</b>＝ぴったり、<b>良し</b>＝ちょっとずれ、<b>空振り</b>＝タイミング逃し。<br>
+          掛け声と拍手の<b>種類を間違えない</b>ように！
+        </div>
+      </div>
+    </details>
     <div class="caution">
       ⚠️ <b>大事なお願い</b><br>
       この大向こう稽古は<b>気良歌舞伎の公演</b>を楽しむための練習です。<br>
@@ -233,6 +270,7 @@ export function kakegoePageHTML() {
     </div>
   </div>
 
+  <div class="pre-btn">準備できたら押してね（動画が再生されます）</div>
   <button id="start-btn">🎭 稽古をはじめる</button>
 </div>
 
