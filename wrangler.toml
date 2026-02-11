@@ -1,26 +1,19 @@
 name = "kerakabuki"
 main = "worker.js"
 compatibility_date = "2026-02-11"
-
-# R2バケット（動画やクイズ画像用）の紐付け
-# Cloudflare R2 で同名のバケットを作成してください
+# R2バケット（データが入っている実際のバケット名に合わせます）
 [[r2_buckets]]
 binding = "ASSETS_BUCKET"
-bucket_name = "kerakabuki-assets"
+bucket_name = "assets-keranosuke"  # 2個のデータが入っているこちらを指定
 
 [[r2_buckets]]
 binding = "CONTENT_BUCKET"
-bucket_name = "kerakabuki-content"
+bucket_name = "kerakabuki-content" # 3個のデータが入っているのでこのままでOK
 
 [[r2_buckets]]
 binding = "ENMOKU_BUCKET"
-bucket_name = "kerakabuki-enmoku"
+bucket_name = "keranosuke-enmoku-data" # 23個のデータがあるメインのバケットを指定
 
 [[r2_buckets]]
 binding = "QUIZ_BUCKET"
-bucket_name = "kerakabuki-quiz"
-
-# KV（会話履歴用）の紐付け
-[[kv_namespaces]]
-binding = "CHAT_HISTORY"
-id = "43434a4b6414475ca08dd72b84c62b72"
+bucket_name = "kabuki-quiz-data" # 1個のデータが入っているこちらを指定
