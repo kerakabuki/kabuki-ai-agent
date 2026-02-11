@@ -219,21 +219,16 @@ export function kakegoePageHTML() {
     border-radius:2px;margin-top:0.4rem;max-width:200px;
     display:inline-block;transition:width linear;}
 
-  /* 飛ぶおひねり（紙に包んだ小銭イメージ） */
-  @keyframes coinArc{
-    0%{opacity:1;transform:translate(0,0) rotate(0deg) scale(1);}
-    30%{opacity:1;transform:translate(calc(var(--tx) * 0.4), -160px) rotate(180deg) scale(1.3);}
-    70%{opacity:0.9;transform:translate(calc(var(--tx) * 0.8), -80px) rotate(480deg) scale(1);}
-    100%{opacity:0;transform:translate(var(--tx), 20px) rotate(720deg) scale(0.6);}
-  }
+  /* 飛ぶおひねり — 画面上の舞台まで飛んでいく */
   .coin{position:fixed;pointer-events:none;z-index:100;
-    animation:coinArc 1.2s ease-out forwards;
-    text-shadow:0 2px 8px rgba(0,0,0,0.5);}
-  .coin-emoji{font-size:2rem;}
-  .coin-wrap{font-size:1.4rem;background:var(--kin);color:var(--kuro);
-    width:28px;height:28px;border-radius:50%;display:flex;
-    align-items:center;justify-content:center;font-weight:bold;
-    box-shadow:0 2px 8px rgba(0,0,0,0.4);}
+    text-shadow:0 2px 8px rgba(0,0,0,0.5);
+    animation:coinThrow var(--dur, 1.2s) cubic-bezier(0.2,0.8,0.3,1) forwards;}
+  @keyframes coinThrow{
+    0%{opacity:1;transform:translate(0, 0) rotate(0deg) scale(1);}
+    40%{opacity:1;transform:translate(calc(var(--tx) * 0.5), calc(var(--ty) * 0.6)) rotate(360deg) scale(1.4);}
+    100%{opacity:0;transform:translate(var(--tx), var(--ty)) rotate(900deg) scale(0.3);}
+  }
+  .coin-emoji{font-size:2.2rem;}
 
   /* ── リップル ── */
   @keyframes ripple{
@@ -728,27 +723,31 @@ document.getElementById("btn-ohineri").addEventListener("click", function(e) {
   // 舞台に向かっておひねりが飛ぶ演出
   const stage = document.getElementById("player-wrap");
   const stageRect = stage ? stage.getBoundingClientRect() : null;
-  spawnOhineri(e.clientX, e.clientY, stageRect, 8);
+  spawnOhineri(e.clientX, e.clientY, stageRect, 12);
   showKakegoe("🪙 おひねり！", "var(--kin)");
 });
 
 function spawnOhineri(cx, cy, stageRect, count) {
-  const coins = ["🪙", "💰", "🪙", "✨", "🪙", "💫", "🪙", "🪙"];
+  const coins = ["🪙", "💰", "🪙", "✨", "🪙", "💫", "🪙", "🪙", "🪙", "💰"];
+  // 舞台の中央上あたりを着地点にする
+  const stCx = stageRect ? stageRect.left + stageRect.width / 2 : window.innerWidth / 2;
+  const stCy = stageRect ? stageRect.top + stageRect.height * 0.3 : 80;
   for (let i = 0; i < count; i++) {
     const el = document.createElement("div");
     el.className = "coin";
-    // ステージ（動画）に向かって飛ぶ軌道
-    const targetX = stageRect
-      ? (stageRect.left + stageRect.width * (0.2 + Math.random() * 0.6)) - cx
-      : (Math.random() - 0.5) * 300;
     el.style.left = cx + "px";
     el.style.top = cy + "px";
+    // 各コインにバラけた着地点
+    const targetX = (stCx - cx) + (Math.random() - 0.5) * (stageRect ? stageRect.width * 0.7 : 200);
+    const targetY = (stCy - cy) + (Math.random() - 0.3) * 60;
     el.style.setProperty("--tx", targetX + "px");
-    el.style.animationDelay = (i * 0.06) + "s";
-    el.style.animationDuration = (0.9 + Math.random() * 0.5) + "s";
+    el.style.setProperty("--ty", targetY + "px");
+    const dur = 0.9 + Math.random() * 0.5;
+    el.style.setProperty("--dur", dur + "s");
+    el.style.animationDelay = (i * 0.05) + "s";
     el.innerHTML = '<span class="coin-emoji">' + coins[i % coins.length] + '</span>';
     document.body.appendChild(el);
-    setTimeout(() => el.remove(), 1600);
+    setTimeout(() => el.remove(), 2000);
   }
 }
 
