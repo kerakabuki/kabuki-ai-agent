@@ -44,6 +44,9 @@ import { trainingPageHTML } from "./src/training_page.js";
 import { kakegoePageHTML } from "./src/kakegoe_page.js";
 import { kakegoeEditorHTML } from "./src/kakegoe_editor.js";
 
+// ★ WEBウィジェットJS（R2ではなくバンドルから配信）
+import WIDGET_JS from "./src/keranosuke_widget.txt";
+
 /* =========================================================
    Utils
 ========================================================= */
@@ -71,7 +74,20 @@ export default {
     env._origin = url.origin;
 
     /* =====================================================
-       0) Assets配信（R2 → 画像/JS/CSSを返す）
+       0) ウィジェットJS（バンドルから直接配信、R2不要）
+    ===================================================== */
+    if (path === "/assets/keranosuke-widget.js") {
+      return new Response(WIDGET_JS, {
+        headers: {
+          "Content-Type": "application/javascript; charset=utf-8",
+          "Cache-Control": "public, max-age=3600",
+          "Access-Control-Allow-Origin": "*",
+        },
+      });
+    }
+
+    /* =====================================================
+       0.1) Assets配信（R2 → 画像/JS/CSSを返す）
     ===================================================== */
     if (path.startsWith("/assets/")) {
       const key = path.replace(/^\/assets\//, "");

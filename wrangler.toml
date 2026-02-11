@@ -1,6 +1,11 @@
 name = "kerakabuki"
 main = "worker.js"
 compatibility_date = "2026-02-11"
+
+# .txt をテキストモジュールとしてインポート（ウィジェットJS等）
+[[rules]]
+type = "Text"
+globs = ["src/*.txt"]
 # R2バケット（データが入っている実際のバケット名に合わせます）
 [[r2_buckets]]
 binding = "ASSETS_BUCKET"
