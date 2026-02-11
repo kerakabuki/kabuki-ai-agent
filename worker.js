@@ -67,6 +67,8 @@ export default {
 
     const url = new URL(request.url);
     const path = url.pathname;
+    // originを保持（メニューの稽古モードリンク生成用）
+    env._origin = url.origin;
 
     /* =====================================================
        0) Assets配信（R2 → 画像/JS/CSSを返す）
@@ -195,7 +197,7 @@ export default {
 
         return corsResponse(
           request,
-          jsonResponse({ reply: "", session_id: sid || null, ui: { type: "menu" } })
+          jsonResponse({ reply: "", session_id: sid || null, ui: { type: "menu", trainingUrl: url.origin + "/training" } })
         );
       }
 
@@ -220,7 +222,7 @@ export default {
         }
         return corsResponse(
           request,
-          jsonResponse({ reply: "", session_id: sid || null, ui: { type: "menu" } })
+          jsonResponse({ reply: "", session_id: sid || null, ui: { type: "menu", trainingUrl: url.origin + "/training" } })
         );
       }
 
@@ -565,7 +567,7 @@ async function handleEvent(event, env, ctx) {
       // ガード: data が空または解析不能なときだけデフォルトでメニューを表示
       const hasKnownAction = p.step != null || p.mode != null || p.quiz != null || /^(mode|step|quiz)=/.test(data);
       if (!data || !hasKnownAction) {
-        await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env)]);
+        await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env, env._origin)]);
         return;
       }
 
@@ -573,7 +575,7 @@ async function handleEvent(event, env, ctx) {
       if (p.step === "menu") {
         await env.CHAT_HISTORY.delete(modeKey);
         await env.CHAT_HISTORY.delete(enmokuKey);
-        await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env)]);
+        await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env, env._origin)]);
         return;
       }
 
@@ -731,7 +733,7 @@ async function handleEvent(event, env, ctx) {
         // 0=メニュー
         if (quizInput === "0") {
           await env.CHAT_HISTORY.delete(modeKey);
-          await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env)]);
+          await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env, env._origin)]);
           return;
         }
 
@@ -821,7 +823,7 @@ async function handleEvent(event, env, ctx) {
 
       // ここに到達した = 解析はできたがどの分岐にも一致しなかった → デフォルトでメニューのみ表示
       console.log("POSTBACK unhandled branch:", { sourceKey, data, p: JSON.stringify(p) });
-      await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env)]);
+      await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env, env._origin)]);
       return;
     }
 
@@ -838,7 +840,7 @@ async function handleEvent(event, env, ctx) {
     if (isMenuCommand(text)) {
       await env.CHAT_HISTORY.delete(modeKey);
       await env.CHAT_HISTORY.delete(enmokuKey);
-      await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env)]);
+      await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env, env._origin)]);
       return;
     }
 
@@ -889,7 +891,7 @@ async function handleEvent(event, env, ctx) {
         return;
       }
 
-      await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env)]);
+      await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env, env._origin)]);
       return;
     }
 
@@ -1321,7 +1323,7 @@ async function handleEnmokuGuidePostback(env, sourceKey, p) {
   if (step === "menu") {
     await env.CHAT_HISTORY.delete(modeKey);
     await env.CHAT_HISTORY.delete(enmokuKey);
-    return { messages: [mainMenuFlex(env)] };
+    return { messages: [mainMenuFlex(env, env._origin)] };
   }
 
   if (step === "enmoku_list") {
@@ -1669,7 +1671,7 @@ async function handleWebPostback(env, sourceKey, pbData) {
   if (step === "menu") {
     await env.CHAT_HISTORY.delete(modeKey);
     await env.CHAT_HISTORY.delete(enmokuKey);
-    return { reply: "", ui: { type: "menu" } };
+    return { reply: "", ui: { type: "menu", trainingUrl: (env._origin || "") + "/training" } };
   }
 
   // talk
