@@ -287,12 +287,14 @@ export function kakegoePageHTML() {
 // =========================================================
 // キャラクターデータ
 // =========================================================
+const IMG_BASE = "https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/";
 const CHARS = {
-  benten:   { name: "弁天小僧",   actor: "ふきや",     img: "https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/benten.png" },
-  tadanobu: { name: "忠信利平",   actor: "おんじ",     img: "https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/tadanobu.png" },
-  akaboshi: { name: "赤星十三郎", actor: "よそべさ",   img: "https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/akaboshi.png" },
-  nango:    { name: "南郷力丸",   actor: "さわ",       img: "https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/nango.png" },
-  dayemon:  { name: "日本駄右衛門", actor: "もはっつぁ", img: "https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/dayemon.png" },
+  benten:   { name: "弁天小僧",     actor: "ふきや",     img: IMG_BASE + "benten.png" },
+  tadanobu: { name: "忠信利平",     actor: "おんじ",     img: IMG_BASE + "tadanobu.png" },
+  akaboshi: { name: "赤星十三郎",   actor: "よそべさ",   img: IMG_BASE + "akaboshi.png" },
+  nango:    { name: "南郷力丸",     actor: "さわ",       img: IMG_BASE + "nango.png" },
+  dayemon:  { name: "日本駄右衛門", actor: "もはっつぁ", img: IMG_BASE + "dayemon.png" },
+  all:      { name: "白浪五人男",   actor: "勢揃い",     img: IMG_BASE + "complete.png" },
 };
 
 // =========================================================
@@ -321,10 +323,10 @@ const SCENE = {
     { time: 133.1, type: "hakushu",                         hint: "日本駄右衛門　花道見得", char: "dayemon" },
 
     // ===== 勢揃い =====
-    { time: 154,   type: "kakegoe", text: "たっぷりと！",   hint: "五人男勢揃い" },
-    { time: 227.9, type: "kakegoe", text: "よっ！",         hint: "五人男渡り台詞終わり" },
-    { time: 233.6, type: "hakushu",                         hint: "五人男渡り台詞終わり" },
-    { time: 267.8, type: "kakegoe", text: "待ってました！", hint: "捕手勢揃い" },
+    { time: 154,   type: "kakegoe", text: "たっぷりと！",   hint: "五人男勢揃い",         char: "all" },
+    { time: 227.9, type: "kakegoe", text: "よっ！",         hint: "五人男渡り台詞終わり", char: "all" },
+    { time: 233.6, type: "hakushu",                         hint: "五人男渡り台詞終わり", char: "all" },
+    { time: 267.8, type: "kakegoe", text: "待ってました！", hint: "捕手勢揃い",           char: "all" },
 
     // ===== つらね =====
     // 日本駄右衛門
@@ -350,8 +352,8 @@ const SCENE = {
     { time: 673.9, type: "hakushu",                         hint: "南郷力丸　ツラネ終わり",   char: "nango" },
 
     // ===== クライマックス =====
-    { time: 753,   type: "kakegoe", text: "日本一！",       hint: "勢揃いの見得" },
-    { time: 757.8, type: "hakushu",                         hint: "" },
+    { time: 753,   type: "kakegoe", text: "日本一！",       hint: "勢揃いの見得",     char: "all" },
+    { time: 757.8, type: "hakushu",                         hint: "勢揃い",           char: "all" },
   ]
 };
 
