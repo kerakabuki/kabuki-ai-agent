@@ -267,8 +267,12 @@ let cues = [];
 let cueIndex = 0;
 let score = { great: 0, good: 0, miss: 0 };
 let ticker = null;
-const WINDOW_GREAT = 1.0;
-const WINDOW_GOOD  = 2.5;
+// 掛け声の判定幅
+const WINDOW_GREAT = 1.0;   // ±1秒 = 大当たり
+const WINDOW_GOOD  = 2.5;   // ±2.5秒 = 良し
+// 拍手の判定幅（広め）
+const WINDOW_GREAT_H = 2.0; // ±2秒 = 大当たり
+const WINDOW_GOOD_H  = 4.0; // ±4秒 = 良し
 
 // =========================================================
 // シーン選択ボタンを生成
@@ -363,7 +367,7 @@ function tick() {
   updateHint(t);
 
   while (cueIndex < cues.length && cues[cueIndex].result === null &&
-         t > cues[cueIndex].time + WINDOW_GOOD) {
+         t > cues[cueIndex].time + (cues[cueIndex].type === "hakushu" ? WINDOW_GOOD_H : WINDOW_GOOD)) {
     cues[cueIndex].result = "miss";
     score.miss++;
     markCue(cueIndex, "missed");
@@ -422,18 +426,20 @@ function handleTap(tapType, e, btn) {
   const cue = cues[bestIdx];
   const cueType = cue.type || "kakegoe";
   const typeMatch = (tapType === cueType);
+  const wGreat = cueType === "hakushu" ? WINDOW_GREAT_H : WINDOW_GREAT;
+  const wGood  = cueType === "hakushu" ? WINDOW_GOOD_H  : WINDOW_GOOD;
 
-  if (bestDiff <= WINDOW_GREAT && typeMatch) {
+  if (bestDiff <= wGreat && typeMatch) {
     cue.result = "great";
     score.great++;
     showKakegoe(cueType === "kakegoe" ? cue.text : "👏", "var(--kin)");
     markCue(bestIdx, "hit");
-  } else if (bestDiff <= WINDOW_GOOD && typeMatch) {
+  } else if (bestDiff <= wGood && typeMatch) {
     cue.result = "good";
     score.good++;
     showKakegoe(cueType === "kakegoe" ? cue.text : "👏", "var(--moegi)");
     markCue(bestIdx, "hit");
-  } else if (bestDiff <= WINDOW_GOOD && !typeMatch) {
+  } else if (bestDiff <= wGood && !typeMatch) {
     showKakegoe("種類が違うよ！", "var(--aka)");
     return;
   } else {
