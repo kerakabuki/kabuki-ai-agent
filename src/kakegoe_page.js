@@ -199,29 +199,29 @@ const SCENES = [
     duration: 780,
     cues: [
       // ===== 花道 ─ 一人ずつ登場 =====
-      { time: 20,  type: "kakegoe", text: "待ってました！", hint: "弁天小僧 登場" },
-      { time: 59,  type: "kakegoe", text: "待ってました！", hint: "忠信利平 登場" },
-      { time: 81,  type: "kakegoe", text: "待ってました！", hint: "赤星十三郎 登場" },
-      { time: 106, type: "kakegoe", text: "待ってました！", hint: "南郷力丸 登場" },
-      { time: 132, type: "kakegoe", text: "待ってました！", hint: "日本駄右衛門 登場" },
+      { time: 20,  type: "kakegoe", text: "ふきや！",       hint: "弁天小僧（ふきや）登場" },
+      { time: 59,  type: "kakegoe", text: "おんじ！",       hint: "忠信利平（おんじ）登場" },
+      { time: 81,  type: "kakegoe", text: "よそべさ！",     hint: "赤星十三郎（よそべさ）登場" },
+      { time: 106, type: "kakegoe", text: "さわ！",         hint: "南郷力丸（さわ）登場" },
+      { time: 132, type: "kakegoe", text: "もはっつぁ！",   hint: "日本駄右衛門（もはっつぁ）登場" },
 
       // 勢揃い（03:53）
       { time: 233, type: "kakegoe", text: "日本一！",       hint: "五人勢揃いの見得" },
 
       // ===== つらね ─ 名乗りの開始と終わり =====
-      { time: 326, type: "kakegoe", text: "待ってました！", hint: "日本駄右衛門のつらね" },
+      { time: 326, type: "kakegoe", text: "もはっつぁ！",   hint: "日本駄右衛門（もはっつぁ）のつらね" },
       { time: 395, type: "hakushu",                         hint: "駄右衛門のつらね終わり" },
 
-      { time: 401, type: "kakegoe", text: "待ってました！", hint: "弁天小僧のつらね" },
+      { time: 401, type: "kakegoe", text: "ふきや！",       hint: "弁天小僧（ふきや）のつらね" },
       { time: 457, type: "hakushu",                         hint: "弁天小僧のつらね終わり" },
 
-      { time: 463, type: "kakegoe", text: "待ってました！", hint: "忠信利平のつらね" },
+      { time: 463, type: "kakegoe", text: "おんじ！",       hint: "忠信利平（おんじ）のつらね" },
       { time: 528, type: "hakushu",                         hint: "忠信利平のつらね終わり" },
 
-      { time: 534, type: "kakegoe", text: "待ってました！", hint: "赤星十三郎のつらね" },
+      { time: 534, type: "kakegoe", text: "よそべさ！",     hint: "赤星十三郎（よそべさ）のつらね" },
       { time: 604, type: "hakushu",                         hint: "赤星十三郎のつらね終わり" },
 
-      { time: 610, type: "kakegoe", text: "待ってました！", hint: "南郷力丸のつらね" },
+      { time: 610, type: "kakegoe", text: "さわ！",         hint: "南郷力丸（さわ）のつらね" },
       { time: 668, type: "hakushu",                         hint: "南郷力丸のつらね終わり" },
 
       // ===== クライマックス =====
