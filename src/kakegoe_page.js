@@ -365,8 +365,8 @@ let score = { great: 0, good: 0, miss: 0 };
 let ticker = null;
 const WINDOW_GREAT = 1.0;
 const WINDOW_GOOD  = 2.5;
-const WINDOW_GREAT_H = 2.0;
-const WINDOW_GOOD_H  = 4.0;
+const WINDOW_GREAT_H = 3.5;
+const WINDOW_GOOD_H  = 6.0;
 
 // =========================================================
 // YouTube IFrame API
