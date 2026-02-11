@@ -198,37 +198,61 @@ const SCENES = [
     videoId: "I5QncXeoIm0",
     duration: 780,
     cues: [
-      // ===== 花道 ─ 一人ずつ登場 =====
-      { time: 20,  type: "kakegoe", text: "ふきや！",       hint: "弁天小僧（ふきや）登場" },
-      { time: 59,  type: "kakegoe", text: "おんじ！",       hint: "忠信利平（おんじ）登場" },
-      { time: 81,  type: "kakegoe", text: "よそべさ！",     hint: "赤星十三郎（よそべさ）登場" },
-      { time: 106, type: "kakegoe", text: "さわ！",         hint: "南郷力丸（さわ）登場" },
-      { time: 132, type: "kakegoe", text: "もはっつぁ！",   hint: "日本駄右衛門（もはっつぁ）登場" },
+      // ===== 幕開き =====
+      { time: 9.4,   type: "kakegoe", text: "待ってました！", hint: "幕開き" },
 
-      // 勢揃い（03:53）
-      { time: 233, type: "kakegoe", text: "日本一！",       hint: "五人勢揃いの見得" },
+      // ===== 花道 ─ 登場と見得 =====
+      { time: 12.1,  type: "kakegoe", text: "ふきや！",       hint: "弁天小僧　花道登場" },
+      { time: 20,    type: "hakushu",                         hint: "弁天小僧　花道見得" },
 
-      // ===== つらね ─ 名乗りの開始と終わり =====
-      { time: 326, type: "kakegoe", text: "もはっつぁ！",   hint: "日本駄右衛門（もはっつぁ）のつらね" },
-      { time: 395, type: "hakushu",                         hint: "駄右衛門のつらね終わり" },
+      { time: 53.4,  type: "kakegoe", text: "おんじ！",       hint: "忠信利平　花道登場" },
+      { time: 59,    type: "hakushu",                         hint: "忠信利平　花道見得" },
 
-      { time: 401, type: "kakegoe", text: "ふきや！",       hint: "弁天小僧（ふきや）のつらね" },
-      { time: 457, type: "hakushu",                         hint: "弁天小僧のつらね終わり" },
+      { time: 77.9,  type: "kakegoe", text: "よそべさ！",     hint: "赤星十三郎　花道登場" },
+      { time: 82,    type: "hakushu",                         hint: "赤星十三郎　花道見得" },
 
-      { time: 463, type: "kakegoe", text: "おんじ！",       hint: "忠信利平（おんじ）のつらね" },
-      { time: 528, type: "hakushu",                         hint: "忠信利平のつらね終わり" },
+      { time: 99.8,  type: "kakegoe", text: "さわ！",         hint: "南郷力丸　花道登場" },
+      { time: 106.3, type: "hakushu",                         hint: "南郷力丸　花道見得" },
 
-      { time: 534, type: "kakegoe", text: "よそべさ！",     hint: "赤星十三郎（よそべさ）のつらね" },
-      { time: 604, type: "hakushu",                         hint: "赤星十三郎のつらね終わり" },
+      { time: 122.9, type: "kakegoe", text: "もはっつぁ！",   hint: "日本駄右衛門　花道登場" },
+      { time: 133.1, type: "hakushu",                         hint: "日本駄右衛門　花道見得" },
 
-      { time: 610, type: "kakegoe", text: "さわ！",         hint: "南郷力丸（さわ）のつらね" },
-      { time: 668, type: "hakushu",                         hint: "南郷力丸のつらね終わり" },
+      // ===== 勢揃い =====
+      { time: 154,   type: "kakegoe", text: "たっぷりと！",   hint: "五人男勢揃い" },
+      { time: 227.9, type: "kakegoe", text: "よっ！",         hint: "五人男渡り台詞終わり" },
+      { time: 233.6, type: "hakushu",                         hint: "五人男渡り台詞終わり" },
+      { time: 267.8, type: "kakegoe", text: "待ってました！", hint: "捕手勢揃い" },
+
+      // ===== つらね =====
+      // 日本駄右衛門
+      { time: 327.7, type: "kakegoe", text: "たっぷりと！",   hint: "日本駄右衛門　ツラネ" },
+      { time: 394.3, type: "kakegoe", text: "よっ！",         hint: "日本駄右衛門　見得" },
+      { time: 400.2, type: "hakushu",                         hint: "日本駄右衛門　ツラネ終わり" },
+
+      // 弁天小僧
+      { time: 402.4, type: "kakegoe", text: "待ってました！", hint: "弁天小僧　ツラネ" },
+      { time: 458.4, type: "kakegoe", text: "よっ！",         hint: "弁天小僧　見得" },
+      { time: 464.5, type: "hakushu",                         hint: "弁天小僧　ツラネ終わり" },
+
+      // 忠信利平
+      { time: 466.5, type: "kakegoe", text: "たっぷりと！",   hint: "忠信利平　ツラネ" },
+      { time: 525.7, type: "kakegoe", text: "よっ！",         hint: "忠信利平　見得" },
+      { time: 530.8, type: "hakushu",                         hint: "忠信利平　ツラネ終わり" },
+
+      // 赤星十三郎
+      { time: 532.8, type: "kakegoe", text: "待ってました！", hint: "赤星十三郎　ツラネ" },
+      { time: 588.1, type: "kakegoe", text: "しっとりと！",   hint: "赤星十三郎　ツラネ２" },
+      { time: 602.5, type: "kakegoe", text: "よっ！",         hint: "赤星十三郎　決め" },
+      { time: 608.8, type: "hakushu",                         hint: "赤星十三郎　ツラネ終わり" },
+
+      // 南郷力丸
+      { time: 611.1, type: "kakegoe", text: "たっぷりと！",   hint: "南郷力丸　ツラネ" },
+      { time: 667.3, type: "kakegoe", text: "よっ！",         hint: "南郷力丸　見得" },
+      { time: 673.9, type: "hakushu",                         hint: "南郷力丸　ツラネ終わり" },
 
       // ===== クライマックス =====
-      { time: 674, type: "kakegoe", text: "日本一！",       hint: "五人揃いの大見得" },
-
-      // 幕切れ
-      { time: 760, type: "hakushu",                         hint: "幕切れ" },
+      { time: 753,   type: "kakegoe", text: "日本一！",       hint: "勢揃いの見得" },
+      { time: 757.8, type: "hakushu",                         hint: "" },
     ]
   }
   // ★ 他の演目を追加するには、同じ形式で SCENES に追加
