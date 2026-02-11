@@ -17,3 +17,8 @@ bucket_name = "keranosuke-enmoku-data" # 23個のデータがあるメインの�
 [[r2_buckets]]
 binding = "QUIZ_BUCKET"
 bucket_name = "kabuki-quiz-data" # 1個のデータが入っているこちらを指定
+
+# KV（会話履歴用）の紐付け
+[[kv_namespaces]]
+binding = "CHAT_HISTORY"
+id = "43434a4b6414475ca08dd72b84c62b72"
