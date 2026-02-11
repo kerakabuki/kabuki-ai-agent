@@ -1,17 +1,16 @@
 // src/flex_menu.js
-// env は将来 R2（ASSETS_BUCKET 等）を使う場合に利用。現状は受け取るだけ。
+// env は将来 R2（ASSETS_BUCKET 等）を使う場合に利用。
+// url は Worker の origin URL（稽古モードへのリンク生成用）。
 
-export function mainMenuFlex(env) {
+export function mainMenuFlex(env, url) {
+    // postback ボタン
     const menuItem = (icon, label, desc, data, color) => ({
       type: "box",
       layout: "horizontal",
       paddingAll: "12px",
       backgroundColor: color,
       cornerRadius: "12px",
-  
-      // ✅ displayText を消す（タップしたラベルがトークに出なくなる）
       action: { type: "postback", label, data },
-  
       contents: [
         { type: "text", text: icon, size: "xl", flex: 0, gravity: "center" },
         {
@@ -27,7 +26,34 @@ export function mainMenuFlex(env) {
         { type: "text", text: "▶", size: "sm", color: "#999999", flex: 0, gravity: "center" }
       ]
     });
-  
+
+    // URI リンクボタン（外部URL遷移用）
+    const menuLink = (icon, label, desc, uri, color) => ({
+      type: "box",
+      layout: "horizontal",
+      paddingAll: "12px",
+      backgroundColor: color,
+      cornerRadius: "12px",
+      action: { type: "uri", label, uri },
+      contents: [
+        { type: "text", text: icon, size: "xl", flex: 0, gravity: "center" },
+        {
+          type: "box",
+          layout: "vertical",
+          paddingStart: "12px",
+          flex: 4,
+          contents: [
+            { type: "text", text: label, weight: "bold", size: "md" },
+            { type: "text", text: desc, size: "xxs", color: "#666666", wrap: true }
+          ]
+        },
+        { type: "text", text: "▶", size: "sm", color: "#999999", flex: 0, gravity: "center" }
+      ]
+    });
+
+    // 稽古モードURL
+    const trainingUrl = url ? `${url}/training` : "https://kerakabuki.kerakabuki.workers.dev/training";
+
     return {
       type: "flex",
       altText: "けらのすけメニュー",
@@ -56,6 +82,9 @@ export function mainMenuFlex(env) {
   
             // ⑤ クイズ（mode=quiz）
             menuItem("🎯", "歌舞伎クイズ", "全100問の三択で楽しく学ぼう", "mode=quiz", "#FCE4EC"),
+
+            // ⑥ お稽古モード（URI → /training）
+            menuLink("📣", "お稽古モード", "大向こう稽古・台詞稽古をブラウザで体験", trainingUrl, "#F3E5F5"),
   
             { type: "text", text: "💡「0」でいつでもメニューに戻れるよ", size: "xxs", color: "#AAAAAA", wrap: true, margin: "md" }
           ]
@@ -63,4 +92,3 @@ export function mainMenuFlex(env) {
       }
     };
   }
-  
