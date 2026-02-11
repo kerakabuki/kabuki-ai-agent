@@ -534,7 +534,7 @@ async function handleEvent(event, env, ctx) {
       const data = event.postback?.data || "";
       const p = parsePostback(data);
 
-      console.log("POSTBACK parsed:", JSON.stringify(p));
+      console.log("POSTBACK parsed:", JSON.stringify(p), "raw data:", JSON.stringify(data));
 
       // step=menu は最優先でメニューを返す
       if (p.step === "menu") {
@@ -542,6 +542,56 @@ async function handleEvent(event, env, ctx) {
         await env.CHAT_HISTORY.delete(enmokuKey);
         await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env)]);
         return;
+      }
+
+      // メニューからの「mode=のみ」の postback（気良歌舞伎ナビ・おすすめ演目等）をここで処理
+      const modeOnly = !p.step && (p.mode || /mode=([^&]+)/.test(data));
+      if (modeOnly) {
+        const m = (p.mode || (data.match(/mode=([^&]+)/) || [])[1] || "").trim();
+        if (m) {
+          await env.CHAT_HISTORY.put(modeKey, m);
+          try {
+            if (m === "kera") {
+              const topics = await loadTalkTopics(env);
+              await respondLineMessages(env, replyToken, destId, [talkMenuFlex(topics, 1)]);
+              return;
+            }
+            if (m === "performance") {
+              await respondLineMessages(env, replyToken, destId, [await enmokuListFlex(env)]);
+              return;
+            }
+            if (m === "general") {
+              const glossary = await loadGlossary(env);
+              await respondLineMessages(env, replyToken, destId, [glossaryCategoryFlex(glossary)]);
+              return;
+            }
+            if (m === "recommend") {
+              const recData = await loadRecommend(env);
+              await respondLineMessages(env, replyToken, destId, [recommendListFlex(recData.faqs)]);
+              return;
+            }
+            if (m === "quiz") {
+              const qst = await loadQuizState(env, userId || sourceKey);
+              const introText = qst.answered_total > 0
+                ? quizIntroText("line") + `\n\n📊 前回の成績：${qst.correct_total}/${qst.answered_total}問正解`
+                : quizIntroText("line");
+              await respondLineMessages(env, replyToken, destId, [
+                { type: "text", text: introText, quickReply: startQuickReplyForMode("quiz", qst) }
+              ]);
+              return;
+            }
+            if (m === "comingsoon") {
+              await respondLine(env, replyToken, destId, "6は準備中だよ🙂 もうちょっと待っててね！");
+              return;
+            }
+          } catch (err) {
+            console.error("LINE postback mode handler error:", String(err?.stack || err));
+            await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env)]);
+            return;
+          }
+          await respondLine(env, replyToken, destId, exampleTextForMode(m, "line"));
+          return;
+        }
       }
 
       // stepがある場合はここで完結（modeより優先）
@@ -731,7 +781,8 @@ async function handleEvent(event, env, ctx) {
         return;
       }
 
-      console.log("POSTBACK:", { sourceKey, data });
+      console.log("POSTBACK unhandled:", { sourceKey, data });
+      await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env)]);
       return;
     }
 
