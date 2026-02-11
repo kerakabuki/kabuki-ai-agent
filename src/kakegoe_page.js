@@ -263,27 +263,27 @@ export function kakegoePageHTML() {
     <div class="cast-card" data-char="benten">
       <span class="role role-kakegoe">🎤 掛け声</span>
       <img src="https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/benten.png" alt="弁天小僧">
-      <div class="name"><span>弁天小僧</span><small>ふきや</small></div>
+      <div class="name"><span>弁天小僧</span><small>座長</small></div>
     </div>
     <div class="cast-card" data-char="tadanobu">
       <span class="role role-kakegoe">🎤 掛け声</span>
       <img src="https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/tadanobu.png" alt="忠信利平">
-      <div class="name"><span>忠信利平</span><small>おんじ</small></div>
+      <div class="name"><span>忠信利平</span><small>市役所課長</small></div>
     </div>
     <div class="cast-card" data-char="akaboshi">
       <span class="role role-kakegoe">🎤 掛け声</span>
       <img src="https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/akaboshi.png" alt="赤星十三郎">
-      <div class="name"><span>赤星十三郎</span><small>よそべさ</small></div>
+      <div class="name"><span>赤星十三郎</span><small>トップセールスマン</small></div>
     </div>
     <div class="cast-card" data-char="nango">
       <span class="role role-kakegoe">🎤 掛け声</span>
       <img src="https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/nango.png" alt="南郷力丸">
-      <div class="name"><span>南郷力丸</span><small>さわ</small></div>
+      <div class="name"><span>南郷力丸</span><small>信用金庫</small></div>
     </div>
     <div class="cast-card" data-char="dayemon">
       <span class="role role-kakegoe">🎤 掛け声</span>
       <img src="https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/dayemon.png" alt="日本駄右衛門">
-      <div class="name"><span>日本駄右衛門</span><small>もはっつぁ</small></div>
+      <div class="name"><span>日本駄右衛門</span><small>太っ腹社長</small></div>
     </div>
   </div>
 
@@ -392,12 +392,12 @@ export function kakegoePageHTML() {
 // =========================================================
 const IMG_BASE = "https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/";
 const CHARS = {
-  benten:   { name: "弁天小僧",     actor: "ふきや",     img: IMG_BASE + "benten.png" },
-  tadanobu: { name: "忠信利平",     actor: "おんじ",     img: IMG_BASE + "tadanobu.png" },
-  akaboshi: { name: "赤星十三郎",   actor: "よそべさ",   img: IMG_BASE + "akaboshi.png" },
-  nango:    { name: "南郷力丸",     actor: "さわ",       img: IMG_BASE + "nango.png" },
-  dayemon:  { name: "日本駄右衛門", actor: "もはっつぁ", img: IMG_BASE + "dayemon.png" },
-  all:      { name: "白浪五人男",   actor: "勢揃い",     img: IMG_BASE + "complete.png" },
+  benten:   { name: "弁天小僧",     actor: "気良歌舞伎座長", kakegoe: "よっ座長！",             img: IMG_BASE + "benten.png" },
+  tadanobu: { name: "忠信利平",     actor: "市役所課長",     kakegoe: "よっ市役所課長！",       img: IMG_BASE + "tadanobu.png" },
+  akaboshi: { name: "赤星十三郎",   actor: "トップセールスマン", kakegoe: "よっトップセールスマン！", img: IMG_BASE + "akaboshi.png" },
+  nango:    { name: "南郷力丸",     actor: "信用金庫",       kakegoe: "よっ信用金庫！",         img: IMG_BASE + "nango.png" },
+  dayemon:  { name: "日本駄右衛門", actor: "太っ腹社長",     kakegoe: "よっ太っ腹社長！",       img: IMG_BASE + "dayemon.png" },
+  all:      { name: "白浪五人男",   actor: "勢揃い",         kakegoe: "日本一！",               img: IMG_BASE + "complete.png" },
 };
 
 // =========================================================
@@ -410,20 +410,20 @@ const SCENE = {
   duration: 780,
   cues: [
     // ===== 花道 ─ 登場と見得 =====
-    { time: 12.1,  type: "kakegoe", text: "ふきや！",       hint: "弁天小僧　花道登場",     char: "benten" },
-    { time: 20,    type: "hakushu",                         hint: "弁天小僧　花道見得",     char: "benten" },
+    { time: 12.1,  type: "kakegoe", text: "よっ座長！",             hint: "弁天小僧　花道登場",     char: "benten" },
+    { time: 20,    type: "hakushu",                                 hint: "弁天小僧　花道見得",     char: "benten" },
 
-    { time: 53.4,  type: "kakegoe", text: "おんじ！",       hint: "忠信利平　花道登場",     char: "tadanobu" },
-    { time: 59,    type: "hakushu",                         hint: "忠信利平　花道見得",     char: "tadanobu" },
+    { time: 53.4,  type: "kakegoe", text: "よっ市役所課長！",       hint: "忠信利平　花道登場",     char: "tadanobu" },
+    { time: 59,    type: "hakushu",                                 hint: "忠信利平　花道見得",     char: "tadanobu" },
 
-    { time: 77.9,  type: "kakegoe", text: "よそべさ！",     hint: "赤星十三郎　花道登場",   char: "akaboshi" },
-    { time: 82,    type: "hakushu",                         hint: "赤星十三郎　花道見得",   char: "akaboshi" },
+    { time: 77.9,  type: "kakegoe", text: "よっトップセールスマン！", hint: "赤星十三郎　花道登場",   char: "akaboshi" },
+    { time: 82,    type: "hakushu",                                 hint: "赤星十三郎　花道見得",   char: "akaboshi" },
 
-    { time: 99.8,  type: "kakegoe", text: "さわ！",         hint: "南郷力丸　花道登場",     char: "nango" },
-    { time: 106.3, type: "hakushu",                         hint: "南郷力丸　花道見得",     char: "nango" },
+    { time: 99.8,  type: "kakegoe", text: "よっ信用金庫！",         hint: "南郷力丸　花道登場",     char: "nango" },
+    { time: 106.3, type: "hakushu",                                 hint: "南郷力丸　花道見得",     char: "nango" },
 
-    { time: 122.9, type: "kakegoe", text: "もはっつぁ！",   hint: "日本駄右衛門　花道登場", char: "dayemon" },
-    { time: 133.1, type: "hakushu",                         hint: "日本駄右衛門　花道見得", char: "dayemon" },
+    { time: 122.9, type: "kakegoe", text: "よっ太っ腹社長！",       hint: "日本駄右衛門　花道登場", char: "dayemon" },
+    { time: 133.1, type: "hakushu",                                 hint: "日本駄右衛門　花道見得", char: "dayemon" },
 
     // ===== 勢揃い =====
     { time: 154,   type: "kakegoe", text: "たっぷりと！",   hint: "五人男勢揃い",         char: "all" },
@@ -720,16 +720,21 @@ function startOhineriChance() {
 
 document.getElementById("btn-ohineri").addEventListener("click", function(e) {
   if (!ohineriActive) return;
-  ohineriActive = false;
-  if (ohineriTimer) clearTimeout(ohineriTimer);
-  document.getElementById("ohineri-zone").style.display = "none";
+  // 連打OK！閉じない、タイマーも止めない
   score.ohineri++;
   updateScoreUI();
-  // 舞台に向かっておひねりが飛ぶ演出
+  // 舞台に向かっておひねりが飛ぶ演出（連打するほど増える）
   const stage = document.getElementById("player-wrap");
   const stageRect = stage ? stage.getBoundingClientRect() : null;
-  spawnOhineri(e.clientX, e.clientY, stageRect, 12);
-  showKakegoe("🪙 おひねり！", "var(--kin)");
+  const count = 6 + Math.min(score.ohineri, 10); // 連打するほど豪華に
+  spawnOhineri(e.clientX, e.clientY, stageRect, count);
+  if (score.ohineri <= 3) {
+    showKakegoe("🪙 おひねり！", "var(--kin)");
+  } else if (score.ohineri <= 8) {
+    showKakegoe("🪙🪙 太っ腹！", "var(--kin)");
+  } else {
+    showKakegoe("🪙🪙🪙 大盤振る舞い！！", "var(--kin)");
+  }
 });
 
 function spawnOhineri(cx, cy, stageRect, count) {
