@@ -1,7 +1,8 @@
 // src/flex_talk.js
 // =========================================================
-// Talk（FAQ）: カテゴリ→質問→回答
+// Talk（FAQ）: カテゴリ→質問→回答（歌舞伎風パレット）
 // =========================================================
+import { KABUKI } from "./flex_menu.js";
 
 const PER_PAGE = 7; // LINEのボタン数を抑える（下に「次へ」「メニュー」が入る想定）
 
@@ -53,12 +54,14 @@ function wrapMenuBubble(title, buttons, footerButtons = []) {
         type: "box",
         layout: "vertical",
         spacing: "md",
+        backgroundColor: KABUKI.bg,
         contents: [
           {
             type: "text",
             text: title,
             weight: "bold",
             size: "md",
+            color: KABUKI.text,
             wrap: true
           },
           {
@@ -66,7 +69,7 @@ function wrapMenuBubble(title, buttons, footerButtons = []) {
             layout: "vertical",
             spacing: "sm",
             contents: buttons.length ? buttons : [
-              { type: "text", text: "項目がないよ🙏", size: "sm", wrap: true }
+              { type: "text", text: "項目がないよ🙏", size: "sm", color: KABUKI.dim, wrap: true }
             ]
           }
         ]
@@ -128,10 +131,10 @@ export function talkMenuFlex(topics, page = 1, options = {}) {
     );
 
     const footer = buildButtons([
-      { label: "メニュー", data: "step=menu" }
+      { label: "🧭 ナビ", data: "step=navi_home" }
     ]);
 
-    return wrapMenuBubble("🙂 気良歌舞伎ナビ\nカテゴリから選んでね🙂", btns, footer);
+    return wrapMenuBubble("🙂 KABUKI NAVI\nカテゴリから選んでね🙂", btns, footer);
   }
 
   // -------------------------
@@ -167,7 +170,7 @@ export function talkMenuFlex(topics, page = 1, options = {}) {
     });
   }
   footerItems.push({ label: "カテゴリ一覧", data: "step=talk_list" });
-  footerItems.push({ label: "メニュー", data: "step=menu" });
+  footerItems.push({ label: "🧭 ナビ", data: "step=navi_home" });
 
   const footer = buildButtons(footerItems);
 
@@ -189,7 +192,7 @@ export function talkAnswerFlex(topic) {
     });
   }
   footerItems.push({ label: "カテゴリ一覧", data: "step=talk_list" });
-  footerItems.push({ label: "メニュー", data: "step=menu" });
+  footerItems.push({ label: "🧭 ナビ", data: "step=navi_home" });
 
   return {
     type: "flex",
@@ -200,9 +203,10 @@ export function talkAnswerFlex(topic) {
         type: "box",
         layout: "vertical",
         spacing: "md",
+        backgroundColor: KABUKI.bg,
         contents: [
-          { type: "text", text: title, weight: "bold", size: "md", wrap: true },
-          { type: "text", text: ans, size: "sm", wrap: true }
+          { type: "text", text: title, weight: "bold", size: "md", color: KABUKI.text, wrap: true },
+          { type: "text", text: ans, size: "sm", color: KABUKI.text, wrap: true }
         ]
       },
       footer: {

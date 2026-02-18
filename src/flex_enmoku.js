@@ -1,4 +1,6 @@
 // src/flex_enmoku.js
+// 歌舞伎風パレット（トップメニューと統一）
+import { KABUKI } from "./flex_menu.js";
 
 /* =========================================================
    演目カタログ（R2）
@@ -83,7 +85,7 @@ function trimDesc(s, max = 1400) {
 /* =========================================================
    Quick Reply（2通目ナビ）
 ========================================================= */
-export function sectionNavMessage(currentSection) {
+export function sectionNavMessage(currentSection, enmokuId) {
   const items = [];
   const add = (label, section, displayText) => {
     if (currentSection !== section) {
@@ -104,8 +106,13 @@ export function sectionNavMessage(currentSection) {
   add("🎭 登場人物", "cast", "登場人物");
   add("📝 作品情報", "info", "作品情報");
 
+  // ⭐ クリップ（演目を保存）
+  if (enmokuId) {
+    items.push({ type: "action", action: { type: "postback", label: "⭐ 保存", data: `step=clip_toggle&type=enmoku&id=${encodeURIComponent(enmokuId)}`, displayText: "⭐ 保存" } });
+  }
+
   items.push({ type: "action", action: { type: "postback", label: "📚 演目一覧", data: "step=enmoku_list", displayText: "演目一覧" } });
-  items.push({ type: "action", action: { type: "postback", label: "🏠 メニュー", data: "step=menu", displayText: "メニュー" } });
+  items.push({ type: "action", action: { type: "postback", label: "🧭 ナビ", data: "step=navi_home", displayText: "ナビ" } });
 
   const navText = {
     synopsis: "次はどこを見る？🙂",
@@ -118,18 +125,24 @@ export function sectionNavMessage(currentSection) {
   return { type: "text", text: navText, quickReply: { items } };
 }
 
-export function castNavMessage() {
+export function castNavMessage(personId, enmokuId) {
+  const items = [
+    { type: "action", action: { type: "postback", label: "人物一覧", data: "step=section&section=cast", displayText: "人物一覧" } },
+    { type: "action", action: { type: "postback", label: "項目へ戻る", data: "step=section_menu", displayText: "項目へ戻る" } },
+  ];
+
+  // ⭐ クリップ（人物を保存）
+  if (personId && enmokuId) {
+    items.push({ type: "action", action: { type: "postback", label: "⭐ 保存", data: `step=clip_toggle&type=person&id=${encodeURIComponent(personId)}&parent=${encodeURIComponent(enmokuId)}`, displayText: "⭐ 保存" } });
+  }
+
+  items.push({ type: "action", action: { type: "postback", label: "演目一覧", data: "step=enmoku_list", displayText: "演目一覧" } });
+  items.push({ type: "action", action: { type: "postback", label: "🧭 ナビ", data: "step=navi_home", displayText: "ナビ" } });
+
   return {
     type: "text",
     text: "ほかの人物も見る？🙂",
-    quickReply: {
-      items: [
-        { type: "action", action: { type: "postback", label: "人物一覧", data: "step=section&section=cast", displayText: "人物一覧" } },
-        { type: "action", action: { type: "postback", label: "項目へ戻る", data: "step=section_menu", displayText: "項目へ戻る" } },
-        { type: "action", action: { type: "postback", label: "演目一覧", data: "step=enmoku_list", displayText: "演目一覧" } },
-        { type: "action", action: { type: "postback", label: "メニュー", data: "step=menu", displayText: "メニュー" } }
-      ]
-    }
+    quickReply: { items }
   };
 }
 
@@ -142,13 +155,13 @@ function enmokuRow(e, indented = false) {
     layout: "vertical",
     paddingAll: indented ? "10px" : "12px",
     paddingStart: indented ? "24px" : "12px",
-    backgroundColor: indented ? "#EBF0F5" : "#F3F4F6",
+    backgroundColor: indented ? KABUKI.cardAlt : KABUKI.card,
     cornerRadius: "12px",
     action: { type: "postback", label: e.short, data: `step=enmoku&enmoku=${encodeURIComponent(e.id)}` },
     contents: [
-      { type: "text", text: e.short, weight: "bold", size: indented ? "sm" : "md", wrap: true },
+      { type: "text", text: e.short, weight: "bold", size: indented ? "sm" : "md", color: KABUKI.text, wrap: true },
       ...(e.full && e.full !== e.short
-        ? [{ type: "text", text: e.full, size: "xxs", color: "#888888", wrap: true }]
+        ? [{ type: "text", text: e.full, size: "xxs", color: KABUKI.dimmer, wrap: true }]
         : [])
     ]
   };
@@ -181,12 +194,12 @@ export async function enmokuListFlex(env) {
         type: "box",
         layout: "horizontal",
         paddingAll: "12px",
-        backgroundColor: "#E8EDF3",
+        backgroundColor: KABUKI.cardAlt,
         cornerRadius: "12px",
         action: { type: "postback", label: g.label, data: `step=group&group=${encodeURIComponent(g.label)}` },
         contents: [
-          { type: "text", text: `📁 ${g.label}`, weight: "bold", size: "md", flex: 4, wrap: true },
-          { type: "text", text: `${g.items.length}演目 ▶`, size: "xs", color: "#666666", align: "end", flex: 2, gravity: "center" }
+          { type: "text", text: `📁 ${g.label}`, weight: "bold", size: "md", color: KABUKI.text, flex: 4, wrap: true },
+          { type: "text", text: `${g.items.length}演目 ▶`, size: "xs", color: KABUKI.dim, align: "end", flex: 2, gravity: "center" }
         ]
       });
     } else {
@@ -213,20 +226,22 @@ export async function enmokuListFlex(env) {
       type: "box",
       layout: "vertical",
       spacing: "sm",
+      backgroundColor: KABUKI.bg,
       contents: [
         {
           type: "text",
           text: pages.length > 1 ? `演目をえらんでね（${i + 1}/${pages.length}）` : "演目をえらんでね",
           weight: "bold",
-          size: "lg"
+          size: "lg",
+          color: KABUKI.gold
         },
-        { type: "text", text: `全${catalog.length}演目🙂`, size: "xs", color: "#666666" },
+        { type: "text", text: `全${catalog.length}演目🙂`, size: "xs", color: KABUKI.dim },
         ...pageRows,
         {
           type: "button",
           style: "secondary",
           margin: "md",
-          action: { type: "postback", label: "メニュー", data: "step=menu" }
+          action: { type: "postback", label: "🧭 ナビ", data: "step=navi_home" }
         }
       ]
     }
@@ -251,9 +266,10 @@ export async function groupSubMenuFlex(env, groupName) {
         type: "box",
         layout: "vertical",
         spacing: "sm",
+        backgroundColor: KABUKI.bg,
         contents: [
-          { type: "text", text: groupName, weight: "bold", size: "lg", wrap: true },
-          { type: "text", text: "どの場面を見る？🙂", size: "xs", color: "#666666" },
+          { type: "text", text: groupName, weight: "bold", size: "lg", color: KABUKI.gold, wrap: true },
+          { type: "text", text: "どの場面を見る？🙂", size: "xs", color: KABUKI.dim },
           ...items.map(e => enmokuRow(e, false)),
           {
             type: "box",
@@ -262,7 +278,7 @@ export async function groupSubMenuFlex(env, groupName) {
             margin: "md",
             contents: [
               { type: "button", style: "secondary", flex: 1, action: { type: "postback", label: "演目一覧", data: "step=enmoku_list" } },
-              { type: "button", style: "secondary", flex: 1, action: { type: "postback", label: "メニュー", data: "step=menu" } }
+              { type: "button", style: "secondary", flex: 1, action: { type: "postback", label: "🧭 ナビ", data: "step=navi_home" } }
             ]
           }
         ]
@@ -288,7 +304,7 @@ export function sectionMenuFlex(enmokuTitle) {
     },
     contents: [
       { type: "text", text: icon, size: "xl", flex: 0 },
-      { type: "text", text: label, weight: "bold", size: "sm", wrap: true }
+      { type: "text", text: label, weight: "bold", size: "sm", color: KABUKI.text, wrap: true }
     ]
   });
 
@@ -309,9 +325,10 @@ export function sectionMenuFlex(enmokuTitle) {
         type: "box",
         layout: "vertical",
         spacing: "md",
+        backgroundColor: KABUKI.bg,
         contents: [
-          { type: "text", text: `「${enmokuTitle}」`, weight: "bold", size: "lg", wrap: true },
-          { type: "text", text: "知りたい項目をえらんでね🙂", size: "sm", color: "#666666", wrap: true },
+          { type: "text", text: `「${enmokuTitle}」`, weight: "bold", size: "lg", color: KABUKI.gold, wrap: true },
+          { type: "text", text: "知りたい項目をえらんでね🙂", size: "sm", color: KABUKI.dim, wrap: true },
           {
             type: "box",
             layout: "vertical",
@@ -322,8 +339,8 @@ export function sectionMenuFlex(enmokuTitle) {
                 layout: "horizontal",
                 spacing: "sm",
                 contents: [
-                  tile("📖", "あらすじ", "synopsis", "#E3F2FD"),
-                  tile("🌟", "みどころ", "highlights", "#FFF3E0")
+                  tile("📖", "あらすじ", "synopsis", KABUKI.card),
+                  tile("🌟", "みどころ", "highlights", KABUKI.cardAlt)
                 ]
               },
               {
@@ -331,8 +348,8 @@ export function sectionMenuFlex(enmokuTitle) {
                 layout: "horizontal",
                 spacing: "sm",
                 contents: [
-                  tile("🎭", "登場人物", "cast", "#E8F5E9"),
-                  tile("📝", "作品情報", "info", "#F3E5F5")
+                  tile("🎭", "登場人物", "cast", KABUKI.card),
+                  tile("📝", "作品情報", "info", KABUKI.cardAlt)
                 ]
               }
             ]
@@ -345,7 +362,7 @@ export function sectionMenuFlex(enmokuTitle) {
         spacing: "sm",
         contents: [
           footerBtn("演目一覧へ", "step=enmoku_list"),
-          footerBtn("メニュー", "step=menu")
+          footerBtn("🧭 ナビ", "step=navi_home")
         ]
       }
     }
@@ -368,11 +385,12 @@ export function enmokuSectionDetailFlex(title, sectionLabel, icon, body) {
         type: "box",
         layout: "vertical",
         spacing: "md",
+        backgroundColor: KABUKI.bg,
         contents: [
-          { type: "text", text: title, weight: "bold", size: "xl", wrap: true },
-          { type: "text", text: `${icon} ${sectionLabel}`, size: "xs", color: "#888888" },
+          { type: "text", text: title, weight: "bold", size: "xl", color: KABUKI.text, wrap: true },
+          { type: "text", text: `${icon} ${sectionLabel}`, size: "xs", color: KABUKI.dimmer },
           { type: "separator" },
-          { type: "text", text: desc, size: "sm", wrap: true, lineSpacing: "6px" }
+          { type: "text", text: desc, size: "sm", color: KABUKI.text, wrap: true, lineSpacing: "6px" }
         ]
       }
     }
@@ -396,12 +414,12 @@ export function castListFlex(enmokuTitle, cast, page = 1, perPage = 10) {
       type: "box",
       layout: "vertical",
       paddingAll: "10px",
-      backgroundColor: "#F3F4F6",
+      backgroundColor: KABUKI.card,
       cornerRadius: "10px",
       action: { type: "postback", label: name, data: `step=cast&person=${encodeURIComponent(c.id)}` },
       contents: [
-        { type: "text", text: name, weight: "bold", size: "sm", wrap: true },
-        ...(kana ? [{ type: "text", text: `（${kana}）`, size: "xxs", color: "#666666", wrap: true }] : [])
+        { type: "text", text: name, weight: "bold", size: "sm", color: KABUKI.text, wrap: true },
+        ...(kana ? [{ type: "text", text: `（${kana}）`, size: "xxs", color: KABUKI.dim, wrap: true }] : [])
       ]
     };
   });
@@ -425,15 +443,17 @@ export function castListFlex(enmokuTitle, cast, page = 1, perPage = 10) {
         type: "box",
         layout: "vertical",
         spacing: "sm",
+        backgroundColor: KABUKI.bg,
         contents: [
           {
             type: "text",
             text: maxPage > 1 ? `🎭 登場人物（${p}/${maxPage}）` : "🎭 登場人物",
             weight: "bold",
             size: "lg",
+            color: KABUKI.gold,
             wrap: true
           },
-          { type: "text", text: `${enmokuTitle}｜全${total}人`, size: "xs", color: "#666666", wrap: true },
+          { type: "text", text: `${enmokuTitle}｜全${total}人`, size: "xs", color: KABUKI.dim, wrap: true },
           ...rows,
           ...navLine,
           {
@@ -443,7 +463,7 @@ export function castListFlex(enmokuTitle, cast, page = 1, perPage = 10) {
             margin: "md",
             contents: [
               { type: "button", style: "secondary", flex: 1, action: { type: "postback", label: "項目へ戻る", data: "step=section_menu" } },
-              { type: "button", style: "secondary", flex: 1, action: { type: "postback", label: "演目一覧へ", data: "step=enmoku_list" } }
+              { type: "button", style: "secondary", flex: 1, action: { type: "postback", label: "🧭 ナビ", data: "step=navi_home" } }
             ]
           }
         ]
@@ -469,11 +489,12 @@ export function castDetailFlex(enmokuTitle, person) {
         type: "box",
         layout: "vertical",
         spacing: "md",
+        backgroundColor: KABUKI.bg,
         contents: [
-          { type: "text", text: name, weight: "bold", size: "xl", wrap: true },
-          { type: "text", text: `🎭 登場人物｜${enmokuTitle}`, size: "xs", color: "#888888", wrap: true },
+          { type: "text", text: name, weight: "bold", size: "xl", color: KABUKI.text, wrap: true },
+          { type: "text", text: `🎭 登場人物｜${enmokuTitle}`, size: "xs", color: KABUKI.dimmer, wrap: true },
           { type: "separator" },
-          { type: "text", text: desc, size: "sm", wrap: true, lineSpacing: "6px" }
+          { type: "text", text: desc, size: "sm", color: KABUKI.text, wrap: true, lineSpacing: "6px" }
         ]
       }
     }

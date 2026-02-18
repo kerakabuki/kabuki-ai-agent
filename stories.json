@@ -1,0 +1,491 @@
+{
+  "intro": {
+    "ja": "二十年目の舞台を終え、打ち上げの夜は更けていく。私はひとり席を離れ、そっと窓を開ける。いつか見た神社の灯りが、にじんでいるようだった。再生の灯し火は、静かに息づいていた。未来を担う\u201c誰か\u201dの手へ——そのときを待って。",
+    "en": "The twentieth year behind us, the celebration fades into night. I step away alone and open the window. The shrine light I once knew seems to shimmer still. The flame of revival breathes softly — waiting for the hands that will carry it forward."
+  },
+  "stories": [
+    {
+      "id": 1,
+      "ja": {
+        "title": "忘れられた舞台",
+        "subtitle": "起源と途絶え、幼き日の記憶",
+        "excerpt": "岐阜県郡上市の奥深い山あいに眠る伝統文化「気良歌舞伎」。その起源と、途絶え、そして幼き日の記憶。",
+        "paragraphs": [
+          "岐阜県郡上市の奥深い山あいに、ほとんど知られていない伝統文化が眠っている。それが「気良歌舞伎」。東京や京都の華やかな舞台とは異なり、気良歌舞伎は地元の人々によって演じられる、\u201c地歌舞伎（素人歌舞伎）\u201dである。",
+          "名声や報酬のためではなく、誇りと記憶をつなぐために――そして、何より、地域の人々を楽しませるために続けられてきた。",
+          "その起源はおそらく江戸時代、遅くとも明治時代から何世代にもわたって引き継がれた。芝居小屋のない気良では、舞台は神社の拝殿、観客席は境内だった。",
+          "日本語の「芝居（しばい）」という言葉が、「芝（しば）の上に座って（居て）観劇する」ことに由来すると言われているように、まさに地域住民が年に一度の祭りの日、境内の芝生の上で舞台を見ていたのだ。",
+          "衣装は手縫いで仕立てられ、小道具は身近な素材から工夫されて作られた。そして、脚本や演出は、地方を巡って地域の歌舞伎を支えた師匠たちから直接学んでいたそうだ。",
+          "私の祖母は現在103歳。幼いころの思い出として、三味線奏者や太夫の師匠たちが一か月ほど実家に滞在していたという話を嬉しそうに語ってくれる。ある日、師匠から「君は声がいい。いい役者になれるよ」と言われたそうだ。その言葉を、彼女はいまも誇らしげに笑顔で話してくれる。",
+          "そして、私の祖父も気良歌舞伎に携わったひとりだ。すでに20年以上前に他界しており、直接話を聞くことはできなくなってしまったが、昔、彼は「女形」として舞台に立っていた。村の古老から「お前のおじいさんは、それはそれは素晴らしい女形だった」と言われたことがある。",
+          "当時の祖父の写真は残っていない。しかし、1940年（昭和15年）、戦時下の秋祭りで祖父が出演した舞台。疎開してきていた大阪の家族のひとりが舞台に感動し、描いたという彩色画が家に残されていた。それは、ただの絵ではなかった。暗い時代を生きる誰かの心に、そっと灯りをともした舞台――気良歌舞伎が、そこにあった。",
+          "私がまだ小さかった頃、舞台に立つ父の姿を見た記憶がある。その頃の私はまだ幼く、伝統芸能の継承だとか、そんなことはみじんも考えていなかった。ただただ、煌びやかな舞台と衣装、いつもとは違う父の姿、そしてお祭りに包まれた村全体の浮き立つような雰囲気が、今でも忘れられない。",
+          "しかし、その公演が気良歌舞伎の最後の舞台となった。それ以来、舞台は幕を閉じ、しばらくの間、祭りの夜は静寂に包まれることになった。",
+          "けれど、あの夜の記憶は私の中に生きていた。それは「伝統」などという言葉ではなく、ただただ「圧倒的な何かに心を奪われた夜」として。その記憶こそが、私にとって、そして、復活した気良歌舞伎にとっての原点になっていたのだった。"
+        ]
+      },
+      "en": {
+        "title": "When a Hidden Stage Was Remembered",
+        "subtitle": "Origins, silence, and a childhood memory",
+        "excerpt": "Deep in the mountains of Gujo, Gifu, a hidden cultural treasure called Kera Kabuki slumbered — waiting to be remembered.",
+        "paragraphs": [
+          "Deep in the remote mountains of Gujo, Gifu Prefecture, lies a cultural treasure that few outside Japan have ever heard of: Kera Kabuki. Unlike the grand stages of Tokyo or Kyoto, Kera Kabuki isn't performed by celebrities or professionals. It belongs to a form of jikabuki, or local amateur kabuki — brought to life by ordinary villagers.",
+          "These performances are not about fame or financial gain. They are about pride, memory, and identity.",
+          "Kera Kabuki traces its origins back centuries. Though precise records are scarce, it is believed to have begun in the Edo period. Passed down through generations, the performances were not held in grand theaters but at local shrines — with the stage set up in the main worship hall (haiden) and the audience gathering in the shrine courtyard.",
+          "Interestingly, the Japanese word shibai (meaning \u201cdrama\u201d or \u201ctheater\u201d) is thought to originate from this very setting — where villagers would sit directly on the grass (shiba) to watch the performance. It was a communal act of attention, emotion, and celebration.",
+          "Costumes were hand-sewn, props were improvised from local materials, and scripts were learned under the guidance of traveling kabuki instructors who passed on their techniques through intensive, hands-on training.",
+          "My grandmother, now 103 years old, often shares stories from her childhood. She remembers kabuki instructors and shamisen players traveling from town to town to support local troupes. Sometimes, they would stay at her family home for over a month. One teacher once told her, \u201cYou have a good voice — you'd make a fine actor someday.\u201d Even now, she tells that story with a smile.",
+          "My grandfather, who passed away more than twenty years ago, was also part of that world. He was an onnagata — a male actor who specialized in playing female roles in kabuki's highly stylized tradition. I never saw him perform myself, but an elder in the village once told me, \u201cYour grandfather was a truly exceptional onnagata. His performances were unforgettable.\u201d",
+          "One artifact remains from that era — not a photograph, but a hand-colored drawing. In September 1940, as Japan was deeply involved in military conflict, a family from Osaka evacuated to our village. During the annual harvest festival, they watched my grandfather perform. One of them, so moved by the scene, later painted the performance from memory. That drawing remains with our family — a record not just of a play but of a moment in time when art provided comfort amid uncertainty.",
+          "When I was a child, I saw my father perform kabuki at the local shrine. Back then, I wasn't thinking about tradition or heritage. What I remember is the glittering stage, the vivid costumes, and the way the entire village felt unusually alive that night. When my father stepped onto the stage in full makeup and costume, he didn't seem like my father anymore. He became someone else — someone from a different world.",
+          "I didn't know it then, but that performance would be the last. Kera Kabuki disappeared after that night, and the stage fell silent for years.",
+          "Still, that evening stayed with me — not as a lesson in tradition but as a vivid memory of wonder, beauty, and something much larger than myself. It was — and still is — the moment that made all of this personal."
+        ]
+      },
+      "noteUrl": "",
+      "mediumUrl": ""
+    },
+    {
+      "id": 2,
+      "ja": {
+        "title": "そして、幕はあがった",
+        "subtitle": "2005年、17年ぶりの復活公演",
+        "excerpt": "2000年代初頭、村に戻ってきた若者たちが「もう一度、やらないか？」と声を上げた。",
+        "paragraphs": [
+          "かつて、気良では、秋の収穫を祝う祭の夜に歌舞伎が行われた。拝殿には仮設の舞台が設けられ、会場には三味線の音が響き、夜の神社の境内は観客で埋め尽くされた。",
+          "しかし、戦後、何度かの中断と再開を経たのち、平成への改元をきっかけに、歌舞伎の舞台はついに途絶えた。日中の祭りは続いていたが、舞台の灯は消え、衣装や道具は片づけられ、煌びやかな着物たちは村の博物館に展示されるようになっていた。それはまるで、舞台が\u201c過去のもの\u201dになってしまったようだった。",
+          "だが、2000年代初頭、村に戻ってきた若者たちが転機を作った。私も、その若者たちの中の一人だった。多くは、高校卒業と同時に都市へ進学・就職して一度は村を離れていたが、ふるさとを想い、再び村で暮らし始めた私たちのなかには、幼いころに父親たちの舞台を見た記憶を持つ者、そして、子役として舞台に立った者もいたのだ。",
+          "ある晩のこと。皆で酒を酌み交わしていた時だった。ふるさとへの想い、地域への恩返し、笑顔あふれる村を作りたいという気持ちを語り合った。そして、本当に自然な流れで、あの「歌舞伎のあった祭りの夜」の話となった。",
+          "**「もう一度、やらないか？俺たちの手で。」**",
+          "その言葉をきっかけに、私たちは動き出した。公演を行うには、舞台を用意する必要があった。そこで私たちは、近隣にあるコミュニティセンターに仮設の舞台を建てることにした。花道も含めた本格的な歌舞伎舞台を、地元の大工が指揮をとり、地域の人たちが協力して組み上げた。",
+          "さらに、隣町で250年の歴史を持つ地歌舞伎団体・高雄歌舞伎の協力を得て、衣装や道具を借りることができた。それは、同じ\u201c地歌舞伎\u201dという文化を共有する団体からの、大きな大きな支えだった。",
+          "迎えた初公演の夜。開演準備で楽屋が慌ただしくなるなか、ひとりのメンバーが息を切らせて走って戻ってきた。「おい！ 会場、満杯だぞ！」",
+          "演目は「白浪五人男」の「稲瀬川勢揃い」。三味線の音が響き、拍子木の合図とともに三色の定式幕が開く。桜咲く稲瀬川の舞台に、花道から五人の盗賊たちが次々と登場し、見得を切ると、おひねりが宙を舞った。",
+          "照明に照らされた舞台から、客席の住民たちの笑顔が見えた。それは、かつて自分たちが子どもだったころに見た風景そのものだった。",
+          "私たちは、ただ伝統を再現したのではない。あの夜、舞台と客席の間に確かに存在した\u201cつながり\u201dこそが、私たちがもう一度見たかったものだった。"
+        ]
+      },
+      "en": {
+        "title": "When the Curtain Rose Again",
+        "subtitle": "The 2005 revival — carried by memory, and love for a village",
+        "excerpt": "What faded did not vanish. It returned — carried by memory, and love for a village.",
+        "paragraphs": [
+          "After the final performance decades earlier, kabuki disappeared from the night of the village festival. The shrine where it had once been performed stood unchanged, and the daytime kagura dances were still offered every year. But the colorful stage, the crowds, and the excitement of those theatrical evenings faded into memory.",
+          "The tools and set pieces were carefully stored away. The once-glorious costumes had been transferred to the local museum. Bit by bit, kabuki became something of the past — preserved, respected, but no longer lived.",
+          "But then, something shifted. I was one of many who returned to the village in the late 1990s and early 2000s, after years spent studying or working in the city. We had grown up watching our fathers or grandfathers on stage — or performing ourselves as child actors. Now in our twenties, we found ourselves once again gathered in familiar places, sharing drinks and stories.",
+          "We spoke of the village that had raised us — and how we longed to give something back. What came to mind wasn't a campaign, or a product, or a grand initiative. It was the memory of the stage.",
+          "And so we said it aloud: \u201cLet's bring back kabuki.\u201d",
+          "Of course, we couldn't do it alone. To revive kabuki properly, we reached out to Takao Kabuki, a neighboring troupe with over 250 years of history. Takao's members responded with warmth and generosity. They lent not only costumes and props, but also shared their knowledge. It was more than a gesture of support. It was a recognition of shared tradition.",
+          "A temporary stage — complete with a hanamichi walkway — was built from scratch. Local carpenters led the effort, and villagers of all ages came together to raise the stage as one.",
+          "In the dressing room before the curtain rose, the atmosphere was thick with nerves. One of us burst into the room, out of breath. \u201cIt's packed! We've got a full house!\u201d",
+          "The first play, Shiranami Gonin Otoko, opened with the iconic \u201cInasegawa\u201d scene. The sound of hyōshigi echoed through the hall. The traditional three-color jōshiki maku slid open, revealing a stage transformed into the cherry-blossom-covered banks of the Inase River. One by one, five thieves made their entrances along the hanamichi, each striking a dramatic mie. The crowd erupted in cheers.",
+          "From the stage, we could see the smiles of our neighbors. For a moment, it was as if time had folded in on itself — the same vibrant night we had once witnessed as children.",
+          "The revival wasn't the end of something. It was the beginning of something new."
+        ]
+      },
+      "noteUrl": "",
+      "mediumUrl": ""
+    },
+    {
+      "id": 3,
+      "ja": {
+        "title": "伝統が再び歩きはじめる",
+        "subtitle": "継続の困難、親子共演、子ども歌舞伎、合同公演",
+        "excerpt": "復活から続けること。それがどれほど難しいか、私たちは身をもって知ることになる。",
+        "paragraphs": [
+          "2005年の復活以来、気良歌舞伎は一度も休むことなく上演を続けてきた。地域の支えもあり、私たちは着実に知られていき、観客も増えていった。しかし、毎年公演を続けることは、客席から見える華やかな舞台からは想像できない困難もある。",
+          "2005年の復活公演が終わった時、私たちは高揚感とともに、自分たちの手で、この地域のために未来に残せる何かを築くことができるかもしれない、そんな、確かな手応えがあった。",
+          "復活にあたって相談した年配の先輩が、私たちに言った言葉を今でも覚えている。「復活させるなら、少なくとも5年はやれ。」継続することによってのみ、伝統は本物となる。それは簡単なようで難しい。私たちはこの言葉の意味を身をもって実感することとなる。",
+          "私たちは皆、アマチュア役者。それぞれ仕事があり、家族があり、社会的な責任を負っている。日々の生活の営みの中で、稽古や準備の時間を確保することは決して簡単ではなかった。そして、費用のこともそうだ。そのすべてを私たちは観客からの寄付で賄っていた。",
+          "くじけそうになった時、いつも私たちは舞台上での瞬間を思い出す。観客席にいる地域の人たちの笑顔。演者、スタッフ、観客の一体感。それが、私たちが気良歌舞伎を続ける理由なのだ。",
+          "面白いもので、毎年、公演が近づくにつれて、私たちは「こんなに苦労するなら、今年を最後にしよう」と思うのだが、いざ公演がはじると、そんな思いは吹き飛んでしまう。幕が下りた瞬間、誰かが必ず言う。「さて、来年は何を上演しようか？」それが、気良歌舞伎なのだ。",
+          "---",
+          "私個人として思い出深い公演がある。復活から8年後の2013年、私たちは歌舞伎の古典演目である『盛綱陣屋』を上演した。その公演で、私の息子は父親のために自ら命を絶つ少年を演じ、私はその少年の祖母の役を演じた。",
+          "公演の間、私は登場人物としてではなく、親として舞台に立っていた。虚構と現実の境界線は曖昧になり、目の前にいたのは役ではなく、私の子供だった。彼の声、表情、沈黙――それは私の心を深く揺さぶった。あの夜、私の流した涙は、紛れもなく本物の涙であった。",
+          "それは、気良歌舞伎だからこそ生まれたものだったと思う。そしてその夜の観客席には、私の妻、両親、そして祖母がいた。舞台に立つ家族、観客席で見守る家族。決して忘れられない夜となった。",
+          "---",
+          "その翌年、私たちは新しい試みに挑戦することにした。それは、子ども歌舞伎として、子どもが主演を演じる演目を出すことだった。選んだ演目は『白浪五人男』――2005年の復活公演で私たちが上演したのと同じ演目だ。",
+          "5人の小学生が主役の五人男を演じた。彼らは台詞を覚え、所作を練習し、この挑戦に全身全霊を注いだ。そしてこの時、私たち自身、気良歌舞伎のメンバーが師匠となり、子供たちに台詞や振り付けを指導した。",
+          "彼らの中に、未来が見えた。歌舞伎の未来だけでなく、気良の精神―互いをささえ、楽しみながら、挑戦していく心―が続いていくであろう未来を。",
+          "---",
+          "気良歌舞伎復活以来、近隣の高雄歌舞伎は毎年私たちを支援してくれた。そんな中で、新しい企画が誕生した。高雄歌舞伎、気良歌舞伎の双方に20代と30代の演者が増えたことをふまえて、青年歌舞伎合同公演を開催することとなったのだ。",
+          "会場は郡上市総合文化センター。――600席以上を備えた本格的なホール。幕が上がったとき、すでにそれは単なる公演ではなかった。この公演は、伝統文化が協力によって成長できることを証明し、若者たちだからこそ、それを継承できることの証明でもあった。この合同プロジェクトは3年連続で続く。",
+          "**伝統は、化石のように保存されるものではない。それは、現在に生きる私たちが、いっしょに築き上げていく生命そのものなのだ。**"
+        ]
+      },
+      "en": {
+        "title": "When Tradition Learned to Walk Again",
+        "subtitle": "Struggles, a father-son performance, children's kabuki, and a joint production",
+        "excerpt": "From private struggles to public performances, the revival became something larger than memory.",
+        "paragraphs": [
+          "Since its revival in 2005, Kera Kabuki has never missed a year. Thanks to the dedication of local residents, the tradition has steadily gained recognition, and the audience has grown with it. But the act of continuing is far more difficult, and far more precious, than it may appear from the audience seats.",
+          "After the 2005 revival, we felt something stir — a sense of momentum. I still remember what a senior villager told us: \u201cIf you're going to revive it, do it for at least five years.\u201d Only through repetition does tradition become real again. We learned the truth of those words the hard way.",
+          "We are all amateur actors. We each have jobs, families, responsibilities. Making time for rehearsals amid everyday life has never been easy. And then there are the costs — all covered through audience donations. The pressure is heavy, and sometimes it led to arguments, even moments when some considered quitting.",
+          "But then, we would remember the moment on stage. The audience's smiles. That incredible feeling of unity. That's why we do this.",
+          "Every year, as the performance nears, we think, \u201cMaybe this will be the last.\u201d But the moment the curtain falls, someone always says: \u201cSo what should we perform next year?\u201d That is what it means to be part of Kera Kabuki.",
+          "---",
+          "Eight years after the revival, in 2013, we performed the classic kabuki play Moritsuna Jinya. My son played a boy who takes his own life for the sake of his father. I played the boy's grandmother — the one who must witness his final moments.",
+          "On that stage, I stood not just as a character, but as a parent. The boundary between fiction and reality dissolved. His voice, his expression, his silence — it overwhelmed me. My tears that night were real.",
+          "That moment wasn't acting. It was something deeper, something only Kera Kabuki could have created. And in the audience that night were my wife, my parents, and my grandmother — three generations watching as two generations stood on stage. A night I will never forget.",
+          "---",
+          "The following year, we decided to try something new: a kabuki performance led entirely by children. We chose Shiranami Gonin Otoko — the very same piece from our 2005 revival. Five elementary school students took the starring roles. And this time, we didn't rely solely on Takao Kabuki's masters. We became the teachers ourselves.",
+          "In them, we saw the future. Not just of kabuki — but of our village's spirit.",
+          "---",
+          "Since our revival, Takao Kabuki has supported us each year. In time, a shared vision emerged among our youth. We began planning a joint performance at Gujo City Cultural Center — a 600-seat hall.",
+          "When the curtain rose, it was more than a performance. It was proof that tradition can grow through cooperation. That joint project continued for three consecutive years.",
+          "**Tradition isn't something to be preserved like a fossil. It's something we build — together, in the present.**"
+        ]
+      },
+      "noteUrl": "",
+      "mediumUrl": ""
+    },
+    {
+      "id": 4,
+      "ja": {
+        "title": "伝統とデジタルが出会い、舞台は広がる",
+        "subtitle": "SNS・YouTube・ポスター・かわら版",
+        "excerpt": "山間の集落に伝わる伝統芸能が、地域を越えて、遠くまで声を届かせる。",
+        "paragraphs": [
+          "気良という山間の集落に伝わる伝統芸能が、いかにしてその声を、地域を越えて、遠くまで届かせることができたのか。それは伝統とテクノロジーの出会いであった。",
+          "2005年の復活後、ゆっくりと静かに何かが変わり始めた。公演は定期的な行事となり、毎年、観客が増えているのを肌で感じることができた。「気良歌舞伎って何かすごいらしいね」――この噂は、私たちが特段宣伝したからではなく、地道に取り組み、継続していったからこそ広まったのであろう。",
+          "私たちの演技は年々上達していったように思う。そして、ある時、私たちはこう考え始めた。「もっと多くの人に観てもらえないだろうか？」「外から観に来る人が増えれば、地域が活気づくのではないか？」と。",
+          "インターネットの活用。このアイデアは静かに、しかしはっきりと私に浮かんだ。当時、Facebookは世界最大のソーシャルメディアプラットフォームになっていた。そこで私は公式アカウントを作成した。稽古の様子、過去の公演のスナップ写真、そして今後の公演の告知を投稿し始めた。",
+          "翌年には、YouTubeチャンネルを開設した。しかしすぐに、私はあることに気づいた。「これは単なる記録では終わらない。新たな\u201c舞台\u201dになる。」",
+          "ソーシャルメディアは、新たな扉を開いた。私たちがこれまで出会うことのなかった観客へ、そして日本中の他の地歌舞伎団体とつながることができたのだ。FacebookやYouTubeは気良歌舞伎の告知だけでなく、後に私たちが挑戦する大きな物語への土台となったのだ。",
+          "こうして2015年10月にJimdoを使って公式サイトを立ち上げた。公演スケジュールを掲載し、想いを共有し、気良歌舞伎に興味を持った人々に私たちが何者であるかを明確に理解してもらうための場所となった。",
+          "---",
+          "2014年、復活10年を迎えようとしていた時。それまで、私たちのポスターは単なる案内文書のようなものであった。しかし、何か違うものにできないか。",
+          "私たちはメンバーの一人で、近年気良に移り住んできた元デザイナーに協力を求めた。彼の助けを借りて作られた新しいポスターは、歌舞伎の伝統的な色使いを用いながらも、近代的なテイストを取り入れていた。大胆で、洗練されていて、他の地歌舞伎団体が使っていたものとは全く異なるものであった。ある人は「地歌舞伎がこんなに格好良いものだとは知らなかった」。その瞬間、私は理解した。「ポスターというのは単なる装飾ではない。人の心を掴むアートなのだ」と。",
+          "---",
+          "私たちのオンラインでの広報活動は着実に成長していった。しかし、それがすべての人に届いているわけではないことも私は知っていた。特に高齢の住民は、FacebookやInstagramを利用していなかった。",
+          "その頃、元同僚から連絡を受けた。彼は新聞販売事業を継いでおり、毎月配布するチラシの裏面に地域団体のニュースを掲載していた。「気良歌舞伎のことも載せてみてはどうですか？」と。その誘いを受けて、2016年5月に「地歌舞伎かわら版」の創刊号が出版されることとなった。",
+          "各号には、スケジュールや出演者リストだけでなく、短いコラムも掲載された。古典歌舞伎の解説、舞台裏の物語、さらには日本各地の歴史ある芝居小屋の紹介など。私たちは11号まで発行し、地元の新聞、商店、イベントを通じて配布した。",
+          "**紙ではあった。しかし、それも、新しい\u201c舞台\u201dだった。**"
+        ]
+      },
+      "en": {
+        "title": "When the Village Began to Speak",
+        "subtitle": "Social media, YouTube, posters, and a newsletter",
+        "excerpt": "How a local tradition found its voice — and reached beyond the mountains.",
+        "paragraphs": [
+          "After the revival in 2005, something started to shift — not overnight, but slowly, quietly. The performances became a regular event, and each year, we could feel the audience growing. People started to say, \u201cI heard you're doing something pretty serious over there.\u201d",
+          "Our acting improved year by year. And at some point, we began to wonder: What if more people could see this? This is the story of how we started to speak — not just to ourselves, but to the world.",
+          "The idea came to me quietly but clearly. At the time, Facebook had become the largest social media platform in the world. So we created an official account. We began sharing rehearsal updates, snapshots from past performances, and announcements. It wasn't polished or strategic — just honest.",
+          "The following year, we opened a YouTube channel. But soon, we realized: This wasn't just documentation. It was a new stage.",
+          "Social media opened doors — to audiences we never knew we had, and to other troupes across Japan. Many of the connections we made later began with a simple \u201cLike.\u201d Facebook and YouTube didn't just help us share kabuki — they helped us become part of a larger story.",
+          "In October 2015, we launched our official website using Jimdo. It became a place to host schedules, share stories, and offer newcomers a way to understand who we were.",
+          "---",
+          "In 2014, approaching the 10th anniversary, we asked: How can we get more people interested? We turned to a former designer who had moved to Kera. The poster he created drew from kabuki's traditional color palette but with a modern aesthetic. It was bold, graphic, and unlike anything other troupes were using. \u201cI didn't know local kabuki could look like this.\u201d That's when we knew: Good design isn't decoration. It's an invitation.",
+          "---",
+          "While our online outreach was growing, we knew it wasn't reaching everyone. Many older residents weren't using Facebook or Instagram.",
+          "A former colleague who ran a newspaper distribution business suggested featuring Kera Kabuki in his monthly flyers. That small suggestion became something much bigger. In May 2016, we published the first issue of the Kera Kabuki Kawaraban.",
+          "Each issue featured schedules, cast lists, and short columns: explanations of classic plays, behind-the-scenes stories, and spotlights on historic playhouses. Over time, we published eleven issues.",
+          "**It was still paper — but it was also a new kind of stage.**"
+        ]
+      },
+      "noteUrl": "",
+      "mediumUrl": ""
+    },
+    {
+      "id": 5,
+      "ja": {
+        "title": "気良歌舞伎の\u201c声\u201dが響きはじめた",
+        "subtitle": "気良歌舞伎展、市長出演、岐阜県加盟、初の県都公演",
+        "excerpt": "気良の山あいに佇む旧小学校の講堂が、芝居小屋への第一歩を踏み出す。そして、舞台はさらに広がっていく。",
+        "paragraphs": [
+          "気良の山あいに、木造の旧小学校と講堂が佇んでいる。1937年（昭和12年）建築、文化財にも指定されている建物。閉校となってからは、民俗資料館として使われていた。旧校舎には、衣装やかつら、小道具――数百点におよぶ収蔵品が棚の中に眠っていた。",
+          "2016年初春、「講堂を歌舞伎の品々で飾ってくれないか？」と声がかかった。毎週末、みんなで講堂に集まった。衣装や紙鎧を飾り、大名屋敷の背景幕をかけ、数々の小道具を一つずつ並べていった。",
+          "3月末、「気良歌舞伎展」が幕を開けた。SNSで知らせると、遠くからも人が訪れた。やわらかな日差しが入りこむ木造の講堂。祖父たちの遺したものが、じっと佇んでいる。あの時代の気配が、息づいていた。",
+          "私たちは仮設舞台も設置した。講堂が芝居小屋の雰囲気をまとう。そこは私たちの稽古場にもなった。",
+          "---",
+          "その秋、私たちは市長に出演を依頼した。驚いたことに、市長はそれを受けてくださった。子どもを迎えにくる、ただの村人役。それでも何度も稽古に足を運んでくれた。",
+          "公演前の楽屋。私たちとお揃いのTシャツを着る市長の姿があった。本番、市長が舞台に登場した瞬間、ざわめきが、さざ波のように広がっていく。市長はセリフにアドリブを加えていた。場内はすぐに笑顔で包まれた。子役を抱いて花道を走る市長に、拍手が降り注ぐ。",
+          "**そのとき、舞台は――みんなのものになった。**",
+          "---",
+          "2017年、気良歌舞伎は岐阜県地歌舞伎保存振興協議会に県内30団体目として加盟した。岐阜県は30以上の地歌舞伎団体を持つ、日本で最も地歌舞伎が盛んな県である。",
+          "2019年7月、私たちは県都・岐阜市のぎふ清流文化プラザで開催された特別公演に招待された。郡上市外での初めての公演。演目は「伊勢音頭恋寝刃」。観客の反応は圧倒的だった。",
+          "公演後、バスに乗り込もうとした時、見知らぬ二人が私に近づいてきた。「握手させてください。」「こんなすごい地歌舞伎は初めてです。」歌舞伎のおかげで、見知らぬ人から握手を求められたのは初めてだった。",
+          "あの瞬間、私たちは知った。気良歌舞伎はもはや村の名前だけではなく、もっと大きなものの一部になったのだ。"
+        ]
+      },
+      "en": {
+        "title": "When a Village Took the Stage",
+        "subtitle": "Exhibition, mayor's debut, prefectural recognition, first big-stage performance",
+        "excerpt": "From a quiet exhibition to a roaring prefectural debut, Kera found its spotlight.",
+        "paragraphs": [
+          "In the Kera district, there was a small folk museum — once a wooden elementary school where our fathers had studied. Built in 1937, the building carried a quiet, nostalgic weight. Among the museum's stored artifacts were hundreds of items from our kabuki past: costumes, wigs, props.",
+          "One day, the group managing the museum approached us with an idea. Next to the museum stood an old wooden auditorium, unused for years. \u201cWould you consider displaying the kabuki materials there?\u201d We agreed — and launched the Kera Kabuki Exhibition.",
+          "The space became a living memory. Visitors from outside the city came to see it. We built a temporary stage and hanamichi walkway inside the auditorium. Soon, we weren't just displaying kabuki — we were practicing there, too.",
+          "---",
+          "As word spread, even the mayor of Gujo City came to watch. One day, we asked: \u201cWould you like to appear on stage?\u201d To our surprise, he said yes. It was a minor role, but he attended rehearsals faithfully.",
+          "When he stepped on stage, the audience erupted in cheers and threw ohineri his way. Then came the surprise: he added his own improvised line, and the crowd roared again.",
+          "**In that moment, we weren't just performers. We were citizens. And perhaps, for the first time, Kera Kabuki felt like it had been truly embraced.**",
+          "---",
+          "In 2017, Kera Kabuki officially joined the Gifu Prefectural Association for the Preservation and Promotion of Jikabuki. Gifu has the highest concentration of local kabuki groups in Japan.",
+          "In July 2019, we were invited to perform at the Gifu Seiryu Cultural Plaza. It was our first time performing outside Gujo City. The play was Ise Ondo Koi no Netaba. The audience response was overwhelming.",
+          "After the curtain fell, two strangers approached me. \u201cThat was incredible. I've never seen a local kabuki troupe like yours.\u201d It was the first time anyone outside our community had asked to shake my hand because of kabuki.",
+          "In that moment, we knew: Kera Kabuki was no longer just a village name. It had become part of something larger — known, shared, remembered."
+        ]
+      },
+      "noteUrl": "",
+      "mediumUrl": ""
+    },
+    {
+      "id": 6,
+      "ja": {
+        "title": "静寂の中で情熱の炎は燃え続ける",
+        "subtitle": "コロナ禍の映像配信「おうちで歌舞伎」",
+        "excerpt": "2020年春、世界が静寂に包まれた。しかし、舞台は途絶えさせない。私たちは「おうちで歌舞伎！」プロジェクトに挑んだ。",
+        "paragraphs": [
+          "2020年の春、日本全体に静けさが訪れた。緊急事態宣言が発令され、行事は予定表から消え、イベントは街から姿を消した。気良歌舞伎も例外ではなく、祭礼公演は中止された。",
+          "奇しくも、この年はちょうど世代交代の年でもあった。復活を支えた世代が若手にバトンを渡し、20代の新しい座長が新たな舞台を開こうとしていた。だが、幕は上がらなかった。",
+          "一度止まった伝統芸能を再び動かすのは難しい。私たちはそれを経験から知っている。しかし同時に、困難な時ほど舞台には意味があることも知っていた。だからこそ、新しい執行部は立ち止まらないことを選んだ。",
+          "**「ピンチをチャンスに変えよう」**",
+          "私たちにはすでにYouTubeチャンネルがあった。観客が来られないのなら、こちらから届ければいい。講堂の仮設舞台を使い、無観客での撮影に踏み切った。",
+          "地元ケーブルテレビに連絡した。撮影・放映・配信まで協力してくれることになった。さらに、首都圏から隣の地区に移住してきた若者がテレビ番組制作の経験を持っていた。ドキュメンタリーの制作を引き受けてくれた。",
+          "演目は「白浪五人男」。新座長の初舞台にふさわしく、「浜松屋」の場面から上演する構成にした。舞台セットを一から自分たちで作ることにした。高雄歌舞伎の大道具に指導を仰ぎ、木材を測り、切り、塗る。江戸の町屋がこの山里に現れた。",
+          "コロナ禍の稽古は、これまでにない経験だった。検温、マスク着用。声を出し、息を使うことが不可欠な舞台に、マスク越しの声は通らなかった。それでも誰一人として諦めなかった。",
+          "資金面も問題だった。そこで私たちはクラウドファンディングに挑戦した。「おうちで歌舞伎！地芝居映像配信プロジェクト」と銘打って、YouTubeとケーブルテレビの同時配信を目指した。",
+          "撮影前日、高雄歌舞伎の師匠が静かに言った。「肩の力を抜いて、楽しくやりなさい」。本番当日、マスクを外して化粧を施す。久しぶりに見る仲間の素顔に、思わず笑みがこぼれた。これは間違いなく、気良歌舞伎史上最高の舞台だった。",
+          "配信後、SNSやクラウドファンディングを通じて、気良歌舞伎を知らなかった人たちにも届いた。「歌舞伎が好きだから」ではなく、「こんな時代に挑戦を続けるその姿に心を打たれた」と。",
+          "舞台のハイライト、浜松屋の場面で、弁天小僧がその姿をあらわにし、高らかに叫ぶ。",
+          "**「知らざぁ言って、聞かせやしょう」**",
+          "あの一言は、弁天小僧の台詞であると同時に、私たち全員の声でもあった。静寂の中で、情熱は、その炎を燃やし続けていたのだ。"
+        ]
+      },
+      "en": {
+        "title": "When the Stage Went Silent, But the Spirit Did Not",
+        "subtitle": "The pandemic streaming project — \u201cKabuki at Home!\u201d",
+        "excerpt": "What never opened found its voice — streamed from silence, carried by hope.",
+        "paragraphs": [
+          "In the spring of 2020, silence swept across Japan. A state of emergency was declared. Events vanished from calendars. Kera Kabuki was no exception — our beloved annual performance was canceled.",
+          "Ironically, this was also the year of transition. The generation that had revived the troupe handed the baton to a new, younger team. A new head, in his twenties, stood ready to open a new chapter. But the curtain never rose.",
+          "Traditional performing arts, once paused, are hard to revive. We knew that from experience. But we also knew: in times of hardship, the stage matters more than ever. That's why the new leadership chose to keep going. Quietly disappearing was never an option.",
+          "**\u201cLet's turn crisis into opportunity.\u201d**",
+          "We already had a YouTube channel. If audiences couldn't come to us, we would go to them. The makeshift stage at the local hall had the air of an old-style playhouse. We reached out to our long-time supporters at the local cable TV station. They agreed to help with filming, broadcasting, and streaming.",
+          "A young man with TV production experience who had recently moved to a neighboring town agreed to create a documentary. The piece was Benten Kozo — Shiranami Gonin Otoko. This time, we added the Hamamatsuya scene to showcase the new head's full range.",
+          "We hung blackout curtains, adjusted the lighting, and built our own set for the first time. An Edo-style townhouse took shape in our mountain village. Even with masks, the shared labor brought us closer than ever.",
+          "Rehearsing during the pandemic was unlike anything we had experienced. Temperature checks, masks — theater demands voice and breath, but masks muffled both. Still, no one gave up.",
+          "We turned to crowdfunding, launching the \u201cKabuki at Home! Local Theater Streaming Project.\u201d The day before filming, the Takao master quietly said, \u201cRelax your shoulders. Enjoy it.\u201d On the day of the shoot, we removed our masks for makeup. Seeing familiar faces again brought smiles. It was, without a doubt, the finest performance in Kera Kabuki's history.",
+          "Thanks to social media and crowdfunding, our story reached people who had never heard of Kera Kabuki. Not because they loved kabuki — but because they were inspired by the courage to keep going.",
+          "In the highlight, Benten Kozo throws off his disguise and declares boldly:",
+          "**\u201cIf you don't know, then let me tell you!\u201d**",
+          "That line wasn't just his. It belonged to all of us. This was Kera Kabuki's answer, in the year the curtain never rose. The spirit surely did."
+        ]
+      },
+      "noteUrl": "",
+      "mediumUrl": ""
+    },
+    {
+      "id": 7,
+      "ja": {
+        "title": "舞台はさらなる高みへ",
+        "subtitle": "忠臣蔵通し狂言・映像配信第2弾",
+        "excerpt": "過去の映像と新たな挑戦をつないで、歌舞伎の大作を通し狂言として表現する——デジタル時代だからこそ可能な挑戦。",
+        "paragraphs": [
+          "パンデミック中に配信した映像配信公演は、想像を超える反響だった。それは私たちの地域をはるかに超えて、日本全国、さらには海外にまで届いたのだ。",
+          "翌年の6月、私たちは高雄歌舞伎とともに、ぎふ清流文化プラザで再び公演する機会を得た。演目は『仮名手本忠臣蔵』。気良歌舞伎は五段目と六段目を担当し、高雄歌舞伎は七段目を演じる。その舞台は演技だけでなく、革新的な構成もあって、前売券は完売。その公演で私は主役を演じる栄誉を得た。",
+          "しかし、コロナウイルスの脅威はまだ去っていなかった。9月に予定されていた秋の公演は中止が決まる。それでも、郡上の歌舞伎の火を絶やすわけにはいかない。こうして、2回目の配信プロジェクトが始まったのだ。",
+          "ただ単に前回の方法を繰り返すだけではなく、それを超えるための挑戦が必要だと考えた。その時、私にひとつのアイデアが浮かんだ――過去の公演の映像を繋ぎ合わせれば、新たな作品として構成することができる。",
+          "通し狂言は、プロの大歌舞伎でも珍しく、年に一度の公演しかできない地歌舞伎にとっては、なおさら実現は難しい。しかし、映像なら話は別だ。新しい映像と過去の公演をつなげば、一本の通し狂言を再構成できる――それは、デジタル時代だからこそ可能な挑戦だった。",
+          "構成は、三段目、五段目、六段目、七段目、九段目。五段目と六段目は収録済み。七段目も過去の映像がある。あとは、三段目と九段目を新たに撮影すれば、忠臣蔵の壮大な物語を通し狂言として表現できるのだ。",
+          "---",
+          "三段目は、これまで一度も演じたことがない。九段目はさらに困難だ――気良歌舞伎でも、高雄歌舞伎でも、演じられたことがない。実際、現代の大歌舞伎でさえほとんど上演されていない。参考資料はほぼ皆無。頼りにしたのは、高雄歌舞伎の師匠が所有していた何十年も前のプロ公演のVHSビデオのみ。",
+          "私は、家の奥からほこりの被ったビデオデッキを引っ張り出し、VHSをDVDに変換した。そして、それを何度も繰り返し見て、一つひとつの台詞、動きを吸収し、自分なりの解釈を練り上げていった。三段目も九段目も台本がなかった。だから私は録画したDVDから一語一句、自分で書き起こした。耳で聞き、手で書き写すことで、その台詞は私たちのものとなった。",
+          "---",
+          "さらに、前年の映像配信プロジェクトのときにご縁を得た、プロの歌舞伎劇場のイヤホンガイドの方に協力を依頼した。無償に近い、無茶なお願いだった。それでも彼は温かく引き受けてくれた。各映像には、ガイド付きとガイドなしの2バージョンを用意し、視聴者が選べるようにした。",
+          "配信は12月14日――忠臣蔵のモデルとなった四十七士の討ち入りが実際にあった日を最終日に設定した。4夜連続のオンライン公演。こんなことをやった地歌舞伎団体は他にはなかった。",
+          "---",
+          "そして、九段目――雪の場面。手でちぎった白い紙を、黒衣が静かに降らせる。三味線が響く――冷たく、鋭く。登場人物たちの感情が、降りしきる雪の中で舞台の熱をあげていく。",
+          "九段目の撮影が終わったとき、高雄歌舞伎の師匠が静かに言った。「この場面をずっと演じたかった。でも難しすぎた。今の君たちだからこそ――可能になったんだ。」",
+          "私たちは乗り越えた。しかし、この時点ではまだ知らなかった――気良歌舞伎の歴史で最大の危機が、この先に待っていることを。"
+        ]
+      },
+      "en": {
+        "title": "When the Stage Reached Even Further",
+        "subtitle": "Chushingura as a digital epic — streaming project part 2",
+        "excerpt": "Reviving the unstaged, reimagining the known — a full-length kabuki told across time and screen.",
+        "paragraphs": [
+          "The video performance we streamed during the pandemic exceeded all expectations. It resonated far beyond our village — across the country, and even overseas.",
+          "In June of the following year, we were invited to perform Kanadehon Chushingura at Gifu Seiryu Cultural Plaza alongside Takao Kabuki. Kera Kabuki took on Acts 5 and 6, while Takao performed Act 7. I had the honor of playing the lead.",
+          "But the threat of COVID-19 had not passed. Our autumn performance was canceled again. Still, we couldn't allow the flame to go out. And so, our second streaming project was launched.",
+          "This time, we wanted to surpass the previous success. The idea: integrate past performances with new footage to create a single narrative — a full tōshi kyōgen. Such complete productions are rare even among professionals. For local jikabuki, it's almost impossible. But with video, it's a different story.",
+          "We settled on Acts 3, 5, 6, 7, and 9. Acts 5 and 6 were recorded. Act 7 existed in our archives. All that remained was to film Acts 3 and 9.",
+          "---",
+          "We had never performed Act 3 before. Act 9 was even more challenging — never attempted by Kera Kabuki or even Takao Kabuki. Our only reference was a decades-old VHS recording. I transcribed the scripts word by word from the recordings. Writing it out wasn't just mechanical — it was a way of internalizing the words.",
+          "Both acts required unique stage sets built from scratch. Act 3: the Pine Chamber of Edo Castle. Act 9: a snow-covered mountain retreat with a special effect — a door that falls mid-performance.",
+          "---",
+          "We also enlisted a professional kabuki earphone guide narrator. He recorded both introductions and live commentary synced to the performance. Two versions of each video: with and without guide. We were transforming how kabuki could be experienced.",
+          "The final streaming date was December 14 — the day of the actual raid by the Forty-seven Ronin. A four-night online performance. No other local troupe had done this.",
+          "---",
+          "Then came Act 9 — the snow scene. White paper, torn by hand, fell slowly from above. The shamisen rang out — cold and sharp. Characters' emotions warmed the stage as snow kept falling.",
+          "When it ended, the Takao master quietly said: \u201cI always wanted to perform this act. But it was too difficult. Only now — because of who you've become — was it possible.\u201d",
+          "We had made it through. But what we didn't know was this: the greatest crisis in Kera Kabuki's history was still ahead."
+        ]
+      },
+      "noteUrl": "",
+      "mediumUrl": ""
+    },
+    {
+      "id": 8,
+      "ja": {
+        "title": "嵐のなか、灯りは受け継がれた",
+        "subtitle": "3年連続の公演中止、そして新たなスターの誕生",
+        "excerpt": "大きな夢を掴もうと伸ばした手は、虚しく空を切った。しかし、その逆境をバネにして、新たなスターが誕生した。",
+        "paragraphs": [
+          "2020年、そして2021年。パンデミックで世界が閉ざされたその時、私たちは「開く」という選択をした。この経験を通じて、私たちはひとつの確信を得た。——「この場所でお客様を迎えて公演ができる」",
+          "舞台は整っていた。客席にも十分なスペースがある。「自前の芝居小屋を持つ」——その長年の願いが、いよいよ現実になろうとしていた。しかし、ひとつだけ足りないものがあった。それは、楽屋だった。",
+          "そこで、私たちはひとつのアイデアにたどり着く。隣接する博物館の旧小学校の会議室を楽屋として活用し、講堂との間に、仮設の「渡り廊下」をかけようと考えた。廊下の骨組みには、地元で廃業した建築業者から譲り受けた足場材を使った。",
+          "私たちは9月の公演に向けて着々と渡り廊下の設営を進め、7月下旬からは稽古も開始。夢の実現に向け、確かに歩みを進めていた。",
+          "しかし、公演の3週間前。恐れていたことが起きた。郡上市で再びコロナ感染者が増加し、メインキャストの一人が感染してしまった。苦渋の決断であった。3年連続で有観客での公演を中止せざるをえなかった。",
+          "**大きな夢を掴もうと伸ばした手は、虚しく空を切った。**",
+          "---",
+          "しかし、その年の11月に、郡上市において県内の地歌舞伎団体が集まって公演が開かれることが決まっていた。会場は郡上市総合文化センター。多くの観客も来る。私たちはそう信じて、その公演にすべてを懸けることにした。",
+          "演目は三大歌舞伎と評される義経千本桜の一幕「すしやの段」。しかし、運営者から与えられた時間は1時間10分以内。通常では1時間半を超える大作だ。私は台本を精査し、物語の流れを壊さないように編集した。",
+          "そして、この公演にはもう一つの大きな目標があった。——新たな主役を育てること。以前から彼の演技には一目置いていた。彼がこの年、地元企業に転職し制約がなくなった。",
+          "公演当日。才能、そして努力を厭わないその姿勢が、ついに花開いた瞬間だった。ラストシーン。主人公が親を想い泣き、子を想って泣く。その感動的な演技に観客席のあちこちから抑えきれないすすり泣きが聞こえた。",
+          "この年、大きな夢は叶わなかった。しかし、その逆境をバネにして、気良歌舞伎に新たなスターが誕生したのだった。"
+        ]
+      },
+      "en": {
+        "title": "When the Stage Found Its Heir",
+        "subtitle": "Three years of cancellations, and a new star is born",
+        "excerpt": "A canceled dream. A rewritten role. And the moment a legacy chose its future.",
+        "paragraphs": [
+          "In 2020 and 2021, when the world shut down, we chose to open. Those performances, held in an empty auditorium, still found their way into people's hearts. And with that, we became certain: This place could become a true home for the stage.",
+          "But one challenge remained: we had no backstage. So we came up with an idea — use the museum's old schoolhouse as a dressing area and build a corridor between it and the auditorium. A bridge of hope and imagination.",
+          "By late July, we began rehearsals. We were so close to our dream. But three weeks before opening night, COVID cases began rising again. One of our lead cast members tested positive.",
+          "After long discussions, we made the painful decision: For the third year in a row, we would cancel our in-person performance.",
+          "**A dream within reach dissolved like smoke. The auditorium stood empty once more.**",
+          "---",
+          "But another stage was already calling. That November, a regional kabuki festival was set to take place in Gujo City. We were on the roster. The play: \u201cSushiya no Dan\u201d from Yoshitsune Senbon Zakura.",
+          "The organizers gave us a strict time limit: 70 minutes. The original runs over 90. I took on the task of editing the script — preserving the soul while trimming the excess.",
+          "We made a bold decision: veteran actors stepped aside to support the next generation. The lead went to an actor I had long admired — talented but previously limited by his work schedule. That year, he switched jobs to a local company. Suddenly, he was present. Committed. Constant.",
+          "On performance day, his talent and dedication bore fruit. In the final scene, as the protagonist wept for his parents and his child, soft sobs echoed through the audience.",
+          "That year, our auditorium remained dark. But from that darkness, something shone brighter. A new star was born."
+        ]
+      },
+      "noteUrl": "",
+      "mediumUrl": ""
+    },
+    {
+      "id": 9,
+      "ja": {
+        "title": "舞台に灯った光は、心をつなぐ",
+        "subtitle": "講堂での初公演、そして県外公演",
+        "excerpt": "「今年こそ、この講堂で公演をしよう」――長年温めてきた夢が、ついに動き始めた。",
+        "paragraphs": [
+          "2023年、気良歌舞伎はひとつの明確な目標を掲げた。「今年こそ、この講堂で公演をしよう」。かつて何もなかったガランとした講堂。そこを芝居小屋として蘇らせることは、私たちが長年温めてきた夢だった。",
+          "大工の棟梁の指導のもと、私たちは屋根を架け、床を敷いた。旧校舎を転用した楽屋と講堂とを結ぶ廊下が、ついに完成した。",
+          "この年の公演は、地域の人たちのためだけの特別な舞台だった。SNSでの告知もせず、広報は地域内の回覧板や口コミだけにとどめた。",
+          "そして迎えた公演当日。講堂に一人、また一人と人が集まりはじめる。「この講堂に入るのは久しぶりやな」年配のおじさんが、目を細めて懐かしそうにつぶやいた。",
+          "第1幕は『白浪五人男』。冒頭、私は敵役として登場し、台詞に地元ネタを仕込んだ。会場に笑いが広がり、空気がやわらかくなる。そして、中高生たちが堂々とした演技を見せた。",
+          "第2幕は『与話情浮名横櫛』。主演の二人は幼なじみであり同級生でもあった。気心の知れた者同士ならではの呼吸が見事に合い、自然な間合いと深い情感がにじんでいた。",
+          "講堂での初めての公演は、完璧ではなかったかもしれない。けれど、舞台の上にも客席にも、確かに「夢がかなった」瞬間の空気が流れていた。この日、講堂はただの建物ではなくなった。気良歌舞伎の物語が息づく、私たちの\u201c芝居小屋\u201dになったのだ。",
+          "---",
+          "その数か月後、私たちは岐阜清流文化プラザでの県内合同公演に参加した。演目は『菅原伝授手習鑑 寺子屋の段』。親子での共演もいくつかあった。102歳となった祖母も会場に足を運んでくれた。",
+          "終演後、私たちはそのままの姿で会場入口に立ち、観客一人ひとりを見送りながら、写真撮影や握手にも応じた。「感動しました」「がんばってください」――そんな言葉とともに交わされた笑顔や握手の一つひとつが、私たちに大きな力を与えてくれた。",
+          "かつて「夢だ」とささやかれていた芝居小屋。それが現実となり、地域に喜びをもたらし、舞台を通してその響きは外の世界へと広がった。"
+        ]
+      },
+      "en": {
+        "title": "When the Dream Took the Stage",
+        "subtitle": "First performance in the auditorium, and beyond",
+        "excerpt": "A wooden hall transformed. A community reunited. A dream realized — then carried further.",
+        "paragraphs": [
+          "In 2023, Kera Kabuki set a clear goal: \u201cThis year, let's finally perform in the auditorium.\u201d Turning the aging hall into our own local playhouse had been a long-standing dream.",
+          "Under the guidance of a master carpenter, members added a roof, laid flooring, and installed lighting. The corridor linking the dressing room to the auditorium was finally complete.",
+          "This first auditorium performance was intended for the people of Kera alone. No social media announcements. Word spread through bulletin boards and simple word of mouth.",
+          "\u201cI haven't been inside this hall in decades,\u201d said one elderly visitor. It felt like a village festival — gentle, familiar, and quietly exciting.",
+          "The first act was Shiranami Gonin Otoko, performed by local junior high and high school students. As one of the antagonists, I added local references to my lines. Laughter rippled through the audience. The distance between performer and viewer vanished.",
+          "In the second act, a mid-career member took the lead role for the first time. Surrounded by seasoned veterans, he gave a powerful performance. Afterward, someone quietly remarked: \u201cA new lead has been born.\u201d",
+          "The first auditorium performance wasn't perfect. But the dream had become real. That day, the auditorium was no longer just a building — it had become our theater.",
+          "---",
+          "A few months later, we performed at Gifu Seiryu Cultural Plaza. Tickets sold out. My grandmother, now 102, was in the audience.",
+          "After the performance, we greeted guests directly — still in full costume. \u201cYour performance moved me.\u201d \u201cI cried.\u201d Many voices came from people we had never met. Our stage had reached beyond the village.",
+          "The dream of performing in our own auditorium — once only whispered — was now real. And from that stage, the sound of kabuki spread outward."
+        ]
+      },
+      "noteUrl": "",
+      "mediumUrl": ""
+    },
+    {
+      "id": 10,
+      "ja": {
+        "title": "新たな伝統が生まれ、そして、挑戦はつづく",
+        "subtitle": "気良座こけら落とし公演、そして次世代へのバトン",
+        "excerpt": "復活20年の記念の年。この芝居小屋の名前を「気良座」とした。全国から観客が訪れたこけら落とし公演。",
+        "paragraphs": [
+          "2023年、気良の住民限定で気良座にて公演を行った。告知は掲示板と口コミだけ。それでも、たくさんの笑顔と拍手が会場に満ちた。「常設の芝居小屋を持つ」という長年の夢が、ついに現実になったのだ。私たちは、この芝居小屋の名前を「気良座」とした。",
+          "来年は、気良歌舞伎復活20年の記念の年。せっかくなら、こけら落とし公演として思い切り華やかに開こう。そう、私たちは心を一つにした。",
+          "まずは気良座のさらなる整備。大工の棟梁の指導のもと、待機部屋を増設し、提灯を新調した。気良座は本格的な芝居小屋としての装いを整えていった。",
+          "「気良歌舞伎復活20年記念 気良座こけら落とし公演」として、新聞社にも取材していただき、SNSでも情報を発信した。",
+          "---",
+          "公演当日。昼間に会場準備をしていると、開演のずっと前にもかかわらず来場者が現れた。「埼玉から来ました」と。その後もどんどん人が集まり、芳名帳には東京、名古屋、新潟、金沢など、全国からの来訪者が名前を記していた。開演前には会場が満席となり、立ち見が出るほどの賑わいとなった。",
+          "幕開けは、小学生女子5人による『白浪五人男』。最終稽古のときには上手くいかず泣いていた子、セリフを何度も間違えてしまっていた子。その子たちが堂々と、完璧に演じきった。最後は全員で見得を切る。大量のおひねりが飛び交い、会場は大きな拍手に包まれた。",
+          "ちょうど私の隣に馴染みの小学生の男の子がいた。「あの紙には何が入っているの？」「お金だよ」「えっ、あれってもらえるの？」「もちろん。君も出てみる？」「出たい！」",
+          "**私には見えた。気良の未来が。**",
+          "二幕目は『絵本太功記 十段目』。若手の一生懸命な演技、主役の気迫あふれる演技、脇役の熟練した演技。それらが調和した素晴らしい舞台に、幕が下りる前から拍手が起きた。",
+          "三幕目はベテラン勢による『仮名手本忠臣蔵 七段目』。20年前の復活からのメンバーが中心。主役の大星由良之助を演じるのは、ずっとこの役を演じたいと願っていた仲間。相棒の寺岡平右衛門には私が指名された。",
+          "歌舞伎の中でもひときわ華やかな舞台。息の合ったやりとりに、ご当地ネタのアドリブ。笑いが起きた。と思えば、急展開する物語の中で、会場は静まりかえる。そしてクライマックス。由良之助がついに本心を明かし、裏切者を打ち据える瞬間。演者と観客の心が、ひとつになった。",
+          "---",
+          "終演後。衣装を脱ぎ、化粧を落とす。地元の公民館でささやかな打ち上げを開いた。お酒を飲みながら、公演が終わったことを祝い、20年の歩みを笑って振り返った。",
+          "そんな中、今日の主役を演じた由良之助の息子で、公演では端役で出ていた青年とその同級生たち数名が近寄ってきた。同級生を代表して、その彼が私に言った。",
+          "**「来年、僕たち同級生で『白浪五人男』をやらせてください」**",
+          "その言葉に、一瞬、部屋の空気が静まり、次の瞬間、仲間たちの笑顔と応援の拍手が広がった。舞台の灯りは、気良歌舞伎の精神は、確かに次の手に渡ったのだ。",
+          "**気良歌舞伎は、これからも挑戦しつづける。挑戦をしつづけること、それこそが伝統文化を継承するということなのだ。この物語は、そしてこの挑戦は、これからも続く。**"
+        ]
+      },
+      "en": {
+        "title": "When the Dream Finally Took the Stage",
+        "subtitle": "The kokera-otoshi grand opening, and passing the torch",
+        "excerpt": "A twenty-year journey. A stage reborn. And the promise that lives in every step forward.",
+        "paragraphs": [
+          "In 2023, we quietly staged a small performance at Kera-za — no social media, just word-of-mouth. But what we felt was anything but small. For the first time since the pandemic, our community came together inside a space we had built with our own hands. Kera-za had become real.",
+          "We named our theater \u201cKera-za.\u201d In 2024, to mark twenty years since our revival, we would hold the official grand opening — the kokera-otoshi performance.",
+          "Under the guidance of a master carpenter, we built a new waiting room. We added lanterns. Kera-za was no longer a repurposed hall. It was our theater.",
+          "We announced our show proudly: \u201cKera Kabuki 20th Anniversary — Kera-za Kokera-Otoshi Performance.\u201d",
+          "---",
+          "On the day, hours before the curtain, visitors began arriving. \u201cWe came from Saitama.\u201d Then more from Tokyo, Nagoya, Niigata, Kanazawa. The guest book filled with names from across Japan. The hall reached full capacity, with standing room only.",
+          "The first act was Shiranami Gonin Otoko, performed by five elementary school girls. They had stumbled in rehearsals, even cried. But on that day, they performed flawlessly. In the final moment, they struck a synchronized mie pose. Ohineri flew through the air and the hall erupted.",
+          "A young boy beside me whispered, \u201cWhat's inside those papers?\u201d \u201cMoney,\u201d I replied. \u201cReally?! Can I get some too?!\u201d \u201cIf you perform. Want to try kabuki?\u201d His eyes lit up. \u201cYes!\u201d",
+          "**A new seed had quietly been planted.**",
+          "The second act was Ehon Taikoki, Act 10. Youth, experience, and passion woven together beautifully. Before the curtain could fall, applause had already begun and did not stop.",
+          "The final act was Kanadehon Chushingura, Act 7. Twenty-year veterans took the stage. The lead role of Oboshi Yuranosuke went to the member who had dreamed of it for years. I played his counterpart, Heiemon.",
+          "Local jokes brought laughter. Then the plot turned and the mood shifted. At the moment when Oboshi revealed his truth and struck the traitor — the room trembled in silence. It was no longer a performance. It was a moment we lived together.",
+          "---",
+          "After the final curtain, we held a modest celebration. We laughed. We remembered the journey. Then a young man approached me — the son of that day's Oboshi, who had taken a small role. Behind him stood a group of his classmates.",
+          "He spoke for them all:",
+          "**\u201cNext year, we want to perform Shiranami Gonin Otoko. Together.\u201d**",
+          "The air paused. Then we smiled. A new challenge had already begun. Kera Kabuki will continue. As long as we keep challenging, the stage will stay alive. And challenge, when shared, becomes tradition. This story — and this challenge — is far from over."
+        ]
+      },
+      "noteUrl": "",
+      "mediumUrl": ""
+    },
+    {
+      "id": "summary",
+      "ja": {
+        "title": "灯し火の螺旋",
+        "subtitle": "舞台のあかりは、あなたにもゆらめく",
+        "excerpt": "全10話のストーリーを文学的に再構成した、創作大賞2025エッセイ部門出品作品。",
+        "paragraphs": [
+          "気良歌舞伎ストーリー全10話を、ひとつの物語として再構成したエッセイです。",
+          "二十年目の舞台を終え、打ち上げの夜は更けていく。私はひとり席を離れ、そっと窓を開ける。いつか見た神社の灯りが、にじんでいるようだった。木々のさやめきだけが、かすかに舞台をなでる。再生の灯し火は、静かに息づいていた。未来を担う\u201c誰か\u201dの手へ——そのときを待って。",
+          "---",
+          "本作品は、note創作大賞2025エッセイ部門に出品しています。全文はnoteにてお読みいただけます。"
+        ]
+      },
+      "en": {
+        "title": "The Spiral of Firelight",
+        "subtitle": "",
+        "excerpt": "A literary retelling of the full 10-story Kera Kabuki series.",
+        "paragraphs": [
+          "English translation coming soon."
+        ]
+      },
+      "noteUrl": "",
+      "mediumUrl": ""
+    }
+  ]
+}
