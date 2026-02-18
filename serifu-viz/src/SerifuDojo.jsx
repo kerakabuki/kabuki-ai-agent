@@ -1,137 +1,129 @@
 import { useState, useRef, useEffect } from "react";
 
-// ── Demo data（動画 iFwMXYtqYA0 / bentenkozo と同期） ──
-const DEMO_DATA = {
-  metadata: { source: "demo", duration: 147, title: "弁天小僧「知らざぁ言って聞かせやしょう」" },
+// ── Demo data ──
+const DEMO = {
+  metadata: { title: "弁天小僧（浜松屋の場）", duration: 147 },
   phrases: [
-    { start: 9.1, end: 19.2, text: "知らざあ言って聞かせやしょう" },
-    { start: 30.5, end: 35.0, text: "浜の真砂と五右衛門が" },
-    { start: 35.1, end: 39.1, text: "歌に残した盗人の" },
-    { start: 39.2, end: 44.6, text: "種は尽きねぇ七里が浜" },
-    { start: 44.7, end: 48.1, text: "その白浪の夜働き" },
-    { start: 48.2, end: 51.4, text: "以前を言やァ江の島で" },
-    { start: 51.5, end: 56.7, text: "年季勤めの稚児ヶ渕" },
-    { start: 56.8, end: 59.6, text: "百味で散らす蒔銭を" },
-    { start: 59.7, end: 64.5, text: "当に小皿の一文子" },
-    { start: 64.6, end: 68.2, text: "百が二百と賽銭の" },
-    { start: 68.3, end: 72.5, text: "くすね銭せえだんだんに" },
-    { start: 72.6, end: 80.7, text: "悪事はのぼる上の宮" },
-    { start: 80.8, end: 83.6, text: "岩本院で講中の" },
-    { start: 83.7, end: 87.9, text: "枕さがしも度重なり" },
-    { start: 88, end: 91.1, text: "お手長講と札附きに" },
-    { start: 91.2, end: 97.6, text: "とうとう島を追い出され" },
-    { start: 97.7, end: 101.7, text: "それから若衆の美人局" },
-    { start: 101.8, end: 105.3, text: "ここやかしこの寺島で" },
-    { start: 105.4, end: 108.8, text: "小耳に聞いた音羽屋の" },
-    { start: 108.9, end: 118.2, text: "似ぬ声色で小ゆすりかたり" },
-    { start: 118.3, end: 124.3, text: "名さえ由縁（ゆかり）の弁天小僧" },
-    { start: 124.4, end: 131, text: "菊之助たァおれがことだ" },
+    { start: 9.1, end: 18.5, text: "知らざあ言って聞かせやしょう" },
+    { start: 30.5, end: 34.5, text: "浜の真砂と五右衛門が" },
+    { start: 35.1, end: 38.5, text: "歌に残した盗人の" },
+    { start: 39.2, end: 44.0, text: "種は尽きねぇ七里が浜" },
+    { start: 44.7, end: 47.5, text: "その白浪の夜働き" },
+    { start: 48.2, end: 51.0, text: "以前を言やァ江の島で" },
+    { start: 51.5, end: 56.0, text: "年季勤めの稚児ヶ渕" },
+    { start: 56.8, end: 59.0, text: "百味で散らす蒔銭を" },
+    { start: 59.7, end: 64.0, text: "当に小皿の一文子" },
+    { start: 64.6, end: 67.5, text: "百が二百と賽銭の" },
+    { start: 68.3, end: 72.0, text: "くすね銭せえだんだんに" },
+    { start: 72.6, end: 80.0, text: "悪事はのぼる上の宮" },
+    { start: 80.8, end: 83.0, text: "岩本院で講中の" },
+    { start: 83.7, end: 87.5, text: "枕さがしも度重なり" },
+    { start: 88.0, end: 90.5, text: "お手長講と札附きに" },
+    { start: 91.2, end: 97.0, text: "とうとう島を追い出され" },
+    { start: 97.7, end: 101.0, text: "それから若衆の美人局" },
+    { start: 101.8, end: 104.8, text: "ここやかしこの寺島で" },
+    { start: 105.4, end: 108.2, text: "小耳に聞いた音羽屋の" },
+    { start: 108.9, end: 117.5, text: "似ぬ声色で小ゆすりかたり" },
+    { start: 118.3, end: 123.5, text: "名さえ由縁の弁天小僧" },
+    { start: 124.4, end: 132.0, text: "菊之助たァおれがことだ" },
   ],
 };
 
-// ── Convert old pitch_curve format to phrase format ──
-function convertLegacyData(json) {
-  if (json.phrases?.[0]?.text !== undefined) return json;
-  if (json.phrases?.[0]?.length > 0) {
-    return {
-      metadata: json.metadata || {},
-      phrases: json.phrases.map((pts, i) => ({
-        start: pts[0]?.t || 0,
-        end: pts[pts.length - 1]?.t || 0,
-        text: `フレーズ ${i + 1}`,
-      })),
-    };
-  }
-  return json;
-}
-
-// ── Colors ──
-const THEME = {
-  bg: "#0c0a10",
-  surface: "#141218",
-  border: "#2a2030",
+const TH = {
+  bg: "#0b0910",
+  surface: "#13111a",
+  border: "#261e2e",
   gold: "#e2b84a",
-  goldGlow: "rgba(226, 184, 74, 0.15)",
-  accent: "#c43030",
-  text: "#f0ebe4",
-  dim: "#706068",
-  dimmer: "#3a3040",
-  highlight: "#e2b84a",
-  unhighlight: "rgba(240, 235, 228, 0.18)",
-  success: "#5cb87a",
+  goldSoft: "rgba(226,184,74,0.10)",
+  red: "#c43030",
+  text: "#efe8df",
+  dim: "#685e6e",
+  dimmer: "#352e3d",
+  unlit: "rgba(239,232,223,0.15)",
 };
 
-function fmtTime(s) {
-  const m = Math.floor((s || 0) / 60);
-  const sec = Math.floor((s || 0) % 60);
-  return `${m}:${String(sec).padStart(2, "0")}`;
+function fmtT(s) {
+  return `${Math.floor((s || 0) / 60)}:${String(Math.floor((s || 0) % 60)).padStart(2, "0")}`;
 }
 
-// ── Karaoke text component ──
-function KaraokeText({ text, progress }) {
-  // progress: 0 to 1
-  const chars = [...text];
-  const total = chars.length;
-
+// ── Single character with width-based highlight ──
+function Char({ ch, progress }) {
+  const pct = Math.min(100, Math.max(0, Math.round(progress * 100)));
   return (
-    <div style={{ display: "inline-block", position: "relative", lineHeight: 1.8 }}>
-      {chars.map((ch, i) => {
-        const charStart = i / total;
-        const charEnd = (i + 1) / total;
-        let charProgress = 0;
-        if (progress >= charEnd) charProgress = 1;
-        else if (progress > charStart)
-          charProgress = (progress - charStart) / (charEnd - charStart);
+    <span
+      style={{
+        display: "inline-block",
+        position: "relative",
+        color: TH.unlit,
+      }}
+    >
+      {/* Invisible char for sizing */}
+      <span style={{ visibility: "hidden" }}>{ch}</span>
+      {/* Background (unlit) layer */}
+      <span
+        style={{
+          position: "absolute",
+          left: 0,
+          top: 0,
+          color: TH.unlit,
+          pointerEvents: "none",
+        }}
+      >
+        {ch}
+      </span>
+      {/* Foreground (lit) layer - clipped by overflow */}
+      <span
+        style={{
+          position: "absolute",
+          left: 0,
+          top: 0,
+          width: `${pct}%`,
+          overflow: "hidden",
+          whiteSpace: "nowrap",
+          color: TH.gold,
+          pointerEvents: "none",
+        }}
+      >
+        {ch}
+      </span>
+    </span>
+  );
+}
 
-        return (
-          <span key={i} style={{ position: "relative", display: "inline-block" }}>
-            {/* Base (unhighlighted) */}
-            <span style={{ color: THEME.unhighlight, transition: "none" }}>
-              {ch}
-            </span>
-            {/* Overlay (highlighted) */}
-            <span
-              style={{
-                position: "absolute",
-                left: 0,
-                top: 0,
-                color: THEME.highlight,
-                clipPath: `inset(0 ${Math.round((1 - charProgress) * 100)}% 0 0)`,
-                transition: "none",
-                textShadow:
-                  charProgress > 0 ? `0 0 20px ${THEME.goldGlow}` : "none",
-                willChange: "clip-path",
-              }}
-            >
-              {ch}
-            </span>
-          </span>
-        );
+function KaraokeLine({ text, progress }) {
+  const chars = [...text];
+  const n = chars.length;
+  return (
+    <div style={{ lineHeight: 1.9 }}>
+      {chars.map((ch, i) => {
+        const cs = i / n;
+        const ce = (i + 1) / n;
+        let cp = 0;
+        if (progress >= ce) cp = 1;
+        else if (progress > cs) cp = (progress - cs) / (ce - cs);
+        return <Char key={i} ch={ch} progress={cp} />;
       })}
     </div>
   );
 }
 
-// ── Progress bar for phrase ──
-function PhraseProgress({ progress }) {
+function Bar({ progress }) {
   return (
     <div
       style={{
         width: "100%",
         height: 3,
-        background: THEME.dimmer,
+        background: TH.dimmer,
         borderRadius: 2,
-        overflow: "hidden",
-        marginTop: 8,
+        marginTop: 10,
       }}
     >
       <div
         style={{
-          width: `${Math.min(100, Math.max(0, progress * 100))}%`,
           height: "100%",
-          background: `linear-gradient(90deg, ${THEME.accent}, ${THEME.gold})`,
           borderRadius: 2,
-          transition: "width 0.05s linear",
+          width: `${Math.min(100, Math.max(0, progress * 100))}%`,
+          background: `linear-gradient(90deg, ${TH.red}, ${TH.gold})`,
         }}
       />
     </div>
@@ -139,98 +131,127 @@ function PhraseProgress({ progress }) {
 }
 
 export default function SerifuDojo() {
-  const [data, setData] = useState(DEMO_DATA);
+  const [data, setData] = useState(DEMO);
   const [playing, setPlaying] = useState(false);
   const [time, setTime] = useState(0);
-  const [selPhrase, setSelPhrase] = useState(null);
+  const [sel, setSel] = useState(null);
   const [loop, setLoop] = useState(false);
   const [hasAudio, setHasAudio] = useState(false);
-  const [autoScroll, setAutoScroll] = useState(true);
 
-  const audioRef = useRef(null);
-  const timeRef = useRef(0);
-  const rafRef = useRef(null);
-  const manualPlayRef = useRef(false);
-  const manualLastRef = useRef(0);
-  const activeRef = useRef(null);
+  const audioEl = useRef(null);
+  const tRef = useRef(0);
+  const rafId = useRef(null);
+  const playingRef = useRef(false);
+  const lastTs = useRef(0);
+  const activeEl = useRef(null);
 
+  // ── Sync refs ──
   useEffect(() => {
-    timeRef.current = time;
+    tRef.current = time;
   }, [time]);
-
-  // ── Determine active phrase ──
-  const activePhrase = data.phrases?.findIndex(
-    (p) => time >= p.start - 0.05 && time <= p.end + 0.1
-  );
-  const activePhraseIdx = activePhrase >= 0 ? activePhrase : null;
-
-  // ── Calculate progress for a phrase ──
-  const phraseProgress = (phrase, currentTime) => {
-    if (currentTime < phrase.start) return 0;
-    if (currentTime > phrase.end) return 1;
-    return (currentTime - phrase.start) / (phrase.end - phrase.start);
-  };
-
-  // ── Auto-scroll to active phrase ──
   useEffect(() => {
-    if (autoScroll && activePhraseIdx !== null && activeRef.current) {
-      activeRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-  }, [activePhraseIdx, autoScroll]);
+    playingRef.current = playing;
+  }, [playing]);
 
-  // ── Animation loop ──
+  // ── Active phrase ──
+  const activeIdx = data.phrases?.findIndex(
+    (p) => time >= p.start && time <= p.end + 0.05
+  );
+
+  // ── Auto-scroll ──
+  useEffect(() => {
+    if (activeIdx >= 0 && activeEl.current) {
+      activeEl.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [activeIdx]);
+
+  // ── Main loop ──
   useEffect(() => {
     const tick = () => {
-      if (hasAudio && audioRef.current && !audioRef.current.paused) {
-        const t = audioRef.current.currentTime;
-        timeRef.current = t;
-        setTime(t);
-
-        // Loop check
-        if (loop && selPhrase !== null && data.phrases?.[selPhrase]) {
-          const ph = data.phrases[selPhrase];
-          if (t > ph.end + 0.3) {
-            audioRef.current.currentTime = Math.max(0, ph.start - 0.3);
-          }
-        }
-      } else if (manualPlayRef.current) {
+      // Audio sync
+      if (hasAudio && audioEl.current && !audioEl.current.paused) {
+        tRef.current = audioEl.current.currentTime;
+        setTime(audioEl.current.currentTime);
+      }
+      // Manual timer
+      else if (playingRef.current && !hasAudio) {
         const now = performance.now();
-        const dt = (now - manualLastRef.current) / 1000;
-        manualLastRef.current = now;
-        const next = timeRef.current + dt;
-        timeRef.current = next;
-        setTime(next);
+        const dt = (now - lastTs.current) / 1000;
+        lastTs.current = now;
+        tRef.current += dt;
+        setTime(tRef.current);
+      }
 
-        // Loop check (manual)
-        if (loop && selPhrase !== null && data.phrases?.[selPhrase]) {
-          const ph = data.phrases[selPhrase];
-          if (next > ph.end + 0.3) {
-            const reset = Math.max(0, ph.start - 0.3);
-            timeRef.current = reset;
-            setTime(reset);
-          }
+      // Loop selected phrase
+      if (playingRef.current && loop && sel !== null && data.phrases?.[sel]) {
+        const ph = data.phrases[sel];
+        if (tRef.current > ph.end + 0.2) {
+          const rst = ph.start;
+          tRef.current = rst;
+          setTime(rst);
+          if (hasAudio && audioEl.current)
+            audioEl.current.currentTime = rst;
         }
       }
-      rafRef.current = requestAnimationFrame(tick);
-    };
-    rafRef.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [hasAudio, loop, selPhrase, data]);
 
-  // ── File loaders ──
+      rafId.current = requestAnimationFrame(tick);
+    };
+    rafId.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafId.current);
+  }, [hasAudio, loop, sel, data]);
+
+  // ── Controls ──
+  const togglePlay = () => {
+    if (hasAudio && audioEl.current) {
+      if (audioEl.current.paused) {
+        audioEl.current.play();
+        setPlaying(true);
+      } else {
+        audioEl.current.pause();
+        setPlaying(false);
+      }
+    } else {
+      if (playing) {
+        setPlaying(false);
+      } else {
+        lastTs.current = performance.now();
+        setPlaying(true);
+      }
+    }
+  };
+
+  const jump = (i) => {
+    const ph = data.phrases?.[i];
+    if (!ph) return;
+    setSel(i);
+    tRef.current = ph.start;
+    setTime(ph.start);
+    if (hasAudio && audioEl.current) audioEl.current.currentTime = ph.start;
+  };
+
+  const reset = () => {
+    tRef.current = 0;
+    setTime(0);
+    setPlaying(false);
+    if (hasAudio && audioEl.current) {
+      audioEl.current.pause();
+      audioEl.current.currentTime = 0;
+    }
+  };
+
   const loadJson = (e) => {
     const f = e.target.files?.[0];
     if (!f) return;
     const r = new FileReader();
     r.onload = (ev) => {
       try {
-        const d = convertLegacyData(JSON.parse(ev.target.result));
-        setData(d);
-        setTime(0);
-        timeRef.current = 0;
-        setSelPhrase(null);
+        const d = JSON.parse(ev.target.result);
+        if (d.phrases?.[0]?.text) {
+          setData(d);
+          reset();
+        } else alert("phrases[].text が必要です");
       } catch {
-        alert("JSONの読み込みに失敗しました");
+        alert("JSON読み込みエラー");
       }
     };
     r.readAsText(f);
@@ -240,51 +261,27 @@ export default function SerifuDojo() {
   const loadAudio = (e) => {
     const f = e.target.files?.[0];
     if (!f) return;
-    if (audioRef.current) {
-      audioRef.current.src = URL.createObjectURL(f);
-      audioRef.current.load();
+    if (audioEl.current) {
+      audioEl.current.src = URL.createObjectURL(f);
+      audioEl.current.load();
       setHasAudio(true);
     }
     e.target.value = "";
   };
 
-  // ── Playback ──
-  const togglePlay = () => {
-    if (hasAudio && audioRef.current) {
-      if (audioRef.current.paused) {
-        audioRef.current.play();
-        setPlaying(true);
-        manualPlayRef.current = false;
-      } else {
-        audioRef.current.pause();
-        setPlaying(false);
-      }
-    } else {
-      if (manualPlayRef.current) {
-        manualPlayRef.current = false;
-        setPlaying(false);
-      } else {
-        manualPlayRef.current = true;
-        manualLastRef.current = performance.now();
-        setPlaying(true);
-      }
-    }
-  };
-
-  const jumpPhrase = (i) => {
-    if (!data.phrases?.[i]) return;
-    setSelPhrase(i);
-    const st = Math.max(0, data.phrases[i].start - 0.3);
-    timeRef.current = st;
-    setTime(st);
-    if (audioRef.current && hasAudio) audioRef.current.currentTime = st;
+  const progress = (ph) => {
+    if (time < ph.start) return 0;
+    if (time > ph.end) return 1;
+    return (time - ph.start) / (ph.end - ph.start);
   };
 
   const phrases = data.phrases || [];
-  const title = data.metadata?.title || data.metadata?.source || "台詞道場";
+  const title = data.metadata?.title || "台詞道場";
 
-  const btnBase = {
-    border: "1px solid rgba(255,255,255,0.08)",
+  const btn = (bg, fg, border) => ({
+    background: bg,
+    color: fg,
+    border: border || "1px solid rgba(255,255,255,0.06)",
     borderRadius: 6,
     padding: "6px 14px",
     fontSize: 13,
@@ -293,26 +290,26 @@ export default function SerifuDojo() {
     display: "inline-flex",
     alignItems: "center",
     gap: 5,
-  };
+  });
 
   return (
     <div
       style={{
-        background: THEME.bg,
+        background: TH.bg,
         width: "100%",
         height: "100vh",
         display: "flex",
         flexDirection: "column",
-        color: THEME.text,
-        fontFamily: "'Noto Sans JP', 'Hiragino Kaku Gothic ProN', sans-serif",
+        color: TH.text,
+        fontFamily: "'Noto Sans JP','Hiragino Kaku Gothic ProN',sans-serif",
         overflow: "hidden",
       }}
     >
-      {/* ── Header ── */}
+      {/* Header */}
       <div
         style={{
-          padding: "12px 20px",
-          borderBottom: `1px solid ${THEME.border}`,
+          padding: "10px 20px",
+          borderBottom: `1px solid ${TH.border}`,
           display: "flex",
           alignItems: "center",
           gap: 12,
@@ -320,283 +317,221 @@ export default function SerifuDojo() {
           flexShrink: 0,
         }}
       >
-        <span style={{ fontSize: 28 }}>🎭</span>
+        <span style={{ fontSize: 26 }}>🎭</span>
         <div>
           <div
             style={{
-              fontSize: 18,
+              fontSize: 17,
               fontWeight: 700,
-              letterSpacing: 2,
-              color: THEME.gold,
+              letterSpacing: 3,
+              color: TH.gold,
             }}
           >
             台詞道場
           </div>
-          <div style={{ fontSize: 10, color: THEME.dim, letterSpacing: 1 }}>
-            {title}
-          </div>
+          <div style={{ fontSize: 10, color: TH.dim }}>{title}</div>
         </div>
-        <div
-          style={{
-            marginLeft: "auto",
-            display: "flex",
-            gap: 8,
-            flexWrap: "wrap",
-          }}
-        >
-          <label
-            style={{ ...btnBase, background: "#1a1822", color: THEME.dim }}
-          >
+        <div style={{ marginLeft: "auto", display: "flex", gap: 6 }}>
+          <label style={btn("#181620", TH.dim)}>
             📄 JSON
             <input
               type="file"
               accept=".json"
               onChange={loadJson}
-              style={{ display: "none" }}
+              hidden
             />
           </label>
-          <label
-            style={{ ...btnBase, background: "#1a1822", color: THEME.dim }}
-          >
+          <label style={btn("#181620", TH.dim)}>
             🔊 音声
             <input
               type="file"
               accept="audio/*,video/*"
               onChange={loadAudio}
-              style={{ display: "none" }}
+              hidden
             />
           </label>
         </div>
       </div>
 
-      {/* ── Controls ── */}
+      {/* Controls */}
       <div
         style={{
           display: "flex",
           alignItems: "center",
           gap: 8,
           padding: "8px 20px",
-          borderBottom: `1px solid ${THEME.border}`,
+          borderBottom: `1px solid ${TH.border}`,
           flexShrink: 0,
           flexWrap: "wrap",
         }}
       >
         <button
           onClick={togglePlay}
-          style={{
-            ...btnBase,
-            background: playing ? THEME.accent : "#252230",
-            color: "#fff",
-            minWidth: 70,
-          }}
+          style={btn(playing ? TH.red : "#252030", "#fff")}
         >
           {playing ? "⏸ 停止" : "▶ 再生"}
         </button>
-        <button
-          onClick={() => setLoop(!loop)}
-          style={{
-            ...btnBase,
-            background: loop ? "#2a2010" : "#252230",
-            color: loop ? THEME.gold : THEME.dim,
-            borderColor: loop ? THEME.gold + "40" : "rgba(255,255,255,0.08)",
-          }}
-        >
-          🔁 ループ {loop ? "ON" : "OFF"}
+        <button onClick={reset} style={btn("#252030", TH.dim)}>
+          ⏮ 最初
         </button>
         <button
-          onClick={() => setAutoScroll(!autoScroll)}
-          style={{
-            ...btnBase,
-            background: "#252230",
-            color: autoScroll ? THEME.text : THEME.dim,
-          }}
+          onClick={() => setLoop(!loop)}
+          style={btn(
+            loop ? "#2a2010" : "#252030",
+            loop ? TH.gold : TH.dim,
+            loop ? `1px solid ${TH.gold}44` : undefined
+          )}
         >
-          ↕ 自動スクロール {autoScroll ? "ON" : "OFF"}
+          🔁 {loop ? "ON" : "OFF"}
         </button>
         <div style={{ flex: 1 }} />
         <span
-          style={{
-            fontSize: 12,
-            fontFamily: "monospace",
-            color: THEME.dim,
-          }}
+          style={{ fontSize: 12, fontFamily: "monospace", color: TH.dim }}
         >
-          {fmtTime(time)} / {fmtTime(data.metadata?.duration || 0)}
+          {fmtT(time)} / {fmtT(data.metadata?.duration)}
         </span>
       </div>
 
-      {/* ── Main ── */}
+      {/* Main */}
       <div style={{ display: "flex", flex: 1, minHeight: 0 }}>
-        {/* Phrase sidebar */}
+        {/* Sidebar */}
         <div
           style={{
-            width: 130,
+            width: 120,
             flexShrink: 0,
-            background: THEME.surface,
-            borderRight: `1px solid ${THEME.border}`,
+            background: TH.surface,
+            borderRight: `1px solid ${TH.border}`,
             overflowY: "auto",
-            padding: "8px 0",
+            padding: "6px 0",
           }}
         >
           <div
             style={{
-              padding: "2px 10px 8px",
+              padding: "2px 8px 6px",
               fontSize: 10,
-              color: THEME.dim,
-              letterSpacing: 1,
+              color: TH.dim,
             }}
           >
-            フレーズ ({phrases.length})
+            全{phrases.length}句
           </div>
           {phrases.map((ph, i) => {
-            const isActive = i === activePhraseIdx;
-            const isSel = i === selPhrase;
+            const act = i === activeIdx;
+            const s = i === sel;
             return (
               <button
                 key={i}
-                onClick={() => jumpPhrase(i)}
+                onClick={() => jump(i)}
                 style={{
                   display: "block",
                   width: "100%",
                   border: "none",
-                  padding: "6px 10px",
+                  padding: "5px 8px",
                   textAlign: "left",
                   cursor: "pointer",
-                  background: isActive
-                    ? THEME.goldGlow
-                    : isSel
-                      ? "rgba(196,48,48,0.12)"
-                      : "transparent",
-                  color: isActive ? THEME.gold : isSel ? THEME.accent : THEME.dim,
+                  background: act ? TH.goldSoft : "transparent",
+                  color: act ? TH.gold : s ? TH.red : TH.dim,
                   fontSize: 11,
                   fontFamily: "monospace",
-                  borderLeft: isActive
-                    ? `3px solid ${THEME.gold}`
-                    : isSel
-                      ? `3px solid ${THEME.accent}`
+                  borderLeft: act
+                    ? `3px solid ${TH.gold}`
+                    : s
+                      ? `3px solid ${TH.red}`
                       : "3px solid transparent",
                 }}
               >
-                <div>
-                  #{i + 1} {fmtTime(ph.start)}
-                </div>
-                <div
-                  style={{
-                    fontSize: 10,
-                    marginTop: 1,
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                    color: isActive ? THEME.text : THEME.dimmer,
-                    fontFamily: "'Noto Sans JP', sans-serif",
-                  }}
-                >
-                  {ph.text}
-                </div>
+                #{i + 1} {fmtT(ph.start)}
               </button>
             );
           })}
         </div>
 
-        {/* Karaoke display */}
+        {/* Lyrics area */}
         <div
           style={{
             flex: 1,
             overflowY: "auto",
-            padding: "40px 32px",
-            display: "flex",
-            flexDirection: "column",
-            gap: 0,
+            padding: "32px 28px",
           }}
         >
           {phrases.map((ph, i) => {
-            const isActive = i === activePhraseIdx;
-            const isPast = time > ph.end;
-            const progress = phraseProgress(ph, time);
-
+            const act = i === activeIdx;
+            const past = time > ph.end;
+            const p = progress(ph);
             return (
               <div
                 key={i}
-                ref={isActive ? activeRef : null}
-                onClick={() => jumpPhrase(i)}
+                ref={act ? activeEl : null}
+                onClick={() => jump(i)}
                 style={{
-                  padding: "16px 24px",
-                  margin: "4px 0",
-                  borderRadius: 10,
+                  padding: "14px 20px",
+                  margin: "3px 0",
+                  borderRadius: 8,
                   cursor: "pointer",
-                  background: isActive ? "rgba(226,184,74,0.06)" : "transparent",
-                  borderLeft: isActive
-                    ? `3px solid ${THEME.gold}`
+                  background: act ? TH.goldSoft : "transparent",
+                  borderLeft: act
+                    ? `3px solid ${TH.gold}`
                     : "3px solid transparent",
-                  transition: "background 0.3s, border-color 0.3s",
+                  transition: "background 0.2s",
                 }}
               >
-                {/* Phrase number + time */}
                 <div
                   style={{
                     fontSize: 10,
                     fontFamily: "monospace",
-                    color: isActive ? THEME.gold : THEME.dimmer,
-                    marginBottom: 6,
+                    color: act ? TH.gold : TH.dimmer,
+                    marginBottom: 4,
                   }}
                 >
-                  #{i + 1}　{fmtTime(ph.start)} – {fmtTime(ph.end)}
-                  {i === selPhrase && loop && (
-                    <span style={{ marginLeft: 8, color: THEME.gold }}>🔁</span>
+                  #{i + 1}
+                  {i === sel && loop && (
+                    <span style={{ marginLeft: 6, color: TH.gold }}>🔁</span>
                   )}
                 </div>
-
-                {/* Karaoke text */}
                 <div
                   style={{
-                    fontSize: isActive ? 32 : 24,
-                    fontWeight: isActive ? 700 : 400,
-                    letterSpacing: isActive ? 4 : 2,
-                    transition: "font-size 0.3s, letter-spacing 0.3s",
-                    opacity: isPast && !isActive ? 0.4 : 1,
+                    fontSize: act ? 30 : 22,
+                    fontWeight: act ? 700 : 400,
+                    letterSpacing: act ? 4 : 2,
+                    transition: "font-size 0.25s, letter-spacing 0.25s",
+                    opacity: past && !act ? 0.35 : 1,
                   }}
                 >
-                  {isActive ? (
-                    <KaraokeText text={ph.text} progress={progress} />
+                  {act ? (
+                    <KaraokeLine text={ph.text} progress={p} />
                   ) : (
                     <span
                       style={{
-                        color: isPast ? THEME.dim : THEME.unhighlight,
+                        color: past ? TH.dim : TH.unlit,
                       }}
                     >
                       {ph.text}
                     </span>
                   )}
                 </div>
-
-                {/* Progress bar */}
-                {isActive && <PhraseProgress progress={progress} />}
+                {act && <Bar progress={p} />}
               </div>
             );
           })}
-
-          {/* End spacer */}
-          <div style={{ height: 200, flexShrink: 0 }} />
+          <div style={{ height: 200 }} />
         </div>
       </div>
 
-      {/* ── Footer hint ── */}
       {!hasAudio && (
         <div
           style={{
-            padding: "8px 20px",
-            borderTop: `1px solid ${THEME.border}`,
+            padding: "6px 20px",
+            borderTop: `1px solid ${TH.border}`,
             fontSize: 11,
-            color: THEME.dim,
+            color: TH.dim,
             textAlign: "center",
             flexShrink: 0,
           }}
         >
-          🔊 音声ファイルを読み込むと同期再生できます ・ デモデータで動作確認中
+          🔊 音声ファイルを読み込むと同期再生 ・ デモモードで動作中
         </div>
       )}
 
-      <audio ref={audioRef} style={{ display: "none" }} />
+      <audio ref={audioEl} hidden />
     </div>
   );
 }

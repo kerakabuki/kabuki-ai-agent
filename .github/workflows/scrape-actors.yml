@@ -1,0 +1,53 @@
+name: 歌舞伎俳優名鑑スクレイピング
+
+on:
+  schedule:
+    # 毎年1月15日 09:00 UTC (18:00 JST) に実行
+    - cron: '0 9 15 1 *'
+  workflow_dispatch:  # 手動実行も可能
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4 pandas
+
+      - name: Run scraper
+        run: python scripts/scrape_meikan.py
+
+      - name: Verify output
+        run: |
+          echo "=== File sizes ==="
+          ls -la kabuki_meikan_current_actors.*
+          echo "=== Actor count ==="
+          python -c "import json; d=json.load(open('kabuki_meikan_current_actors.json')); print(f'{len(d)} actors')"
+
+      - name: Upload to Cloudflare R2
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          npx wrangler r2 object put kerakabuki-content/actors.json \
+            --file kabuki_meikan_current_actors.json \
+            --content-type "application/json" \
+            --remote
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: kabuki-actors-${{ github.run_id }}
+          path: |
+            kabuki_meikan_current_actors.json
+            kabuki_meikan_current_actors.csv
+          retention-days: 90

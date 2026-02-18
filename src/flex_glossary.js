@@ -1,4 +1,6 @@
 // src/flex_glossary.js
+// 歌舞伎風パレット（トップメニューと統一）
+import { KABUKI } from "./flex_menu.js";
 
 // カテゴリ順序とアイコン
 export const GLOSSARY_CAT_ORDER = [
@@ -23,12 +25,12 @@ export const GLOSSARY_CAT_ORDER = [
         type: "box",
         layout: "horizontal",
         paddingAll: "12px",
-        backgroundColor: "#F3F4F6",
+        backgroundColor: KABUKI.card,
         cornerRadius: "12px",
         action: { type: "postback", label: c.key, data: `step=glossary_list&cat=${encodeURIComponent(c.key)}` },
         contents: [
-          { type: "text", text: `${c.icon} ${c.key}`, weight: "bold", size: "md", flex: 4 },
-          { type: "text", text: `${catCounts[c.key]}語 ▶`, size: "xs", color: "#666666", align: "end", flex: 2, gravity: "center" }
+          { type: "text", text: `${c.icon} ${c.key}`, weight: "bold", size: "md", color: KABUKI.text, flex: 4 },
+          { type: "text", text: `${catCounts[c.key]}語 ▶`, size: "xs", color: KABUKI.dim, align: "end", flex: 2, gravity: "center" }
         ]
       }));
   
@@ -41,12 +43,13 @@ export const GLOSSARY_CAT_ORDER = [
           type: "box",
           layout: "vertical",
           spacing: "sm",
+          backgroundColor: KABUKI.bg,
           contents: [
-            { type: "text", text: "歌舞伎用語いろは", weight: "bold", size: "lg" },
-            { type: "text", text: `全${terms.length}語🙂 カテゴリをえらんでね`, size: "xs", color: "#666666" },
-            { type: "text", text: "💡 用語を直接入力しても検索できるよ", size: "xxs", color: "#999999", wrap: true },
+            { type: "text", text: "歌舞伎用語いろは", weight: "bold", size: "lg", color: KABUKI.gold },
+            { type: "text", text: `全${terms.length}語🙂 カテゴリをえらんでね`, size: "xs", color: KABUKI.dim },
+            { type: "text", text: "💡 用語を直接入力しても検索できるよ", size: "xxs", color: KABUKI.dimmer, wrap: true },
             ...rows,
-            { type: "button", style: "secondary", margin: "md", action: { type: "postback", label: "メニュー", data: "step=menu" } }
+            { type: "button", style: "secondary", margin: "md", action: { type: "postback", label: "🧭 ナビ", data: "step=navi_home" } }
           ]
         }
       }
@@ -63,10 +66,10 @@ export const GLOSSARY_CAT_ORDER = [
       type: "box",
       layout: "vertical",
       paddingAll: "10px",
-      backgroundColor: "#F3F4F6",
+      backgroundColor: KABUKI.card,
       cornerRadius: "10px",
       action: { type: "postback", label: t.term.substring(0, 20), data: `step=glossary_term&id=${encodeURIComponent(t.id)}` },
-      contents: [{ type: "text", text: t.term, weight: "bold", size: "sm", wrap: true }]
+      contents: [{ type: "text", text: t.term, weight: "bold", size: "sm", color: KABUKI.text, wrap: true }]
     }));
   
     const pages = [];
@@ -80,15 +83,17 @@ export const GLOSSARY_CAT_ORDER = [
         type: "box",
         layout: "vertical",
         spacing: "sm",
+        backgroundColor: KABUKI.bg,
         contents: [
           {
             type: "text",
             text: pages.length > 1 ? `${catIcon} ${category}（${i + 1}/${pages.length}）` : `${catIcon} ${category}`,
             weight: "bold",
             size: "lg",
+            color: KABUKI.gold,
             wrap: true
           },
-          { type: "text", text: `${catTerms.length}語`, size: "xs", color: "#666666" },
+          { type: "text", text: `${catTerms.length}語`, size: "xs", color: KABUKI.dim },
           ...pageRows,
           {
             type: "box",
@@ -97,7 +102,7 @@ export const GLOSSARY_CAT_ORDER = [
             margin: "md",
             contents: [
               { type: "button", style: "secondary", flex: 1, action: { type: "postback", label: "カテゴリ一覧", data: "step=glossary_cat" } },
-              { type: "button", style: "secondary", flex: 1, action: { type: "postback", label: "メニュー", data: "step=menu" } }
+              { type: "button", style: "secondary", flex: 1, action: { type: "postback", label: "🧭 ナビ", data: "step=navi_home" } }
             ]
           }
         ]
@@ -124,11 +129,12 @@ export const GLOSSARY_CAT_ORDER = [
           type: "box",
           layout: "vertical",
           spacing: "md",
+          backgroundColor: KABUKI.bg,
           contents: [
-            { type: "text", text: term.term, weight: "bold", size: "xl", wrap: true },
-            { type: "text", text: `${catIcon} ${term.category}`, size: "xs", color: "#888888" },
+            { type: "text", text: term.term, weight: "bold", size: "xl", color: KABUKI.text, wrap: true },
+            { type: "text", text: `${catIcon} ${term.category}`, size: "xs", color: KABUKI.dimmer },
             { type: "separator" },
-            { type: "text", text: desc, size: "sm", wrap: true, lineSpacing: "6px" },
+            { type: "text", text: desc, size: "sm", color: KABUKI.text, wrap: true, lineSpacing: "6px" },
             {
               type: "box",
               layout: "horizontal",
@@ -141,7 +147,13 @@ export const GLOSSARY_CAT_ORDER = [
                   flex: 1,
                   action: { type: "postback", label: `${term.category}に戻る`, data: `step=glossary_list&cat=${encodeURIComponent(term.category)}` }
                 },
-                { type: "button", style: "secondary", flex: 1, action: { type: "postback", label: "メニュー", data: "step=menu" } }
+                {
+                  type: "button",
+                  style: "secondary",
+                  flex: 1,
+                  action: { type: "postback", label: "⭐ 保存", data: `step=clip_toggle&type=term&id=${encodeURIComponent(term.id)}` }
+                },
+                { type: "button", style: "secondary", flex: 1, action: { type: "postback", label: "🧭 ナビ", data: "step=navi_home" } }
               ]
             }
           ]
@@ -161,12 +173,12 @@ export const GLOSSARY_CAT_ORDER = [
       type: "box",
       layout: "vertical",
       paddingAll: "10px",
-      backgroundColor: "#F3F4F6",
+      backgroundColor: KABUKI.card,
       cornerRadius: "10px",
       action: { type: "postback", label: t.term.substring(0, 20), data: `step=glossary_term&id=${encodeURIComponent(t.id)}` },
       contents: [
-        { type: "text", text: t.term, weight: "bold", size: "sm", wrap: true },
-        { type: "text", text: t.category, size: "xxs", color: "#888888" }
+        { type: "text", text: t.term, weight: "bold", size: "sm", color: KABUKI.text, wrap: true },
+        { type: "text", text: t.category, size: "xxs", color: KABUKI.dimmer }
       ]
     }));
   
@@ -179,9 +191,10 @@ export const GLOSSARY_CAT_ORDER = [
           type: "box",
           layout: "vertical",
           spacing: "sm",
+          backgroundColor: KABUKI.bg,
           contents: [
-            { type: "text", text: `🔍「${query}」の検索結果`, weight: "bold", size: "md", wrap: true },
-            { type: "text", text: `${results.length}件ヒット${results.length > MAX_SHOW ? `（上位${MAX_SHOW}件を表示）` : ""}`, size: "xs", color: "#666666" },
+            { type: "text", text: `🔍「${query}」の検索結果`, weight: "bold", size: "md", color: KABUKI.gold, wrap: true },
+            { type: "text", text: `${results.length}件ヒット${results.length > MAX_SHOW ? `（上位${MAX_SHOW}件を表示）` : ""}`, size: "xs", color: KABUKI.dim },
             ...rows,
             {
               type: "box",
@@ -190,7 +203,7 @@ export const GLOSSARY_CAT_ORDER = [
               margin: "md",
               contents: [
                 { type: "button", style: "secondary", flex: 1, action: { type: "postback", label: "カテゴリ一覧", data: "step=glossary_cat" } },
-                { type: "button", style: "secondary", flex: 1, action: { type: "postback", label: "メニュー", data: "step=menu" } }
+                { type: "button", style: "secondary", flex: 1, action: { type: "postback", label: "🧭 ナビ", data: "step=navi_home" } }
               ]
             }
           ]

@@ -1,94 +1,209 @@
 // src/flex_menu.js
-// env は将来 R2（ASSETS_BUCKET 等）を使う場合に利用。
-// url は Worker の origin URL（稽古モードへのリンク生成用）。
+// KABUKI PLUS+ テック×和モダンスタイル（WEBと統一）
+// 画像アイコン不使用、絵文字のみ
 
+export const KABUKI = {
+  bg: "#FAF7F2",
+  card: "#FFFFFF",
+  cardAlt: "#F5F0E8",
+  gold: "#C5A255",
+  goldDark: "#A8873A",
+  text: "#3D3127",
+  dim: "#8A7D72",
+  dimmer: "#B0A89E",
+  red: "#D4614B",
+  blue: "#6B8FAD",
+  green: "#6B9E78",
+  border: "#EDE7DD"
+};
+
+/* ─── 共通パーツ ─── */
+function _menuItem(emoji, label, desc, data) {
+  return {
+    type: "box",
+    layout: "horizontal",
+    paddingAll: "14px",
+    backgroundColor: KABUKI.card,
+    cornerRadius: "12px",
+    borderWidth: "light",
+    borderColor: KABUKI.border,
+    action: { type: "postback", label, data },
+    contents: [
+      { type: "text", text: emoji, size: "xl", flex: 0, gravity: "center" },
+      {
+        type: "box",
+        layout: "vertical",
+        paddingStart: "12px",
+        flex: 4,
+        contents: [
+          { type: "text", text: label, weight: "bold", size: "md", color: KABUKI.text },
+          { type: "text", text: desc, size: "xxs", color: KABUKI.dim, wrap: true }
+        ]
+      },
+      { type: "text", text: "›", size: "lg", color: KABUKI.goldDark, flex: 0, gravity: "center" }
+    ]
+  };
+}
+
+function _menuLink(emoji, label, desc, uri) {
+  return {
+    type: "box",
+    layout: "horizontal",
+    paddingAll: "14px",
+    backgroundColor: KABUKI.card,
+    cornerRadius: "12px",
+    borderWidth: "light",
+    borderColor: KABUKI.border,
+    action: { type: "uri", label, uri },
+    contents: [
+      { type: "text", text: emoji, size: "xl", flex: 0, gravity: "center" },
+      {
+        type: "box",
+        layout: "vertical",
+        paddingStart: "12px",
+        flex: 4,
+        contents: [
+          { type: "text", text: label, weight: "bold", size: "md", color: KABUKI.text },
+          { type: "text", text: desc, size: "xxs", color: KABUKI.dim, wrap: true }
+        ]
+      },
+      { type: "text", text: "›", size: "lg", color: KABUKI.goldDark, flex: 0, gravity: "center" }
+    ]
+  };
+}
+
+function _sectionHeader(text) {
+  return {
+    type: "text",
+    text: `▎${text}`,
+    weight: "bold",
+    size: "sm",
+    color: KABUKI.goldDark,
+    margin: "lg"
+  };
+}
+
+/* =========================================================
+   メインメニュー（初回挨拶・KABUKI PLUS+ トップ）
+========================================================= */
 export function mainMenuFlex(env, url) {
-    // postback ボタン
-    const menuItem = (icon, label, desc, data, color) => ({
-      type: "box",
-      layout: "horizontal",
-      paddingAll: "12px",
-      backgroundColor: color,
-      cornerRadius: "12px",
-      action: { type: "postback", label, data },
-      contents: [
-        { type: "text", text: icon, size: "xl", flex: 0, gravity: "center" },
-        {
-          type: "box",
-          layout: "vertical",
-          paddingStart: "12px",
-          flex: 4,
-          contents: [
-            { type: "text", text: label, weight: "bold", size: "md" },
-            { type: "text", text: desc, size: "xxs", color: "#666666", wrap: true }
-          ]
-        },
-        { type: "text", text: "▶", size: "sm", color: "#999999", flex: 0, gravity: "center" }
-      ]
-    });
+  const origin = url || "https://kerakabuki.kerakabuki.workers.dev";
 
-    // URI リンクボタン（外部URL遷移用）
-    const menuLink = (icon, label, desc, uri, color) => ({
-      type: "box",
-      layout: "horizontal",
-      paddingAll: "12px",
-      backgroundColor: color,
-      cornerRadius: "12px",
-      action: { type: "uri", label, uri },
-      contents: [
-        { type: "text", text: icon, size: "xl", flex: 0, gravity: "center" },
-        {
-          type: "box",
-          layout: "vertical",
-          paddingStart: "12px",
-          flex: 4,
-          contents: [
-            { type: "text", text: label, weight: "bold", size: "md" },
-            { type: "text", text: desc, size: "xxs", color: "#666666", wrap: true }
-          ]
-        },
-        { type: "text", text: "▶", size: "sm", color: "#999999", flex: 0, gravity: "center" }
-      ]
-    });
+  return {
+    type: "flex",
+    altText: "KABUKI PLUS+ メニュー",
+    contents: {
+      type: "bubble",
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "sm",
+        backgroundColor: KABUKI.bg,
+        paddingAll: "18px",
+        contents: [
+          {
+            type: "text",
+            text: "KABUKI PLUS+",
+            weight: "bold",
+            size: "xl",
+            color: KABUKI.goldDark
+          },
+          {
+            type: "text",
+            text: "歌舞伎AIガイド｜気になるメニューをタップ",
+            size: "xs",
+            color: KABUKI.dim,
+            wrap: true
+          },
+          { type: "separator", margin: "md", color: KABUKI.border },
 
-    // 稽古モードURL
-    const trainingUrl = url ? `${url}/training` : "https://kerakabuki.kerakabuki.workers.dev/training";
+          _sectionHeader("NAVI — 読んで学ぶ"),
+          _menuItem("🧭", "KABUKI NAVI", "演目・用語・おすすめを探索", "step=navi_home"),
+          _menuItem("📜", "演目・人物ガイド", "20演目のあらすじ・みどころ・登場人物", "step=enmoku_list"),
+          _menuItem("📖", "歌舞伎用語いろは", "126の用語をカテゴリ別に解説", "mode=general"),
+          _menuItem("🏮", "おすすめ演目", "初心者向け／ジャンル別にサクッと", "mode=recommend"),
 
-    return {
-      type: "flex",
-      altText: "けらのすけメニュー",
-      contents: {
-        type: "bubble",
-        body: {
-          type: "box",
-          layout: "vertical",
-          spacing: "sm",
-          contents: [
-            { type: "text", text: "けらのすけ 🙂", weight: "bold", size: "xl" },
-            { type: "text", text: "歌舞伎AIガイド｜気になるメニューをタップ！", size: "xs", color: "#888888", wrap: true },
-            { type: "separator", margin: "md" },
-  
-            // ① 気良歌舞伎ナビ（mode=kera）
-            menuItem("💬", "気良歌舞伎ナビ", "公演・会場・アクセス・参加方法を案内", "mode=kera", "#FFF8E1"),
-  
-            // ② 演目・人物ガイド（step=enmoku_list）
-            menuItem("📖", "演目・人物ガイド", "20演目のあらすじ・みどころ・登場人物", "step=enmoku_list", "#E8F5E9"),
-  
-            // ③ おすすめ（mode=recommend）
-            menuItem("🌟", "おすすめ演目", "初心者向け／ジャンル別にサクッと", "mode=recommend", "#FFF3E0"),
-  
-            // ④ 用語（mode=general）
-            menuItem("📝", "歌舞伎用語いろは", "126の用語をカテゴリ別に解説", "mode=general", "#E3F2FD"),
-  
-            // ⑤ クイズ（mode=quiz）
-            menuItem("🎯", "歌舞伎クイズ", "全100問の三択で楽しく学ぼう", "mode=quiz", "#FCE4EC"),
+          _sectionHeader("LIVE — 今を見る"),
+          _menuItem("📰", "歌舞伎ニュース", "最新ニュースをチェック", "step=news"),
+          _menuLink("📡", "KABUKI LIVE", "ニュース＋公演スケジュール", `${origin}/live`),
 
-            // ⑥ お稽古モード（URI → /training）
-            menuLink("📣", "お稽古モード", "大向こう稽古・台詞道場をブラウザで体験", trainingUrl, "#F3E5F5"),
-  
-            { type: "text", text: "💡「0」でいつでもメニューに戻れるよ", size: "xxs", color: "#AAAAAA", wrap: true, margin: "md" }
-          ]
-        }
+          _sectionHeader("RECO — 記録する"),
+          _menuLink("📖", "KABUKI RECO", "観劇記録・推し俳優", `${origin}/reco`),
+
+          _sectionHeader("DOJO — やってみる"),
+          _menuItem("👺", "歌舞伎クイズ", "全100問の三択で楽しく学ぼう", "mode=quiz"),
+          _menuLink("🥋", "KABUKI DOJO", "台詞稽古・大向う道場をブラウザで体験", `${origin}/dojo`),
+
+          {
+            type: "text",
+            text: "💡「0」でいつでもメニューに戻れるよ",
+            size: "xxs",
+            color: KABUKI.dimmer,
+            wrap: true,
+            margin: "md"
+          }
+        ]
       }
-    };
-  }
+    }
+  };
+}
+
+/* =========================================================
+   KABUKI NAVI ホーム（調べる系サブメニュー）
+========================================================= */
+export function naviHomeFlex(env, url) {
+  const origin = url || "https://kerakabuki.kerakabuki.workers.dev";
+
+  return {
+    type: "flex",
+    altText: "KABUKI NAVI",
+    contents: {
+      type: "bubble",
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "sm",
+        backgroundColor: KABUKI.bg,
+        paddingAll: "18px",
+        contents: [
+          {
+            type: "text",
+            text: "🧭 KABUKI NAVI",
+            weight: "bold",
+            size: "xl",
+            color: KABUKI.goldDark
+          },
+          {
+            type: "text",
+            text: "歌舞伎の世界を探索しよう",
+            size: "xs",
+            color: KABUKI.dim,
+            wrap: true
+          },
+          { type: "separator", margin: "md", color: KABUKI.border },
+          _menuItem("🏠", "初心者FAQ", "気良歌舞伎の基本・参加方法", "step=talk_list"),
+          _menuItem("📜", "演目を探す", "あらすじ・みどころ・登場人物", "step=enmoku_list"),
+          _menuItem("📖", "用語を調べる", "カテゴリ別に歌舞伎用語を解説", "step=glossary_cat"),
+          _menuItem("🏮", "おすすめ演目", "初心者向け・ジャンル別にサクッと", "step=recommend_list"),
+          _menuItem("📰", "歌舞伎ニュース", "最新ニュースをチェック", "step=news"),
+
+          { type: "separator", margin: "md", color: KABUKI.border },
+
+          _sectionHeader("RECO / DOJO"),
+          _menuLink("📖", "KABUKI RECO", "観劇記録・推し俳優", `${origin}/reco`),
+          _menuItem("👺", "歌舞伎クイズ", "全100問の三択で楽しく学ぼう", "mode=quiz"),
+          _menuLink("🥋", "KABUKI DOJO", "台詞稽古・大向う道場", `${origin}/dojo`),
+
+          {
+            type: "text",
+            text: "💡「0」メニュー ／「9」ひとつ戻る",
+            size: "xxs",
+            color: KABUKI.dimmer,
+            wrap: true,
+            margin: "md"
+          }
+        ]
+      }
+    }
+  };
+}

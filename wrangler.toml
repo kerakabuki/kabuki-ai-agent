@@ -22,3 +22,13 @@ bucket_name = "kabuki-quiz-data" # 1個のデータが入っているこちら�
 [[kv_namespaces]]
 binding = "CHAT_HISTORY"
 id = "43434a4b6414475ca08dd72b84c62b72"
+
+# /join・/feedback のフォームURL（未設定時は worker 内のプレースホルダを使用）
+[vars]
+JOIN_FORM_URL = "https://forms.gle/4tn5vLg19KpkGT6t8"  # 一緒につくる｜参加フォーム
+# JOIN_CONTACT_URL = "mailto:info@example.com"
+FEEDBACK_FORM_URL = "https://forms.gle/i9snJSVAuZCH4AQd8"  # 感想フォーム（/feedback で使用）
+
+# Cron Trigger（ニュースRSS自動取得：日本時間 朝7時・夜7時 = UTC 22:00・10:00）
+[triggers]
+crons = ["0 22 * * *", "0 10 * * *"]

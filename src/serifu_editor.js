@@ -163,7 +163,7 @@ export function serifuEditorHTML() {
   </div>
 </div>
 
-<footer><a href="/training">稽古モードへ戻る</a></footer>
+<footer><a href="/kabuki/dojo/training">稽古モードへ戻る</a></footer>
 
 <script>
 // ── state ──

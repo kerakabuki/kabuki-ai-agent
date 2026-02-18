@@ -4,6 +4,8 @@
 // ✅ 根本解決：phase導入（判定→次へ(7)）で誤判定を防止
 // ✅ LINE/WEB出し分け：LINEはQuick Reply付き、WEBはテキストフッター
 
+import { KABUKI } from "./flex_menu.js";
+
 let QUIZ_CACHE = null;
 
 // ---------------------
@@ -276,6 +278,7 @@ function buildAnswerFlex(choices) {
         type: "box",
         layout: "vertical",
         spacing: "sm",
+        backgroundColor: KABUKI.bg,
         contents: [
           {
             type: "button",

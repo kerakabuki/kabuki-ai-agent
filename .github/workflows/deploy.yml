@@ -1,0 +1,29 @@
+# main への push で Cloudflare Workers に自動デプロイ
+# 初回のみ: GitHub リポジトリの Settings → Secrets and variables → Actions に
+# CLOUDFLARE_API_TOKEN を追加してください（Cloudflare Dashboard → My Profile → API Tokens で作成）
+
+name: Deploy to Cloudflare Workers
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Deploy
+        run: npx wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

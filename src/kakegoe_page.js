@@ -9,26 +9,53 @@ export function kakegoePageHTML() {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>大向こう稽古 ─ 白浪五人男 | 気良歌舞伎</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --kuro:#1a1a1a; --aka:#C41E3A; --moegi:#6B8E23;
-    --kin:#C5A55A; --shiro:#F5F0E8;
+    --bg-page: #FAF7F2;
+    --bg-card: rgba(255,255,255,0.90);
+    --bg-subtle: #F3EDE4;
+    --text-primary: #3D3127;
+    --text-secondary: #7A6F63;
+    --text-tertiary: #A89E93;
+    --gold: #C5A255;
+    --gold-dark: #A8873A;
+    --gold-soft: #F5EDD8;
+    --accent-1: #D4614B;
+    --accent-3: #6B9E78;
+    --border-light: #EDE7DD;
+    --border-medium: #DDD5C8;
+    --shadow-sm: 0 1px 3px rgba(61,49,39,0.06);
+    --shadow-md: 0 4px 12px rgba(61,49,39,0.08);
+    --radius-md: 12px;
+    /* Legacy aliases for any remaining references */
+    --kuro: var(--text-primary);
+    --aka: var(--accent-1);
+    --moegi: var(--accent-3);
+    --kin: var(--gold);
+    --shiro: var(--text-primary);
   }
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:"Noto Serif JP","Yu Mincho","Hiragino Mincho ProN",serif;
-    background:var(--kuro);color:var(--shiro);min-height:100vh;
+  body{font-family:'Noto Sans JP', sans-serif;
+    background:var(--bg-page);color:var(--text-primary);min-height:100vh;
     overflow-x:hidden;}
-
-  .joshikimaku{height:8px;background:repeating-linear-gradient(90deg,
-    var(--kuro) 0%,var(--kuro) 33.33%,
-    var(--moegi) 33.33%,var(--moegi) 66.66%,
-    var(--aka) 66.66%,var(--aka) 100%);}
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%23A8873A' stroke-width='1.2'%3E%3Cpath d='M0 20 L20 20 L20 0'/%3E%3Cpath d='M20 20 L20 40 L40 40'/%3E%3Cpath d='M40 40 L40 20 L60 20'/%3E%3Cpath d='M60 20 L60 0'/%3E%3Cpath d='M40 40 L40 60 L20 60'/%3E%3Cpath d='M20 60 L20 80'/%3E%3Cpath d='M60 20 L60 40 L80 40'/%3E%3Cpath d='M0 60 L20 60'/%3E%3Cpath d='M60 40 L60 60 L80 60'/%3E%3Cpath d='M40 60 L60 60 L60 80'/%3E%3Cpath d='M0 40 L20 40'/%3E%3Cpath d='M40 0 L40 20'/%3E%3Cpath d='M80 0 L80 20'/%3E%3Cpath d='M80 60 L80 80'/%3E%3Cpath d='M40 80 L40 60'/%3E%3Cpath d='M0 0 L0 20'/%3E%3Cpath d='M0 60 L0 80'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 80px 80px;
+  }
+  body > * { position: relative; z-index: 1; }
 
   /* ── イントロ画面 ── */
   #intro{max-width:760px;margin:0 auto;padding:1rem;text-align:center;}
-  #intro h1{font-size:1.8rem;letter-spacing:0.25em;color:var(--kin);
-    margin:1rem 0 0.3rem;text-shadow:0 2px 8px rgba(0,0,0,0.7);}
-  #intro .subtitle{font-size:1rem;color:#bbb;letter-spacing:0.1em;margin-bottom:1rem;}
+  #intro h1{font-size:1.8rem;letter-spacing:0.25em;color:var(--text-primary);
+    margin:1rem 0 0.3rem;font-family:'Noto Serif JP', serif;}
+  #intro .subtitle{font-size:1rem;color:var(--text-tertiary);letter-spacing:0.1em;margin-bottom:1rem;}
 
   /* 五人カード（モバイルはカルーセル） */
   .cast-row{display:flex;gap:0.5rem;justify-content:center;margin:0.8rem 0;
@@ -36,8 +63,8 @@ export function kakegoePageHTML() {
     scroll-snap-type:x mandatory;padding:0.3rem 0;}
   .cast-row::-webkit-scrollbar{display:none;}
   .cast-card{flex:0 0 auto;width:125px;border-radius:10px;overflow:hidden;
-    border:2px solid #333;transition:all 0.3s;position:relative;
-    scroll-snap-align:center;}
+    border:2px solid var(--border-light);transition:all 0.3s;position:relative;
+    scroll-snap-align:center;box-shadow:var(--shadow-sm);}
   .cast-card img{width:100%;display:block;}
   .cast-card .name{position:absolute;bottom:0;left:0;right:0;
     background:linear-gradient(transparent,rgba(0,0,0,0.85));
@@ -59,49 +86,49 @@ export function kakegoePageHTML() {
 
   /* スタートボタン */
   #start-btn{display:inline-block;margin:1.2rem 0;padding:1rem 3rem;
-    background:linear-gradient(135deg,var(--aka) 0%,#8B0000 100%);
-    color:#fff;border:2px solid var(--kin);border-radius:14px;
+    background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+    color:#fff;border:none;border-radius:14px;
     font-size:1.2rem;font-family:inherit;letter-spacing:0.2em;
-    cursor:pointer;transition:all 0.2s;text-shadow:0 2px 4px rgba(0,0,0,0.5);}
+    cursor:pointer;transition:all 0.2s;box-shadow:var(--shadow-md);}
   #start-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(197,165,90,0.3);}
   #start-btn:active{transform:scale(0.97);}
 
-  .intro-hint{font-size:0.85rem;color:#777;margin-top:0.5rem;line-height:1.6;}
+  .intro-hint{font-size:0.85rem;color:var(--text-secondary);margin-top:0.5rem;line-height:1.6;}
   .intro-hint b{color:var(--kin);}
 
   /* 操作説明（折りたたみ） */
   .how-to{max-width:540px;margin:1rem auto 0;text-align:left;}
-  .how-to .summary-box{font-size:0.9rem;color:#ccc;line-height:1.7;
+  .how-to .summary-box{font-size:0.9rem;color:var(--text-secondary);line-height:1.7;
     text-align:center;margin-bottom:0.5rem;}
   .how-to .summary-box b{color:var(--kin);}
-  .how-to details{background:#222;border:1px solid #444;border-radius:12px;
-    padding:0.8rem 1.2rem;}
+  .how-to details{background:var(--bg-card);border:1px solid var(--border-medium);border-radius:12px;
+    padding:0.8rem 1.2rem;box-shadow:var(--shadow-sm);}
   .how-to details summary{font-size:0.9rem;color:var(--kin);cursor:pointer;
     text-align:center;letter-spacing:0.1em;list-style:none;padding:0.2rem 0;}
   .how-to details summary::-webkit-details-marker{display:none;}
   .how-to details summary::after{content:" ▼";font-size:0.7rem;}
   .how-to details[open] summary::after{content:" ▲";}
   .how-to details .detail-body{margin-top:0.6rem;padding-top:0.6rem;
-    border-top:1px solid #444;}
+    border-top:1px solid var(--border-medium);}
   .how-to ol{padding-left:1.5rem;list-style:none;counter-reset:step;}
   .how-to ol li{counter-increment:step;margin-bottom:0.5rem;font-size:0.85rem;
-    color:#ccc;line-height:1.6;position:relative;}
+    color:var(--text-secondary);line-height:1.6;position:relative;}
   .how-to ol li::before{content:counter(step);position:absolute;left:-1.5rem;
     width:1.3rem;height:1.3rem;background:var(--aka);color:#fff;
     border-radius:50%;font-size:0.7rem;display:flex;align-items:center;
     justify-content:center;top:0.15rem;}
-  .how-to .tip{margin-top:0.7rem;padding:0.5rem 0.7rem;background:#2a2020;
+  .how-to .tip{margin-top:0.7rem;padding:0.5rem 0.7rem;background:var(--bg-subtle);
     border-left:3px solid var(--kin);border-radius:4px;font-size:0.82rem;
-    color:#bbb;line-height:1.5;}
+    color:var(--text-secondary);line-height:1.5;}
   .how-to .tip b{color:var(--kin);}
   .how-to .caution{margin-top:0.8rem;padding:0.7rem 0.8rem;
-    background:rgba(196,30,58,0.15);border:1px solid rgba(196,30,58,0.4);
+    background:rgba(212,97,75,0.08);border:1px solid rgba(212,97,75,0.25);
     border-left:4px solid var(--aka);
-    border-radius:6px;font-size:0.82rem;color:#e8e0d8;line-height:1.7;}
-  .how-to .caution b{color:#ff6b6b;}
+    border-radius:6px;font-size:0.82rem;color:var(--text-primary);line-height:1.7;}
+  .how-to .caution b{color:var(--accent-1);}
 
   /* ボタン前の安心テキスト */
-  .pre-btn{font-size:0.8rem;color:#777;margin-bottom:0.3rem;}
+  .pre-btn{font-size:0.8rem;color:var(--text-secondary);margin-bottom:0.3rem;}
 
   /* ── 動画エリア ── */
   #stage{max-width:720px;margin:0 auto;position:relative;display:none;}
@@ -124,8 +151,8 @@ export function kakegoePageHTML() {
   #now-playing{max-width:720px;margin:0.3rem auto;padding:0 1rem;
     display:none;text-align:center;}
   #now-char{display:inline-flex;align-items:center;gap:0.5rem;
-    background:#2a2020;border:1px solid #444;border-radius:20px;
-    padding:0.3rem 1rem;}
+    background:var(--bg-card);border:1px solid var(--border-medium);border-radius:20px;
+    padding:0.3rem 1rem;box-shadow:var(--shadow-sm);}
   #now-char img{width:32px;height:32px;border-radius:50%;object-fit:cover;
     border:1px solid var(--kin);}
   #now-char span{font-size:0.95rem;color:var(--kin);}
@@ -134,62 +161,62 @@ export function kakegoePageHTML() {
   #tap-zone{max-width:720px;margin:0.8rem auto;padding:0 1rem;display:none;}
   .tap-buttons{display:flex;gap:0.6rem;}
   .tap-btn{flex:1;padding:1.4rem;border-radius:14px;
-    color:var(--shiro);font-size:1.3rem;font-family:inherit;
+    color:var(--text-primary);font-size:1.3rem;font-family:inherit;
     cursor:pointer;letter-spacing:0.15em;transition:all 0.15s;
     text-align:center;position:relative;overflow:hidden;
     border-width:3px;border-style:solid;}
-  #btn-kakegoe-play{background:linear-gradient(135deg,#3a1515 0%,#1e1e1e 100%);
-    border-color:var(--aka);}
-  #btn-kakegoe-play:active{background:var(--aka);transform:scale(0.97);}
-  #btn-hakushu-play{background:linear-gradient(135deg,#1a2a1a 0%,#1e1e1e 100%);
-    border-color:var(--moegi);}
-  #btn-hakushu-play:active{background:var(--moegi);transform:scale(0.97);}
-  .tap-btn .sub{display:block;font-size:0.75rem;color:#999;margin-top:0.3rem;
+  #btn-kakegoe-play{background:var(--bg-card);
+    border-color:var(--aka);box-shadow:var(--shadow-sm);}
+  #btn-kakegoe-play:active{background:rgba(212,97,75,0.12);transform:scale(0.97);}
+  #btn-hakushu-play{background:var(--bg-card);
+    border-color:var(--moegi);box-shadow:var(--shadow-sm);}
+  #btn-hakushu-play:active{background:rgba(107,158,120,0.12);transform:scale(0.97);}
+  .tap-btn .sub{display:block;font-size:0.75rem;color:var(--text-tertiary);margin-top:0.3rem;
     letter-spacing:0.05em;}
 
   /* ── 次のヒント ── */
   #next-hint{max-width:720px;margin:0 auto;padding:0.5rem 1rem;
-    text-align:center;font-size:1rem;color:#777;display:none;
+    text-align:center;font-size:1rem;color:var(--text-secondary);display:none;
     min-height:2.5rem;}
   #next-hint .hint-text{color:var(--kin);}
 
   /* ── タイムライン ── */
   #timeline{max-width:720px;margin:0.5rem auto;padding:0 1rem;display:none;}
-  #timeline-bar{height:6px;background:#333;border-radius:3px;
+  #timeline-bar{height:6px;background:var(--border-light);border-radius:3px;
     position:relative;overflow:visible;}
   #timeline-progress{height:100%;background:linear-gradient(90deg,var(--moegi),var(--aka));
     border-radius:3px;width:0%;transition:width 0.3s linear;}
   .cue-marker{position:absolute;top:-4px;width:14px;height:14px;
     background:var(--kin);border-radius:50%;transform:translateX(-50%);
-    border:2px solid var(--kuro);z-index:2;}
+    border:2px solid var(--bg-page);z-index:2;}
   .cue-marker.hakushu-marker{background:var(--moegi);}
   .cue-marker.hit{box-shadow:0 0 8px var(--moegi);filter:brightness(1.3);}
-  .cue-marker.missed{background:#555;box-shadow:none;filter:none;}
+  .cue-marker.missed{background:var(--text-secondary);box-shadow:none;filter:none;}
 
   /* ── スコア ── */
   #score-bar{max-width:720px;margin:0 auto;padding:0.4rem 1rem;
     display:none;}
   .score-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.2rem 1rem;
-    background:#222;border-radius:10px;padding:0.5rem 1rem;}
+    background:var(--bg-card);border-radius:10px;padding:0.5rem 1rem;box-shadow:var(--shadow-sm);}
   .score-row{display:flex;justify-content:space-between;align-items:center;
     font-size:0.95rem;}
-  .s-label{color:#999;} .s-val{font-weight:bold;}
+  .s-label{color:var(--text-tertiary);} .s-val{font-weight:bold;}
   .s-great .s-val{color:var(--moegi);} .s-good .s-val{color:var(--kin);}
   .s-miss .s-val{color:var(--aka);} .s-ohineri .s-val{color:var(--kin);}
 
   /* ── 結果画面 ── */
   #result{max-width:720px;margin:2rem auto;padding:2rem;text-align:center;
-    display:none;background:#2a2020;border-radius:14px;border:1px solid var(--kin);}
+    display:none;background:var(--bg-card);border-radius:14px;border:1px solid var(--border-medium);box-shadow:var(--shadow-md);}
   #result h2{color:var(--kin);font-size:1.5rem;margin-bottom:1rem;}
   #result .big-score{font-size:3rem;color:var(--kin);}
-  #result .detail{margin-top:1rem;font-size:1rem;color:#bbb;line-height:1.8;}
+  #result .detail{margin-top:1rem;font-size:1rem;color:var(--text-secondary);line-height:1.8;}
   #result .cast-row{margin-top:1.2rem;}
-  #result button{margin-top:1.5rem;padding:0.7rem 2rem;background:var(--aka);
+  #result button{margin-top:1.5rem;padding:0.7rem 2rem;background:linear-gradient(135deg,var(--gold),var(--gold-dark));
     color:#fff;border:none;border-radius:8px;font-size:1rem;cursor:pointer;
-    font-family:inherit;}
+    font-family:inherit;box-shadow:var(--shadow-sm);}
 
-  footer{text-align:center;padding:1.2rem;font-size:0.85rem;color:#555;
-    border-top:1px solid #333;margin-top:2rem;}
+  footer{text-align:center;padding:1.2rem;font-size:0.85rem;color:var(--text-secondary);
+    border-top:1px solid var(--border-light);margin-top:2rem;}
   footer a{color:var(--kin);text-decoration:none;}
 
   /* ── おひねりボーナス ── */
@@ -216,7 +243,7 @@ export function kakegoePageHTML() {
     100%{background-position:100% 0;box-shadow:0 0 20px rgba(197,165,90,0.4),
       0 0 60px rgba(197,165,90,0.15);}
   }
-  #ohineri-label{display:block;font-size:0.7rem;color:#999;margin-top:0.3rem;
+  #ohineri-label{display:block;font-size:0.7rem;color:var(--text-tertiary);margin-top:0.3rem;
     letter-spacing:0.05em;}
   #ohineri-timer{height:4px;background:linear-gradient(90deg,var(--kin),var(--aka));
     border-radius:2px;margin-top:0.4rem;max-width:200px;
@@ -251,8 +278,6 @@ export function kakegoePageHTML() {
 </style>
 </head>
 <body>
-
-<div class="joshikimaku"></div>
 
 <!-- ===== イントロ画面 ===== -->
 <div id="intro">
@@ -383,7 +408,7 @@ export function kakegoePageHTML() {
 </div>
 
 <footer>
-  <a href="/training">お稽古メニューへ戻る</a>
+  <a href="/kabuki/dojo/training">お稽古メニューへ戻る</a>
 </footer>
 
 <script>
@@ -678,7 +703,7 @@ function handleTap(tapType, e, btn) {
     showKakegoe("種類が違うよ！", "var(--aka)");
     return;
   } else {
-    showKakegoe("…", "#555");
+    showKakegoe("…", "var(--text-secondary)");
     return;
   }
 
@@ -839,6 +864,32 @@ function showResult() {
   });
 
   document.getElementById("result").style.display = "block";
+
+  /* 稽古記録をlocalStorageに永続化 */
+  try {
+    const LOG_KEY = "keranosuke_log_v1";
+    const raw = localStorage.getItem(LOG_KEY);
+    const log = raw ? JSON.parse(raw) : {};
+    if (!log.practice) log.practice = {};
+    if (!log.practice.kakegoe) log.practice.kakegoe = { last_ts: 0, best_great: 0, best_good: 0, best_miss: 0, sessions: 0 };
+    const kk = log.practice.kakegoe;
+    kk.sessions = (kk.sessions || 0) + 1;
+    kk.last_ts = Math.floor(Date.now()/1000);
+    kk.last_great = score.great;
+    kk.last_good = score.good;
+    kk.last_miss = score.miss;
+    if (score.great > (kk.best_great || 0)) kk.best_great = score.great;
+    /* XP加算 */
+    if (typeof log.xp !== 'number') log.xp = 0;
+    log.xp += 3;
+    const today = new Date();
+    const todayKey = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
+    if (!log.daily_log) log.daily_log = {};
+    if (!log.daily_log[todayKey]) log.daily_log[todayKey] = { views:0, clips:0, quiz:0, keiko:0, theater:0 };
+    log.daily_log[todayKey].keiko++;
+    log.updated_at = Math.floor(Date.now()/1000);
+    localStorage.setItem(LOG_KEY, JSON.stringify(log));
+  } catch(e){}
 }
 <\/script>
 

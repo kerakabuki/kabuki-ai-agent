@@ -8,48 +8,60 @@ export function trainingPageHTML() {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>気良歌舞伎 お稽古モード</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --kuro: #1a1a1a;
-    --aka: #C41E3A;
-    --moegi: #6B8E23;
-    --kin: #C5A55A;
-    --shiro: #F5F0E8;
+    --bg-page: #FAF7F2;
+    --bg-card: rgba(255,255,255,0.90);
+    --bg-subtle: #F3EDE4;
+    --text-primary: #3D3127;
+    --text-secondary: #7A6F63;
+    --text-tertiary: #A89E93;
+    --gold: #C5A255;
+    --gold-dark: #A8873A;
+    --gold-soft: #F5EDD8;
+    --accent-1: #D4614B;
+    --accent-3: #6B9E78;
+    --border-light: #EDE7DD;
+    --border-medium: #DDD5C8;
+    --shadow-sm: 0 1px 3px rgba(61,49,39,0.06);
+    --shadow-md: 0 4px 12px rgba(61,49,39,0.08);
+    --radius-md: 12px;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   body {
-    font-family: "Noto Serif JP", "Yu Mincho", "Hiragino Mincho ProN", serif;
-    background: var(--kuro);
-    color: var(--shiro);
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg-page);
+    color: var(--text-primary);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    position: relative;
   }
-
-  /* ── 定式幕ストライプ（細め） ── */
-  .joshikimaku {
-    height: 5px;
-    background: repeating-linear-gradient(
-      90deg,
-      var(--kuro) 0%, var(--kuro) 33.33%,
-      var(--moegi) 33.33%, var(--moegi) 66.66%,
-      var(--aka) 66.66%, var(--aka) 100%
-    );
-    flex-shrink: 0;
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%23A8873A' stroke-width='1.2'%3E%3Cpath d='M0 20 L20 20 L20 0'/%3E%3Cpath d='M20 20 L20 40 L40 40'/%3E%3Cpath d='M40 40 L40 20 L60 20'/%3E%3Cpath d='M60 20 L60 0'/%3E%3Cpath d='M40 40 L40 60 L20 60'/%3E%3Cpath d='M20 60 L20 80'/%3E%3Cpath d='M60 20 L60 40 L80 40'/%3E%3Cpath d='M0 60 L20 60'/%3E%3Cpath d='M60 40 L60 60 L80 60'/%3E%3Cpath d='M40 60 L60 60 L60 80'/%3E%3Cpath d='M0 40 L20 40'/%3E%3Cpath d='M40 0 L40 20'/%3E%3Cpath d='M80 0 L80 20'/%3E%3Cpath d='M80 60 L80 80'/%3E%3Cpath d='M40 80 L40 60'/%3E%3Cpath d='M0 0 L0 20'/%3E%3Cpath d='M0 60 L0 80'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 80px 80px;
   }
+  body > * { position: relative; z-index: 1; }
 
   /* ── ヘッダー（コンパクトに） ── */
   header {
     text-align: center;
     padding: 1.5rem 1rem 1rem;
-    background: linear-gradient(180deg, rgba(26,26,26,1) 0%, rgba(40,20,20,0.95) 100%);
-    border-bottom: 2px solid var(--kin);
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border-light);
   }
   header h1 {
     font-size: 1.6rem;
-    letter-spacing: 0.3em;
-    color: var(--kin);
-    text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+    letter-spacing: 5px;
+    color: var(--text-primary);
+    font-family: 'Noto Serif JP', serif;
   }
   header h1::before {
     content: "🎭 ";
@@ -58,7 +70,7 @@ export function trainingPageHTML() {
   header p {
     margin-top: 0.3rem;
     font-size: 0.85rem;
-    color: #999;
+    color: var(--text-tertiary);
     letter-spacing: 0.1em;
   }
 
@@ -73,8 +85,8 @@ export function trainingPageHTML() {
 
   .section-title {
     font-size: 1rem;
-    color: var(--kin);
-    border-left: 4px solid var(--aka);
+    color: var(--text-primary);
+    border-left: 4px solid var(--gold);
     padding-left: 0.8rem;
     margin: 0 0 1rem;
     letter-spacing: 0.15em;
@@ -92,9 +104,9 @@ export function trainingPageHTML() {
 
   /* ── カード共通 ── */
   .card {
-    background: linear-gradient(135deg, #2a2020 0%, #1e1e1e 100%);
-    border: 2px solid #333;
-    border-radius: 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
     padding: 1.5rem 1.3rem;
     transition: all 0.3s ease;
     position: relative;
@@ -102,13 +114,10 @@ export function trainingPageHTML() {
     display: flex;
     flex-direction: column;
     min-height: 200px;
+    box-shadow: var(--shadow-sm);
   }
   .card::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--aka), var(--moegi));
+    display: none;
   }
 
   /* バッジ右上 */
@@ -118,28 +127,28 @@ export function trainingPageHTML() {
     font-size: 0.7rem;
     padding: 3px 10px;
     border-radius: 999px;
-    background: var(--aka);
+    background: var(--accent-1);
     color: #fff;
     letter-spacing: 0.05em;
   }
-  .card .badge.gray { background: #555; }
+  .card .badge.gray { background: var(--text-tertiary); }
 
   .card .icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
   .card h3 {
     font-size: 1.15rem;
-    color: var(--shiro);
+    color: var(--text-primary);
     margin-bottom: 0.4rem;
     letter-spacing: 0.1em;
   }
   .card .catch {
     font-size: 0.95rem;
-    color: var(--kin);
+    color: var(--gold-dark);
     margin-bottom: 0.3rem;
     font-weight: bold;
   }
   .card .desc {
     font-size: 0.8rem;
-    color: #999;
+    color: var(--text-secondary);
     line-height: 1.5;
   }
   .card .spacer { flex: 1; }
@@ -160,29 +169,27 @@ export function trainingPageHTML() {
     transition: all 0.2s;
   }
   .cta-primary {
-    background: linear-gradient(135deg, var(--aka) 0%, #8B0000 100%);
-    color: #fff;
-    border: 1px solid var(--kin) !important;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: white;
+    border: none !important;
   }
   .cta-primary:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 16px rgba(197,165,90,0.3);
   }
   .cta-disabled {
-    background: #333;
-    color: #777;
+    background: var(--bg-subtle);
+    color: var(--text-tertiary);
     cursor: not-allowed;
   }
 
   /* アクティブカード */
   .card-active {
-    border-color: var(--kin);
+    border-color: var(--gold);
     cursor: pointer;
   }
   .card-active:hover {
-    border-color: var(--kin);
-    transform: translateY(-4px);
-    box-shadow: 0 8px 28px rgba(197,165,90,0.2);
+    box-shadow: var(--shadow-md);
   }
 
   /* 無効カード */
@@ -196,108 +203,45 @@ export function trainingPageHTML() {
     box-shadow: none;
   }
 
-  /* ── 舞台設営中（Coming Soon）看板 ── */
-  .construction-panel {
-    margin-bottom: 1.5rem;
-    padding: 1.5rem 1.2rem;
-    background: linear-gradient(145deg, #1f1814 0%, #2a2020 50%, #1a1512 100%);
-    border: 2px solid rgba(197,165,90,0.4);
-    border-radius: 14px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  .construction-panel::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: repeating-linear-gradient(
-      -35deg,
-      transparent,
-      transparent 8px,
-      rgba(197,165,90,0.03) 8px,
-      rgba(197,165,90,0.03) 10px
-    );
-    pointer-events: none;
-  }
-  .construction-panel .main-msg {
-    font-size: 1.25rem;
-    color: var(--kin);
-    letter-spacing: 0.2em;
-    margin-bottom: 0.25rem;
-    position: relative;
-  }
-  .construction-panel .sub-msg {
-    font-size: 0.85rem;
-    color: #999;
-    letter-spacing: 0.1em;
-    margin-bottom: 1rem;
-    position: relative;
-  }
-  .benten-quote {
-    position: relative;
-    display: inline-block;
-    max-width: 320px;
-    margin: 0 auto;
-    padding: 0.9rem 1.4rem;
-    background: linear-gradient(135deg, #2a1a1a 0%, #1a1512 100%);
-    border-left: 4px solid var(--aka);
-    border-radius: 0 12px 12px 0;
-    text-align: left;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-  }
-  .benten-quote .text {
-    font-size: 1.05rem;
-    color: var(--shiro);
-    font-style: italic;
-    letter-spacing: 0.08em;
-    line-height: 1.6;
-  }
-  .benten-quote .role {
-    font-size: 0.7rem;
-    color: var(--kin);
-    margin-top: 0.5rem;
-    letter-spacing: 0.15em;
-  }
   .beta-recruit {
     margin-top: 1rem;
     padding: 0.8rem 1rem;
-    background: rgba(107,142,35,0.12);
-    border: 1px solid rgba(107,142,35,0.35);
+    background: rgba(107,158,120,0.1);
+    border: 1px solid rgba(107,158,120,0.3);
     border-radius: 10px;
     font-size: 0.8rem;
-    color: #b8c9a0;
+    color: var(--text-secondary);
     line-height: 1.6;
     text-align: center;
     position: relative;
   }
-  .beta-recruit strong { color: var(--moegi); }
+  .beta-recruit strong { color: var(--accent-3); }
 
   /* ── バナー ── */
   .banner {
     margin-top: 1.5rem;
-    background: linear-gradient(135deg, var(--aka) 0%, #8B0000 100%);
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
     border-radius: 14px;
     padding: 1.3rem 1.5rem;
     text-align: center;
-    border: 1px solid rgba(197,165,90,0.3);
+    border: 1px solid var(--gold-dark);
   }
   .banner h2 {
     font-size: 1.1rem;
-    color: var(--kin);
+    color: white;
     margin-bottom: 0.4rem;
   }
   .banner p {
     font-size: 0.85rem;
-    color: rgba(255,255,255,0.85);
+    color: rgba(255,255,255,0.9);
     line-height: 1.6;
   }
   .banner .banner-cta {
     display: inline-block;
     margin-top: 0.8rem;
     padding: 0.5rem 1.5rem;
-    background: var(--kin);
-    color: var(--kuro);
+    background: white;
+    color: var(--gold-dark);
     font-size: 0.9rem;
     font-family: inherit;
     font-weight: bold;
@@ -318,11 +262,12 @@ export function trainingPageHTML() {
     text-align: center;
     padding: 1rem;
     font-size: 0.8rem;
-    color: #555;
-    border-top: 1px solid #333;
+    color: var(--text-tertiary);
+    border-top: 1px solid var(--border-light);
+    background: var(--bg-subtle);
     flex-shrink: 0;
   }
-  footer a { color: var(--kin); text-decoration: none; }
+  footer a { color: var(--gold-dark); text-decoration: none; }
   footer a:hover { text-decoration: underline; }
 
   /* ── アニメーション ── */
@@ -333,12 +278,10 @@ export function trainingPageHTML() {
   .card { animation: fadeUp 0.5s ease both; }
   .card:nth-child(2) { animation-delay: 0.1s; }
   .banner { animation: fadeUp 0.5s ease 0.2s both; }
-  .construction-panel { animation: fadeUp 0.5s ease 0.05s both; }
+
 </style>
 </head>
 <body>
-
-<div class="joshikimaku"></div>
 
 <header>
   <h1>お稽古モード</h1>
@@ -346,40 +289,27 @@ export function trainingPageHTML() {
 </header>
 
 <main>
-  <section class="construction-panel">
-    <p class="main-msg">ただいま舞台設営中</p>
-    <p class="sub-msg">お稽古の準備をしています</p>
-    <div class="benten-quote">
-      <p class="text">「ちょっと待ってな。いい舞台、見せてやるからさ。」</p>
-      <p class="role">── 弁天小僧（予告）</p>
-    </div>
-    <div class="beta-recruit">
-      <strong>🛠️ ベータテスター募集</strong><br>
-      地歌舞伎役者の方で、開発中の修行モードを試してみたい方はDMください。
-    </div>
-  </section>
-
   <h2 class="section-title">稽古メニュー</h2>
   <div class="card-grid">
 
-    <div class="card card-active" onclick="location.href='/training/kakegoe'">
+    <div class="card card-active" onclick="location.href='/kabuki/dojo/training/kakegoe'">
       <span class="badge">NEW</span>
       <div class="icon">📣</div>
       <h3>大向こう稽古</h3>
       <div class="catch">掛け声と拍手のタイミングを体で覚える</div>
       <div class="desc">白浪五人男「稲瀬川勢揃い」</div>
       <div class="spacer"></div>
-      <div><button class="cta cta-primary" onclick="location.href='/training/kakegoe'">始める →</button></div>
+      <div><button class="cta cta-primary" onclick="location.href='/kabuki/dojo/training/kakegoe'">始める →</button></div>
     </div>
 
-    <div class="card card-disabled">
-      <span class="badge gray">準備中</span>
+    <div class="card">
+      <span class="badge">NEW</span>
       <div class="icon">🎙️</div>
       <h3>台詞道場</h3>
       <div class="catch">名台詞を声に出して稽古する</div>
       <div class="desc">弁天小僧「知らざぁ言って聞かせやしょう」</div>
       <div class="spacer"></div>
-      <div><button class="cta cta-disabled" disabled>準備中</button></div>
+      <div><button class="cta cta-primary" onclick="location.href='/kabuki/dojo/training/serifu'">始める →</button></div>
     </div>
 
   </div>
@@ -388,13 +318,11 @@ export function trainingPageHTML() {
     <h2>🏯 次回公演に向けて</h2>
     <p>
       大向こうを練習して、本番の舞台をもっと楽しもう！<br>
-      <strong style="color:var(--kin);">「知る」から「観る」へ ── そして「演る」へ。</strong>
+      <strong style="color:white;">「知る」から「観る」へ ── そして「演る」へ。</strong>
     </p>
-    <a href="/training/kakegoe" class="banner-cta">大向こう稽古を始める →</a>
+    <a href="/kabuki/dojo/training/kakegoe" class="banner-cta">大向こう稽古を始める →</a>
   </div>
 </main>
-
-<div class="joshikimaku"></div>
 
 <footer>
   <p>気良歌舞伎 AI ガイド「けらのすけ」 &copy; 2026</p>
