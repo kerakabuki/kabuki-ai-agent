@@ -57,6 +57,14 @@ function lineLoginRedirect(env, request) {
   const callbackUrl = `${url.origin}/auth/line/callback`;
   const state = crypto.randomUUID();
 
+  // ログイン前のページに戻るための returnTo を保存
+  const fromRaw = url.searchParams.get("from") || "/";
+  let returnTo = "/";
+  try {
+    const decoded = decodeURIComponent(fromRaw);
+    if (decoded.startsWith("/") && !decoded.startsWith("//")) returnTo = decoded;
+  } catch (_) {}
+
   const authUrl = new URL(LINE_AUTH_URL);
   authUrl.searchParams.set("response_type", "code");
   authUrl.searchParams.set("client_id", channelId);
@@ -68,6 +76,10 @@ function lineLoginRedirect(env, request) {
   headers.append(
     "Set-Cookie",
     `kl_oauth_state=${state}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=600`
+  );
+  headers.append(
+    "Set-Cookie",
+    `kl_oauth_from=${encodeURIComponent(returnTo)}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=600`
   );
   return new Response(null, { status: 302, headers });
 }
@@ -151,16 +163,29 @@ async function lineLoginCallback(request, env) {
 
   const sessionToken = await createSession(env, userInfo);
 
-  // /mypage にリダイレクト（セッション Cookie 付き）
-  const resHeaders = new Headers({ Location: "/mypage" });
+  // ログイン前のページに戻る（kl_oauth_from クッキーがあればそこへ、なければトップ）
+  let returnTo = "/";
+  try {
+    const fromCookie = cookies["kl_oauth_from"];
+    if (fromCookie) {
+      const decoded = decodeURIComponent(fromCookie);
+      if (decoded.startsWith("/") && !decoded.startsWith("//")) returnTo = decoded;
+    }
+  } catch (_) {}
+
+  const resHeaders = new Headers({ Location: returnTo });
   resHeaders.append(
     "Set-Cookie",
     `${SESSION_COOKIE}=${sessionToken}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${SESSION_TTL}`
   );
-  // oauth state Cookie を消す
+  // oauth 用の一時 Cookie をすべて消す
   resHeaders.append(
     "Set-Cookie",
     `kl_oauth_state=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`
+  );
+  resHeaders.append(
+    "Set-Cookie",
+    `kl_oauth_from=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`
   );
   return new Response(null, { status: 302, headers: resHeaders });
 }
@@ -198,19 +223,19 @@ async function verifyGoogleToken(request, env) {
     // 発行者チェック
     const validIssuers = ["accounts.google.com", "https://accounts.google.com"];
     if (!validIssuers.includes(payload.iss)) {
-      return jsonResponse({ error: "Invalid issuer: " + payload.iss }, 401);
+      return jsonResponse({ error: "Invalid token issuer" }, 401);
     }
 
-    // aud がクライアント ID と一致するか検証
+    // aud がクライアント ID と一致するか検証（clientId 未設定は拒否）
     const clientId = env.GOOGLE_CLIENT_ID;
-    if (clientId && payload.aud !== clientId) {
-      console.error("Audience mismatch:", payload.aud, "vs", clientId);
+    if (!clientId || payload.aud !== clientId) {
+      console.error("Audience mismatch or GOOGLE_CLIENT_ID not configured");
       return jsonResponse({ error: "Token audience mismatch" }, 401);
     }
 
-    // 有効期限チェック
+    // 有効期限チェック（exp フィールドがない場合も拒否）
     const now = Math.floor(Date.now() / 1000);
-    if (payload.exp && payload.exp < now) {
+    if (!payload.exp || payload.exp < now) {
       return jsonResponse({ error: "Token expired" }, 401);
     }
 

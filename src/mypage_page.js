@@ -41,6 +41,18 @@ export function mypagePageHTML(opts) {
         --kl-shadow-sm: var(--shadow-sm);
         --kl-shadow-md: var(--shadow-md);
         --kl-radius: var(--radius-md);
+        /* アバター・アクセント */
+        --kl-gold-warm: #ede3d0;
+        /* チャート・可視化用カラー */
+        --kl-blue: #6ca0dc;
+        --kl-blue-bg: #e8f0fe;
+        --kl-blue-text: #3c78d0;
+        --kl-purple: #9b59b6;
+        /* ランクバッジ */
+        --kl-rank-gold-start: #F2D06B;
+        --kl-rank-gold-end: #C5A255;
+        --kl-rank-silver: #D4D0CA;
+        --kl-rank-bronze: #C9A47A;
       }
 
       /* 共通 */
@@ -107,7 +119,7 @@ export function mypagePageHTML(opts) {
       /* ── 下部固定タブ ── */
       .kl-bottom-tabs {
         position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
-        display: flex; background: #faf8f3;
+        display: flex; background: var(--bg-page, #FAF7F2);
         border-top: 1px solid var(--kl-border);
         box-shadow: 0 -2px 8px rgba(61,49,39,0.06);
         padding-bottom: env(safe-area-inset-bottom, 0);
@@ -195,25 +207,11 @@ export function mypagePageHTML(opts) {
       }
       .kl-summary-num { font-size: 18px; font-weight: 700; color: var(--kl-gold-dark); }
 
-      /* ── CTA ── */
       /* ── 紹介テキスト ── */
       .kl-intro {
         text-align: center; font-size: 13px; color: var(--kl-text2);
         line-height: 1.8; margin-bottom: 1rem; letter-spacing: 0.5px;
       }
-
-      .tl-cta {
-        display: flex; align-items: center; justify-content: center; gap: 10px;
-        width: 100%; padding: 16px 24px;
-        border-radius: var(--kl-radius); border: none;
-        background: linear-gradient(135deg, var(--kl-gold), var(--kl-gold-dark));
-        color: #fff; font-size: 15px; font-weight: 600; font-family: inherit;
-        letter-spacing: 2px; cursor: pointer;
-        transition: transform 0.15s, box-shadow 0.15s;
-        box-shadow: var(--kl-shadow-md); margin-bottom: 1.2rem;
-      }
-      .tl-cta:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(61,49,39,0.12); }
-      .tl-cta-icon { font-size: 18px; }
 
       /* ── 統計カード ── */
       .tl-stats {
@@ -252,9 +250,9 @@ export function mypagePageHTML(opts) {
         font-size: 12px; font-weight: 600; margin-right: 14px; flex-shrink: 0;
         background: var(--kl-subtle); color: var(--kl-text2);
       }
-      .tl-actor-rank-row:nth-child(1) .tl-actor-rank-pos { background: linear-gradient(135deg, #F2D06B, #C5A255); color: #fff; }
-      .tl-actor-rank-row:nth-child(2) .tl-actor-rank-pos { background: #D4D0CA; color: #fff; }
-      .tl-actor-rank-row:nth-child(3) .tl-actor-rank-pos { background: #C9A47A; color: #fff; }
+      .tl-actor-rank-row:nth-child(1) .tl-actor-rank-pos { background: linear-gradient(135deg, var(--kl-rank-gold-start), var(--kl-rank-gold-end)); color: #fff; }
+      .tl-actor-rank-row:nth-child(2) .tl-actor-rank-pos { background: var(--kl-rank-silver); color: #fff; }
+      .tl-actor-rank-row:nth-child(3) .tl-actor-rank-pos { background: var(--kl-rank-bronze); color: #fff; }
       .tl-actor-rank-name { font-size: 14px; font-weight: 500; flex: 1; color: var(--kl-text); }
       .tl-actor-yago {
         display: inline-block; font-size: 10px; font-weight: 500;
@@ -410,10 +408,10 @@ export function mypagePageHTML(opts) {
       .kl-weekly-bar-stack { width: 100%; display: flex; flex-direction: column-reverse; gap: 1px; }
       .kl-weekly-seg { width: 100%; border-radius: 2px; min-height: 0; transition: height 0.3s ease; }
       .kl-weekly-seg-views { background: var(--kl-red); opacity: 0.7; }
-      .kl-weekly-seg-clips { background: #6ca0dc; opacity: 0.7; }
+      .kl-weekly-seg-clips { background: var(--kl-blue); opacity: 0.7; }
       .kl-weekly-seg-quiz { background: var(--kl-gold); opacity: 0.8; }
       .kl-weekly-seg-keiko { background: var(--kl-green); opacity: 0.7; }
-      .kl-weekly-seg-theater { background: #9b59b6; opacity: 0.7; }
+      .kl-weekly-seg-theater { background: var(--kl-purple); opacity: 0.7; }
       .kl-weekly-num { font-size: 9px; color: var(--kl-text2); font-weight: 600; min-height: 12px; }
       .kl-weekly-day { font-size: 10px; color: var(--kl-text3); }
       .kl-weekly-day-today { color: var(--kl-gold-dark); font-weight: 700; }
@@ -444,7 +442,7 @@ export function mypagePageHTML(opts) {
         height: 100%; border-radius: 2px; transition: width 0.3s ease;
       }
       .lc-progress-fill-red { background: var(--kl-red); }
-      .lc-progress-fill-blue { background: #6ca0dc; }
+      .lc-progress-fill-blue { background: var(--kl-blue); }
       .lc-progress-fill-gold { background: var(--kl-gold); }
       .lc-progress-fill-green { background: var(--kl-green); }
       .lc-progress-text { font-size: 9px; color: var(--kl-text3); margin-top: 2px; }
@@ -681,7 +679,7 @@ export function mypagePageHTML(opts) {
       }
       .oshi-profile-yago-icon {
         width: 48px; height: 48px; border-radius: 50%;
-        background: linear-gradient(135deg, var(--kl-gold-soft), #ede3d0);
+        background: linear-gradient(135deg, var(--kl-gold-soft), var(--kl-gold-warm));
         border: 2px solid var(--kl-gold-light);
         display: flex; align-items: center; justify-content: center;
         font-size: 11px; font-weight: 700; color: var(--kl-gold-dark);
@@ -709,6 +707,16 @@ export function mypagePageHTML(opts) {
       }
       .fav-search-input:focus { border-color: var(--kl-gold); outline: none; }
       .fav-search-results { max-height: 60vh; overflow-y: auto; }
+      /* 全俳優から探すボタン */
+      .btn-all-actors {
+        display: block; width: 100%; margin-top: 12px;
+        padding: 10px 16px; font-size: 13px; font-weight: 600;
+        font-family: 'Noto Serif JP', serif; letter-spacing: 0.04em;
+        color: var(--kl-gold-dark, #8b6914); background: var(--kl-gold-soft, #fdf8ec);
+        border: 1px solid var(--kl-gold-light); border-radius: 8px; cursor: pointer;
+        transition: all 0.15s; text-align: center;
+      }
+      .btn-all-actors:hover { background: var(--kl-gold, #c9a227); color: #fff; border-color: var(--kl-gold, #c9a227); }
       .fav-actor-card {
         display: flex; align-items: center; gap: 0.6rem;
         background: var(--kl-card); border: 1px solid var(--kl-border);
@@ -726,7 +734,7 @@ export function mypagePageHTML(opts) {
       }
       .fav-actor-yago-badge {
         width: 36px; height: 36px; border-radius: 50%;
-        background: linear-gradient(135deg, var(--kl-gold-soft), #ede3d0);
+        background: linear-gradient(135deg, var(--kl-gold-soft), var(--kl-gold-warm));
         border: 2px solid var(--kl-gold-light);
         display: flex; align-items: center; justify-content: center;
         font-size: 10px; font-weight: 700; color: var(--kl-gold-dark);
@@ -811,7 +819,7 @@ export function mypagePageHTML(opts) {
       }
       @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
       .fav-modal {
-        background: #faf8f3; border-radius: 16px;
+        background: var(--bg-page, #FAF7F2); border-radius: 16px;
         box-shadow: 0 12px 40px rgba(30, 25, 20, 0.35);
         width: 100%; max-width: 560px; max-height: 85vh;
         display: flex; flex-direction: column;
@@ -869,9 +877,9 @@ export function mypagePageHTML(opts) {
         width: 100%;
         padding: 1rem;
         border-radius: 14px;
-        border: 2px dashed var(--kin);
+        border: 2px dashed var(--gold);
         background: linear-gradient(135deg, rgba(201,162,39,0.08) 0%, rgba(201,162,39,0.02) 100%);
-        color: var(--kin);
+        color: var(--gold-dark);
         font-size: 1rem;
         font-weight: bold;
         font-family: inherit;
@@ -882,7 +890,7 @@ export function mypagePageHTML(opts) {
       }
       .tl-cta:hover {
         background: linear-gradient(135deg, rgba(201,162,39,0.15) 0%, rgba(201,162,39,0.05) 100%);
-        border-color: var(--kin);
+        border-color: var(--gold);
         box-shadow: 0 4px 16px rgba(201,162,39,0.15);
         transform: translateY(-2px);
       }
@@ -1057,9 +1065,9 @@ export function mypagePageHTML(opts) {
 
       /* 映像鑑賞ログセクション */
       .media-stats { }
-      .media-entry { border-left-color: #6ca0dc; }
+      .media-entry { border-left-color: var(--kl-blue); }
       .media-type-tag {
-        background: #e8f0fe; color: #3c78d0; font-weight: 600;
+        background: var(--kl-blue-bg); color: var(--kl-blue-text); font-weight: 600;
       }
       .tl-entry-actors-text { font-size: 0.82rem; color: var(--kl-text2); margin-top: 0.2rem; }
       .media-empty { color: var(--kl-text3); }
@@ -1086,55 +1094,43 @@ export function mypagePageHTML(opts) {
       .tl-play-check-label { font-size: 0.88rem; color: var(--kl-text); font-weight: 600; }
       .tl-play-check-actors { font-size: 0.7rem; color: var(--kl-text3); letter-spacing: 0.02em; }
       .tl-perf-card-plays { font-size: 0.68rem; color: var(--kl-green); margin-top: 2px; }
-      }
 
-      /* ── 認証バー ── */
-      .kl-auth-bar {
-        background: var(--kl-card); border: 1px solid var(--kl-border);
-        border-radius: var(--kl-radius); padding: 0.6rem 0.9rem;
-        margin-bottom: 1rem; box-shadow: var(--kl-shadow-sm);
+      /* ── 月次アクティビティカレンダー ── */
+      .kl-month-cal {
+        display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px;
+        margin-top: 6px;
       }
-      .kl-auth-user {
-        display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+      .kl-cal-header-cell {
+        text-align: center; font-size: 10px; color: var(--kl-text3);
+        padding: 2px 0; font-weight: 500;
       }
-      .kl-auth-avatar {
-        width: 28px; height: 28px; border-radius: 50%; object-fit: cover;
-        border: 1px solid var(--kl-border);
+      .kl-cal-header-cell:first-child { color: var(--kl-red); }
+      .kl-cal-header-cell:last-child  { color: var(--kl-blue); }
+      .kl-cal-cell {
+        aspect-ratio: 1; border-radius: 4px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 11px; color: var(--kl-text3);
       }
-      .kl-auth-name {
-        font-size: 0.85rem; font-weight: 600; color: var(--kl-text);
+      .kl-cal-empty {}
+      .kl-cal-theater { background: var(--kl-red-soft); color: var(--kl-red); font-weight: 600; }
+      .kl-cal-media   { background: var(--kl-blue-bg); color: var(--kl-blue-text); font-weight: 600; }
+      .kl-cal-activity { background: var(--kl-accent-soft); color: var(--kl-gold-dark); }
+      .kl-cal-today {
+        background: var(--kl-gold-soft); color: var(--kl-gold-dark);
+        font-weight: 700; border: 1px solid var(--kl-gold-light);
       }
-      .kl-auth-badge {
-        font-size: 0.65rem; padding: 1px 6px; border-radius: 4px;
-        background: var(--kl-accent-soft); color: var(--kl-gold-dark);
-        font-weight: 600; letter-spacing: 0.5px;
+      .kl-cal-theater.kl-cal-today, .kl-cal-media.kl-cal-today {
+        border-color: var(--kl-red);
       }
-      .kl-auth-logout {
-        margin-left: auto; font-size: 0.72rem; padding: 0.3rem 0.6rem;
+      .kl-cal-legend {
+        display: flex; gap: 10px; flex-wrap: wrap;
+        margin-top: 8px; padding-top: 8px;
+        border-top: 1px solid var(--kl-border);
+        font-size: 10px; color: var(--kl-text3);
       }
-      .kl-auth-login {
-        display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
-      }
-      .kl-auth-msg {
-        font-size: 0.78rem; color: var(--kl-text3); flex-basis: 100%; margin-bottom: 0.3rem;
-      }
-      .kl-btn-line {
-        display: inline-flex; align-items: center; gap: 4px;
-        padding: 0.45rem 1rem; border-radius: 6px;
-        background: #06C755; color: #fff; font-size: 0.82rem;
-        font-weight: 600; text-decoration: none; border: none; cursor: pointer;
-        transition: opacity 0.2s;
-      }
-      .kl-btn-line:hover { opacity: 0.85; color: #fff; text-decoration: none; }
-      .kl-btn-google {
-        display: inline-flex; align-items: center; gap: 4px;
-        padding: 0.45rem 1rem; border-radius: 6px;
-        background: #fff; color: #444; font-size: 0.82rem;
-        font-weight: 600; border: 1px solid #ddd; cursor: pointer;
-        font-family: inherit; transition: all 0.2s;
-      }
-      .kl-btn-google:hover { border-color: #4285f4; color: #4285f4; }
-      .kl-auth-status { font-size: 0.78rem; color: var(--kl-text3); }
+      .kl-cal-leg { display: flex; align-items: center; gap: 4px; }
+      .kl-cal-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
     </style>
 
     <script>
@@ -1235,30 +1231,6 @@ export function mypagePageHTML(opts) {
         .catch(function(e) { console.error('Migration error:', e); });
       }
 
-      function renderAuthBar() {
-        var h = '<div class="kl-auth-bar">';
-        if (!authState.checked) {
-          h += '<span class="kl-auth-status">確認中…</span>';
-        } else if (authState.loggedIn && authState.user) {
-          h += '<div class="kl-auth-user">';
-          if (authState.user.pictureUrl) {
-            h += '<img src="' + esc(authState.user.pictureUrl) + '" class="kl-auth-avatar" alt="">';
-          }
-          h += '<span class="kl-auth-name">' + esc(authState.user.displayName) + '</span>';
-          h += '<span class="kl-auth-badge">' + (authState.user.provider === 'line' ? 'LINE' : 'Google') + '</span>';
-          h += '<button class="mp-btn kl-auth-logout" onclick="MP.logout()">ログアウト</button>';
-          h += '</div>';
-        } else {
-          h += '<div class="kl-auth-login">';
-          h += '<span class="kl-auth-msg">ログインするとデータがサーバーに保存されます</span>';
-          h += '<a href="/auth/line" class="kl-btn-line">LINE でログイン</a>';
-          h += '<div id="kl-google-btn"></div>';
-          h += '<span id="kl-google-status" class="kl-auth-status"></span>';
-          h += '</div>';
-        }
-        h += '</div>';
-        return h;
-      }
 
       /* =====================================================
          会場マスター
@@ -1326,10 +1298,19 @@ export function mypagePageHTML(opts) {
         try { localStorage.setItem(FAV_KEY, JSON.stringify(list)); } catch(e) {}
         saveToServer();
       }
+      var MAX_FAVORITES = 5;
       function toggleFavorite(name) {
         var fav = loadFavorites();
         var idx = fav.indexOf(name);
-        if (idx >= 0) fav.splice(idx, 1); else fav.push(name);
+        if (idx >= 0) {
+          fav.splice(idx, 1);
+        } else {
+          if (fav.length >= MAX_FAVORITES) {
+            alert('\\u63a8\\u3057\\u4ff3\\u512a\\u306e\\u767b\\u9332\\u306f' + MAX_FAVORITES + '\\u4eba\\u307e\\u3067\\u3067\\u3059\\u3002\\n\\u65e2\\u5b58\\u306e\\u767b\\u9332\\u3092\\u89e3\\u9664\\u3057\\u3066\\u304b\\u3089\\u8ffd\\u52a0\\u3057\\u3066\\u304f\\u3060\\u3055\\u3044\\u3002');
+            return fav;
+          }
+          fav.push(name);
+        }
         saveFavorites(fav);
         return fav;
       }
@@ -1815,9 +1796,6 @@ export function mypagePageHTML(opts) {
 
         var h = '';
 
-        /* ── ログインバー ── */
-        h += renderAuthBar();
-
         /* ── 紹介テキスト ── */
         h += '<div class="kl-intro">';
         h += '幕が降りたら、ここに一筆。<br>観劇の記録と推し俳優を積み上げよう。';
@@ -1949,6 +1927,9 @@ export function mypagePageHTML(opts) {
 
         /* ── 今週の学習 ── */
         h += renderWeeklyGraph(log);
+
+        /* ── 今月のアクティビティカレンダー ── */
+        h += renderActivityCalendar(tlog, log);
 
         /* ── KABUKI DOJO への誘導 ── */
         h += '<a href="/kabuki/dojo" class="kl-section-card" style="display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--kl-text);cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;">';
@@ -2217,19 +2198,25 @@ export function mypagePageHTML(opts) {
         h += '</div>';
         h += '</div>';
 
-        /* ── 俳優を追加 ── */
-        h += '<div class="mp-section">';
-        h += '<div class="mp-section-title">🔍 俳優を検索して追加</div>';
-        h += '<input type="text" class="fav-search-input" id="fav-search" placeholder="名前・屋号で検索" oninput="MP.filterActors()">';
-        h += '<div id="fav-search-results" class="fav-search-results"></div>';
-        h += '</div>';
+        /* ── 人気俳優から選ぶ（デフォルト） ── */
+        h += '<div class="mp-section" id="popular-actors-section">';
+        h += '<div class="mp-section-title">\u2728 \u4eba\u6c17\u4ff3\u512a\u304b\u3089\u9078\u3076<\/div>';
+        h += '<div id="popular-actors-grid" class="fav-search-results"><\/div>';
+        h += '<button class="btn-all-actors" onclick="MP.toggleAllActors()">\uD83D\uDD0D \u5168\u4ff3\u512a\u304b\u3089\u63a2\u3059 \u2192<\/button>';
+        h += '<\/div>';
 
-        /* ── 屋号から選ぶ ── */
-        h += '<div class="mp-section">';
-        h += '<div class="mp-section-title">🏠 屋号から選ぶ</div>';
-        h += '<div id="yago-tabs" class="yago-tabs"><div class="mp-empty" style="padding:0.5rem;font-size:0.82rem;">読み込み中…</div></div>';
-        h += '<div id="yago-actor-list" class="yago-actor-list"></div>';
-        h += '</div>';
+        /* ── 全俳優検索（「全俳優から探す」タップ後に表示） ── */
+        h += '<div class="mp-section" id="full-search-section" style="display:none">';
+        h += '<div class="mp-section-title">\uD83D\uDD0D \u4ff3\u512a\u3092\u691c\u7d22\u3057\u3066\u8ffd\u52a0<\/div>';
+        h += '<input type="text" class="fav-search-input" id="fav-search" placeholder="\u540d\u524d\u30fb\u5c4b\u53f7\u3067\u691c\u7d22" oninput="MP.filterActors()">';
+        h += '<div id="fav-search-results" class="fav-search-results"><\/div>';
+        h += '<\/div>';
+
+        h += '<div class="mp-section" id="yago-section" style="display:none">';
+        h += '<div class="mp-section-title">\uD83C\uDFE0 \u5c4b\u53f7\u304b\u3089\u9078\u3076<\/div>';
+        h += '<div id="yago-tabs" class="yago-tabs"><\/div>';
+        h += '<div id="yago-actor-list" class="yago-actor-list"><\/div>';
+        h += '<\/div>';
 
         /* ── 推しニュース ── */
         if (favList.length > 0) {
@@ -2403,7 +2390,10 @@ export function mypagePageHTML(opts) {
 
         app.innerHTML = h;
 
-        /* 名鑑データロード → 登録済みリッチ化 + 屋号タブ + ニュース */
+        /* 人気俳優グリッド描画 */
+        renderPopularActors(favList);
+
+        /* 名鑑データロード → 登録済みリッチ化（屋号タブは展開後に遅延ロード） */
         loadActorMeikan(function(meikan) {
           /* 登録済みカードのリッチ化 */
           var regArea = document.getElementById('oshi-registered-area');
@@ -2433,9 +2423,12 @@ export function mypagePageHTML(opts) {
             }
             regArea.innerHTML = ph;
           }
-          /* 屋号タブ */
-          renderYagoTabs(meikan);
-          renderYagoActors(meikan, favYagoFilter);
+          /* 屋号タブ: 展開後（yago-section が表示中）のみ描画 */
+          var yagoSec = document.getElementById('yago-section');
+          if (yagoSec && yagoSec.style.display !== 'none') {
+            renderYagoTabs(meikan);
+            renderYagoActors(meikan, favYagoFilter);
+          }
           /* ランキングの屋号タグ */
           var rankingArea = document.getElementById('actor-ranking-area');
           if (rankingArea) {
@@ -2704,10 +2697,10 @@ export function mypagePageHTML(opts) {
         /* 凡例 */
         h += '<div class="kl-weekly-legend">';
         h += '<div class="kl-weekly-leg"><div class="kl-weekly-dot" style="background:var(--kl-red);opacity:0.7;"></div>閲覧</div>';
-        h += '<div class="kl-weekly-leg"><div class="kl-weekly-dot" style="background:#6ca0dc;opacity:0.7;"></div>理解</div>';
+        h += '<div class="kl-weekly-leg"><div class="kl-weekly-dot" style="background:var(--kl-blue);opacity:0.7;"></div>理解</div>';
         h += '<div class="kl-weekly-leg"><div class="kl-weekly-dot" style="background:var(--kl-gold);opacity:0.8;"></div>クイズ</div>';
         h += '<div class="kl-weekly-leg"><div class="kl-weekly-dot" style="background:var(--kl-green);opacity:0.7;"></div>稽古</div>';
-        h += '<div class="kl-weekly-leg"><div class="kl-weekly-dot" style="background:#9b59b6;opacity:0.7;"></div>観劇</div>';
+        h += '<div class="kl-weekly-leg"><div class="kl-weekly-dot" style="background:var(--kl-purple);opacity:0.7;"></div>観劇</div>';
         h += '</div>';
         h += '</div>';
         return h;
@@ -2719,6 +2712,85 @@ export function mypagePageHTML(opts) {
         if (c === 'keiko') return '稽古';
         if (c === 'theater') return '観劇';
         return c;
+      }
+
+      /* =====================================================
+         月次アクティビティカレンダー
+      ===================================================== */
+      function renderActivityCalendar(tlog, log) {
+        var now = new Date();
+        var year = now.getFullYear();
+        var month = now.getMonth();
+        var today = now.getDate();
+        var DOW_LABELS = ['日','月','火','水','木','金','土'];
+
+        /* 劇場・映像・学習の日付マップ */
+        var theaterDays = {}, mediaDays = {}, learnDays = {};
+        for (var i = 0; i < tlog.entries.length; i++) {
+          var e = tlog.entries[i];
+          if (!e.date) continue;
+          var d = new Date(e.date + 'T00:00:00');
+          if (d.getFullYear() !== year || d.getMonth() !== month) continue;
+          var day = d.getDate();
+          if ((e.viewing_type || 'theater') === 'theater') theaterDays[day] = true;
+          else mediaDays[day] = true;
+        }
+        /* daily_log からの学習アクティビティ */
+        for (var di = 1; di <= 31; di++) {
+          var key = year + '-' + String(month+1).padStart(2,'0') + '-' + String(di).padStart(2,'0');
+          var dl = log.daily_log && log.daily_log[key];
+          if (dl && (dl.views || dl.clips || dl.quiz || dl.keiko)) learnDays[di] = true;
+        }
+
+        var firstDow = new Date(year, month, 1).getDay();
+        var lastDay  = new Date(year, month + 1, 0).getDate();
+        var monthName = (month + 1) + '月';
+        var theaterCount = Object.keys(theaterDays).length;
+        var mediaCount   = Object.keys(mediaDays).length;
+
+        var h = '<div class="kl-section-card">';
+        h += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">';
+        h += '<div style="font-size:13px;font-weight:600;color:var(--kl-text);letter-spacing:0.04em;">📅 ' + year + '年' + monthName + 'のアクティビティ</div>';
+        var badges = '';
+        if (theaterCount > 0) badges += '<span style="font-size:11px;color:var(--kl-red);font-weight:600;margin-left:6px;">🏛️' + theaterCount + '</span>';
+        if (mediaCount  > 0) badges += '<span style="font-size:11px;color:var(--kl-blue-text);font-weight:600;margin-left:6px;">📺' + mediaCount + '</span>';
+        if (badges) h += '<div>' + badges + '</div>';
+        h += '</div>';
+
+        /* 曜日ヘッダー */
+        h += '<div class="kl-month-cal">';
+        for (var dh = 0; dh < 7; dh++) {
+          h += '<div class="kl-cal-header-cell">' + DOW_LABELS[dh] + '</div>';
+        }
+        /* 先頭の空白 */
+        for (var pad = 0; pad < firstDow; pad++) {
+          h += '<div class="kl-cal-cell kl-cal-empty"></div>';
+        }
+        /* 日付セル */
+        for (var day = 1; day <= lastDay; day++) {
+          var isToday    = (day === today);
+          var isTheater  = !!theaterDays[day];
+          var isMedia    = !!mediaDays[day];
+          var isLearn    = !!learnDays[day];
+          var cls = 'kl-cal-cell';
+          if (isTheater)     cls += ' kl-cal-theater';
+          else if (isMedia)  cls += ' kl-cal-media';
+          else if (isLearn)  cls += ' kl-cal-activity';
+          if (isToday) cls += ' kl-cal-today';
+          h += '<div class="' + cls + '">' + day + '</div>';
+        }
+        h += '</div>'; /* kl-month-cal */
+
+        /* 凡例 */
+        h += '<div class="kl-cal-legend">';
+        h += '<div class="kl-cal-leg"><div class="kl-cal-dot" style="background:var(--kl-red-soft);border:1px solid var(--kl-red);"></div>劇場</div>';
+        h += '<div class="kl-cal-leg"><div class="kl-cal-dot" style="background:var(--kl-blue-bg);border:1px solid var(--kl-blue-text);"></div>映像</div>';
+        h += '<div class="kl-cal-leg"><div class="kl-cal-dot" style="background:var(--kl-accent-soft);"></div>学習</div>';
+        h += '<div class="kl-cal-leg"><div class="kl-cal-dot" style="background:var(--kl-gold-soft);border:1px solid var(--kl-gold-light);"></div>今日</div>';
+        h += '</div>';
+
+        h += '</div>'; /* kl-section-card */
+        return h;
       }
 
       /* =====================================================
@@ -3160,7 +3232,7 @@ export function mypagePageHTML(opts) {
                 h += '<label class="tl-play-check' + chkCls + '">';
                 h += '<span class="tl-play-check-box">' + (checked ? "✓" : "") + '</span>';
                 h += '<div class="tl-play-check-content">';
-                h += '<span class="tl-play-check-label">' + esc(playTitle) + (playScenes ? ' <span style="font-size:0.78rem;color:#888;">（' + esc(playScenes) + '）</span>' : '') + '</span>';
+                h += '<span class="tl-play-check-label">' + esc(playTitle) + (playScenes ? ' <span style="font-size:0.78rem;color:var(--kl-text3);">（' + esc(playScenes) + '）</span>' : '') + '</span>';
                 if (playCast.length > 0) {
                   var actorNames = [];
                   for (var ak = 0; ak < Math.min(playCast.length, 5); ak++) actorNames.push(playCast[ak].actor);
@@ -3515,7 +3587,7 @@ export function mypagePageHTML(opts) {
             var it = items[i];
             h += '<div class="mp-item">';
             h += '<span class="mp-item-icon">' + typeIcon(it.type) + '</span>';
-            h += '<a href="' + it.link + '" style="flex:1; min-width:0; text-decoration:none; color:var(--shiro);">';
+            h += '<a href="' + it.link + '" style="flex:1; min-width:0; text-decoration:none; color:var(--text-primary);">';
             h += '<div class="mp-item-title">' + esc(it.title) + '</div></a>';
             h += '<button class="mp-btn mp-btn-danger" style="padding:0.3rem 0.6rem; font-size:0.7rem;" onclick="MP.removeClip(\\'' + clipTab + '\\',\\'' + esc(it.id) + '\\')">解除</button>';
             h += '</div>';
@@ -3538,13 +3610,13 @@ export function mypagePageHTML(opts) {
           h += '<div class="mp-empty">まだクイズに挑戦していないよ🙂<br>まずはクイズに挑戦してみよう！</div>';
           h += '<div class="mp-actions"><a href="/kabuki/dojo/quiz" class="mp-btn mp-btn-primary">クイズに挑戦</a></div>';
         } else {
-          h += '<div style="padding:0.8rem 1rem; background:var(--surface); border-radius:10px; border:1px solid #333; margin-bottom:1rem;">';
-          h += '<div style="font-size:0.88rem; color:var(--shiro); margin-bottom:0.5rem;">📊 成績</div>';
-          h += '<div style="font-size:1.1rem; color:var(--kin); font-weight:bold;">' + quizState.correct_total + ' / ' + quizState.answered_total + ' 問正解</div>';
+          h += '<div style="padding:0.8rem 1rem; background:var(--bg-subtle); border-radius:10px; border:1px solid var(--border-medium); margin-bottom:1rem;">';
+          h += '<div style="font-size:0.88rem; color:var(--text-primary); margin-bottom:0.5rem;">📊 成績</div>';
+          h += '<div style="font-size:1.1rem; color:var(--gold); font-weight:bold;">' + quizState.correct_total + ' / ' + quizState.answered_total + ' 問正解</div>';
           var title = calcTitle(quizState.correct_total, 100);
-          h += '<div style="font-size:0.82rem; color:#999; margin-top:0.3rem;">称号：' + title + '</div>';
+          h += '<div style="font-size:0.82rem; color:var(--kl-text3); margin-top:0.3rem;">称号：' + title + '</div>';
           if (wc > 0) {
-            h += '<div style="font-size:0.88rem; color:var(--aka); margin-top:0.5rem;">間違えた問題：' + wc + '問</div>';
+            h += '<div style="font-size:0.88rem; color:var(--accent-1); margin-top:0.5rem;">間違えた問題：' + wc + '問</div>';
           }
           h += '</div>';
           h += '<div class="mp-actions">';
@@ -3595,6 +3667,136 @@ export function mypagePageHTML(opts) {
 
       var favYagoFilter = '';  /* 屋号フィルター状態 */
 
+      /* ── 人気俳優リスト（初期キュレーション） ── */
+      var POPULAR_ACTORS = JSON.parse('[' +
+        '"\\u5341\\u4e09\\u4ee3\\u76ee\\u5e02\\u5ddd\\u5718\\u5341\\u90ce",' +
+        '"\\u7247\\u5ca1\\u4ec1\\u5de6\\u885b\\u9580",' +
+        '"\\u5742\\u6771\\u7389\\u4e09\\u90ce",' +
+        '"\\u4e2d\\u6751\\u52d8\\u4e5d\\u90ce",' +
+        '"\\u4e2d\\u6751\\u4e03\\u4e4b\\u52a9",' +
+        '"\\u5c3e\\u4e0a\\u83ca\\u4e4b\\u52a9",' +
+        '"\\u677e\\u672c\\u5e78\\u56db\\u90ce",' +
+        '"\\u677e\\u672c\\u767d\\u9e1a",' +
+        '"\\u4e2d\\u6751\\u829d\\u7feb",' +
+        '"\\u5c3e\\u4e0a\\u677e\\u4e5f",' +
+        '"\\u5c3e\\u4e0a\\u83ca\\u4e94\\u90ce",' +
+        '"\\u7247\\u5ca1\\u611b\\u4e4b\\u52a9",' +
+        '"\\u4e2d\\u6751\\u6885\\u7389",' +
+        '"\\u4e2d\\u6751\\u9d08\\u6cbb\\u90ce",' +
+        '"\\u5e02\\u5ddd\\u67d3\\u4e94\\u90ce",' +
+        '"\\u5c3e\\u4e0a\\u53f3\\u8fd1",' +
+        '"\\u4e2d\\u6751\\u96bc\\u4eba",' +
+        '"\\u5742\\u6771\\u5df3\\u4e4b\\u52a9",' +
+        '"\\u4e2d\\u6751\\u6a4b\\u4e4b\\u52a9",' +
+        '"\\u5e02\\u5ddd\\u4e2d\\u8eca",' +
+        '"\\u5c3e\\u4e0a\\u677e\\u7dd1"' +
+      ']');
+
+      /* 人気俳優グリッド描画 */
+      function renderPopularActors(favList, containerId) {
+        var el = document.getElementById(containerId || 'popular-actors-grid');
+        if (!el) return;
+        var buildHTML = function(meikan) {
+          var ph = '';
+          for (var i = 0; i < POPULAR_ACTORS.length; i++) {
+            var name = POPULAR_ACTORS[i];
+            var isFav = favList.indexOf(name) >= 0;
+            var info = null;
+            if (meikan) {
+              for (var mi = 0; mi < meikan.length; mi++) {
+                var nk = (meikan[mi].name_kanji || '').replace(/\\s+/g, '');
+                if (nk === name) { info = meikan[mi]; break; }
+              }
+            }
+            ph += '<div class="fav-actor-card' + (isFav ? ' fav-actor-selected' : '') +
+              '" onclick="MP.toggleFavPopular(\\'' + esc(name).replace(/'/g, "\\\\'") + '\\')">';
+            if (info && info.yago) {
+              var yS = info.yago.length > 3 ? info.yago.substring(0, 3) : info.yago;
+              ph += '<div class="fav-actor-yago-badge" title="' + esc(info.yago) + '">' + esc(yS) + '<\/div>';
+            } else {
+              ph += '<div class="fav-actor-icon">\uD83C\uDFAD<\/div>';
+            }
+            ph += '<div class="fav-actor-info">';
+            ph += '<div class="fav-actor-name">' + (isFav ? '\u2605 ' : '') + esc(name) + '<\/div>';
+            if (info) {
+              var sub = [];
+              if (info.generation) sub.push(info.generation);
+              if (sub.length) ph += '<div class="fav-actor-sub">' + esc(sub.join(' / ')) + '<\/div>';
+            }
+            ph += '<\/div>';
+            ph += '<span class="fav-actor-badge' + (isFav ? '' : ' fav-actor-badge-add') + '">' + (isFav ? '\u767b\u9332\u6e08' : '\uff0b\u8ffd\u52a0') + '<\/span>';
+            ph += '<\/div>';
+          }
+          el.innerHTML = ph;
+        };
+        /* 名鑑データがあればリッチ表示、なければ即表示→非同期リッチ化 */
+        if (actorMeikanCache) {
+          buildHTML(actorMeikanCache);
+        } else {
+          buildHTML(null);
+          loadActorMeikan(function(meikan) { buildHTML(meikan); });
+        }
+      }
+
+      /* 全俳優表示に切り替え */
+      function toggleAllActors() {
+        var popSec = document.getElementById('popular-actors-section');
+        var fullSec = document.getElementById('full-search-section');
+        var yagoSec = document.getElementById('yago-section');
+        if (popSec) popSec.style.display = 'none';
+        if (fullSec) fullSec.style.display = '';
+        if (yagoSec) yagoSec.style.display = '';
+        /* 屋号タブ + 俳優リストを初期ロード */
+        loadActorMeikan(function(meikan) {
+          renderYagoTabs(meikan);
+          renderYagoActors(meikan, favYagoFilter);
+        });
+        var inp = document.getElementById('fav-search');
+        if (inp) inp.focus();
+      }
+
+      /* 人気俳優のトグル（推しタブ・モーダル共通） */
+      function toggleFavPopular(name) {
+        toggleFavorite(name);
+        var newFav = loadFavorites();
+        renderPopularActors(newFav);
+        /* 登録済み一覧を更新 */
+        var regArea = document.getElementById('oshi-registered-area');
+        if (regArea) {
+          loadActorMeikan(function(meikan) {
+            var ph = '';
+            if (newFav.length === 0) {
+              ph = '<div class="mp-empty" style="padding:1rem;">\u307e\u3060\u63a8\u3057\u4ff3\u512a\u304c\u767b\u9332\u3055\u308c\u3066\u3044\u307e\u305b\u3093<br>\u4e0b\u306e\u691c\u7d22\u304b\u3089\u8ffd\u52a0\u3057\u307e\u3057\u3087\u3046<\/div>';
+            } else {
+              for (var ri = 0; ri < newFav.length; ri++) {
+                var rName = newFav[ri];
+                var info = findMeikanInfo(meikan, rName);
+                ph += '<div class="fav-actor-card fav-actor-registered">';
+                if (info && info.yago) {
+                  var yS = info.yago.length > 3 ? info.yago.substring(0,3) : info.yago;
+                  ph += '<div class="fav-actor-yago-badge" title="' + esc(info.yago) + '">' + esc(yS) + '<\/div>';
+                } else {
+                  ph += '<div class="fav-actor-icon">\uD83C\uDFAD<\/div>';
+                }
+                ph += '<div class="fav-actor-info"><div class="fav-actor-name">\u2605 ' + esc(rName) + '<\/div><\/div>';
+                ph += '<button class="fav-actor-remove" onclick="MP.removeFavOshi(\\'' + esc(rName).replace(/'/g, "\\\\'") + '\\')">\u89e3\u9664<\/button>';
+                ph += '<\/div>';
+              }
+            }
+            regArea.innerHTML = ph;
+            var countEl = document.getElementById('fav-count');
+            if (countEl) countEl.textContent = newFav.length;
+          });
+        }
+        /* モーダル内の登録済み一覧も更新 */
+        var favRegEl = document.getElementById('fav-registered');
+        if (favRegEl) {
+          loadActorMeikan(function(meikan) { renderFavRegistered(newFav, meikan); });
+          var countEl = document.getElementById('fav-count');
+          if (countEl) countEl.textContent = newFav.length;
+        }
+      }
+
       /* モーダル版 推し俳優管理 */
       function openFavModal() {
         /* 既にモーダルがあれば削除 */
@@ -3618,19 +3820,25 @@ export function mypagePageHTML(opts) {
         h += '<div id="fav-registered"></div>';
         h += '</div>';
 
-        /* 名前検索 */
-        h += '<div class="mp-section">';
-        h += '<div class="mp-section-title">🔍 俳優を検索して追加</div>';
-        h += '<input type="text" class="fav-search-input" id="fav-search" placeholder="名前・屋号で検索" oninput="MP.filterActors()">';
-        h += '<div id="fav-search-results" class="fav-search-results"></div>';
-        h += '</div>';
+        /* 人気俳優から選ぶ（デフォルト） */
+        h += '<div class="mp-section" id="popular-actors-section">';
+        h += '<div class="mp-section-title">\u2728 \u4eba\u6c17\u4ff3\u512a\u304b\u3089\u9078\u3076<\/div>';
+        h += '<div id="popular-actors-grid" class="fav-search-results"><\/div>';
+        h += '<button class="btn-all-actors" onclick="MP.toggleAllActors()">\uD83D\uDD0D \u5168\u4ff3\u512a\u304b\u3089\u63a2\u3059 \u2192<\/button>';
+        h += '<\/div>';
 
-        /* 屋号別 俳優一覧 */
-        h += '<div class="mp-section">';
-        h += '<div class="mp-section-title">🏠 屋号から選ぶ</div>';
-        h += '<div id="yago-tabs" class="yago-tabs"><div class="mp-empty" style="padding:0.5rem;font-size:0.82rem;">読み込み中…</div></div>';
-        h += '<div id="yago-actor-list" class="yago-actor-list"></div>';
-        h += '</div>';
+        /* 全俳優検索（展開後） */
+        h += '<div class="mp-section" id="full-search-section" style="display:none">';
+        h += '<div class="mp-section-title">\uD83D\uDD0D \u4ff3\u512a\u3092\u691c\u7d22\u3057\u3066\u8ffd\u52a0<\/div>';
+        h += '<input type="text" class="fav-search-input" id="fav-search" placeholder="\u540d\u524d\u30fb\u5c4b\u53f7\u3067\u691c\u7d22" oninput="MP.filterActors()">';
+        h += '<div id="fav-search-results" class="fav-search-results"><\/div>';
+        h += '<\/div>';
+
+        h += '<div class="mp-section" id="yago-section" style="display:none">';
+        h += '<div class="mp-section-title">\uD83C\uDFE0 \u5c4b\u53f7\u304b\u3089\u9078\u3076<\/div>';
+        h += '<div id="yago-tabs" class="yago-tabs"><\/div>';
+        h += '<div id="yago-actor-list" class="yago-actor-list"><\/div>';
+        h += '<\/div>';
 
         h += '</div>'; /* fav-modal-body */
         h += '</div>'; /* fav-modal */
@@ -3639,11 +3847,10 @@ export function mypagePageHTML(opts) {
         document.body.insertAdjacentHTML('beforeend', h);
         document.body.style.overflow = 'hidden';
 
-        /* 名鑑データ読み込み → 登録済み＋屋号一覧を描画 */
+        /* 人気俳優グリッド & 登録済みリッチ化 */
+        renderPopularActors(favList);
         loadActorMeikan(function(meikan) {
           renderFavRegistered(favList, meikan);
-          renderYagoTabs(meikan);
-          renderYagoActors(meikan, '');
         });
       }
 
@@ -3983,6 +4190,8 @@ export function mypagePageHTML(opts) {
           });
         },
         filterActors: filterActors,
+        toggleAllActors: toggleAllActors,
+        toggleFavPopular: function(name) { toggleFavPopular(name); },
         selectYago: selectYago,
         searchOshiNews: searchOshiNews,
         searchOshiNewsHome: searchOshiNewsHome,
@@ -4193,102 +4402,10 @@ export function mypagePageHTML(opts) {
     subtitle: "歌舞伎帖",
     bodyHTML,
     activeNav: "reco",
-    headExtra: `<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script>
-      function handleGoogleCredential(response) {
-        document.getElementById('kl-google-status') && (document.getElementById('kl-google-status').textContent = 'ログイン中…');
-        fetch('/api/auth/google', {
-          method: 'POST',
-          credentials: 'same-origin',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ credential: response.credential })
-        })
-        .then(function(r) {
-          var status = r.status;
-          return r.text().then(function(txt) {
-            try { return { status: status, data: JSON.parse(txt) }; }
-            catch(e) { return { status: status, data: null, raw: txt.slice(0, 200) }; }
-          });
-        })
-        .then(function(result) {
-          if (result.data && result.data.ok) {
-            window.location.reload();
-          } else {
-            var msg = 'Status: ' + result.status;
-            if (result.data && result.data.error) msg += ' / ' + result.data.error;
-            else if (result.raw) msg += ' / ' + result.raw;
-            alert('Google ログイン失敗: ' + msg);
-          }
-        })
-        .catch(function(e) {
-          alert('Google ログインエラー: ' + String(e));
-        });
-      }
-      window.__initGoogleSignIn = function() {
-        if (typeof google !== 'undefined' && google.accounts && window.__GOOGLE_CLIENT_ID) {
-          google.accounts.id.initialize({
-            client_id: window.__GOOGLE_CLIENT_ID,
-            callback: handleGoogleCredential
-          });
-          var container = document.getElementById('kl-google-btn');
-          if (container) {
-            google.accounts.id.renderButton(container, {
-              type: 'standard',
-              theme: 'outline',
-              size: 'medium',
-              text: 'signin_with',
-              locale: 'ja'
-            });
-          }
-        }
-      };
-      window.addEventListener('load', function() { window.__initGoogleSignIn(); });
-    </script>
-    <style>
-      /* ═══════════════════════════════════════
-         歌舞伎ログ ページ固有上書き
-      ═══════════════════════════════════════ */
-      body {
-        background: var(--kl-bg, #FAF7F2) !important;
-        background-image: none !important;
-        color: var(--kl-text, #3D3127);
-        font-family: 'Noto Sans JP', sans-serif;
-      }
+    googleClientId,
+    headExtra: `<style>
+      /* ── RECO固有のCSS変数（内部コンポーネント用） ── */
       body::before { display: none; }
-      a { color: #8B5A2B; }
-      a:hover { color: #B8860B; text-decoration: none; }
-
-      /* ── ヘッダー ── */
-      header {
-        background: linear-gradient(180deg, #f5efe4 0%, #ede5d6 100%) !important;
-        border-bottom-color: #C8A96E !important;
-      }
-      header h1 { color: #5C3D1E !important; text-shadow: none !important; }
-      .header-home { color: #8B6B3D !important; }
-      .header-sub { color: #8B7B60 !important; }
-
-      /* ── フッター ── */
-      footer {
-        background: #f0e8da;
-        border-top-color: #d8cbb8 !important;
-        color: #8B7B60;
-      }
-      footer a { color: #8B5A2B; }
-
-      /* ── グロナビ ── */
-      .global-nav {
-        background: #f5efe4 !important;
-        border-bottom-color: #d8cbb8 !important;
-      }
-      .nav-item { color: #8B7B60 !important; }
-      .nav-item:hover { color: #5C3D1E !important; }
-      .nav-active { color: #5C3D1E !important; border-bottom-color: #C8A96E !important; }
-
-      /* ── メイン ── */
-      main { color: #2a2218; }
-      .breadcrumb a { color: #8B5A2B; }
-      .breadcrumb span { color: var(--kl-text3); }
     </style>`
   });
 }
