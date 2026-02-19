@@ -26,6 +26,15 @@ export async function livePageHTML(env) {
       </p>
     </section>
 
+    <!-- ── 推し俳優ニュース ── -->
+    <section class="live-section fade-up" id="oshi-section">
+      <div class="section-title-row">
+        <h2 class="section-title">⭐ 推し俳優ニュース</h2>
+        <button class="oshi-manage-btn" id="oshi-manage-btn" onclick="LiveOshi.openPanel()">推しを管理</button>
+      </div>
+      <div id="oshi-section-body"><div class="loading" style="font-size:13px;">読み込み中…</div></div>
+    </section>
+
     <!-- ── 歌舞伎ニュース ── -->
     <section class="live-section fade-up-d1" id="news-section">
       <div class="section-title-row">
@@ -39,7 +48,6 @@ export async function livePageHTML(env) {
           </div>
         </div>
       </div>
-      <div id="oshi-news-block"></div>
       <div class="live-more">
         <a href="/kabuki/live/news" class="live-news-more">ニュース一覧へ →</a>
       </div>
@@ -102,53 +110,292 @@ export async function livePageHTML(env) {
       loadNews();
     })();
 
-    /* ── 推しニュース（俳優名で直接ニュース検索 → 歌舞伎ニュースの下に表示） ── */
-    function loadOshiNews(favs) {
-      var oshiBlock = document.getElementById("oshi-news-block");
-      if (!oshiBlock || !favs || !favs.length) return;
-      function escH(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
-      function normName(n) { return n.replace(/\\s/g,"").replace(/[\uff08\u0028][^\uff09\u0029]*[\uff09\u0029]/g,""); }
-      var names = favs.map(normName).filter(Boolean);
-      if (!names.length) return;
-      oshiBlock.innerHTML = '<div class="oshi-news-header">\u2b50 \u3054\u8d14\u5c53\u30cb\u30e5\u30fc\u30b9'
-        + '<span class="oshi-news-header-sub">\u3054\u8d14\u5c53\u5f79\u8005\u306e\u6700\u65b0\u60c5\u5831\u3092\u304a\u5c4a\u3051\u3057\u307e\u3059\u3002'
-        + '<a href="/kabuki/reco">\u3054\u8d14\u5c53\u306e\u767b\u9332\u30fb\u5909\u66f4\u306f\u3053\u3061\u3089 \u2192<\/a><\/span><\/div>'
-        + '<div class="loading" style="font-size:12px;padding:4px 0;">\u8aad\u307f\u8fbc\u307f\u4e2d\u2026<\/div>';
-      fetch("/api/oshi-news?actors=" + encodeURIComponent(names.join(",")))
+    </script>
+
+    <script>
+    /* ================================================================
+       LiveOshi — 推し俳優ニュース＆登録管理モジュール
+       RECO と同一の localStorage キー (favorite_actors_v1) を使用
+       ================================================================ */
+    (function() {
+      var FAV_KEY  = "favorite_actors_v1";
+      var MAX_FAV  = 5;
+      var actorCache = null;
+      var authChecked = false, isLoggedIn = false;
+
+      function esc(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+      function normName(n) { return n.replace(/\s/g,"").replace(/[\uff08(][^\uff09)]*[\uff09)]/g,""); }
+
+      /* ── データ ── */
+      function loadFavs() {
+        try { var r = localStorage.getItem(FAV_KEY); return r ? JSON.parse(r) : []; } catch(e) { return []; }
+      }
+      function saveFavs(list) {
+        try { localStorage.setItem(FAV_KEY, JSON.stringify(list)); } catch(e) {}
+        syncServer();
+      }
+      function syncServer() {
+        if (!authChecked || !isLoggedIn) return;
+        fetch('/api/userdata', {
+          method: 'PUT', credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ favorite_actors: loadFavs() })
+        }).catch(function(){});
+      }
+      function loadActors(cb) {
+        if (actorCache) { cb(actorCache); return; }
+        fetch('/api/actors').then(function(r){ return r.json(); })
+          .then(function(d){ actorCache = d; cb(d); })
+          .catch(function(){ cb(null); });
+      }
+      function findMeikan(meikan, name) {
+        if (!meikan) return null;
+        var n = name.replace(/\s+/g,'');
+        for (var i = 0; i < meikan.length; i++) {
+          if ((meikan[i].name_kanji||'').replace(/\s+/g,'') === n) return meikan[i];
+        }
+        return null;
+      }
+
+      /* ── 人気俳優リスト（RECO と同一） ── */
+      var POPULAR = [
+        "\u5341\u4e09\u4ee3\u76ee\u5e02\u5ddd\u5718\u5341\u90ce","\u7247\u5ca1\u4ec1\u5de6\u885b\u9580",
+        "\u5742\u6771\u7389\u4e09\u90ce","\u4e2d\u6751\u52d8\u4e5d\u90ce","\u4e2d\u6751\u4e03\u4e4b\u52a9",
+        "\u5c3e\u4e0a\u83ca\u4e4b\u52a9","\u677e\u672c\u5e78\u56db\u90ce","\u677e\u672c\u767d\u9e1a",
+        "\u4e2d\u6751\u829d\u7feb","\u5c3e\u4e0a\u677e\u4e5f","\u5c3e\u4e0a\u83ca\u4e94\u90ce",
+        "\u7247\u5ca1\u611b\u4e4b\u52a9","\u4e2d\u6751\u6885\u7389","\u5e02\u5ddd\u67d3\u4e94\u90ce",
+        "\u5c3e\u4e0a\u53f3\u8fd1","\u5742\u6771\u5df3\u4e4b\u52a9"
+      ];
+
+      /* ================================================================
+         セクション描画
+         ================================================================ */
+      function renderSection() {
+        var body = document.getElementById("oshi-section-body");
+        if (!body) return;
+        var favs = loadFavs();
+        var manageBtn = document.getElementById("oshi-manage-btn");
+        if (manageBtn) manageBtn.style.display = favs.length ? '' : 'none';
+
+        if (!favs.length) {
+          body.innerHTML =
+            '<div class="oshi-empty-card">' +
+              '<div class="oshi-empty-icon">\u2b50</div>' +
+              '<p class="oshi-empty-text">\u63a8\u3057\u4ff3\u512a\u3092\u767b\u9332\u3059\u308b\u3068\u3001<br>\u305d\u306e\u4ff3\u512a\u306e\u6700\u65b0\u30cb\u30e5\u30fc\u30b9\u3092\u304a\u5c4a\u3051\u3057\u307e\u3059\u3002<\/p>' +
+              '<button class="oshi-register-btn" onclick="LiveOshi.openPanel()">\u63a8\u3057\u4ff3\u512a\u3092\u767b\u9332\u3059\u308b<\/button>' +
+            '<\/div>';
+          return;
+        }
+
+        /* 俳優チップ行 */
+        var h = '<div class="oshi-chips-row">';
+        favs.forEach(function(name) {
+          h += '<span class="oshi-chip">' + esc(normName(name)) + '<\/span>';
+        });
+        h += '<\/div>';
+        h += '<div id="oshi-news-items"><div class="loading" style="font-size:12px;">\u8aad\u307f\u8fbc\u307f\u4e2d\u2026<\/div><\/div>';
+        body.innerHTML = h;
+        fetchOshiNews(favs);
+      }
+
+      function fetchOshiNews(favs) {
+        var names = favs.map(normName).filter(Boolean);
+        var el = document.getElementById("oshi-news-items");
+        if (!el || !names.length) return;
+        fetch("/api/oshi-news?actors=" + encodeURIComponent(names.join(",")))
+          .then(function(r){ return r.json(); })
+          .then(function(data) {
+            if (!el) return;
+            var rows = ((data && data.results) || []).filter(function(r){ return r.article; });
+            if (!rows.length) {
+              el.innerHTML = '<p class="oshi-no-news">\u73fe\u5728\u3001\u63a8\u3057\u4ff3\u512a\u306e\u6700\u65b0\u30cb\u30e5\u30fc\u30b9\u306f\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3067\u3057\u305f\u3002<\/p>';
+              return;
+            }
+            el.innerHTML = rows.map(function(r) {
+              var pub = r.article.pubTs ? (function(ts){ var d=new Date(ts); return (d.getMonth()+1)+"/"+d.getDate(); })(r.article.pubTs) : "";
+              return '<a href="' + esc(r.article.link||"#") + '" target="_blank" rel="noopener" class="oshi-news-row">'
+                + '<span class="oshi-news-actor-tag">' + esc(normName(r.actor)) + '<\/span>'
+                + '<span class="oshi-news-title">' + esc(r.article.title||"") + '<\/span>'
+                + (pub ? '<span class="oshi-news-date">' + esc(pub) + '<\/span>' : '')
+                + '<\/a>';
+            }).join('');
+          })
+          .catch(function() {
+            if (el) el.innerHTML = '<p class="oshi-no-news">\u30cb\u30e5\u30fc\u30b9\u306e\u8aad\u307f\u8fbc\u307f\u306b\u5931\u6557\u3057\u307e\u3057\u305f\u3002<\/p>';
+          });
+      }
+
+      /* ================================================================
+         管理パネル
+         ================================================================ */
+      function openPanel() {
+        closePanel();
+        var favs = loadFavs();
+        var h = '<div class="oshi-panel-overlay" id="oshi-panel-overlay" onclick="LiveOshi.closePanel(event)">';
+        h += '<div class="oshi-panel" onclick="event.stopPropagation()">';
+        h += '<div class="oshi-panel-header">';
+        h +=   '<span class="oshi-panel-title">\u2b50 \u63a8\u3057\u4ff3\u512a\u3092\u7ba1\u7406<\/span>';
+        h +=   '<button class="oshi-panel-close" onclick="LiveOshi.closePanel()">\u2715<\/button>';
+        h += '<\/div>';
+        h += '<div class="oshi-panel-body">';
+
+        /* 登録済みリスト */
+        h += '<div class="oshi-panel-section">';
+        h +=   '<div class="oshi-panel-label">\u767b\u9332\u6e08\u307f\uff08<span id="lv-fav-count">' + favs.length + '<\/span>\/' + MAX_FAV + '\u4eba\uff09<\/div>';
+        h +=   '<div id="lv-reg-list">' + renderRegList(favs) + '<\/div>';
+        h += '<\/div>';
+
+        /* 人気俳優 */
+        h += '<div class="oshi-panel-section">';
+        h +=   '<div class="oshi-panel-label">\u2728 \u4eba\u6c17\u4ff3\u512a\u304b\u3089\u9078\u3076<\/div>';
+        h +=   '<div id="lv-popular-grid" class="oshi-actor-grid">' + renderPopGrid(favs, null) + '<\/div>';
+        h += '<\/div>';
+
+        /* 検索 */
+        h += '<div class="oshi-panel-section">';
+        h +=   '<div class="oshi-panel-label">\uD83D\uDD0D \u540d\u524d\u30fb\u5c4b\u53f7\u3067\u691c\u7d22<\/div>';
+        h +=   '<input type="text" class="oshi-search-input" id="lv-search" placeholder="\u4f8b\uff1a\u52d8\u4e5d\u90ce\u3001\u6210\u7530\u5c4b" oninput="LiveOshi.search()">';
+        h +=   '<div id="lv-search-results" class="oshi-actor-grid"><\/div>';
+        h += '<\/div>';
+
+        h += '<\/div><\/div><\/div>';
+        document.body.insertAdjacentHTML('beforeend', h);
+        document.body.style.overflow = 'hidden';
+
+        /* 名鑑ロード → リッチ表示 */
+        loadActors(function(meikan) {
+          renderRegListRich(loadFavs(), meikan);
+          renderPopGridRich(loadFavs(), meikan);
+        });
+      }
+
+      function closePanel(e) {
+        if (e && e.target !== document.getElementById('oshi-panel-overlay')) return;
+        var overlay = document.getElementById('oshi-panel-overlay');
+        if (overlay) { overlay.remove(); document.body.style.overflow = ''; }
+        renderSection();
+      }
+
+      function renderRegList(favs) {
+        if (!favs.length) return '<p class="oshi-panel-empty">\u307e\u3060\u767b\u9332\u3055\u308c\u3066\u3044\u307e\u305b\u3093<\/p>';
+        return favs.map(function(name) {
+          return '<div class="oshi-reg-row">'
+            + '<span class="oshi-reg-icon">\uD83C\uDFAD<\/span>'
+            + '<span class="oshi-reg-name">\u2605 ' + esc(name) + '<\/span>'
+            + '<button class="oshi-remove-btn" onclick="LiveOshi.toggle(\'' + name.replace(/'/g,"\\'") + '\')">\u89e3\u9664<\/button>'
+            + '<\/div>';
+        }).join('');
+      }
+
+      function renderRegListRich(favs, meikan) {
+        var el = document.getElementById('lv-reg-list');
+        if (!el) return;
+        if (!favs.length) { el.innerHTML = '<p class="oshi-panel-empty">\u307e\u3060\u767b\u9332\u3055\u308c\u3066\u3044\u307e\u305b\u3093<\/p>'; return; }
+        el.innerHTML = favs.map(function(name) {
+          var info = findMeikan(meikan, name);
+          var badge = info && info.yago
+            ? '<span class="oshi-yago-sm">' + esc(info.yago.substring(0,3)) + '<\/span>'
+            : '<span class="oshi-yago-sm">\uD83C\uDFAD<\/span>';
+          var sub = info ? (info.generation || '') : '';
+          return '<div class="oshi-reg-row">' + badge
+            + '<div class="oshi-reg-info"><div class="oshi-reg-name">\u2605 ' + esc(name) + '<\/div>'
+            + (sub ? '<div class="oshi-reg-sub">' + esc(sub) + '<\/div>' : '') + '<\/div>'
+            + '<button class="oshi-remove-btn" onclick="LiveOshi.toggle(\'' + name.replace(/'/g,"\\'") + '\')">\u89e3\u9664<\/button>'
+            + '<\/div>';
+        }).join('');
+      }
+
+      function renderPopGrid(favs, meikan) {
+        return POPULAR.map(function(name) {
+          var isFav = favs.indexOf(name) >= 0;
+          var yago = meikan ? (function(){ var i = findMeikan(meikan, name); return i && i.yago ? i.yago.substring(0,3) : ''; })() : '';
+          return '<div class="oshi-actor-chip' + (isFav ? ' is-fav' : '') + '" onclick="LiveOshi.toggle(\'' + name.replace(/'/g,"\\'") + '\')">'
+            + (yago ? '<span class="oshi-chip-yago">' + esc(yago) + '<\/span>' : '')
+            + '<span class="oshi-chip-name">' + esc(name) + '<\/span>'
+            + '<span class="oshi-chip-badge">' + (isFav ? '\u767b\u9332\u6e08' : '\uff0b') + '<\/span>'
+            + '<\/div>';
+        }).join('');
+      }
+
+      function renderPopGridRich(favs, meikan) {
+        var el = document.getElementById('lv-popular-grid');
+        if (el) el.innerHTML = renderPopGrid(favs, meikan);
+      }
+
+      /* ── toggle（add / remove） ── */
+      window.LiveOshi = {
+        openPanel: openPanel,
+        closePanel: closePanel,
+        toggle: function(name) {
+          var f = loadFavs();
+          var idx = f.indexOf(name);
+          if (idx >= 0) { f.splice(idx, 1); }
+          else {
+            if (f.length >= MAX_FAV) { alert('\u63a8\u3057\u4ff3\u512a\u306e\u767b\u9332\u306f' + MAX_FAV + '\u4eba\u307e\u3067\u3067\u3059\u3002'); return; }
+            f.push(name);
+          }
+          saveFavs(f);
+          /* パネル内 UI 更新 */
+          var countEl = document.getElementById('lv-fav-count');
+          if (countEl) countEl.textContent = f.length;
+          loadActors(function(meikan) {
+            renderRegListRich(f, meikan);
+            renderPopGridRich(f, meikan);
+          });
+          /* 検索結果も再描画 */
+          var si = document.getElementById('lv-search');
+          if (si && si.value.trim()) window.LiveOshi.search();
+        },
+        search: function() {
+          var input = document.getElementById('lv-search');
+          var results = document.getElementById('lv-search-results');
+          if (!input || !results) return;
+          var q = input.value.trim();
+          if (!q) { results.innerHTML = ''; return; }
+          loadActors(function(meikan) {
+            if (!meikan) { results.innerHTML = '<p class="oshi-panel-empty">\u30c7\u30fc\u30bf\u8aad\u307f\u8fbc\u307f\u4e2d\u2026<\/p>'; return; }
+            var f = loadFavs();
+            var hits = [];
+            for (var i = 0; i < meikan.length && hits.length < 20; i++) {
+              var a = meikan[i];
+              var nk = (a.name_kanji||'').replace(/\s+/g,'');
+              if (nk.indexOf(q)>=0 || (a.name_kana||'').indexOf(q)>=0 || (a.yago||'').indexOf(q)>=0) hits.push(a);
+            }
+            if (!hits.length) { results.innerHTML = '<p class="oshi-panel-empty">\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3067\u3057\u305f<\/p>'; return; }
+            results.innerHTML = hits.map(function(a) {
+              var name = (a.name_kanji||'').replace(/\s+/g,'');
+              var isFav = f.indexOf(name) >= 0;
+              var yago = a.yago ? a.yago.substring(0,3) : '';
+              return '<div class="oshi-actor-chip' + (isFav ? ' is-fav' : '') + '" onclick="LiveOshi.toggle(\'' + name.replace(/'/g,"\\'") + '\')">'
+                + (yago ? '<span class="oshi-chip-yago">' + esc(yago) + '<\/span>' : '')
+                + '<span class="oshi-chip-name">' + esc(name) + '<\/span>'
+                + '<span class="oshi-chip-badge">' + (isFav ? '\u767b\u9332\u6e08' : '\uff0b') + '<\/span>'
+                + '<\/div>';
+            }).join('');
+          });
+        }
+      };
+
+      /* ── 初期化：auth 確認 → サーバーデータマージ → 描画 ── */
+      fetch('/api/auth/me', { credentials: 'same-origin' })
         .then(function(r){ return r.json(); })
-        .then(function(data) {
-          var results = (data && data.results) || [];
-          var rows = results.filter(function(r){ return r.article; });
-          if (!rows.length) {
-            oshiBlock.innerHTML = '<p class="oshi-news-empty">\u2b50 \u3054\u8d14\u5c53\u306e\u6700\u65b0\u30cb\u30e5\u30fc\u30b9\u306f\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3067\u3057\u305f\u3002<\/p>';
-            return;
-          }
-          var nh = '<div class="oshi-news-header">\u2b50 \u3054\u8d14\u5c53\u30cb\u30e5\u30fc\u30b9'
-            + '<span class="oshi-news-header-sub">\u3054\u8d14\u5c53\u5f79\u8005\u306e\u6700\u65b0\u60c5\u5831\u3092\u304a\u5c4a\u3051\u3057\u307e\u3059\u3002'
-            + '<a href="/kabuki/reco">\u3054\u8d14\u5c53\u306e\u767b\u9332\u30fb\u5909\u66f4\u306f\u3053\u3061\u3089 \u2192<\/a><\/span><\/div>';
-          for (var i = 0; i < rows.length; i++) {
-            var r = rows[i];
-            var pub = r.article.pubTs ? (function(ts){
-              var d = new Date(ts);
-              return (d.getMonth()+1) + "/" + d.getDate();
-            })(r.article.pubTs) : "";
-            nh += '<a href="' + escH(r.article.link || "#") + '" target="_blank" rel="noopener" class="oshi-news-row">'
-              + '<span class="oshi-news-actor">' + escH(normName(r.actor)) + '<\/span>'
-              + '<span class="oshi-news-title">' + escH(r.article.title || "") + '<\/span>'
-              + (pub ? '<span class="oshi-news-date">' + escH(pub) + '<\/span>' : '')
-              + '<\/a>';
-          }
-          oshiBlock.innerHTML = nh;
+        .then(function(auth) {
+          authChecked = true;
+          if (!auth.loggedIn) { renderSection(); return; }
+          isLoggedIn = true;
+          return fetch('/api/userdata', { credentials: 'same-origin' })
+            .then(function(r){ return r.json(); })
+            .then(function(ud) {
+              var serverFavs = (ud && ud.favorite_actors) || [];
+              if (serverFavs.length) {
+                var local = loadFavs();
+                serverFavs.forEach(function(n) { if (local.indexOf(n)<0) local.push(n); });
+                try { localStorage.setItem(FAV_KEY, JSON.stringify(local.slice(0, MAX_FAV))); } catch(e){}
+              }
+              renderSection();
+            });
         })
-        .catch(function(){ oshiBlock.innerHTML = '<p class="oshi-news-empty">\u30cb\u30e5\u30fc\u30b9\u306e\u8aad\u307f\u8fbc\u307f\u306b\u5931\u6557\u3057\u307e\u3057\u305f\u3002<\/p>'; });
-    }
-    /* localStorage に既に推しがあれば即座にロード */
-    (function(){
-      try {
-        var raw = localStorage.getItem("favorite_actors_v1");
-        var favs = raw ? JSON.parse(raw) : [];
-        if (Array.isArray(favs) && favs.length) loadOshiNews(favs);
-      } catch(e){}
+        .catch(function() { authChecked = true; renderSection(); });
     })();
     </script>
 
@@ -227,14 +474,11 @@ export async function livePageHTML(env) {
         return found;
       }
       /* 推しトグル共有ステート */
-      var oshiAuthState = "loading";
       var oshiFilterOn = false;
-      var serverUD = null;
       var FAV_KEY = "favorite_actors_v1";
       function loadLocalFavs() {
         try { var r = localStorage.getItem(FAV_KEY); return r ? JSON.parse(r) : []; } catch(e) { return []; }
       }
-      function saveLocalFavs(list) { try { localStorage.setItem(FAV_KEY, JSON.stringify(list)); } catch(e) {} }
 
       /* NAVI 演目照合マップ: サーバー埋め込みデータから構築 */
       var enmokuMap = {};
@@ -459,7 +703,7 @@ export async function livePageHTML(env) {
               perfs = perfs.filter(function(p) { return getOshiInPerf(p).length > 0; });
               if (!perfs.length) {
                 var g = document.getElementById("perf-theater-grid");
-                if (g) g.innerHTML = '<div class="empty-state">\u3053\u306e\u6708\u306b\u3054\u8d14\u5c53\u5f79\u8005\u306e\u51fa\u6f14\u516c\u6f14\u306f\u3042\u308a\u307e\u305b\u3093\u3002<\/div>';
+                if (g) g.innerHTML = '<div class="empty-state">\u3053\u306e\u6708\u306b\u63a8\u3057\u4ff3\u512a\u306e\u51fa\u6f14\u516c\u6f14\u306f\u3042\u308a\u307e\u305b\u3093\u3002<\/div>';
                 return;
               }
             }
@@ -484,39 +728,21 @@ export async function livePageHTML(env) {
           renderTabs();
           renderTabGrid();
 
-          /* localStorage に推しがあれば即トグル表示 */
+          /* localStorage の推し俳優を即時反映（LiveOshi が非同期で同期済みの場合も含む） */
           var localFavs = loadLocalFavs();
           if (localFavs.length) {
             localFavs.forEach(function(n) { favoriteActors.add(normActor(n)); });
             showOshiToggle();
           }
-
-          /* 認証 + 推し俳優を非同期取得 */
-          fetch("/api/auth/me", { credentials: "same-origin" })
-            .then(function(r){ return r.json(); })
-            .then(function(auth) {
-              if (!auth.loggedIn) {
-                oshiAuthState = "loggedout";
-                return;
-              }
-              return fetch("/api/userdata", { credentials: "same-origin" })
-                .then(function(r){ return r.json(); })
-                .then(function(ud) {
-                  serverUD = ud;
-                  oshiAuthState = "ready";
-                  var favs = (ud && ud.favorite_actors) || [];
-                  var local = loadLocalFavs();
-                  favs.forEach(function(n) { if (local.indexOf(n) < 0) local.push(n); });
-                  saveLocalFavs(local);
-                  local.forEach(function(n) { favoriteActors.add(normActor(n)); });
-                  if (local.length) {
-                    loadOshiNews(local);
-                    showOshiToggle();
-                  }
-                  renderTabGrid();
-                });
-            })
-            .catch(function(){});
+          /* LiveOshi の初期化完了後に localStorage が更新されている場合に備えて遅延再チェック */
+          setTimeout(function() {
+            var latest = loadLocalFavs();
+            if (latest.length > localFavs.length) {
+              latest.forEach(function(n) { favoriteActors.add(normActor(n)); });
+              if (!localFavs.length) showOshiToggle();
+              renderTabGrid();
+            }
+          }, 1500);
         })
         .catch(function() {
           var gridEl = document.getElementById("perf-theater-grid");
@@ -786,36 +1012,60 @@ export async function livePageHTML(env) {
         margin-bottom: 2px;
       }
 
-      /* ── 推しニュース ── */
-      .oshi-news-header {
-        font-family: 'Noto Serif JP', serif;
-        font-size: 14px; font-weight: 600;
-        color: var(--gold-dark);
-        margin: 16px 0 6px; padding-top: 10px;
-        border-top: 1px solid rgba(0,0,0,.08);
+      /* ── 推し俳優ニュースセクション ── */
+      .oshi-manage-btn {
+        font-size: 12px; font-weight: 500; color: var(--gold-dark);
+        background: var(--gold-soft); border: 1px solid var(--gold-light);
+        border-radius: 20px; padding: 4px 12px; cursor: pointer;
+        transition: all 0.15s; white-space: nowrap;
       }
-      .oshi-news-header-sub {
-        font-weight: 400; font-size: 12px;
-        color: var(--text-secondary);
-        margin-left: 8px;
+      .oshi-manage-btn:hover { background: var(--gold); color: #fff; border-color: var(--gold); }
+
+      /* 空状態 */
+      .oshi-empty-card {
+        background: var(--bg-card); border: 1px dashed var(--gold-light);
+        border-radius: var(--radius-md); padding: 28px 20px;
+        text-align: center;
       }
-      .oshi-news-header-sub a {
-        color: var(--gold-dark); text-decoration: none;
+      .oshi-empty-icon { font-size: 32px; margin-bottom: 10px; }
+      .oshi-empty-text {
+        font-size: 13.5px; color: var(--text-secondary);
+        line-height: 1.9; margin-bottom: 16px;
       }
-      .oshi-news-header-sub a:hover { text-decoration: underline; }
+      .oshi-register-btn {
+        background: var(--gold); color: #fff; border: none;
+        border-radius: 24px; padding: 10px 28px;
+        font-size: 14px; font-weight: 600; cursor: pointer;
+        transition: background 0.15s, transform 0.15s;
+        font-family: inherit;
+      }
+      .oshi-register-btn:hover { background: var(--gold-dark); transform: translateY(-1px); }
+
+      /* 俳優チップ行 */
+      .oshi-chips-row {
+        display: flex; flex-wrap: wrap; align-items: center;
+        gap: 6px; margin-bottom: 14px;
+      }
+      .oshi-chip {
+        font-size: 12px; font-weight: 600; color: var(--gold-dark);
+        background: var(--gold-soft); border: 1px solid var(--gold-light);
+        border-radius: 20px; padding: 3px 10px;
+      }
+
+      /* ニュース行 */
       .oshi-news-row {
         display: flex; align-items: baseline; gap: 6px;
         text-decoration: none; color: inherit;
-        padding: 7px 0; border-bottom: 1px solid rgba(0,0,0,.06);
+        padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,.06);
         font-size: 13px; line-height: 1.5;
       }
       .oshi-news-row:last-child { border-bottom: none; }
       .oshi-news-row:hover .oshi-news-title { text-decoration: underline; }
-      .oshi-news-actor {
+      .oshi-news-actor-tag {
         flex-shrink: 0; font-size: 11px; font-weight: 600;
         color: var(--gold-dark);
         background: rgba(180,130,60,.1); border-radius: 4px;
-        padding: 1px 5px;
+        padding: 1px 6px;
       }
       .oshi-news-title {
         flex: 1; color: var(--text-primary);
@@ -824,10 +1074,116 @@ export async function livePageHTML(env) {
       .oshi-news-date {
         flex-shrink: 0; font-size: 11px; color: var(--text-tertiary);
       }
-      .oshi-news-empty {
+      .oshi-no-news {
         font-size: 13px; color: var(--text-tertiary);
         padding: 10px 0; margin: 0;
       }
+
+      /* ── 管理パネル（モーダル） ── */
+      .oshi-panel-overlay {
+        position: fixed; inset: 0; z-index: 2000;
+        background: rgba(0,0,0,.45); display: flex;
+        align-items: flex-end; justify-content: center;
+      }
+      .oshi-panel {
+        background: var(--bg-page); width: 100%; max-width: 520px;
+        border-radius: 16px 16px 0 0; max-height: 80vh;
+        display: flex; flex-direction: column; overflow: hidden;
+      }
+      .oshi-panel-header {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 16px 20px 12px; border-bottom: 1px solid var(--border-light);
+        flex-shrink: 0;
+      }
+      .oshi-panel-title {
+        font-family: 'Noto Serif JP', serif;
+        font-size: 15px; font-weight: 600; color: var(--text-primary);
+      }
+      .oshi-panel-close {
+        background: none; border: none; font-size: 18px;
+        color: var(--text-tertiary); cursor: pointer; padding: 4px 8px;
+        border-radius: 6px; transition: background 0.15s;
+      }
+      .oshi-panel-close:hover { background: var(--bg-subtle); }
+      .oshi-panel-body {
+        overflow-y: auto; padding: 16px 20px 24px;
+        -webkit-overflow-scrolling: touch;
+      }
+      .oshi-panel-section { margin-bottom: 20px; }
+      .oshi-panel-section:last-child { margin-bottom: 0; }
+      .oshi-panel-label {
+        font-size: 11.5px; font-weight: 600; color: var(--text-tertiary);
+        letter-spacing: 0.06em; margin-bottom: 10px; text-transform: uppercase;
+      }
+      .oshi-panel-empty {
+        font-size: 13px; color: var(--text-tertiary); margin: 0; padding: 4px 0;
+      }
+
+      /* 登録済みリスト */
+      .oshi-reg-row {
+        display: flex; align-items: center; gap: 8px;
+        padding: 8px 0; border-bottom: 1px solid var(--border-light);
+      }
+      .oshi-reg-row:last-child { border-bottom: none; }
+      .oshi-yago-sm {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 34px; height: 34px; border-radius: 8px; flex-shrink: 0;
+        background: var(--gold-soft); color: var(--gold-dark);
+        font-size: 11px; font-weight: 700; letter-spacing: -0.5px;
+      }
+      .oshi-reg-icon { font-size: 20px; flex-shrink: 0; }
+      .oshi-reg-info { flex: 1; min-width: 0; }
+      .oshi-reg-name { font-size: 13.5px; font-weight: 600; color: var(--text-primary); }
+      .oshi-reg-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 1px; }
+      .oshi-remove-btn {
+        font-size: 11.5px; color: var(--accent-1); background: none;
+        border: 1px solid var(--accent-1); border-radius: 12px;
+        padding: 3px 10px; cursor: pointer; white-space: nowrap; flex-shrink: 0;
+        transition: all 0.15s;
+      }
+      .oshi-remove-btn:hover { background: var(--accent-1); color: #fff; }
+
+      /* 俳優選択グリッド */
+      .oshi-actor-grid {
+        display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;
+      }
+      .oshi-actor-chip {
+        display: flex; align-items: center; gap: 6px;
+        background: var(--bg-card); border: 1px solid var(--border-light);
+        border-radius: var(--radius-sm); padding: 8px 10px;
+        cursor: pointer; transition: all 0.15s;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .oshi-actor-chip:hover { border-color: var(--gold); background: var(--gold-soft); }
+      .oshi-actor-chip.is-fav {
+        background: var(--gold-soft); border-color: var(--gold);
+      }
+      .oshi-chip-yago {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 28px; height: 28px; border-radius: 6px; flex-shrink: 0;
+        background: var(--bg-subtle); color: var(--gold-dark);
+        font-size: 10px; font-weight: 700; letter-spacing: -0.5px;
+      }
+      .oshi-actor-chip.is-fav .oshi-chip-yago { background: rgba(197,162,85,.15); }
+      .oshi-chip-name { flex: 1; font-size: 12.5px; font-weight: 500; color: var(--text-primary); min-width: 0; }
+      .oshi-chip-badge {
+        font-size: 10px; font-weight: 600; flex-shrink: 0; padding: 1px 6px;
+        border-radius: 10px; background: var(--bg-subtle); color: var(--text-tertiary);
+      }
+      .oshi-actor-chip.is-fav .oshi-chip-badge {
+        background: var(--gold); color: #fff;
+      }
+
+      /* 検索フォーム */
+      .oshi-search-input {
+        width: 100%; box-sizing: border-box;
+        padding: 9px 12px; font-size: 14px; font-family: inherit;
+        border: 1px solid var(--border-medium); border-radius: var(--radius-sm);
+        background: var(--bg-card); color: var(--text-primary);
+        margin-bottom: 10px;
+        transition: border-color 0.15s;
+      }
+      .oshi-search-input:focus { outline: none; border-color: var(--gold); }
 
       /* ── 推し出演バッジ ── */
       .perf-oshi-badge {
