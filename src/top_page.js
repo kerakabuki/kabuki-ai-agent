@@ -85,9 +85,6 @@ export function topPageHTML() {
           伝統をテクノロジーで守るプロジェクトです。
         </p>
         <p class="tp-mission-link"><a href="/project">プロジェクト概要を読む →</a></p>
-        <div class="tp-try-cta">
-          <a href="/kabuki/dojo/quiz" class="tp-try-btn">🎭 30秒クイズを試す</a>
-        </div>
       </section>
 
     </div>
@@ -339,7 +336,7 @@ export function topPageHTML() {
         color: var(--text-tertiary);
       }
       .brand-toggle-btn.active.bt-kabuki {
-        background: #3D3127;
+        background: var(--text-primary);
         color: white;
       }
       .brand-toggle-btn.active.bt-jikabuki {
@@ -516,28 +513,6 @@ export function topPageHTML() {
         text-decoration: none;
       }
       .tp-mission-link a:hover { text-decoration: underline; }
-      .tp-try-cta {
-        text-align: center;
-      }
-      .tp-try-btn {
-        display: inline-block;
-        padding: 14px 24px;
-        background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-        color: white;
-        font-weight: 600;
-        font-size: 15px;
-        border-radius: var(--radius-md);
-        text-decoration: none;
-        box-shadow: var(--shadow-md);
-        transition: transform 0.15s, box-shadow 0.15s;
-      }
-      .tp-try-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-lg);
-        color: white;
-        text-decoration: none;
-      }
-
       /* ── JIKABUKI PLUS+ セクション ── */
       .jk-section-header {
         display: flex;
