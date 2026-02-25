@@ -8,7 +8,7 @@ export function kakegoePageHTML() {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>大向こう稽古 ─ 白浪五人男 | 気良歌舞伎</title>
+<title>大向う道場 ─ 白浪五人男 | KABUKI PLUS+</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -92,6 +92,7 @@ export function kakegoePageHTML() {
     cursor:pointer;transition:all 0.2s;box-shadow:var(--shadow-md);}
   #start-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(197,165,90,0.3);}
   #start-btn:active{transform:scale(0.97);}
+  #start-btn:disabled{opacity:0.5;cursor:wait;}
 
   .intro-hint{font-size:0.85rem;color:var(--text-secondary);margin-top:0.5rem;line-height:1.6;}
   .intro-hint b{color:var(--kin);}
@@ -281,7 +282,10 @@ export function kakegoePageHTML() {
 
 <!-- ===== イントロ画面 ===== -->
 <div id="intro">
-  <h1>大向こう稽古</h1>
+  <div style="text-align:left;margin-bottom:0.5rem;">
+    <a href="/kabuki/dojo" style="color:var(--gold);text-decoration:none;font-size:0.9rem;">← KABUKI DOJO</a>
+  </div>
+  <h1>大向う道場</h1>
   <div class="subtitle">白浪五人男「稲瀬川勢揃い」</div>
 
   <div class="cast-row" id="cast-row">
@@ -335,13 +339,13 @@ export function kakegoePageHTML() {
     </details>
     <div class="caution">
       ⚠️ <b>大事なお願い</b><br>
-      この大向こう稽古は<b>気良歌舞伎の公演</b>を楽しむための練習です。<br>
-      プロの歌舞伎公演や他の舞台では、勝手な掛け声はお客さんや役者さんの迷惑になります。<b>気良歌舞伎以外の公演では大向こうを控えましょう。</b>
+      この大向う道場は歌舞伎の<b>大向うの掛け声</b>を楽しく学ぶための練習コンテンツです。<br>
+      実際の歌舞伎公演では、掛け声のマナーや劇場のルールを守りましょう。<b>初心者のうちは拍手で十分</b>です。
     </div>
   </div>
 
   <div class="pre-btn">準備できたら押してね（動画が再生されます）</div>
-  <button id="start-btn">🎭 稽古をはじめる</button>
+  <button id="start-btn" disabled>🎭 稽古をはじめる</button>
 </div>
 
 <!-- ===== プレイ画面 ===== -->
@@ -408,7 +412,7 @@ export function kakegoePageHTML() {
 </div>
 
 <footer>
-  <a href="/kabuki/dojo/training">お稽古メニューへ戻る</a>
+  <a href="/kabuki/dojo">← KABUKI DOJO へ戻る</a>
 </footer>
 
 <script>
@@ -426,87 +430,30 @@ const CHARS = {
 };
 
 // =========================================================
-// 演目データ
+// 演目データ（R2 training pack から動的ロード）
 // =========================================================
-const SCENE = {
-  id: "shiranami",
-  title: "白浪五人男「稲瀬川勢揃い」",
-  videoId: "I5QncXeoIm0",
-  duration: 780,
-  cues: [
-    // ===== 花道 ─ 登場と見得 =====
-    { time: 12.1,  type: "kakegoe", text: "よっ座長！",             hint: "弁天小僧　花道登場",     char: "benten" },
-    { time: 20,    type: "hakushu",                                 hint: "弁天小僧　花道見得",     char: "benten" },
+let SCENE = null;
+let CHAR_TIMELINE = [];
 
-    { time: 53.4,  type: "kakegoe", text: "よっ郡上市役所！",       hint: "忠信利平　花道登場",     char: "tadanobu" },
-    { time: 59,    type: "hakushu",                                 hint: "忠信利平　花道見得",     char: "tadanobu" },
-
-    { time: 77.9,  type: "kakegoe", text: "よっイケメン営業！",     hint: "赤星十三郎　花道登場",   char: "akaboshi" },
-    { time: 82,    type: "hakushu",                                 hint: "赤星十三郎　花道見得",   char: "akaboshi" },
-
-    { time: 99.8,  type: "kakegoe", text: "よっ信用金庫！",         hint: "南郷力丸　花道登場",     char: "nango" },
-    { time: 106.3, type: "hakushu",                                 hint: "南郷力丸　花道見得",     char: "nango" },
-
-    { time: 122.9, type: "kakegoe", text: "よっ太っ腹社長！",       hint: "日本駄右衛門　花道登場", char: "dayemon" },
-    { time: 133.1, type: "hakushu",                                 hint: "日本駄右衛門　花道見得", char: "dayemon" },
-
-    // ===== 勢揃い =====
-    { time: 154,   type: "kakegoe", text: "たっぷりと！",   hint: "五人男勢揃い",         char: "all" },
-    { time: 227.9, type: "kakegoe", text: "よっ！",         hint: "五人男渡り台詞終わり", char: "all" },
-    { time: 233.6, type: "hakushu",                         hint: "五人男渡り台詞終わり", char: "all" },
-    { time: 267.8, type: "kakegoe", text: "待ってました！", hint: "捕手勢揃い",           char: "all" },
-
-    // ===== つらね =====
-    // 日本駄右衛門
-    { time: 327.7, type: "kakegoe", text: "たっぷりと！",   hint: "日本駄右衛門　ツラネ",     char: "dayemon" },
-    { time: 394.3, type: "kakegoe", text: "よっ！",         hint: "日本駄右衛門　見得",       char: "dayemon" },
-    { time: 400.2, type: "hakushu",                         hint: "日本駄右衛門　ツラネ終わり", char: "dayemon" },
-
-    // 弁天小僧
-    { time: 458.4, type: "kakegoe", text: "よっ！",         hint: "弁天小僧　見得",           char: "benten" },
-    { time: 464.5, type: "hakushu",                         hint: "弁天小僧　ツラネ終わり",   char: "benten" },
-
-    // 忠信利平
-    { time: 525.7, type: "kakegoe", text: "よっ！",         hint: "忠信利平　見得",           char: "tadanobu" },
-    { time: 530.8, type: "hakushu",                         hint: "忠信利平　ツラネ終わり",   char: "tadanobu" },
-
-    // 赤星十三郎
-    { time: 588.1, type: "kakegoe", text: "しっとりと！",   hint: "赤星十三郎　ツラネ２",     char: "akaboshi" },
-    { time: 602.5, type: "kakegoe", text: "よっ！",         hint: "赤星十三郎　決め",         char: "akaboshi" },
-    { time: 608.8, type: "hakushu",                         hint: "赤星十三郎　ツラネ終わり", char: "akaboshi" },
-
-    // 南郷力丸
-    { time: 667.3, type: "kakegoe", text: "よっ！",         hint: "南郷力丸　見得",           char: "nango" },
-    { time: 673.9, type: "hakushu",                         hint: "南郷力丸　ツラネ終わり",   char: "nango" },
-
-    // ===== クライマックス =====
-    { time: 753,   type: "kakegoe", text: "日本一！",       hint: "勢揃いの見得",     char: "all" },
-    { time: 757.8, type: "hakushu",                         hint: "勢揃い",           char: "all" },
-  ]
-};
-
-// =========================================================
-// キャラクター表示タイムライン（カードずれ防止用）
-// ツラネ中など、cues にキャラ情報がない期間も正しく表示する
-// =========================================================
-const CHAR_TIMELINE = [
-  // 花道 ─ 登場
-  { time: 0,     char: "benten"  },   // 幕開き〜弁天小僧
-  { time: 50,    char: "tadanobu" },  // 忠信利平 花道
-  { time: 75,    char: "akaboshi" },  // 赤星十三郎 花道
-  { time: 97,    char: "nango"   },   // 南郷力丸 花道
-  { time: 120,   char: "dayemon" },   // 日本駄右衛門 花道
-  // 勢揃い
-  { time: 150,   char: "all"     },   // 五人男勢揃い
-  // ツラネ
-  { time: 320,   char: "dayemon" },   // 日本駄右衛門 ツラネ
-  { time: 401,   char: "benten"  },   // 弁天小僧 ツラネ
-  { time: 465,   char: "tadanobu" },  // 忠信利平 ツラネ
-  { time: 531,   char: "akaboshi" },  // 赤星十三郎 ツラネ
-  { time: 609,   char: "nango"   },   // 南郷力丸 ツラネ
-  // クライマックス
-  { time: 674,   char: "all"     },   // 勢揃いの見得
-];
+(async function loadTrainingPack() {
+  try {
+    const res = await fetch("/api/training/kakegoe/shiranami");
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const pack = await res.json();
+    SCENE = {
+      id: pack.id,
+      title: pack.title,
+      videoId: pack.videoId,
+      duration: pack.duration,
+      cues: pack.cues
+    };
+    CHAR_TIMELINE = pack.charTimeline || [];
+    document.getElementById("start-btn").disabled = false;
+  } catch (e) {
+    console.error("Training pack load error:", e);
+    document.getElementById("start-btn").textContent = "読み込みエラー";
+  }
+})();
 
 // =========================================================
 // グローバル変数

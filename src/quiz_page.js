@@ -8,7 +8,7 @@ import { pageShell } from "./web_layout.js";
 export function quizPageHTML() {
   const bodyHTML = `
     <div class="breadcrumb">
-      <a href="/">トップ</a><span>›</span><a href="/mypage">KABUKI LOG</a><span>›</span>歌舞伎クイズ
+      <a href="/">トップ</a><span>›</span><a href="/kabuki/dojo">KABUKI DOJO</a><span>›</span>歌舞伎クイズ
     </div>
     <div id="app">
       <div class="loading">クイズデータを読み込み中…</div>
@@ -130,7 +130,7 @@ export function quizPageHTML() {
         if (answered > 0) {
           html += '<button class="btn btn-secondary quiz-btn" onclick="resetQuiz()">🗑 リセット</button>';
         }
-        html += '<a href="/mypage" class="btn btn-secondary quiz-btn" style="display:inline-block;text-align:center;text-decoration:none;margin-top:4px;">← KABUKI LOG</a>';
+        html += '<a href="/kabuki/dojo" class="btn btn-secondary quiz-btn" style="display:inline-block;text-align:center;text-decoration:none;margin-top:4px;">← KABUKI DOJO</a>';
         html += '</div>';
         html += '</div>';
         app.innerHTML = html;
@@ -264,7 +264,7 @@ export function quizPageHTML() {
         html += '<div class="quiz-result-actions">';
         html += '<button class="btn btn-primary" onclick="nextQuestion()">次の問題 →</button>';
         html += '<button class="btn btn-secondary" onclick="backToMenu()">メニューに戻る</button>';
-        html += '<a href="/mypage" class="btn btn-secondary" style="display:inline-block;text-align:center;text-decoration:none;">← KABUKI LOG</a>';
+        html += '<a href="/kabuki/dojo" class="btn btn-secondary" style="display:inline-block;text-align:center;text-decoration:none;">← KABUKI DOJO</a>';
         html += '</div>';
         app.innerHTML = html;
       }
@@ -278,7 +278,7 @@ export function quizPageHTML() {
         html += '<div class="quiz-mini-score">' + state.correct_total + '/' + state.answered_total + '正解　称号：' + esc(title) + '</div>';
         html += '<div style="margin-top:1rem;display:flex;flex-direction:column;gap:8px;align-items:center;">';
         html += '<button class="btn btn-primary" onclick="backToMenu()">メニューに戻る</button>';
-        html += '<a href="/mypage" class="btn btn-secondary" style="display:inline-block;text-align:center;text-decoration:none;">← KABUKI LOG</a>';
+        html += '<a href="/kabuki/dojo" class="btn btn-secondary" style="display:inline-block;text-align:center;text-decoration:none;">← KABUKI DOJO</a>';
         html += '</div>';
         html += '</div>';
         app.innerHTML = html;
@@ -315,7 +315,7 @@ export function quizPageHTML() {
     title: "歌舞伎クイズ",
     subtitle: "三択クイズで楽しく学ぼう",
     bodyHTML,
-    activeNav: "navi",
+    activeNav: "dojo",
     headExtra: `<style>
       .quiz-menu, .quiz-question, .quiz-result, .quiz-complete {
         max-width: 600px;

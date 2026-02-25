@@ -199,8 +199,8 @@ export function architecturePageHTML() {
       </div>
       <div style="margin:0 14px; border-top:1px dashed var(--border-light);"></div>
       <div class="feature-list">
-        <div class="sublabel sublabel-kabuki">📖 KABUKI RECO<span class="sublabel-desc">── 記録する</span></div>
-        <div class="feat"><div class="feat-icon">📝</div><div><div class="feat-name">観劇ログ</div><div class="feat-desc">観た演目・感想・推し俳優の記録</div></div></div>
+        <div class="sublabel sublabel-kabuki">📝 KABUKI RECO<span class="sublabel-desc">── 記録する</span></div>
+        <div class="feat"><div class="feat-icon">📝</div><div><div class="feat-name">観劇記録</div><div class="feat-desc">観た演目・感想・推し俳優の記録</div></div></div>
       </div>
       <div style="margin:0 14px; border-top:1px dashed var(--border-light);"></div>
       <div class="feature-list">
@@ -222,7 +222,7 @@ export function architecturePageHTML() {
 
       <!-- GATE -->
       <div class="feature-list">
-        <div class="sublabel sublabel-public">🌐 JIKABUKI GATE<span class="sublabel-desc">── 表玄関：団体を知ってもらう</span></div>
+        <div class="sublabel sublabel-public">🌐 JIKABUKI GATE<span class="sublabel-desc">── ぶたい：団体を知ってもらう</span></div>
         <div class="feat"><div class="feat-icon">🏠</div><div><div class="feat-name">団体公式サイト</div><div class="feat-desc">テンプレートで自動生成。気良歌舞伎がお手本</div></div></div>
         <div class="feat"><div class="feat-icon">🤖</div><div><div class="feat-name">団体チャットボット</div><div class="feat-desc">質問に答えるだけでFAQ＋ボットが完成</div></div></div>
         <div class="feat"><div class="feat-icon">📅</div><div><div class="feat-name">公演情報ページ</div><div class="feat-desc">次回公演・過去公演を自動掲載</div></div></div>
@@ -304,8 +304,8 @@ export function architecturePageHTML() {
         <div style="font-size:10px; color:var(--accent-red); margin-top:6px;">自動取得・Dify</div>
       </div>
       <div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:14px; box-shadow:var(--shadow-sm);">
-        <div style="font-size:11px; color:var(--text-tertiary); letter-spacing:1px; margin-bottom:8px;">📖 RECO ── 記録する</div>
-        <div style="font-size:12px; color:var(--text-secondary); line-height:1.9;">観劇ログ<br>推し俳優の記録</div>
+        <div style="font-size:11px; color:var(--text-tertiary); letter-spacing:1px; margin-bottom:8px;">📝 RECO ── 記録する</div>
+        <div style="font-size:12px; color:var(--text-secondary); line-height:1.9;">観劇記録<br>推し俳優の記録</div>
         <div style="font-size:10px; color:var(--text-tertiary); margin-top:6px;">ユーザーデータ</div>
       </div>
       <div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:14px; box-shadow:var(--shadow-sm);">
@@ -370,7 +370,7 @@ export function architecturePageHTML() {
         <div style="flex:1; text-align:center; padding:8px; background:var(--accent-red); color:white; font-size:12px; font-weight:600; letter-spacing:1px;">JIKABUKI PLUS+</div>
       </div>
       <div style="padding:0 16px 14px;">
-        <div style="font-size:11px; color:var(--accent-red); font-weight:600; margin-bottom:8px; letter-spacing:0.5px;">🌐 JIKABUKI GATE ── 表玄関</div>
+        <div style="font-size:11px; color:var(--accent-red); font-weight:600; margin-bottom:8px; letter-spacing:0.5px;">🌐 JIKABUKI GATE ── ぶたい</div>
         <div style="display:flex; flex-direction:column; gap:6px;">
           <div style="display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--bg-subtle); border-radius:8px;"><span style="font-size:16px;">🏠</span><div><div style="font-size:13px; font-weight:600;">団体公式サイト</div><div style="font-size:10px; color:var(--text-tertiary);">テンプレで自動生成・チャットボット付き</div></div></div>
         </div>
@@ -404,7 +404,7 @@ export function architecturePageHTML() {
     <strong>💡 この構成のポイント</strong><br><br>
     <strong>けらのすけ = 歌舞伎の「友達」</strong> ── 教科書ではなく友達。会話で相談に乗り（①）、必要ならWebに案内し（②）、GATEでは団体のサイトを一緒に作り（③）、詳しい解説はNAVIに任せる（④）。LINEでは会話のテンポを大事にする存在。<br><br>
     <strong>明快な棲み分け</strong> ── KABUKI PLUS+ は「観る人」、JIKABUKI PLUS+ は「演じる人・運営する人」。ターゲットが完全に分かれる。<br><br>
-    <strong>JIKABUKI PLUS+ の4モジュール</strong> ── 「GATE」（表玄関）・「INFO」（お知らせ）・「BASE」（楽屋：運営ツール＋業界共有DB）・「LABO」（稽古ツール＋ベータテスト）。KABUKI PLUS+ の4モジュール（NAVI/LIVE/RECO/DOJO）と完全対称。全8モジュールの頭文字がすべて異なる。<br><br>
+    <strong>JIKABUKI PLUS+ の4モジュール</strong> ── 「GATE」（ぶたい）・「INFO」（たより）・「BASE」（がくや）・「LABO」（こうぼう）。KABUKI PLUS+ の4モジュール（NAVI/LIVE/RECO/DOJO）と完全対称。全8モジュールの頭文字がすべて異なる。<br><br>
     <strong>チャットで導入完了</strong> ── 新しい団体は、けらのすけ（AI）の質問に答えていくだけで、FAQ・公式サイト・チャットボットが自動生成。ITに不慣れな事務局でも参入障壁ゼロ。気良歌舞伎のサイトがそのままテンプレートに。<br><br>
     <strong>台本共有で横展開</strong> ── 約200の地歌舞伎団体にとって、台本の調達・管理は大きな負担。共有できれば「使いたい」の強い動機に。<br><br>
     <strong>共有基盤</strong> ── けらのすけ（AI）、稽古エンジン、LINE Bot、Cloudflareインフラは両ブランド共通。<br><br>

@@ -23,6 +23,16 @@ bucket_name = "kabuki-quiz-data" # 1個のデータが入っているこちら�
 binding = "CHAT_HISTORY"
 id = "43434a4b6414475ca08dd72b84c62b72"
 
+# Workers AI（けらのすけ会話エンジン）
+[ai]
+binding = "AI"
+
+# カスタムドメイン
+routes = [
+  { pattern = "kabukiplus.com/*", zone_name = "kabukiplus.com" },
+  { pattern = "www.kabukiplus.com/*", zone_name = "kabukiplus.com" }
+]
+
 # /join・/feedback のフォームURL（未設定時は worker 内のプレースホルダを使用）
 [vars]
 JOIN_FORM_URL = "https://forms.gle/4tn5vLg19KpkGT6t8"  # 一緒につくる｜参加フォーム

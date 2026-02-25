@@ -7,7 +7,7 @@ export function serifuEditorHTML() {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>台詞キュー編集 - 気良歌舞伎</title>
+<title>台詞キュー編集 - KABUKI DOJO</title>
 <style>
   :root{--kuro:#1a1a1a;--aka:#C41E3A;--moegi:#6B8E23;--kin:#C5A55A;--shiro:#F5F0E8;--murasaki:#7B2D8E;}
   *{margin:0;padding:0;box-sizing:border-box;}
@@ -163,7 +163,7 @@ export function serifuEditorHTML() {
   </div>
 </div>
 
-<footer><a href="/kabuki/dojo/training">稽古モードへ戻る</a></footer>
+<footer><a href="/kabuki/dojo">← KABUKI DOJO へ戻る</a></footer>
 
 <script>
 // ── state ──

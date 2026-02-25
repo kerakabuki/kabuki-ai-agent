@@ -27,12 +27,11 @@ async function fetchJikabukiGroupNews(env) {
   try {
     const obj = await env.CONTENT_BUCKET.get("jikabuki_groups.json");
     if (!obj) {
-      console.log("jikabuki_groups.json not found in R2 — skipping group news");
+      console.error("jikabuki_groups.json not found in R2 — skipping group news");
       return [];
     }
     const data = await obj.json();
     const allKeywords = data.groups.flatMap(g => g.keywords);
-    console.log(`Jikabuki groups: ${data.groups.length} groups, ${allKeywords.length} keywords`);
 
     const BATCH_SIZE = 12;
     const batches = [];
@@ -60,7 +59,6 @@ async function fetchJikabukiGroupNews(env) {
           item.feedKey = "jikabuki";
         });
         articles.push(...items);
-        console.log(`Jikabuki batch ${bi + 1}/${batches.length}: ${items.length} articles`);
       } catch (e) {
         console.error(`Jikabuki batch ${bi + 1} error:`, String(e?.stack || e));
       }
@@ -76,7 +74,6 @@ async function fetchJikabukiGroupNews(env) {
       return allKeywords.some(k => t.includes(k)) ||
              JIKABUKI_GENERIC.some(w => t.includes(w));
     });
-    console.log(`Jikabuki group news: ${articles.length} raw → ${filtered.length} after title filter`);
     return filtered;
   } catch (e) {
     console.error("fetchJikabukiGroupNews error:", String(e?.stack || e));
@@ -152,26 +149,46 @@ async function fetchAndCacheNews(env) {
     !BLOCK_WORDS.some(w => a.title.includes(w))
   );
 
-  // 日付降順ソート → 最新20件
-  clean.sort((a, b) => (b.pubTs || 0) - (a.pubTs || 0));
-  const top = clean.slice(0, 20);
-
   // 0件のときは既存キャッシュを保持（RSSが一時的に取得できなかった場合の保護）
-  if (top.length === 0) {
-    console.log("News fetch returned 0 articles — keeping existing cache");
+  if (clean.length === 0) {
+    console.error("News fetch returned 0 articles — keeping existing cache");
     return [];
   }
 
-  // KV保存（TTL 24時間）
+  // 既存KVデータとマージして過去記事を保持
+  let merged = [...clean];
+  try {
+    const existing = await env.CHAT_HISTORY.get(NEWS_KV_KEY);
+    if (existing) {
+      const existingData = JSON.parse(existing);
+      if (existingData.articles && existingData.articles.length > 0) {
+        merged = [...clean, ...existingData.articles];
+      }
+    }
+  } catch (_) { /* 既存データ取得失敗時は新規データのみ使用 */ }
+
+  // 重複排除（マージ後）
+  const mergedSeen = new Set();
+  const mergedUnique = merged.filter(a => {
+    const k = a.title.replace(/\s+/g, "").slice(0, 30);
+    if (mergedSeen.has(k)) return false;
+    mergedSeen.add(k);
+    return true;
+  });
+
+  // 日付降順ソート → 最大1500件保持
+  mergedUnique.sort((a, b) => (b.pubTs || 0) - (a.pubTs || 0));
+  const top = mergedUnique.slice(0, 1500);
+
+  // KV保存（TTL 30日：過去記事を長期保持）
   const payload = {
     articles: top,
     updatedAt: new Date().toISOString(),
   };
   await env.CHAT_HISTORY.put(NEWS_KV_KEY, JSON.stringify(payload), {
-    expirationTtl: 86400,
+    expirationTtl: 2592000,
   });
 
-  console.log(`News cached: ${top.length} articles`);
   return top;
 }
 
@@ -266,14 +283,20 @@ function formatNewsDate(ts) {
 // ─── 半年分バックフィル（テスト用・手動実行） ───
 async function backfillNews(env) {
   const allArticles = [];
-  // 半年分を月単位で取得（2025-08 〜 2026-02）
+  // 約1年分を月単位で取得（2025-02 〜 2026-02）
   const ranges = [
+    { after: "2025-02-01", before: "2025-03-15" },
+    { after: "2025-03-15", before: "2025-04-15" },
+    { after: "2025-04-15", before: "2025-05-15" },
+    { after: "2025-05-15", before: "2025-06-15" },
+    { after: "2025-06-15", before: "2025-07-15" },
+    { after: "2025-07-15", before: "2025-08-15" },
     { after: "2025-08-15", before: "2025-09-15" },
     { after: "2025-09-15", before: "2025-10-15" },
     { after: "2025-10-15", before: "2025-11-15" },
     { after: "2025-11-15", before: "2025-12-15" },
     { after: "2025-12-15", before: "2026-01-15" },
-    { after: "2026-01-15", before: "2026-02-16" },
+    { after: "2026-01-15", before: "2026-02-21" },
   ];
 
   for (const range of ranges) {
@@ -295,7 +318,6 @@ async function backfillNews(env) {
           item.feedKey = feed.key;
         });
         allArticles.push(...items);
-        console.log(`Backfill: ${feed.key} ${range.after}~${range.before} → ${items.length} articles`);
       } catch (e) {
         console.error(`Backfill error (${feed.key} ${range.after}):`, String(e?.stack || e));
       }
@@ -305,7 +327,6 @@ async function backfillNews(env) {
   // 地歌舞伎団体名バッチクエリの結果もマージ
   const groupArticles = await fetchJikabukiGroupNews(env);
   allArticles.push(...groupArticles);
-  console.log(`Backfill: added ${groupArticles.length} articles from group name queries`);
 
   // 地歌舞伎の再分類
   const JIKABUKI_WORDS = ["地歌舞伎", "地芝居"];
@@ -330,40 +351,34 @@ async function backfillNews(env) {
     !BLOCK_WORDS.some(w => a.title.includes(w))
   );
 
-  // 日付降順ソート → 最大200件
+  // 日付降順ソート → 最大1500件
   clean.sort((a, b) => (b.pubTs || 0) - (a.pubTs || 0));
-  const top = clean.slice(0, 200);
+  const top = clean.slice(0, 1500);
 
   if (top.length === 0) {
     return { count: 0, message: "No articles found" };
   }
 
-  // KV保存（TTL 7日 = テスト期間中長めに保持）
+  // KV保存（TTL 30日）
   const payload = {
     articles: top,
     updatedAt: new Date().toISOString(),
     backfilled: true,
   };
   await env.CHAT_HISTORY.put(NEWS_KV_KEY, JSON.stringify(payload), {
-    expirationTtl: 604800,
+    expirationTtl: 2592000,
   });
 
-  console.log(`Backfill cached: ${top.length} articles (from ${allArticles.length} raw)`);
   return { count: top.length, raw: allArticles.length };
 }
 
 // ─── 俳優名で過去ニュースをリアルタイム検索 ───
 async function searchActorNews(actorName, months = 6) {
   const allArticles = [];
-  const now = new Date();
-  const afterDate = new Date(now);
-  afterDate.setMonth(afterDate.getMonth() - months);
-  const afterStr = afterDate.toISOString().slice(0, 10);
-  const beforeStr = now.toISOString().slice(0, 10);
 
-  const query = `"${actorName}" 歌舞伎 after:${afterStr} before:${beforeStr}`;
+  const query = `${actorName} 歌舞伎`;
   try {
-    const url = `${GOOGLE_NEWS_RSS}?q=${encodeURIComponent(query)}&hl=ja&gl=JP&ceid=JP:ja&num=100`;
+    const url = `${GOOGLE_NEWS_RSS}?q=${encodeURIComponent(query)}&hl=ja&gl=JP&ceid=JP:ja`;
     const res = await fetch(url, {
       headers: { "User-Agent": "KeraKabukiBot/1.0" },
     });

@@ -302,7 +302,7 @@ async function fetchPerformanceDetail(url) {
     const timer = setTimeout(() => controller.abort(), 8000);
     const res = await fetch(url, {
       headers: {
-        "User-Agent": "KABUKI+ Bot/1.0 (+https://kerakabuki.kerakabuki.workers.dev)",
+        "User-Agent": "KABUKI+ Bot/1.0 (+https://kabukiplus.com)",
         Accept: "text/html",
       },
       signal: controller.signal,
@@ -323,7 +323,7 @@ export async function fetchTheaterPerformances(src) {
     const timer = setTimeout(() => controller.abort(), 10000);
     const res = await fetch(src.url, {
       headers: {
-        "User-Agent": "KABUKI+ Bot/1.0 (+https://kerakabuki.kerakabuki.workers.dev)",
+        "User-Agent": "KABUKI+ Bot/1.0 (+https://kabukiplus.com)",
         Accept: "text/html",
       },
       signal: controller.signal,
@@ -367,7 +367,6 @@ export async function fetchAllTheaterPerformances() {
     );
   }
 
-  console.log(`[kabuki-bito] Fetched details: ${all.filter(p => p.programs).length}/${all.length} with programs`);
   return all;
 }
 
@@ -395,7 +394,7 @@ export async function refreshPerformancesCache(env) {
     new Promise(resolve => setTimeout(() => resolve([]), 25000)),
   ]);
   if (!items.length) {
-    console.log("[kabuki-bito] refreshPerformancesCache: no items fetched (timeout or all failed)");
+    console.error("[kabuki-bito] refreshPerformancesCache: no items fetched");
     return { items: [], count: 0, fetched_at: new Date().toISOString() };
   }
   const payload = {
@@ -406,6 +405,5 @@ export async function refreshPerformancesCache(env) {
   await env.CHAT_HISTORY.put(KV_KEY, JSON.stringify(payload), {
     expirationTtl: KV_TTL_SEC,
   });
-  console.log(`[kabuki-bito] Cached ${items.length} performances`);
   return payload;
 }

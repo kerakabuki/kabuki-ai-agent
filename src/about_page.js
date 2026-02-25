@@ -88,7 +88,8 @@ export function aboutPageHTML() {
         <div class="tl-item"><span class="tl-year">2022</span><div class="tl-body">飛騨美濃歌舞伎大会ぐじょう2022出演</div></div>
         <div class="tl-item"><span class="tl-year">2023</span><div class="tl-body">清流の国ぎふ 地歌舞伎勢揃い公演・秋 出演</div></div>
         <div class="tl-item"><span class="tl-year">2024</span><div class="tl-body"><strong>気良座こけら落とし公演</strong>（旧明方小学校木造講堂を「気良座」として開場）</div></div>
-        <div class="tl-item tl-current"><span class="tl-year">2025</span><div class="tl-body"><strong>五代目座長 林克彦</strong><br>座長襲名披露公演</div></div>
+        <div class="tl-item"><span class="tl-year">2025</span><div class="tl-body"><strong>五代目座長 林克彦</strong><br>座長襲名披露公演</div></div>
+        <div class="tl-item tl-current"><span class="tl-year">2026</span><div class="tl-body"><strong>令和8年公演（予定）</strong><br>KABUKI PLUS+ AIエージェント β版公開</div></div>
       </div>
     </section>
 
@@ -126,7 +127,6 @@ export function aboutPageHTML() {
 
       var CAT_ORDER = [
         { key: "気良歌舞伎",         icon: "🙂", title: "気良歌舞伎について" },
-        { key: "地歌舞伎・地芝居",   icon: "👹", title: "地歌舞伎・地芝居について" },
         { key: "公演の基本",         icon: "📅", title: "公演の基本" },
         { key: "観劇ガイド",         icon: "🎭", title: "観劇ガイド" },
         { key: "会場・設備",         icon: "🏠", title: "会場・設備" },

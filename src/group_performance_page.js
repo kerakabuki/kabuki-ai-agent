@@ -11,7 +11,7 @@ export function groupPerformancePageHTML(group) {
       title: "団体が見つかりません",
       bodyHTML: `<div class="empty-state">指定された団体は登録されていません。</div>`,
       brand: "jikabuki",
-      activeNav: "jikabuki",
+      activeNav: "base",
     });
   }
 
@@ -65,7 +65,7 @@ export function groupPerformancePageHTML(group) {
 
   const bodyHTML = `
     <div class="breadcrumb">
-      <a href="/">トップ</a><span>&rsaquo;</span><a href="/jikabuki">JIKABUKI PLUS+</a><span>&rsaquo;</span><a href="/groups/${escHTML(g.group_id)}">${name}</a><span>&rsaquo;</span>公演情報
+      <a href="/">トップ</a><span>&rsaquo;</span><a href="/jikabuki/base">BASE</a><span>&rsaquo;</span><a href="/jikabuki/gate/${escHTML(g.group_id)}">${name}</a><span>&rsaquo;</span>公演情報
     </div>
 
     ${nextPerfHTML}
@@ -84,7 +84,7 @@ export function groupPerformancePageHTML(group) {
     title: `公演情報 - ${g.name}`,
     subtitle: "過去の公演と次回予定",
     bodyHTML,
-    activeNav: "jikabuki",
+    activeNav: "base",
     brand: "jikabuki",
     headExtra: `<style>
       .gp-next {

@@ -9,7 +9,7 @@ export function joinPageHTML(opts = {}) {
     siteName = "KABUKI PLUS+",
     projectName = "気良歌舞伎×AIプロジェクト",
     formUrl = "https://example.com/your-form",
-    contactUrl = "/jikabuki/gate/kera/about",
+    contactUrl = "/jikabuki/gate/kera",
   } = opts;
 
   return `<!doctype html>
@@ -485,11 +485,12 @@ export function joinPageHTML(opts = {}) {
   <div class="topbar">
     <div class="brand">
       <div class="kicker">🎭 ${siteName}</div>
-      <div class="name">${projectName}</div>
+      <div class="name">KABUKI PLUS+ / JIKABUKI PLUS+</div>
     </div>
     <div class="nav">
-      <a class="chip" href="/project">← プロジェクト</a>
-      <a class="chip" href="${formUrl}" target="_blank" rel="noopener">📝 参加フォーム</a>
+      <a class="chip" href="/">トップ</a>
+      <a class="chip" href="/project">プロジェクト</a>
+      <a class="chip" href="/jikabuki/labo">📝 エディター申請</a>
     </div>
   </div>
 
@@ -497,13 +498,14 @@ export function joinPageHTML(opts = {}) {
 
     <!-- ── ヒーロー ── -->
     <section class="hero fade-up">
-      <h1>一緒につくる ──<br>地歌舞伎×AIの仲間募集</h1>
+      <h1>一緒につくる ──<br>KABUKI PLUS+ の仲間募集</h1>
       <p>
-        できることからでOK。週1時間でも歓迎。遠隔でも参加できます。<br>
-        「地歌舞伎を、もっと身近に、もっと面白く。」を一緒に形にしませんか。
+        歌舞伎ファン向けの <strong>KABUKI PLUS+</strong> と、地歌舞伎団体の運営を支える <strong>JIKABUKI PLUS+</strong>。<br>
+        2ブランド・8モジュールのプラットフォームを、一緒に育てていきませんか。<br>
+        できることからでOK。週1時間でも歓迎。遠隔でも参加できます。
       </p>
       <div class="actions">
-        <a class="btn primary" href="${formUrl}" target="_blank" rel="noopener">参加フォームへ →</a>
+        <a class="btn primary" href="/jikabuki/labo">エディター権限を申請する →</a>
         <a class="btn" href="${contactUrl}">まずは話を聞く</a>
       </div>
     </section>
@@ -521,7 +523,7 @@ export function joinPageHTML(opts = {}) {
           <ul>
             <li>SNS投稿、note記事、ニュース共有</li>
             <li>写真/動画、チラシ・バナー作成</li>
-            <li>イベント告知、導線の改善提案</li>
+            <li>プロジェクト紹介・気良歌舞伎の魅力発信</li>
           </ul>
           <div class="meta">
             <span class="mini">文章 / デザイン / 撮影</span>
@@ -534,8 +536,8 @@ export function joinPageHTML(opts = {}) {
           <h3>開発・UI</h3>
           <ul>
             <li>Cloudflare Workers / Webウィジェット改善</li>
-            <li>LINEメニュー/Flex、バグ修正・UX改善</li>
-            <li>稽古モード（台詞稽古/大向う）試作</li>
+            <li>GATE・BASE・LABO 各モジュールの機能追加・UX改善</li>
+            <li>LINEメニュー / Flex メッセージの改善</li>
           </ul>
           <div class="meta">
             <span class="mini">JS / HTML / CSS</span>
@@ -577,16 +579,16 @@ export function joinPageHTML(opts = {}) {
       <h2 class="section-title">いま、特にほしい力</h2>
       <div class="need">
         <div class="item">
-          <b><span class="need-num">1</span>UI/導線の改善</b>
-          <span>/project /navi /mypage の回遊、ボタン文言、見切れ対策など</span>
+          <b><span class="need-num">1</span>UI / UX 改善</b>
+          <span>8モジュール全体の回遊・導線・ボタン文言・表示崩れなどの改善提案や実装</span>
         </div>
         <div class="item">
-          <b><span class="need-num">2</span>稽古モード試作</b>
-          <span>台詞稽古・大向うの体験設計、簡単な実装、テスト協力</span>
+          <b><span class="need-num">2</span>コンテンツ充実</b>
+          <span>LABO モジュールの演目ガイド・用語辞典・クイズの作成・品質向上・監修</span>
         </div>
         <div class="item">
-          <b><span class="need-num">3</span>データ整備</b>
-          <span>演目/人物/用語、FAQ・クイズの品質を底上げ</span>
+          <b><span class="need-num">3</span>団体連携</b>
+          <span>JIKABUKI PLUS+ の横展開に向けた地歌舞伎団体の紹介・コーディネート</span>
         </div>
       </div>
     </section>
@@ -597,8 +599,8 @@ export function joinPageHTML(opts = {}) {
       <div class="flow">
         <div class="step">
           <div class="num">1</div>
-          <strong>フォーム送信</strong>（1分）
-          <div class="step-sub">関わり方を選ぶだけでもOK</div>
+          <strong>エディター申請</strong>（1分）
+          <div class="step-sub">ログインしてLABOで申請</div>
         </div>
         <div class="step">
           <div class="num">2</div>
@@ -612,7 +614,7 @@ export function joinPageHTML(opts = {}) {
         </div>
       </div>
       <div class="actions" style="margin-top:16px">
-        <a class="btn primary" href="${formUrl}" target="_blank" rel="noopener">参加フォームへ →</a>
+        <a class="btn primary" href="/jikabuki/labo">エディター権限を申請する →</a>
         <a class="btn" href="/project">プロジェクトへ戻る</a>
       </div>
     </section>
@@ -638,7 +640,7 @@ export function joinPageHTML(opts = {}) {
 
     <!-- ── フッター ── -->
     <footer class="fade-d5">
-      <span>© ${new Date().getFullYear()} <a href="/project">${projectName}</a></span>
+      <span>© ${new Date().getFullYear()} <a href="/project">気良歌舞伎 × KABUKI PLUS+</a></span>
       <span style="font-style:italic; color:var(--gold);">"守るために、変わる。"</span>
     </footer>
   </div>

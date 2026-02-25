@@ -434,9 +434,65 @@ export function projectPageHTML() {
     border-color: var(--gold); color: var(--gold-dark); background: var(--gold-soft);
   }
 
+  /* ── ナビバー ── */
+  .pj-navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background: rgba(250, 247, 242, 0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border-light);
+  }
+  .pj-navbar-brand {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-decoration: none;
+    letter-spacing: 1px;
+  }
+  .pj-navbar-brand:hover { color: var(--gold-dark); }
+  .pj-navbar-links {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+  .pj-navbar-links a {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: color 0.15s;
+  }
+  .pj-navbar-links a:hover { color: var(--gold-dark); }
+
   .site-footer {
-    text-align: center; padding: 48px 20px 32px;
-    font-size: 11px; color: var(--text-tertiary); letter-spacing: 1px;
+    text-align: center;
+    padding: 32px 20px 24px;
+    border-top: 1px solid var(--border-light);
+    background: var(--bg-subtle);
+  }
+  .site-footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 12px;
+  }
+  .site-footer-links a {
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .site-footer-links a:hover { color: var(--gold-dark); }
+  .site-footer-copy {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    letter-spacing: 1px;
   }
 
   /* アニメーション */
@@ -466,6 +522,15 @@ export function projectPageHTML() {
 </style>
 </head>
 <body>
+
+<!-- ═══ ナビバー ═══ -->
+<nav class="pj-navbar">
+  <a href="/" class="pj-navbar-brand">KABUKI PLUS+</a>
+  <div class="pj-navbar-links">
+    <a href="/?brand=jikabuki">JIKABUKI PLUS+</a>
+    <a href="/">トップ</a>
+  </div>
+</nav>
 
 <!-- ═══ ヒーロー ═══ -->
 <header class="hero animate-in">
@@ -498,7 +563,10 @@ export function projectPageHTML() {
         江戸時代から続く地域の歌舞伎文化──農家や会社員など、地域の人々が自ら演じる「地歌舞伎」。岐阜県郡上市の気良歌舞伎もその一つです。
       </p>
       <p>
-        JIKABUKI×AI は、AIの力で地歌舞伎の「知る・観る・演じる」体験をもっと豊かにするプロジェクト。歌舞伎AIガイド「けらのすけ」を中心に、誰もが歌舞伎の世界を楽しめるデジタルツールを開発しています。
+        KABUKI PLUS+ は、AIの力で歌舞伎の「知る・観る・演じる」体験をもっと豊かにするプラットフォームです。初めての歌舞伎ファンから、実際に舞台に立つ演者まで、それぞれに必要なツールをひとつの場所に。
+      </p>
+      <p>
+        歌舞伎AIガイド「けらのすけ」を中心に、ファン向けの <strong>KABUKI PLUS+</strong>（NAVI / LIVE / RECO / DOJO）と、地歌舞伎団体の運営を支える <strong>JIKABUKI PLUS+</strong>（GATE / INFO / BASE / LABO）の 2ブランド・8モジュールで構成されています。
       </p>
     </div>
   </section>
@@ -550,24 +618,24 @@ export function projectPageHTML() {
         </div>
       </div>
       <div class="vision-item">
-        <div class="v-icon">📰</div>
+        <div class="v-icon">📡</div>
         <div>
-          <div class="v-title">ファンと歌舞伎をつなぐ</div>
-          <div class="v-desc">毎日の歌舞伎ニュース、観劇ログ、推し俳優ランキング。ファンの日常に歌舞伎がそっと寄り添うプラットフォーム。</div>
+          <div class="v-title">地歌舞伎情報を全国に届ける</div>
+          <div class="v-desc">地域に分散していた地歌舞伎のニュース・団体情報・公演カレンダーを集約。全国200以上の地歌舞伎団体をつなぐ情報ハブへ。</div>
         </div>
       </div>
       <div class="vision-item">
-        <div class="v-icon">🎤</div>
+        <div class="v-icon">🔧</div>
         <div>
-          <div class="v-title">演じるを体験できる場</div>
-          <div class="v-desc">「知らざぁ言って聞かせやしょう」──名台詞をカラオケ感覚で練習できる稽古モード。あなたも歌舞伎役者に！</div>
+          <div class="v-title">演じる人の楽屋をつくる</div>
+          <div class="v-desc">稽古スケジュール、配役管理、台本共有、公演記録──地歌舞伎団体の運営に必要なツールをひとつのプラットフォームに。</div>
         </div>
       </div>
       <div class="vision-item">
         <div class="v-icon">🏯</div>
         <div>
           <div class="v-title">地歌舞伎を次の世代へ</div>
-          <div class="v-desc">地域に眠る文化の灯を、テクノロジーの力で全国へ届ける。地歌舞伎団体のデジタル化支援も視野に入れて。</div>
+          <div class="v-desc">気良歌舞伎から始まり、全国の地歌舞伎団体へ。演目ガイド・用語辞典・チャットボットが「使いながら育つ」共有ナレッジに。</div>
         </div>
       </div>
     </div>
@@ -580,36 +648,53 @@ export function projectPageHTML() {
       <h2>つくっているもの</h2>
     </div>
 
-    <div class="feature-row">
-      <div class="feature-card">
-        <div class="f-icon">🤖</div>
-        <div class="f-title">けらのすけ</div>
-        <div class="f-desc">歌舞伎AIガイド<br>LINE・Web対応</div>
-      </div>
-      <div class="feature-card">
-        <div class="f-icon">📖</div>
-        <div class="f-title">KABUKI LOG</div>
-        <div class="f-desc">観劇記録・推し管理<br>学習ログ</div>
-      </div>
+    <p style="font-size:12px; color:var(--text-tertiary); margin-bottom:14px; letter-spacing:0.5px;">🤖 けらのすけ AI ── LINE・Web 共通の歌舞伎ガイド＆運営サポート</p>
+
+    <p style="font-size:13px; font-weight:600; color:var(--text-secondary); margin:0 0 8px; letter-spacing:1px;">KABUKI PLUS+（ファン向け）</p>
+    <div class="feature-row" style="margin-bottom:20px;">
       <div class="feature-card">
         <div class="f-icon">🧭</div>
         <div class="f-title">KABUKI NAVI</div>
-        <div class="f-desc">演目・用語・人物<br>歌舞伎百科事典</div>
+        <div class="f-desc">演目・用語・人物<br>歌舞伎羅針盤</div>
       </div>
       <div class="feature-card">
-        <div class="f-icon">🎤</div>
-        <div class="f-title">稽古モード</div>
-        <div class="f-desc">台詞稽古チャレンジ<br>大向う道場</div>
+        <div class="f-icon">📡</div>
+        <div class="f-title">KABUKI LIVE</div>
+        <div class="f-desc">ニュース自動取得<br>公演スケジュール</div>
       </div>
       <div class="feature-card">
-        <div class="f-icon">📰</div>
-        <div class="f-title">歌舞伎ニュース</div>
-        <div class="f-desc">毎日自動取得<br>話題をお届け</div>
+        <div class="f-icon">📝</div>
+        <div class="f-title">KABUKI RECO</div>
+        <div class="f-desc">観劇記録・推し管理<br>マイページ</div>
       </div>
+      <div class="feature-card">
+        <div class="f-icon">🥋</div>
+        <div class="f-title">KABUKI DOJO</div>
+        <div class="f-desc">クイズ・台詞稽古<br>大向う道場</div>
+      </div>
+    </div>
+
+    <p style="font-size:13px; font-weight:600; color:var(--text-secondary); margin:0 0 8px; letter-spacing:1px;">JIKABUKI PLUS+（演者・運営者向け）</p>
+    <div class="feature-row">
       <div class="feature-card">
         <div class="f-icon">🏯</div>
-        <div class="f-title">JIKABUKI PLUS+</div>
-        <div class="f-desc">地歌舞伎団体の<br>公演情報・記録</div>
+        <div class="f-title">GATE</div>
+        <div class="f-desc">団体公式サイト<br>チャットボット</div>
+      </div>
+      <div class="feature-card">
+        <div class="f-icon">📡</div>
+        <div class="f-title">INFO</div>
+        <div class="f-desc">たより<br>団体ディレクトリ</div>
+      </div>
+      <div class="feature-card">
+        <div class="f-icon">🔧</div>
+        <div class="f-title">BASE</div>
+        <div class="f-desc">稽古・配役管理<br>台本共有・記録</div>
+      </div>
+      <div class="feature-card">
+        <div class="f-icon">🧪</div>
+        <div class="f-title">LABO</div>
+        <div class="f-desc">演目ガイド制作<br>コンテンツ共有</div>
       </div>
     </div>
   </section>
@@ -710,8 +795,9 @@ export function projectPageHTML() {
     <div class="card">
       <table class="info-table">
         <tr><td>運営</td><td>気良歌舞伎（けらかぶき）</td></tr>
-        <tr><td>開発者</td><td>気良歌舞伎事務局</td></tr>
-        <tr><td>技術構成</td><td>Cloudflare Workers / R2 / KV / LINE API</td></tr>
+        <tr><td>開発者</td><td>けらのすけ（気良歌舞伎）</td></tr>
+        <tr><td>開発協力</td><td>岐阜大学 日本語・日本文化教育センター<br>株式会社杉インターフェース</td></tr>
+        <tr><td>技術構成</td><td>Cloudflare Workers / R2 / KV / AI<br>LINE API</td></tr>
         <tr><td>開始</td><td>2025年〜</td></tr>
         <tr><td>ステータス</td><td>開発中（β版公開中）</td></tr>
       </table>
@@ -722,7 +808,7 @@ export function projectPageHTML() {
   <section class="support-section animate-in delay-8">
     <div class="support-message">応援してくれませんか？</div>
     <div class="support-sub">
-      個人で開発しているプロジェクトです。<br>
+      気良歌舞伎が開発しているプロジェクトです。<br>
       どんな形の応援でも、大きな力になります。
     </div>
 
@@ -754,10 +840,10 @@ export function projectPageHTML() {
     </div>
 
     <div class="share-bar">
-      <a href="https://twitter.com/intent/tweet?text=JIKABUKI%C3%97AI%20%E2%80%93%20%E5%9C%B0%E6%AD%8C%E8%88%9E%E4%BC%8E%E3%82%92AI%E3%81%A7%E3%82%82%E3%81%A3%E3%81%A8%E8%BA%AB%E8%BF%91%E3%81%AB%F0%9F%8E%AD&url=https%3A%2F%2Fkerakabuki.kerakabuki.workers.dev%2Fproject" class="share-btn x-share" target="_blank" rel="noopener">
+      <a href="https://twitter.com/intent/tweet?text=JIKABUKI%C3%97AI%20%E2%80%93%20%E5%9C%B0%E6%AD%8C%E8%88%9E%E4%BC%8E%E3%82%92AI%E3%81%A7%E3%82%82%E3%81%A3%E3%81%A8%E8%BA%AB%E8%BF%91%E3%81%AB%F0%9F%8E%AD&url=https%3A%2F%2Fkabukiplus.com%2Fproject" class="share-btn x-share" target="_blank" rel="noopener">
         𝕏 シェア
       </a>
-      <a href="https://social-plugins.line.me/lineit/share?url=https%3A%2F%2Fkerakabuki.kerakabuki.workers.dev%2Fproject" class="share-btn line-share" target="_blank" rel="noopener">
+      <a href="https://social-plugins.line.me/lineit/share?url=https%3A%2F%2Fkabukiplus.com%2Fproject" class="share-btn line-share" target="_blank" rel="noopener">
         LINE で送る
       </a>
       <button class="share-btn copy-link" onclick="navigator.clipboard.writeText(location.href); this.textContent='✓ コピーしました';">
@@ -773,7 +859,12 @@ export function projectPageHTML() {
 </div>
 
 <footer class="site-footer">
-  🎭 KABUKI PLUS+ &copy; 2026
+  <div class="site-footer-links">
+    <a href="/">トップ</a>
+    <a href="/?brand=jikabuki">JIKABUKI PLUS+</a>
+    <a href="/jikabuki/gate/kera">気良歌舞伎</a>
+  </div>
+  <div class="site-footer-copy">KABUKI PLUS+ &copy; 2026</div>
 </footer>
 
 </body>

@@ -4,7 +4,7 @@
 // =========================================================
 import { pageShell, escHTML } from "./web_layout.js";
 
-export function newsPageHTML() {
+export function newsPageHTML({ googleClientId = "" } = {}) {
   const bodyHTML = `
     <div class="breadcrumb">
       <a href="/">トップ</a><span>›</span><a href="/kabuki/live">KABUKI LIVE</a><span>›</span>ニュース一覧
@@ -79,6 +79,7 @@ export function newsPageHTML() {
     subtitle: "KABUKI LIVE — 歌舞伎瓦版",
     bodyHTML,
     activeNav: "live",
+    googleClientId,
     headExtra: `<style>
       .news-updated {
         font-size: 0.78rem;

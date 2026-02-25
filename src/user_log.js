@@ -1,6 +1,6 @@
 // src/user_log.js
 // =========================================================
-// 歌舞伎ログ v1: 閲覧履歴（recent）・クリップ（clips）・復習連動
+// 歌舞伎RECO v1: 閲覧履歴（recent）・クリップ（clips）・復習連動
 // KVキー: log:{sourceKey}
 // =========================================================
 import { KABUKI } from "./flex_menu.js";
@@ -192,14 +192,14 @@ export function myPageFlex(log, quizState) {
   }
 
   return {
-    type: "flex", altText: "KABUKI LOG",
+    type: "flex", altText: "KABUKI RECO",
     contents: {
       type: "bubble",
       body: {
         type: "box", layout: "vertical", spacing: "sm",
         backgroundColor: KABUKI.bg, paddingAll: "16px",
         contents: [
-          { type: "text", text: "📋 KABUKI LOG", weight: "bold", size: "lg", color: KABUKI.gold },
+          { type: "text", text: "📝 KABUKI RECO", weight: "bold", size: "lg", color: KABUKI.gold },
           { type: "text", text: summaryParts.join("\n"), size: "xxs", color: KABUKI.dim, wrap: true },
           { type: "separator", margin: "sm" },
           ...recentRows,
@@ -241,7 +241,7 @@ export function myPageWeb(log, quizState) {
     reply: "",
     ui: {
       type: "card",
-      title: "📋 KABUKI LOG",
+      title: "📝 KABUKI RECO",
       subtitle,
       body: recentCount > 0
         ? `🕐 最近見た ${recentCount}件`

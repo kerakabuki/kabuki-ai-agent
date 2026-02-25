@@ -2,8 +2,8 @@
 (function(){
   "use strict";
 
-  var WORKER_WEB_URL = "https://kerakabuki.kerakabuki.workers.dev/web";
-  var AVATAR_URL = "https://kerakabuki.kerakabuki.workers.dev/assets/keranosukelogo.png";
+  var WORKER_WEB_URL = "https://kabukiplus.com/web";
+  var AVATAR_URL = "https://kabukiplus.com/assets/keranosukelogo.png";
 
   if (document.getElementById("keranosuke-fab-wrap")) return;
 

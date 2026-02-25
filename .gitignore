@@ -1,8 +1,12 @@
 node_modules/
 .wrangler/
+.env
+.env.*
 __pycache__/
 *.pyc
 serifu_guide.json
 serifu-viz/node_modules/
 serifu-viz/dist/
 .DS_Store
+__debug_*
+__tmp_*

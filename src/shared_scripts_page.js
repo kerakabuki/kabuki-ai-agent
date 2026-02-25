@@ -33,7 +33,7 @@ export function sharedScriptsPageHTML(sharedScripts) {
 
   const bodyHTML = `
     <div class="breadcrumb">
-      <a href="/">トップ</a><span>&rsaquo;</span><a href="/jikabuki">JIKABUKI PLUS+</a><span>&rsaquo;</span>台本共有
+      <a href="/">トップ</a><span>&rsaquo;</span><a href="/?brand=jikabuki">JIKABUKI PLUS+</a><span>&rsaquo;</span>台本共有
     </div>
 
     <section class="ss-intro fade-up">
@@ -57,7 +57,7 @@ export function sharedScriptsPageHTML(sharedScripts) {
         <div class="ss-contribute-icon">🤝</div>
         <h3>台本を共有しませんか？</h3>
         <p>あなたの団体の台本を共有すると、他の団体の助けになります。</p>
-        <p class="ss-contribute-note">台本のデジタル化・共有設定については<a href="/jikabuki">JIKABUKI PLUS+</a>をご覧ください。</p>
+        <p class="ss-contribute-note">台本のデジタル化・共有設定については<a href="/?brand=jikabuki">JIKABUKI PLUS+</a>をご覧ください。</p>
       </div>
     </section>
   `;
@@ -66,7 +66,7 @@ export function sharedScriptsPageHTML(sharedScripts) {
     title: "台本共有ライブラリ",
     subtitle: "団体間で台本を共有し事務局負担を軽減",
     bodyHTML,
-    activeNav: "jikabuki",
+    activeNav: "base",
     brand: "jikabuki",
     headExtra: `<style>
       .ss-intro {

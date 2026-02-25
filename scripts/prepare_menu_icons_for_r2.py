@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 assets/menu-icons/ の icon-*.png を R2 用の menu-icon-*.png にコピーする。
-ウィジェット・LINE は https://kerakabuki.kerakabuki.workers.dev/assets/menu-icon-*.png を参照するので、
+ウィジェット・LINE は https://kabukiplus.com/assets/menu-icon-*.png を参照するので、
 出力先のファイルを R2 バケット assets-keranosuke にアップロードする。
 """
 from pathlib import Path
