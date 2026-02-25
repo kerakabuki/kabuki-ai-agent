@@ -1,14 +1,37 @@
 // worker.js（ルート）
 // =========================================================
+//
+// ── Data Storage Rules ────────────────────────────────────
+// KV (CHAT_HISTORY) = "状態"
+//   session, wizard progress, membership, short-term cache,
+//   account links, editor/join requests (with TTL)
+// R2 = "資産"
+//   enmoku guides, scripts, training packs, archives,
+//   static content (kawaraban, stories, glossary, actors)
+// Catalog pattern:
+//   R2の一覧取得には *_catalog キー（e.g. catalog.json）を別途管理
+// Size limits:
+//   group_notes → 200 items max
+//   userdata.theater_log.entries → 500 items max
+// ──────────────────────────────────────────────────────────
+//
+// ── Permission Matrix (see src/auth.js for details) ───────
+// master  → global : all operations, bypasses group checks
+// editor  → global : enmoku content create/edit (any group)
+// manager → group  : group admin (members, scripts, profile)
+// member  → group  : read group content, upload scripts, notes
+// ──────────────────────────────────────────────────────────
+//
 // Imports
 // =========================================================
-import { handleQuizMessage, loadQuizState } from "./src/quiz.js";
+import { handleQuizMessage, loadQuizState, clearQuizCache } from "./src/quiz.js";
 
-import { mainMenuFlex, naviHomeFlex } from "./src/flex_menu.js";
+import { mainMenuFlex } from "./src/flex_menu.js";
 
 import {
   loadEnmokuCatalog,
   loadEnmokuJson,
+  clearEnmokuCatalogCache,
   enmokuListFlex,
   groupSubMenuFlex,
   sectionMenuFlex,
@@ -58,7 +81,6 @@ import {
 } from "./src/flex_talk.js";
 
 // ★ お稽古モード HTML
-import { trainingPageHTML } from "./src/training_page.js";
 import { kakegoePageHTML } from "./src/kakegoe_page.js";
 import { kakegoeEditorHTML } from "./src/kakegoe_editor.js";
 import { serifuEditorHTML } from "./src/serifu_editor.js";
@@ -69,6 +91,13 @@ import {
   lineLoginRedirect, lineLoginCallback, verifyGoogleToken,
   getSession, destroySession, authMe,
   migrateUserData, getUserData, putUserData,
+  requireEditor, requestEditorAccess,
+  listEditorRequests, approveEditor, revokeEditor,
+  checkIsMaster, requireGroupRole,
+  loadGroupMembers, saveGroupMembers,
+  requestGroupJoin, listGroupJoinRequests,
+  approveGroupMember, changeGroupMemberRole, removeGroupMember,
+  cleanupGroup,
 } from "./src/auth.js";
 
 // ★ ニュース（Google News RSS → KV）
@@ -78,6 +107,9 @@ import { newsFlexMessage, newsWebHTML } from "./src/news_card.js";
 // ★ 歌舞伎美人 公演情報（kabuki-bito.jp → KV）
 import { refreshPerformancesCache, getPerformancesCached } from "./src/kabuki_bito.js";
 
+// ★ 注目演目（LIVE×NAVI連携）
+import { pickFeatured, saveMissedToKV, loadMissedFromKV, normalizeTitle } from "./src/featured_enmoku.js";
+
 // ★ WEBページ（フルページ）
 import { topPageHTML } from "./src/top_page.js";
 import { aboutPageHTML } from "./src/about_page.js";
@@ -86,31 +118,48 @@ import { enmokuPageHTML } from "./src/enmoku_page.js";
 import { glossaryPageHTML } from "./src/glossary_page.js";
 import { recommendPageHTML } from "./src/recommend_page.js";
 import { quizPageHTML } from "./src/quiz_page.js";
-import { performancePageHTML } from "./src/performance_page.js";
 import { kawarabanPageHTML } from "./src/kawaraban_page.js";
 import { nftGuidePageHTML } from "./src/nft_guide_page.js";
 import { storyPageHTML } from "./src/story_page.js";
 import { mypagePageHTML } from "./src/mypage_page.js";
 import { naviPageHTML } from "./src/navi_page.js";
 import { mannersPageHTML } from "./src/manners_page.js";
-import { recoPageHTML } from "./src/reco_page.js";
+import { kangekinaviPageHTML } from "./src/kangekinavi_page.js";
 import { livePageHTML } from "./src/live_page.js";
+import { laboHubPageHTML } from "./src/labo_hub_page.js";
+import { laboEnmokuPageHTML } from "./src/labo_page.js";
+import { laboGlossaryPageHTML } from "./src/labo_glossary_page.js";
+import { laboQuizPageHTML } from "./src/labo_quiz_page.js";
 import { dojoPageHTML } from "./src/dojo_page.js";
-import { groupSitePageHTML } from "./src/group_site_page.js";
+import { groupMembersPageHTML } from "./src/group_members_page.js";
+import { groupInvitePageHTML } from "./src/group_invite_page.js";
 import { groupPerformancePageHTML } from "./src/group_performance_page.js";
 import { groupRecordsPageHTML } from "./src/group_records_page.js";
+import { groupEnmokuSelectPageHTML } from "./src/group_enmoku_select_page.js";
+import { groupActorsPageHTML } from "./src/group_actors_page.js";
 import { groupNotesPageHTML } from "./src/group_notes_page.js";
 import { groupScriptListPageHTML, groupScriptViewerPageHTML, groupScriptTextViewerHTML, groupScriptPdfViewerHTML } from "./src/group_script_page.js";
 import { groupTrainingPageHTML } from "./src/group_training_page.js";
+import { groupSchedulePageHTML } from "./src/group_schedule_page.js";
 import { groupOnboardingPageHTML } from "./src/group_onboarding_page.js";
+import { groupDeleteRequestPageHTML } from "./src/group_delete_request_page.js";
 import { sharedScriptsPageHTML } from "./src/shared_scripts_page.js";
+import { infoHubPageHTML, infoTheatersPageHTML } from "./src/info_hub_page.js";
+import { infoGroupsPageHTML } from "./src/info_groups_page.js";
+import { infoEventsPageHTML } from "./src/info_events_page.js";
+import { infoNewsPageHTML } from "./src/info_news_page.js";
+import { gatePageHTML, gateTopPageHTML } from "./src/gate_page.js";
+import { baseHubPageHTML } from "./src/base_hub_page.js";
+import { gateEditorPageHTML, gateEditorListPageHTML } from "./src/gate_editor_page.js";
+import { theaterEditorPageHTML } from "./src/theater_editor_page.js";
 import { projectPageHTML } from "./src/project_page.js";
 import { architecturePageHTML } from "./src/architecture_page.js";
 import { joinPageHTML } from "./src/join_page.js";
 import { feedbackPageHTML } from "./src/feedback_page.js";
+import { pageShell } from "./src/web_layout.js";
+import { kabukiHelpPageHTML } from "./src/kabuki_help_page.js";
+import { jikabukiHelpPageHTML } from "./src/jikabuki_help_page.js";
 
-// ★ WEBウィジェットJS（R2ではなくバンドルから配信）
-import WIDGET_JS from "./src/keranosuke_widget.js";
 
 /* =========================================================
    Utils
@@ -146,19 +195,34 @@ const DEFAULT_GROUPS = {
     name: "気良歌舞伎",
     name_kana: "けらかぶき",
     tagline: "素人歌舞伎の真髄がここにある",
+    prefecture: "岐阜県",
     description: "岐阜県郡上市明宝気良。世帯数は130世帯ぐらいの小さな集落。\n2005年、地元の若者たちが集まり、地域の活性化のため、17年ぶりに歌舞伎を復活。\nそれから20年が過ぎ、メンバーは20代から50代まで約40名に。今では地域の毎年の恒例行事として皆に楽しみにしていただけるようになった。\n\n我々は歌舞伎保存会ではない。ただ「気良の人たちに元気になってもらいたい」そして「自分たちも楽しもう」──その思いだけでやってきた。",
     venue: {
       name: "気良座",
       address: "岐阜県郡上市明宝気良（旧明方小学校講堂）"
     },
     contact: {
-      instagram: "https://www.instagram.com/kerakabuki_official/"
+      instagram: "https://www.instagram.com/kerakabuki_official/",
+      website: "https://kerakabuki.jimdofree.com/",
+      youtube: "https://www.youtube.com/@kerakabuki",
+      x: "https://x.com/KeraKabuki",
+      facebook: "https://www.facebook.com/kerakabuki/",
     },
+    featured_video: "https://www.youtube.com/watch?v=E1FPzo1PORo",
+    theater_id: "kera_za",
     faq: [
-      { q: "チケットはどうやって買えますか？", a: "現在、チケットは事前予約制です。詳しくはInstagramでお知らせします。" },
-      { q: "駐車場はありますか？", a: "はい、会場周辺に無料駐車場がございます。" },
-      { q: "子供は入場できますか？", a: "もちろんです。お子様連れの方も大歓迎です。" },
-      { q: "アクセスは？", a: "郡上八幡ICより車で約30分。公共交通機関の場合は長良川鉄道・郡上八幡駅からバスが出ています。" }
+      { key: "about_what", category: "{団体名}について", q: "{団体名}とは？（どんな地歌舞伎？）", a: "岐阜県郡上市明宝（めいほう）気良（けら）地区に伝わる地歌舞伎です。地域の人たちが受け継いできた芝居文化として、昔ながらの歌舞伎の心を大切にしながら上演を続けています。正式名称は「気良歌舞伎一座（気良歌舞伎保存会）」です。" },
+      { key: "about_history", category: "{団体名}について", q: "歴史・歩み（いつ頃から／特徴）", a: "江戸時代末期から明治時代にかけて成立したと考えられています。長い歴史の中で一度途絶えましたが、2005年（平成17年）に復活。以来、地域に根ざした活動を続けながら、時代に合わせた新しい取り組みも行っています。" },
+      { key: "about_join", category: "{団体名}について", q: "参加したい／手伝いたい（演者・裏方・ボランティア）", a: "新しい仲間を随時募集しています。経験は問いません。稽古に参加できる方であれば歓迎します。" },
+      { key: "about_support", category: "{団体名}について", q: "応援したい（ご祝儀・おひねり・寄付・スポンサー）", a: "観覧時のご祝儀・おひねりや公式SNSのフォローも大切な応援の形です。無理のない範囲でお楽しみください。" },
+      { key: "viewing_ticket", category: "観劇の基本", q: "チケットは必要？料金は？予約は？", a: "気良座での定期公演は予約不要・自由席・無料です（ご祝儀・おひねり歓迎）。チケットも不要なので、そのまま会場にお越しください。※公演内容や運営方法は年によって変わることがあります。最新情報は公式サイトもご確認ください。" },
+      { key: "viewing_photo", category: "観劇の基本", q: "写真・動画撮影はOK？（幕間のみ等ルール）", a: "撮影についてのルールは公演ごとに案内があります。当日のアナウンスや掲示を必ずご確認ください。" },
+      { key: "viewing_clothing", category: "観劇の基本", q: "服装のおすすめ／持ち物（寒暖対策・座布団等）", a: "自由席です。椅子はありますが数に限りがあるため、座布団や敷物があると安心です。秋の公演は会場周辺が肌寒いこともある一方、会場内は熱気で暑くなることも。脱ぎ着しやすい服装がおすすめです。" },
+      { key: "viewing_food", category: "観劇の基本", q: "飲食はできる？（持ち込み／売店）", a: "常設の飲食店・売店はありません。公演によっては屋外で軽食の出店（バザー）が出ることがあります。飲み物は持参がおすすめです（においの強いものは控えてください）。" },
+      { key: "facility_toilet", category: "会場・設備", q: "トイレはある？", a: "明宝歴史民俗資料館のトイレをご利用ください。" },
+      { key: "facility_barrier_free", category: "会場・設備", q: "バリアフリー対応（段差／車椅子／優先席）", a: "バリアフリー対応の施設ではありません。入口で靴を脱いで上がる際に段差があります。靴を入れるポリ袋は会場で用意しています。大きな荷物の預かりやロッカーはないため、できるだけ最小限の荷物でのご来場をおすすめします。" },
+      { key: "access_directions", category: "アクセス・駐車場", q: "会場へのアクセスは？（住所／ナビ設定）", a: "【住所】岐阜県郡上市明宝気良154\n【車】郡上八幡ICから約30分。ナビは「明宝歴史民俗資料館」を目指してください。駐車場は無料です。\n【公共交通】郡上八幡駅から明宝線バスで明宝庁舎前下車、徒歩約10分。終演後はバスがないため、公共交通のみの往復は難しい場合があります。" },
+      { category: "観劇の基本", q: "ご祝儀・おひねりってなに？", a: "ご祝儀は応援の気持ちとして受付でお預かりするものです。おひねりは主に小銭などを紙に包んだもので、役者が決めポーズ（見得など）をしたタイミングで舞台に向かって投げて応援します。どちらも必須ではありませんので、無理のない範囲でお楽しみください。" },
     ],
     next_performance: {
       title: "令和8年 気良歌舞伎公演（予定）",
@@ -166,32 +230,39 @@ const DEFAULT_GROUPS = {
       venue: "気良座（旧明方小学校講堂）",
       note: "詳細は決まり次第お知らせします。最新情報はInstagramでもご確認いただけます。"
     },
-    performances: [
-      { year: 2025, date_display: "9月28日", title: "五代目座長襲名披露公演", venue: "気良座", plays: ["寿曽我対面「工藤館」｜座長襲名劇中口上", "恋飛脚大和往来「封印切」", "白浪五人男「稲瀬川勢揃い」"] },
-      { year: 2024, date_display: "9月28日", venue: "気良座", plays: ["義経千本桜「すし屋」", "義経千本桜「鳥居前」"] },
-      { year: 2023, date_display: "9月23日", venue: "気良座", plays: ["白浪五人男「浜松屋」", "白浪五人男「稲瀬川勢揃い」", "一谷嫩軍記「熊谷陣屋」"] },
-      { year: 2022, date_display: "10月1日", venue: "気良座", plays: ["恋飛脚大和往来「封印切」", "源平布引滝「実盛物語」"] },
-      { year: 2021, date_display: "配信", title: "動画配信公演", venue: "気良座", plays: ["仮名手本忠臣蔵「殿中刃傷」", "白浪五人男「浜松屋」「稲瀬川勢揃い」"] },
-      { year: 2019, date_display: "9月28日", venue: "気良座", plays: ["義経千本桜「すし屋」", "白浪五人男「浜松屋」「稲瀬川勢揃い」"] },
-      { year: 2018, date_display: "9月29日", venue: "気良座", plays: ["一谷嫩軍記「熊谷陣屋」", "恋飛脚大和往来「封印切」"] },
-      { year: 2017, date_display: "9月30日", venue: "気良座", plays: ["源平布引滝「実盛物語」", "白浪五人男「浜松屋」「稲瀬川勢揃い」"] },
-      { year: 2016, date_display: "10月1日", venue: "気良座", plays: ["一谷嫩軍記「組打・陣門」", "恋飛脚大和往来「封印切」"] },
-      { year: 2015, date_display: "10月3日", title: "10周年記念公演", venue: "気良座", plays: ["白浪五人男「浜松屋」「稲瀬川勢揃い」", "義経千本桜「すし屋」", "源平布引滝「実盛物語」"] },
-      { year: 2014, date_display: "9月27日", venue: "気良座", plays: ["義経千本桜「すし屋」", "恋飛脚大和往来「封印切」"] },
-      { year: 2013, date_display: "9月28日", venue: "気良座", plays: ["一谷嫩軍記「熊谷陣屋」", "白浪五人男「浜松屋」「稲瀬川勢揃い」"] },
-      { year: 2012, date_display: "9月29日", venue: "気良座", plays: ["恋飛脚大和往来「封印切」", "仮名手本忠臣蔵「殿中刃傷」"] },
-      { year: 2011, date_display: "10月1日", venue: "気良座", plays: ["源平布引滝「実盛物語」", "義経千本桜「すし屋」"] },
-      { year: 2010, date_display: "10月2日", title: "5周年記念公演", venue: "気良座", plays: ["白浪五人男「浜松屋」「稲瀬川勢揃い」", "一谷嫩軍記「熊谷陣屋」"] },
-      { year: 2009, date_display: "10月3日", venue: "気良座", plays: ["恋飛脚大和往来「封印切」"] },
-      { year: 2008, date_display: "9月27日", venue: "気良座", plays: ["義経千本桜「すし屋」"] },
-      { year: 2007, date_display: "10月6日", venue: "気良座", plays: ["白浪五人男「浜松屋」「稲瀬川勢揃い」"] },
-      { year: 2006, date_display: "10月7日", venue: "気良座", plays: ["白浪五人男「浜松屋」「稲瀬川勢揃い」"] },
-      { year: 2005, date_display: "10月8日", title: "復活公演", venue: "白山神社", plays: ["白浪五人男「浜松屋」「稲瀬川勢揃い」"] },
-    ],
     created_at: "2024-01-01T00:00:00Z",
     updated_at: "2026-02-16T00:00:00Z"
   }
 };
+
+const GATE_GROUPS = [
+  { id: "kera", name: "気良歌舞伎" },
+];
+
+async function loadGateGroups(env) {
+  const raw = await env.CHAT_HISTORY.get("gate_registry");
+  if (raw) return JSON.parse(raw);
+  const seed = GATE_GROUPS.map(g => ({ ...g, addedAt: "2024-01-01T00:00:00Z" }));
+  await env.CHAT_HISTORY.put("gate_registry", JSON.stringify(seed));
+  return seed;
+}
+
+async function addToGateRegistry(env, groupId, groupName) {
+  const list = await loadGateGroups(env);
+  if (list.some(g => g.id === groupId)) return list;
+  list.push({ id: groupId, name: groupName, addedAt: new Date().toISOString() });
+  await env.CHAT_HISTORY.put("gate_registry", JSON.stringify(list));
+  return list;
+}
+
+async function removeFromGateRegistry(env, groupId) {
+  const list = await loadGateGroups(env);
+  const filtered = list.filter(g => g.id !== groupId);
+  if (filtered.length !== list.length) {
+    await env.CHAT_HISTORY.put("gate_registry", JSON.stringify(filtered));
+  }
+  return filtered;
+}
 
 function verifyGroupAuth(request, group) {
   if (!group || !group.passcode) return true;
@@ -213,9 +284,10 @@ async function getGroup(env, groupId) {
 }
 
 async function listGroups(env) {
+  const gateList = await loadGateGroups(env);
   const groups = [];
-  for (const id of Object.keys(DEFAULT_GROUPS)) {
-    const g = await getGroup(env, id);
+  for (const entry of gateList) {
+    const g = await getGroup(env, entry.id);
     if (g) groups.push({ group_id: g.group_id, name: g.name, tagline: g.tagline });
   }
   return groups;
@@ -231,6 +303,13 @@ export default {
       return corsResponse(request, new Response("", { status: 204 }));
     }
 
+    // www → ルートドメインへリダイレクト
+    const reqUrl = new URL(request.url);
+    if (reqUrl.hostname === "www.kabukiplus.com") {
+      reqUrl.hostname = "kabukiplus.com";
+      return Response.redirect(reqUrl.toString(), 301);
+    }
+
     // 必須バインドの存在確認（undefined.get エラー防止）
     if (!env?.CHAT_HISTORY) {
       console.error("CHAT_HISTORY binding missing. Add kv_namespaces in wrangler.toml.");
@@ -243,20 +322,7 @@ export default {
     env._origin = url.origin;
 
     /* =====================================================
-       0) ウィジェットJS（バンドルから直接配信、R2不要）
-    ===================================================== */
-    if (path === "/assets/keranosuke-widget.js" || path.startsWith("/assets/keranosuke-widget.js?")) {
-      return new Response(WIDGET_JS, {
-        headers: {
-          "Content-Type": "application/javascript; charset=utf-8",
-          "Cache-Control": "no-cache, max-age=0, must-revalidate",
-          "Access-Control-Allow-Origin": "*",
-        },
-      });
-    }
-
-    /* =====================================================
-       0.1) Assets配信（R2 → 画像/JS/CSSを返す）
+       0) Assets配信（R2 → 画像/JS/CSSを返す）
     ===================================================== */
     if (path.startsWith("/assets/")) {
       const key = path.replace(/^\/assets\//, "");
@@ -286,9 +352,152 @@ export default {
     }
 
     /* =====================================================
+       0.2) PWA: manifest.json & Service Worker
+    ===================================================== */
+    if (path === "/manifest.json") {
+      const manifest = {
+        name: "KABUKI PLUS+",
+        short_name: "KABUKI+",
+        description: "歌舞伎をもっと面白く。演目ガイド・公演情報・観劇記録・団体運営をデジタルでサポート。",
+        start_url: "/",
+        scope: "/",
+        display: "standalone",
+        orientation: "portrait",
+        theme_color: "#A8873A",
+        background_color: "#FAF7F2",
+        lang: "ja",
+        categories: ["entertainment", "education"],
+        icons: [
+          { src: "/assets/icon-192.png",  sizes: "192x192",  type: "image/png", purpose: "any" },
+          { src: "/assets/icon-512.png",  sizes: "512x512",  type: "image/png", purpose: "any" },
+          { src: "/assets/icon-maskable-192.png", sizes: "192x192", type: "image/png", purpose: "maskable" },
+          { src: "/assets/icon-maskable-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+        ],
+        shortcuts: [
+          { name: "NAVI — 演目ガイド", short_name: "NAVI", url: "/kabuki/navi", icons: [{ src: "/assets/icon-192.png", sizes: "192x192" }] },
+          { name: "LIVE — 公演情報",   short_name: "LIVE", url: "/kabuki/live", icons: [{ src: "/assets/icon-192.png", sizes: "192x192" }] },
+          { name: "BASE — 団体運営",   short_name: "BASE", url: "/jikabuki/base", icons: [{ src: "/assets/icon-192.png", sizes: "192x192" }] },
+        ],
+      };
+      return new Response(JSON.stringify(manifest), {
+        headers: {
+          "Content-Type": "application/manifest+json; charset=utf-8",
+          "Cache-Control": "public, max-age=86400",
+        },
+      });
+    }
+
+    if (path === "/sw.js") {
+      const swCode = `
+// KABUKI PLUS+ Service Worker
+const CACHE_VERSION = 'kp-v1';
+const STATIC_CACHE = CACHE_VERSION + '-static';
+const RUNTIME_CACHE = CACHE_VERSION + '-runtime';
+
+// プリキャッシュ対象（シェル用最低限のアセット）
+const PRECACHE_URLS = [
+  '/',
+];
+
+// インストール: プリキャッシュ
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(STATIC_CACHE)
+      .then(cache => cache.addAll(PRECACHE_URLS))
+      .then(() => self.skipWaiting())
+  );
+});
+
+// アクティベート: 旧キャッシュ削除
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(
+        keys
+          .filter(key => key.startsWith('kp-') && key !== STATIC_CACHE && key !== RUNTIME_CACHE)
+          .map(key => caches.delete(key))
+      )
+    ).then(() => self.clients.claim())
+  );
+});
+
+// フェッチ戦略
+self.addEventListener('fetch', (event) => {
+  const { request } = event;
+  const url = new URL(request.url);
+
+  // 同一オリジンのみ処理
+  if (url.origin !== self.location.origin) return;
+
+  // API・認証はネットワーク直通（キャッシュしない）
+  if (url.pathname.startsWith('/api/') ||
+      url.pathname.startsWith('/auth/') ||
+      url.pathname.startsWith('/line')) {
+    return;
+  }
+
+  // 静的アセット: Cache-first
+  if (url.pathname.startsWith('/assets/')) {
+    event.respondWith(
+      caches.match(request).then(cached => {
+        if (cached) return cached;
+        return fetch(request).then(response => {
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(RUNTIME_CACHE).then(cache => cache.put(request, clone));
+          }
+          return response;
+        });
+      })
+    );
+    return;
+  }
+
+  // HTMLページ: Network-first（フォールバック: キャッシュ）
+  if (request.headers.get('Accept')?.includes('text/html')) {
+    event.respondWith(
+      fetch(request)
+        .then(response => {
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(RUNTIME_CACHE).then(cache => cache.put(request, clone));
+          }
+          return response;
+        })
+        .catch(() => caches.match(request).then(cached => cached || offlinePage()))
+    );
+    return;
+  }
+});
+
+// オフラインフォールバックページ
+function offlinePage() {
+  const html = '<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>\\u30aa\\u30d5\\u30e9\\u30a4\\u30f3 | KABUKI PLUS+</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:sans-serif;background:#FAF7F2;color:#3D3127;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:2rem}.box{max-width:360px}.icon{font-size:3rem;margin-bottom:1rem}h1{font-size:1.2rem;margin-bottom:.5rem}p{font-size:.9rem;color:#7A6F63;line-height:1.6;margin-bottom:1.5rem}button{padding:.6rem 1.5rem;border:1px solid #C5A255;border-radius:8px;background:none;color:#A8873A;font-size:.9rem;cursor:pointer}button:hover{background:#F5EDD8}</style></head><body><div class="box"><div class="icon">\\ud83c\\udfad</div><h1>\\u30aa\\u30d5\\u30e9\\u30a4\\u30f3\\u3067\\u3059</h1><p>\\u30a4\\u30f3\\u30bf\\u30fc\\u30cd\\u30c3\\u30c8\\u306b\\u63a5\\u7d9a\\u3067\\u304d\\u307e\\u305b\\u3093\\u3002<br>\\u96fb\\u6ce2\\u306e\\u826f\\u3044\\u5834\\u6240\\u3067\\u518d\\u5ea6\\u304a\\u8a66\\u3057\\u304f\\u3060\\u3055\\u3044\\u3002</p><button onclick="location.reload()">\\u518d\\u8aad\\u307f\\u8fbc\\u307f</button></div></body></html>';
+  return new Response(html, {
+    status: 503,
+    headers: { 'Content-Type': 'text/html; charset=utf-8' },
+  });
+}
+`;
+      return new Response(swCode.trim(), {
+        headers: {
+          "Content-Type": "application/javascript; charset=utf-8",
+          "Cache-Control": "no-cache, max-age=0",
+          "Service-Worker-Allowed": "/",
+        },
+      });
+    }
+
+    /* =====================================================
        0.3) WEBページ（フルページ）
     ===================================================== */
-    const HTML_HEADERS = { "Content-Type": "text/html; charset=utf-8" };
+    const HTML_HEADERS = {
+      "Content-Type": "text/html; charset=utf-8",
+      "X-Frame-Options": "DENY",
+      "X-Content-Type-Options": "nosniff",
+      "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+      "Referrer-Policy": "strict-origin-when-cross-origin",
+    };
 
     if (path === "/") {
       return new Response(topPageHTML(), { headers: HTML_HEADERS });
@@ -296,55 +505,34 @@ export default {
 
     /* ─── 301: KABUKI PLUS+ 旧URL → /kabuki/* ─── */
     if (path === "/navi") return new Response(null, { status: 301, headers: { "Location": "/kabuki/navi" } });
-    if (path === "/enmoku" || path.startsWith("/enmoku/")) return new Response(null, { status: 301, headers: { "Location": "/kabuki/navi/enmoku" + (path.slice(7) || "") } });
-    if (path === "/glossary" || path.startsWith("/glossary/")) return new Response(null, { status: 301, headers: { "Location": "/kabuki/navi/glossary" + (path.slice(9) || "") } });
-    if (path === "/recommend" || path.startsWith("/recommend/")) return new Response(null, { status: 301, headers: { "Location": "/kabuki/navi/recommend" + (path.slice(10) || "") } });
-    if (path === "/live") return new Response(null, { status: 301, headers: { "Location": "/kabuki/live" } });
-    if (path === "/news") return new Response(null, { status: 301, headers: { "Location": "/kabuki/live/news" } });
-    if (path === "/reco") return new Response(null, { status: 301, headers: { "Location": "/kabuki/reco" } });
-    if (path === "/mypage") return new Response(null, { status: 301, headers: { "Location": "/kabuki/reco" } });
-    if (path === "/dojo") return new Response(null, { status: 301, headers: { "Location": "/kabuki/dojo" } });
-    if (path === "/quiz") return new Response(null, { status: 301, headers: { "Location": "/kabuki/dojo/quiz" } });
-    if (path === "/training" || path.startsWith("/training/")) return new Response(null, { status: 301, headers: { "Location": "/kabuki/dojo/training" + (path.slice(10) || "") } });
-
-    /* ─── 301: JIKABUKI GATE 旧URL → /jikabuki/gate/kera/* ─── */
-    if (path === "/about") return new Response(null, { status: 301, headers: { "Location": "/jikabuki/gate/kera/about" } });
-    if (path === "/performance") return new Response(null, { status: 301, headers: { "Location": "/jikabuki/gate/kera/performance" } });
-    if (path === "/story") return new Response(null, { status: 301, headers: { "Location": "/jikabuki/gate/kera/story" } });
-    if (path.startsWith("/story/")) return new Response(null, { status: 301, headers: { "Location": "/jikabuki/gate/kera/story" + path.slice(6) } });
-    if (path === "/kawaraban") return new Response(null, { status: 301, headers: { "Location": "/jikabuki/gate/kera/kawaraban" } });
-    const kwRedirect = path.match(/^\/kawaraban\/pdf\/(\d{2})$/);
-    if (kwRedirect) return new Response(null, { status: 301, headers: { "Location": "/jikabuki/gate/kera/kawaraban/pdf/" + kwRedirect[1] } });
-    if (path === "/nft-guide") return new Response(null, { status: 301, headers: { "Location": "/jikabuki/gate/kera/nft" } });
-    if (path === "/jikabuki/scripts") return new Response(null, { status: 301, headers: { "Location": "/jikabuki/base/scripts" } });
-    if (path === "/jikabuki/onboarding") return new Response(null, { status: 301, headers: { "Location": "/jikabuki/base/onboarding" } });
-    if (path === "/calendar") return new Response(null, { status: 301, headers: { "Location": "/jikabuki/info/calendar" } });
 
     /* ─── KABUKI PLUS+ 新URL: /kabuki/* ─── */
     if (path === "/kabuki") return new Response(null, { status: 301, headers: { "Location": "/kabuki/navi" } });
-    if (path === "/kabuki/navi") return new Response(naviPageHTML(), { headers: HTML_HEADERS });
-    if (path === "/kabuki/navi/manners") return new Response(mannersPageHTML(), { headers: HTML_HEADERS });
-    if (path === "/kabuki/navi/enmoku" || path.startsWith("/kabuki/navi/enmoku/")) return new Response(enmokuPageHTML(), { headers: HTML_HEADERS });
-    if (path === "/kabuki/navi/glossary" || path.startsWith("/kabuki/navi/glossary/")) return new Response(glossaryPageHTML(), { headers: HTML_HEADERS });
-    if (path === "/kabuki/navi/recommend" || path.startsWith("/kabuki/navi/recommend/")) return new Response(recommendPageHTML(), { headers: HTML_HEADERS });
-    if (path === "/kabuki/live") return new Response(livePageHTML(), { headers: HTML_HEADERS });
-    if (path === "/kabuki/live/news") return new Response(newsPageHTML(), { headers: HTML_HEADERS });
+    if (path === "/kabuki/help") return new Response(kabukiHelpPageHTML({ googleClientId: env.GOOGLE_CLIENT_ID || "" }), { headers: HTML_HEADERS });
+    if (path === "/kabuki/navi") return new Response(naviPageHTML({ googleClientId: env.GOOGLE_CLIENT_ID || "" }), { headers: HTML_HEADERS });
+    if (path === "/kabuki/navi/theater") return new Response(kangekinaviPageHTML({ googleClientId: env.GOOGLE_CLIENT_ID || "" }), { headers: HTML_HEADERS });
+    if (path === "/kabuki/navi/manners") return new Response(mannersPageHTML({ googleClientId: env.GOOGLE_CLIENT_ID || "" }), { headers: HTML_HEADERS });
+    if (path === "/kabuki/navi/enmoku" || path.startsWith("/kabuki/navi/enmoku/")) return new Response(enmokuPageHTML({ googleClientId: env.GOOGLE_CLIENT_ID || "" }), { headers: HTML_HEADERS });
+    if (path === "/kabuki/navi/glossary" || path.startsWith("/kabuki/navi/glossary/")) return new Response(glossaryPageHTML({ googleClientId: env.GOOGLE_CLIENT_ID || "" }), { headers: HTML_HEADERS });
+    if (path === "/kabuki/navi/recommend" || path.startsWith("/kabuki/navi/recommend/")) return new Response(recommendPageHTML({ googleClientId: env.GOOGLE_CLIENT_ID || "" }), { headers: HTML_HEADERS });
+    if (path === "/kabuki/live") return new Response(await livePageHTML(env), { headers: HTML_HEADERS });
+    if (path === "/kabuki/live/news") return new Response(newsPageHTML({ googleClientId: env.GOOGLE_CLIENT_ID || "" }), { headers: HTML_HEADERS });
     if (path === "/kabuki/reco") return new Response(mypagePageHTML({ googleClientId: env.GOOGLE_CLIENT_ID || "" }), { headers: HTML_HEADERS });
-    if (path === "/kabuki/dojo") return new Response(dojoPageHTML(), { headers: HTML_HEADERS });
+    if (path === "/kabuki/dojo") return new Response(dojoPageHTML({ googleClientId: env.GOOGLE_CLIENT_ID || "" }), { headers: HTML_HEADERS });
     if (path === "/kabuki/dojo/quiz") return new Response(quizPageHTML(), { headers: HTML_HEADERS });
-    if (path === "/kabuki/dojo/training") return new Response(trainingPageHTML(), { headers: { "Content-Type": "text/html; charset=utf-8" } });
-    if (path === "/kabuki/dojo/training/kakegoe") return new Response(kakegoePageHTML(), { headers: { "Content-Type": "text/html; charset=utf-8" } });
-    if (path === "/kabuki/dojo/training/kakegoe/editor") return new Response(kakegoeEditorHTML(), { headers: { "Content-Type": "text/html; charset=utf-8" } });
-    if (path === "/kabuki/dojo/training/serifu") return new Response(serifuPageHTML(), { headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store, no-cache, max-age=0, must-revalidate", "Pragma": "no-cache", "Expires": "0" } });
-    if (path === "/kabuki/dojo/training/serifu/editor") return new Response(serifuEditorHTML(), { headers: { "Content-Type": "text/html; charset=utf-8" } });
+    if (path === "/kabuki/dojo/training") return new Response(null, { status: 301, headers: { "Location": "/kabuki/dojo" } });
+    if (path === "/kabuki/dojo/training/kakegoe") return new Response(kakegoePageHTML(), { headers: HTML_HEADERS });
+    if (path === "/kabuki/dojo/training/kakegoe/editor") return new Response(kakegoeEditorHTML(), { headers: HTML_HEADERS });
+    if (path === "/kabuki/dojo/training/serifu") return new Response(serifuPageHTML(), { headers: { ...HTML_HEADERS, "Cache-Control": "no-store, no-cache, max-age=0, must-revalidate", "Pragma": "no-cache", "Expires": "0" } });
+    if (path === "/kabuki/dojo/training/serifu/editor") return new Response(serifuEditorHTML(), { headers: HTML_HEADERS });
 
-    /* ─── JIKABUKI GATE kera 新URL: /jikabuki/gate/kera/* ─── */
-    if (path === "/jikabuki/gate" || path === "/jikabuki/gate/kera") return new Response(null, { status: 301, headers: { "Location": "/jikabuki/gate/kera/about" } });
-    if (path === "/jikabuki/gate/kera/about") return new Response(aboutPageHTML(), { headers: HTML_HEADERS });
-    if (path === "/jikabuki/gate/kera/performance") return new Response(performancePageHTML(), { headers: HTML_HEADERS });
-    if (path === "/jikabuki/gate/kera/story" || path.startsWith("/jikabuki/gate/kera/story/")) return new Response(storyPageHTML(), { headers: HTML_HEADERS });
-    if (path === "/jikabuki/gate/kera/kawaraban") return new Response(kawarabanPageHTML(), { headers: HTML_HEADERS });
-    const kwGateMatch = path.match(/^\/jikabuki\/gate\/kera\/kawaraban\/pdf\/(\d{2})$/);
+    /* ─── /kerakabuki/* 気良歌舞伎専用サブページ ─── */
+    if (path === "/kerakabuki/about" || path === "/jikabuki/gate/kera/about") return new Response(aboutPageHTML(), { headers: HTML_HEADERS });
+    if (path === "/kerakabuki/story" || path.startsWith("/kerakabuki/story/") || path === "/jikabuki/gate/kera/story" || path.startsWith("/jikabuki/gate/kera/story/")) return new Response(storyPageHTML(), { headers: HTML_HEADERS });
+    if (path === "/kerakabuki/kawaraban" || path === "/jikabuki/gate/kera/kawaraban") return new Response(kawarabanPageHTML(), { headers: HTML_HEADERS });
+    if (path === "/kerakabuki/nft" || path === "/jikabuki/gate/kera/nft") return new Response(nftGuidePageHTML(), { headers: HTML_HEADERS });
+    if (path === "/jikabuki/gate/kera/performance") return new Response(null, { status: 302, headers: { "Location": "/jikabuki/gate/kera" } });
+    const kwGateMatch = path.match(/^\/kerakabuki\/kawaraban\/pdf\/(\d{2})$/) || path.match(/^\/jikabuki\/gate\/kera\/kawaraban\/pdf\/(\d{2})$/);
     if (kwGateMatch) {
       try {
         let obj = await env.CONTENT_BUCKET.get(`kawaraban/kawaraban-${kwGateMatch[1]}.pdf`);
@@ -358,12 +546,85 @@ export default {
         return new Response(obj.body, { headers: { "Content-Type": contentType, "Content-Disposition": `inline; filename="${filename}"`, "Cache-Control": "public, max-age=86400" } });
       } catch (e) { return new Response("Error: " + e.message, { status: 500 }); }
     }
-    if (path === "/jikabuki/gate/kera/nft") return new Response(nftGuidePageHTML(), { headers: HTML_HEADERS });
+
+    /* ─── JIKABUKI GATE トップ（団体一覧） ─── */
+    if (path === "/jikabuki/gate") {
+      const gateList = await loadGateGroups(env);
+      const defaultGroupsMap = {};
+      for (const entry of gateList) {
+        const g = await getGroup(env, entry.id);
+        if (g) defaultGroupsMap[entry.id] = g;
+      }
+      return new Response(gateTopPageHTML(gateList, defaultGroupsMap, { googleClientId: env.GOOGLE_CLIENT_ID || "" }), { headers: HTML_HEADERS });
+    }
+
+    /* ─── JIKABUKI GATE 各団体ページ ─── */
+    {
+      const gateMatch = path.match(/^\/jikabuki\/gate\/([a-zA-Z0-9_-]+)$/);
+      if (gateMatch) {
+        const gateId = gateMatch[1];
+        try {
+          const gateGroupsReg = await loadGateGroups(env);
+          if (!gateGroupsReg.some(g => g.id === gateId)) {
+            return new Response(pageShell({
+              title: "GATE",
+              subtitle: "団体が見つかりません",
+              bodyHTML: `<div class="empty-state">指定された団体は登録されていません。</div>`,
+              brand: "jikabuki",
+              activeNav: "gate",
+            }), { headers: HTML_HEADERS });
+          }
+          const group = await getGroup(env, gateId);
+          let r2Links = {};
+          let r2Pref = "";
+          try {
+            const r2Obj = await env.CONTENT_BUCKET.get("jikabuki_groups.json");
+            if (r2Obj) {
+              const r2Data = await r2Obj.json();
+              const r2Group = (r2Data.groups || []).find(g => g.name === (group && group.name));
+              if (r2Group) {
+                r2Links = r2Group.links || {};
+                r2Pref = r2Group.prefecture || "";
+              }
+            }
+          } catch (_) {}
+          const gateGroupsList = [];
+          for (const gg of gateGroupsReg) {
+            const gData = await getGroup(env, gg.id);
+            gateGroupsList.push({ id: gg.id, name: gg.name, prefecture: gData ? (gData.prefecture || "") : "" });
+          }
+          const effectivePrefecture = (group && group.prefecture) || r2Pref;
+          const html = gatePageHTML(group, {
+            links: r2Links,
+            prefecture: effectivePrefecture,
+            gateGroups: gateGroupsList,
+            currentGroupId: gateId,
+            googleClientId: env.GOOGLE_CLIENT_ID || "",
+          });
+          return new Response(html, { headers: HTML_HEADERS });
+        } catch (e) {
+          return new Response("Error: " + e.message, { status: 500 });
+        }
+      }
+    }
 
     /* ─── JIKABUKI INFO/BASE 新URL ─── */
-    if (path === "/jikabuki/info/news") return new Response(newsPageHTML(), { headers: HTML_HEADERS });
-    if (path === "/jikabuki/info/calendar") return new Response(recoPageHTML(), { headers: HTML_HEADERS });
+    if (path === "/jikabuki/help") return new Response(jikabukiHelpPageHTML({ googleClientId: env.GOOGLE_CLIENT_ID || "" }), { headers: HTML_HEADERS });
+    if (path === "/jikabuki/info/news") return new Response(infoNewsPageHTML(), { headers: HTML_HEADERS });
+    if (path === "/jikabuki/info/groups") return new Response(infoGroupsPageHTML(), { headers: HTML_HEADERS });
+    if (path === "/jikabuki/info/events" || path === "/jikabuki/info/calendar") return new Response(infoEventsPageHTML(), { headers: HTML_HEADERS });
+    if (path === "/jikabuki/info/theaters") return new Response(infoTheatersPageHTML(), { headers: HTML_HEADERS });
+    if (path === "/jikabuki/base/theaters") return new Response(theaterEditorPageHTML(), { headers: HTML_HEADERS });
     if (path === "/jikabuki/base/onboarding") return new Response(groupOnboardingPageHTML(), { headers: HTML_HEADERS });
+    if (path === "/jikabuki/base/delete-request") {
+      const gid = url.searchParams.get("group") || "";
+      const group = gid ? await getGroup(env, gid) : null;
+      return new Response(groupDeleteRequestPageHTML({
+        groupId: gid,
+        groupName: group ? (group.name || gid) : gid,
+        googleClientId: env.GOOGLE_CLIENT_ID || "",
+      }), { headers: HTML_HEADERS });
+    }
     if (path === "/jikabuki/base/scripts") {
       let sharedScripts = [];
       try {
@@ -397,19 +658,17 @@ export default {
       } catch (e) { console.error("Shared scripts error:", e); }
       return new Response(sharedScriptsPageHTML(sharedScripts), { headers: HTML_HEADERS });
     }
-    if (path === "/jikabuki/base/db") return new Response(recoPageHTML(), { headers: HTML_HEADERS });
+    if (path === "/jikabuki/base/db") return new Response(null, { status: 302, headers: { "Location": "/jikabuki/base" } });
 
     if (path === "/project") {
       return new Response(projectPageHTML(), { headers: HTML_HEADERS });
     }
 
     if (path === "/join") {
-      const formUrl = env.JOIN_FORM_URL || "https://example.com/join-form";
-      const contactUrl = env.JOIN_CONTACT_URL || "/jikabuki/gate/kera/about";
+      const contactUrl = env.JOIN_CONTACT_URL || "/jikabuki/gate/kera";
       const html = joinPageHTML({
         siteName: "KABUKI PLUS+",
         projectName: "気良歌舞伎×AIプロジェクト",
-        formUrl,
         contactUrl,
       });
       return new Response(html, {
@@ -449,24 +708,37 @@ export default {
     }
 
     if (path === "/jikabuki/base") {
-      return new Response(recoPageHTML(), { headers: HTML_HEADERS });
+      return new Response(baseHubPageHTML({ googleClientId: env.GOOGLE_CLIENT_ID || "" }), { headers: HTML_HEADERS });
     }
 
     if (path === "/jikabuki/info") {
-      return new Response(recoPageHTML(), { headers: HTML_HEADERS });
+      return new Response(infoHubPageHTML(), { headers: HTML_HEADERS });
     }
 
     if (path === "/jikabuki/labo") {
-      return new Response(recoPageHTML(), { headers: HTML_HEADERS });
+      return new Response(laboHubPageHTML({ googleClientId: env.GOOGLE_CLIENT_ID || "" }), { headers: HTML_HEADERS });
+    }
+    if (path === "/jikabuki/labo/enmoku") {
+      return new Response(laboEnmokuPageHTML({ googleClientId: env.GOOGLE_CLIENT_ID || "" }), { headers: HTML_HEADERS });
+    }
+    if (path === "/jikabuki/labo/glossary") {
+      return new Response(laboGlossaryPageHTML({ googleClientId: env.GOOGLE_CLIENT_ID || "" }), { headers: HTML_HEADERS });
+    }
+    if (path === "/jikabuki/labo/quiz") {
+      return new Response(laboQuizPageHTML({ googleClientId: env.GOOGLE_CLIENT_ID || "" }), { headers: HTML_HEADERS });
+    }
+    if (path === "/jikabuki/labo/gate") {
+      return new Response(gateEditorListPageHTML(await loadGateGroups(env)), { headers: HTML_HEADERS });
+    }
+    {
+      const laboGateMatch = path.match(/^\/jikabuki\/labo\/gate\/([a-zA-Z0-9_-]+)$/);
+      if (laboGateMatch) {
+        return new Response(gateEditorPageHTML(laboGateMatch[1], "labo"), { headers: HTML_HEADERS });
+      }
     }
 
-    if (path === "/jikabuki" || path.startsWith("/jikabuki/")) {
-      return new Response(recoPageHTML(), { headers: HTML_HEADERS });
-    }
-
-    /* 旧 /reco/* は新URLへ */
-    if (path.startsWith("/reco/")) {
-      return new Response(null, { status: 301, headers: { "Location": "/kabuki/reco" } });
+    if (path === "/jikabuki") {
+      return new Response(null, { status: 302, headers: { "Location": "/?brand=jikabuki" } });
     }
 
     /* =====================================================
@@ -475,6 +747,11 @@ export default {
     if (path.startsWith("/groups/kira")) {
       const newPath = path.replace("/groups/kira", "/groups/kera");
       return new Response(null, { status: 301, headers: { "Location": newPath } });
+    }
+
+    const groupGateEditMatch = path.match(/^\/groups\/([a-zA-Z0-9_-]+)\/gate-edit$/);
+    if (groupGateEditMatch) {
+      return new Response(gateEditorPageHTML(groupGateEditMatch[1], "base"), { headers: HTML_HEADERS });
     }
 
     const groupPerfMatch = path.match(/^\/groups\/([a-zA-Z0-9_-]+)\/performances$/);
@@ -486,7 +763,19 @@ export default {
     const groupRecordsMatch = path.match(/^\/groups\/([a-zA-Z0-9_-]+)\/records$/);
     if (groupRecordsMatch) {
       const group = await getGroup(env, groupRecordsMatch[1]);
-      return new Response(groupRecordsPageHTML(group), { headers: HTML_HEADERS });
+      return new Response(groupRecordsPageHTML(group, env.GOOGLE_CLIENT_ID || ""), { headers: HTML_HEADERS });
+    }
+
+    const groupEnmokuSelectMatch = path.match(/^\/groups\/([a-zA-Z0-9_-]+)\/enmoku-select$/);
+    if (groupEnmokuSelectMatch) {
+      const group = await getGroup(env, groupEnmokuSelectMatch[1]);
+      return new Response(groupEnmokuSelectPageHTML(group, env.GOOGLE_CLIENT_ID || ""), { headers: HTML_HEADERS });
+    }
+
+    const groupActorsMatch = path.match(/^\/groups\/([a-zA-Z0-9_-]+)\/actors$/);
+    if (groupActorsMatch) {
+      const group = await getGroup(env, groupActorsMatch[1]);
+      return new Response(groupActorsPageHTML(group, env.GOOGLE_CLIENT_ID || ""), { headers: HTML_HEADERS });
     }
 
     const groupNotesMatch = path.match(/^\/groups\/([a-zA-Z0-9_-]+)\/notes$/);
@@ -526,7 +815,9 @@ export default {
     const groupScriptListMatch = path.match(/^\/groups\/([a-zA-Z0-9_-]+)\/scripts\/?$/);
     if (groupScriptListMatch) {
       const gid = groupScriptListMatch[1];
-      const group = await getGroup(env, gid);
+      const group = gid === "labo"
+        ? { group_id: "labo", name: "LABO 台本共有", tagline: "LABOエディターが管理する共有台本" }
+        : await getGroup(env, gid);
       let scripts = [];
       try {
         const kvRaw = await env.CHAT_HISTORY.get(`group_scripts:${gid}`);
@@ -551,10 +842,59 @@ export default {
       return new Response(groupTrainingPageHTML(group), { headers: HTML_HEADERS });
     }
 
+    const groupScheduleMatch = path.match(/^\/groups\/([a-zA-Z0-9_-]+)\/schedule$/);
+    if (groupScheduleMatch) {
+      const group = await getGroup(env, groupScheduleMatch[1]);
+      return new Response(groupSchedulePageHTML(group), { headers: HTML_HEADERS });
+    }
+
+    /* /groups/:groupId/invite/:token → 招待リンクランディングページ */
+    const groupInviteMatch = path.match(/^\/groups\/([a-zA-Z0-9_-]+)\/invite\/([a-zA-Z0-9_-]+)$/);
+    if (groupInviteMatch) {
+      const invGid = groupInviteMatch[1];
+      const invToken = groupInviteMatch[2];
+      const group = await getGroup(env, invGid);
+
+      if (!group || group.invite_token !== invToken) {
+        return new Response(groupInvitePageHTML(group, invToken, "invalid"), { headers: HTML_HEADERS });
+      }
+
+      const session = await getSession(request, env);
+      if (!session) {
+        return new Response(groupInvitePageHTML(group, invToken, "login"), { headers: HTML_HEADERS });
+      }
+
+      // ログイン済み → 自動参加してBASEへリダイレクト
+      const members = await loadGroupMembers(env, invGid);
+      if (!members.some(m => m.userId === session.userId)) {
+        await approveGroupMember(env, invGid, session.userId, session.displayName || "", session.pictureUrl || "");
+      }
+      return new Response(null, { status: 302, headers: { Location: "/jikabuki/base" } });
+    }
+
+    /* /groups/:groupId/members → メンバー管理専用ページ */
+    const groupMembersMatch = path.match(/^\/groups\/([a-zA-Z0-9_-]+)\/members$/);
+    if (groupMembersMatch) {
+      const group = await getGroup(env, groupMembersMatch[1]);
+      return new Response(groupMembersPageHTML(group), { headers: HTML_HEADERS });
+    }
+
+    /* /groups/:groupId → メンバーはBASEハブ、それ以外はGATEへ */
     const groupSiteMatch = path.match(/^\/groups\/([a-zA-Z0-9_-]+)\/?$/);
     if (groupSiteMatch) {
-      const group = await getGroup(env, groupSiteMatch[1]);
-      return new Response(groupSitePageHTML(group), { headers: HTML_HEADERS });
+      const gsGid = groupSiteMatch[1];
+      try {
+        const session = await getSession(request, env);
+        if (session) {
+          const members = await loadGroupMembers(env, gsGid);
+          const isMember = members.some(m => m.userId === session.userId);
+          const isMaster = await checkIsMaster(env, session.userId);
+          if (isMember || isMaster) {
+            return new Response(null, { status: 302, headers: { Location: "/jikabuki/base" } });
+          }
+        }
+      } catch (_) {}
+      return new Response(null, { status: 302, headers: { Location: `/jikabuki/gate/${gsGid}` } });
     }
 
     /* =====================================================
@@ -579,19 +919,573 @@ export default {
       return corsResponse(request, await putUserData(request, env));
     }
 
+    // エディター権限 API
+    if (path === "/api/editor/request" && request.method === "POST") {
+      const editorReqRes = await requestEditorAccess(request, env);
+      const editorReqData = await editorReqRes.clone().json().catch(() => ({}));
+      if (editorReqData.ok && editorReqData.status === "requested" && env.RESEND_API_KEY) {
+        const displayName = editorReqData.displayName || "（名前未取得）";
+        const email = editorReqData.email || "（メール未取得）";
+        ctx.waitUntil(
+          fetch("https://api.resend.com/emails", {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${env.RESEND_API_KEY}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              from: "onboarding@resend.dev",
+              to: ["kerakabuki@gmail.com"],
+              subject: `【JIKABUKI】エディター権限の申請が届きました — ${displayName}`,
+              html: `
+                <h2>エディター権限の申請が届きました</h2>
+                <table style="border-collapse:collapse;font-size:14px;">
+                  <tr><td style="padding:4px 12px 4px 0;color:#666;">申請者</td><td><strong>${displayName}</strong></td></tr>
+                  <tr><td style="padding:4px 12px 4px 0;color:#666;">メール</td><td>${email}</td></tr>
+                  <tr><td style="padding:4px 12px 4px 0;color:#666;">申請日時</td><td>${new Date().toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" })}</td></tr>
+                </table>
+                <p style="margin-top:16px;">
+                  <a href="https://kabukiplus.com/jikabuki/labo" style="display:inline-block;padding:10px 20px;background:#c5a255;color:#fff;text-decoration:none;border-radius:6px;">申請を確認・承認する（LABOへ）</a>
+                </p>
+              `,
+            }),
+          }).then(r => r.json()).then(j => console.log("Resend editor request:", JSON.stringify(j))).catch(e => console.error("Resend editor request error:", e))
+        );
+      }
+      return corsResponse(request, editorReqRes);
+    }
+    if (path === "/api/editor/list") {
+      const session = await getSession(request, env);
+      if (!session) return corsResponse(request, jsonResponse({ error: "Unauthorized" }, 401));
+      const isMasterList = await checkIsMaster(env, session.userId);
+      if (!isMasterList) return corsResponse(request, jsonResponse({ error: "マスター権限が必要です" }, 403));
+      return corsResponse(request, await listEditorRequests(request, env));
+    }
+    if (path === "/api/editor/approve" && request.method === "POST") {
+      const session = await getSession(request, env);
+      if (!session) return corsResponse(request, jsonResponse({ error: "Unauthorized" }, 401));
+      const isMasterApprove = await checkIsMaster(env, session.userId);
+      if (!isMasterApprove) return corsResponse(request, jsonResponse({ error: "マスター権限が必要です" }, 403));
+      return corsResponse(request, await approveEditor(request, env));
+    }
+    if (path === "/api/editor/revoke" && request.method === "POST") {
+      const session = await getSession(request, env);
+      if (!session) return corsResponse(request, jsonResponse({ error: "Unauthorized" }, 401));
+      const isMasterRevoke = await checkIsMaster(env, session.userId);
+      if (!isMasterRevoke) return corsResponse(request, jsonResponse({ error: "マスター権限が必要です" }, 403));
+      return corsResponse(request, await revokeEditor(request, env));
+    }
+    if (path === "/api/editor/reject" && request.method === "POST") {
+      const session = await getSession(request, env);
+      if (!session) return corsResponse(request, jsonResponse({ error: "Unauthorized" }, 401));
+      const isMasterReject = await checkIsMaster(env, session.userId);
+      if (!isMasterReject) return corsResponse(request, jsonResponse({ error: "マスター権限が必要です" }, 403));
+      try {
+        const body = await request.json();
+        if (!body.userId) return corsResponse(request, jsonResponse({ error: "userId is required" }, 400));
+        await env.CHAT_HISTORY.delete(`editor_request:${body.userId}`);
+        return corsResponse(request, jsonResponse({ ok: true }));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+      }
+    }
+
+    // ★ 団体作成申請 API（オンボーディング用 — ログイン必須、承認制）
+    if (path === "/api/groups/request" && request.method === "POST") {
+      const session = await getSession(request, env);
+      if (!session) return corsResponse(request, jsonResponse({ error: "ログインが必要です" }, 401));
+      try {
+        const body = await request.json();
+        if (!body.managerName || !body.contactEmail || !body.groupData || !body.groupData.name) {
+          return corsResponse(request, jsonResponse({ error: "管理者氏名・連絡先メール・団体名は必須です" }, 400));
+        }
+        const requestId = "gcr_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+        const reqData = {
+          requestId,
+          userId: session.userId,
+          displayName: session.displayName || "",
+          managerName: body.managerName,
+          contactEmail: body.contactEmail,
+          contactPhone: body.contactPhone || "",
+          groupData: body.groupData,
+          requestedAt: new Date().toISOString(),
+        };
+        await env.CHAT_HISTORY.put(`group_create_request:${requestId}`, JSON.stringify(reqData));
+
+        // マスターへメール通知（失敗しても申請自体は成功扱い）
+        if (env.RESEND_API_KEY) {
+          const gd = body.groupData;
+          ctx.waitUntil(
+            fetch("https://api.resend.com/emails", {
+              method: "POST",
+              headers: {
+                "Authorization": `Bearer ${env.RESEND_API_KEY}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                from: "onboarding@resend.dev",
+                to: ["kerakabuki@gmail.com"],
+                subject: `【JIKABUKI】団体登録申請が届きました — ${gd.name}`,
+                html: `
+                  <h2>団体登録申請が届きました</h2>
+                  <table style="border-collapse:collapse;font-size:14px;">
+                    <tr><td style="padding:6px 12px;font-weight:bold;color:#888;">団体名</td><td style="padding:6px 12px;">${gd.name}</td></tr>
+                    <tr><td style="padding:6px 12px;font-weight:bold;color:#888;">都道府県</td><td style="padding:6px 12px;">${gd.prefecture || "—"}</td></tr>
+                    <tr><td style="padding:6px 12px;font-weight:bold;color:#888;">管理者</td><td style="padding:6px 12px;">${body.managerName}</td></tr>
+                    <tr><td style="padding:6px 12px;font-weight:bold;color:#888;">連絡先</td><td style="padding:6px 12px;">${body.contactEmail}</td></tr>
+                    <tr><td style="padding:6px 12px;font-weight:bold;color:#888;">申請ID</td><td style="padding:6px 12px;">${requestId}</td></tr>
+                  </table>
+                  <p style="margin-top:20px;">
+                    <a href="https://kabukiplus.com/jikabuki/labo" style="display:inline-block;padding:10px 20px;background:#c5a255;color:#fff;text-decoration:none;border-radius:6px;">申請を確認・承認する（LABOへ）</a>
+                  </p>
+                `,
+              }),
+            }).then(r => r.json()).then(j => console.log("Resend result:", JSON.stringify(j))).catch(e => console.error("Resend error:", e))
+          );
+        }
+
+        return corsResponse(request, jsonResponse({ ok: true, requestId }));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+      }
+    }
+
+    // ★ 団体作成申請一覧（マスターのみ）
+    if (path === "/api/groups/requests" && request.method === "GET") {
+      const session = await getSession(request, env);
+      if (!session) return corsResponse(request, jsonResponse({ error: "ログインが必要です" }, 401));
+      const isMaster = await checkIsMaster(env, session.userId);
+      if (!isMaster) return corsResponse(request, jsonResponse({ error: "マスター権限が必要です" }, 403));
+      try {
+        const list = await env.CHAT_HISTORY.list({ prefix: "group_create_request:" });
+        const requests = [];
+        for (const key of list.keys) {
+          const raw = await env.CHAT_HISTORY.get(key.name);
+          if (raw) requests.push(JSON.parse(raw));
+        }
+        requests.sort((a, b) => (a.requestedAt || "").localeCompare(b.requestedAt || ""));
+        return corsResponse(request, jsonResponse({ ok: true, requests }));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+      }
+    }
+
+    // ★ 団体作成申請を承認（マスターのみ → 団体作成 + manager登録 + 申請削除）
+    if (path === "/api/groups/requests/approve" && request.method === "POST") {
+      const session = await getSession(request, env);
+      if (!session) return corsResponse(request, jsonResponse({ error: "ログインが必要です" }, 401));
+      const isMaster = await checkIsMaster(env, session.userId);
+      if (!isMaster) return corsResponse(request, jsonResponse({ error: "マスター権限が必要です" }, 403));
+      try {
+        const body = await request.json();
+        if (!body.requestId) return corsResponse(request, jsonResponse({ error: "requestId is required" }, 400));
+        const raw = await env.CHAT_HISTORY.get(`group_create_request:${body.requestId}`);
+        if (!raw) return corsResponse(request, jsonResponse({ error: "申請が見つかりません" }, 404));
+        const reqData = JSON.parse(raw);
+
+        const kanaToRomaji = (s) => {
+          const map = {"あ":"a","い":"i","う":"u","え":"e","お":"o","か":"ka","き":"ki","く":"ku","け":"ke","こ":"ko","さ":"sa","し":"shi","す":"su","せ":"se","そ":"so","た":"ta","ち":"chi","つ":"tsu","て":"te","と":"to","な":"na","に":"ni","ぬ":"nu","ね":"ne","の":"no","は":"ha","ひ":"hi","ふ":"fu","へ":"he","ほ":"ho","ま":"ma","み":"mi","む":"mu","め":"me","も":"mo","や":"ya","ゆ":"yu","よ":"yo","ら":"ra","り":"ri","る":"ru","れ":"re","ろ":"ro","わ":"wa","を":"wo","ん":"n","が":"ga","ぎ":"gi","ぐ":"gu","げ":"ge","ご":"go","ざ":"za","じ":"ji","ず":"zu","ぜ":"ze","ぞ":"zo","だ":"da","ぢ":"di","づ":"du","で":"de","ど":"do","ば":"ba","び":"bi","ぶ":"bu","べ":"be","ぼ":"bo","ぱ":"pa","ぴ":"pi","ぷ":"pu","ぺ":"pe","ぽ":"po","きゃ":"kya","きゅ":"kyu","きょ":"kyo","しゃ":"sha","しゅ":"shu","しょ":"sho","ちゃ":"cha","ちゅ":"chu","ちょ":"cho","にゃ":"nya","にゅ":"nyu","にょ":"nyo","ひゃ":"hya","ひゅ":"hyu","ひょ":"hyo","みゃ":"mya","みゅ":"myu","みょ":"myo","りゃ":"rya","りゅ":"ryu","りょ":"ryo","ぎゃ":"gya","ぎゅ":"gyu","ぎょ":"gyo","じゃ":"ja","じゅ":"ju","じょ":"jo","びゃ":"bya","びゅ":"byu","びょ":"byo","ぴゃ":"pya","ぴゅ":"pyu","ぴょ":"pyo","ー":"","っ":"xtu"};
+          let result = "";
+          for (let i = 0; i < s.length; i++) {
+            const two = s.substring(i, i + 2);
+            if (map[two]) { result += map[two]; i++; }
+            else if (map[s[i]]) { result += map[s[i]]; }
+            else if (/[a-z0-9]/.test(s[i])) { result += s[i]; }
+          }
+          return result.replace(/xtu(.)/g, (m, c) => c + c);
+        };
+
+        const gd = reqData.groupData;
+        let groupId = gd.name_kana
+          ? kanaToRomaji(gd.name_kana.toLowerCase()).replace(/[^a-z0-9]/g, "").slice(0, 20)
+          : (gd.name || "group").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 20);
+        if (!groupId) groupId = "g" + Date.now().toString(36);
+
+        const existingCheck = await env.CHAT_HISTORY.get(`group:${groupId}`);
+        if (existingCheck) {
+          groupId = groupId + Date.now().toString(36).slice(-4);
+        }
+
+        const group = {
+          ...gd,
+          group_id: groupId,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+        await env.CHAT_HISTORY.put(`group:${groupId}`, JSON.stringify(group));
+
+        await saveGroupMembers(env, groupId, [{
+          userId: reqData.userId,
+          displayName: reqData.displayName || reqData.managerName,
+          role: "manager",
+          joinedAt: new Date().toISOString(),
+        }]);
+
+        await addToGateRegistry(env, groupId, gd.name);
+
+        await env.CHAT_HISTORY.delete(`group_create_request:${body.requestId}`);
+        return corsResponse(request, jsonResponse({ ok: true, groupId, group }));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+      }
+    }
+
+    // ★ 団体作成申請を却下（マスターのみ）
+    if (path === "/api/groups/requests/reject" && request.method === "POST") {
+      const session = await getSession(request, env);
+      if (!session) return corsResponse(request, jsonResponse({ error: "ログインが必要です" }, 401));
+      const isMaster = await checkIsMaster(env, session.userId);
+      if (!isMaster) return corsResponse(request, jsonResponse({ error: "マスター権限が必要です" }, 403));
+      try {
+        const body = await request.json();
+        if (!body.requestId) return corsResponse(request, jsonResponse({ error: "requestId is required" }, 400));
+        const raw = await env.CHAT_HISTORY.get(`group_create_request:${body.requestId}`);
+        if (!raw) return corsResponse(request, jsonResponse({ error: "申請が見つかりません" }, 404));
+        await env.CHAT_HISTORY.delete(`group_create_request:${body.requestId}`);
+        return corsResponse(request, jsonResponse({ ok: true }));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+      }
+    }
+
+    // ★ 団体削除申請（マネージャー）
+    if (path === "/api/groups/requests/delete" && request.method === "POST") {
+      const session = await getSession(request, env);
+      if (!session) return corsResponse(request, jsonResponse({ error: "ログインが必要です" }, 401));
+      try {
+        const body = await request.json();
+        if (!body.groupId || !body.reason) {
+          return corsResponse(request, jsonResponse({ error: "groupId・削除理由は必須です" }, 400));
+        }
+        const authCheck = await requireGroupRole(request, env, body.groupId, "manager");
+        if (!authCheck.ok) return corsResponse(request, jsonResponse({ error: "マネージャー権限が必要です" }, 403));
+        const group = await getGroup(env, body.groupId);
+        const requestId = "gdr_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+        const reqData = {
+          requestId,
+          groupId: body.groupId,
+          groupName: group ? group.name : body.groupId,
+          reason: body.reason,
+          userId: session.userId,
+          displayName: session.displayName || "",
+          requestedAt: new Date().toISOString(),
+        };
+        await env.CHAT_HISTORY.put(`group_delete_request:${requestId}`, JSON.stringify(reqData));
+
+        if (env.RESEND_API_KEY) {
+          ctx.waitUntil(
+            fetch("https://api.resend.com/emails", {
+              method: "POST",
+              headers: {
+                "Authorization": `Bearer ${env.RESEND_API_KEY}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                from: "onboarding@resend.dev",
+                to: ["kerakabuki@gmail.com"],
+                subject: `【JIKABUKI】団体削除申請が届きました — ${reqData.groupName}`,
+                html: `
+                  <h2>団体の削除申請が届きました</h2>
+                  <table style="border-collapse:collapse;font-size:14px;">
+                    <tr><td style="padding:4px 12px 4px 0;color:#666;">団体名</td><td><strong>${reqData.groupName}</strong></td></tr>
+                    <tr><td style="padding:4px 12px 4px 0;color:#666;">申請者</td><td>${reqData.displayName || "（不明）"}</td></tr>
+                    <tr><td style="padding:4px 12px 4px 0;color:#666;">削除理由</td><td>${reqData.reason}</td></tr>
+                    <tr><td style="padding:4px 12px 4px 0;color:#666;">申請ID</td><td>${requestId}</td></tr>
+                    <tr><td style="padding:4px 12px 4px 0;color:#666;">申請日時</td><td>${new Date().toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" })}</td></tr>
+                  </table>
+                  <p style="margin-top:16px;">
+                    <a href="https://kabukiplus.com/jikabuki/labo" style="display:inline-block;padding:10px 20px;background:#c5a255;color:#fff;text-decoration:none;border-radius:6px;">LABOで確認・承認する</a>
+                  </p>
+                `,
+              }),
+            }).then(r => r.json()).then(j => console.log("Resend delete request:", JSON.stringify(j))).catch(e => console.error("Resend delete request error:", e))
+          );
+        }
+
+        return corsResponse(request, jsonResponse({ ok: true, requestId }));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+      }
+    }
+
+    // ★ 団体削除申請一覧（マスターのみ）
+    if (path === "/api/groups/requests/delete" && request.method === "GET") {
+      const session = await getSession(request, env);
+      if (!session) return corsResponse(request, jsonResponse({ error: "ログインが必要です" }, 401));
+      const isMaster = await checkIsMaster(env, session.userId);
+      if (!isMaster) return corsResponse(request, jsonResponse({ error: "マスター権限が必要です" }, 403));
+      try {
+        const list = await env.CHAT_HISTORY.list({ prefix: "group_delete_request:" });
+        const requests = [];
+        for (const key of list.keys) {
+          const raw = await env.CHAT_HISTORY.get(key.name);
+          if (raw) requests.push(JSON.parse(raw));
+        }
+        return corsResponse(request, jsonResponse({ requests }));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+      }
+    }
+
+    // ★ 団体削除申請を承認（マスターのみ → 団体削除 + GATE除外 + 申請削除）
+    if (path === "/api/groups/requests/delete/approve" && request.method === "POST") {
+      const session = await getSession(request, env);
+      if (!session) return corsResponse(request, jsonResponse({ error: "ログインが必要です" }, 401));
+      const isMaster = await checkIsMaster(env, session.userId);
+      if (!isMaster) return corsResponse(request, jsonResponse({ error: "マスター権限が必要です" }, 403));
+      try {
+        const body = await request.json();
+        if (!body.requestId) return corsResponse(request, jsonResponse({ error: "requestId is required" }, 400));
+        const raw = await env.CHAT_HISTORY.get(`group_delete_request:${body.requestId}`);
+        if (!raw) return corsResponse(request, jsonResponse({ error: "申請が見つかりません" }, 404));
+        const reqData = JSON.parse(raw);
+        const result = await cleanupGroup(env, reqData.groupId);
+        await removeFromGateRegistry(env, reqData.groupId);
+        await env.CHAT_HISTORY.delete(`group_delete_request:${body.requestId}`);
+        return corsResponse(request, jsonResponse({ ok: true, groupId: reqData.groupId, cleanup: result }));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+      }
+    }
+
+    // ★ 団体削除申請を却下（マスターのみ）
+    if (path === "/api/groups/requests/delete/reject" && request.method === "POST") {
+      const session = await getSession(request, env);
+      if (!session) return corsResponse(request, jsonResponse({ error: "ログインが必要です" }, 401));
+      const isMaster = await checkIsMaster(env, session.userId);
+      if (!isMaster) return corsResponse(request, jsonResponse({ error: "マスター権限が必要です" }, 403));
+      try {
+        const body = await request.json();
+        if (!body.requestId) return corsResponse(request, jsonResponse({ error: "requestId is required" }, 400));
+        const raw = await env.CHAT_HISTORY.get(`group_delete_request:${body.requestId}`);
+        if (!raw) return corsResponse(request, jsonResponse({ error: "申請が見つかりません" }, 404));
+        await env.CHAT_HISTORY.delete(`group_delete_request:${body.requestId}`);
+        return corsResponse(request, jsonResponse({ ok: true }));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+      }
+    }
+
+    // ★ 団体直接作成 API（マスター限定）
+    const groupCreateMatch = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/create$/);
+    if (groupCreateMatch && request.method === "POST") {
+      const gid = groupCreateMatch[1];
+      const session = await getSession(request, env);
+      if (!session) return corsResponse(request, jsonResponse({ error: "ログインが必要です" }, 401));
+      const isMaster = await checkIsMaster(env, session.userId);
+      if (!isMaster) return corsResponse(request, jsonResponse({ error: "マスター権限が必要です" }, 403));
+      try {
+        const existing = await env.CHAT_HISTORY.get(`group:${gid}`);
+        if (existing) return corsResponse(request, jsonResponse({ error: "この団体IDは既に使用されています" }, 409));
+        const body = await request.json();
+        const group = { ...body, group_id: gid, created_at: new Date().toISOString(), updated_at: new Date().toISOString() };
+        await env.CHAT_HISTORY.put(`group:${gid}`, JSON.stringify(group));
+        await saveGroupMembers(env, gid, [{
+          userId: session.userId,
+          displayName: session.displayName || "",
+          role: "manager",
+          joinedAt: new Date().toISOString(),
+        }]);
+        return corsResponse(request, jsonResponse({ ok: true, group }));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+      }
+    }
+
+    // ★ 招待トークン生成 API
+    const inviteTokenMatch = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/invite-token$/);
+    if (inviteTokenMatch) {
+      const gid = inviteTokenMatch[1];
+      if (request.method !== "POST") return corsResponse(request, jsonResponse({ error: "Method not allowed" }, 405));
+      const authCheck = await requireGroupRole(request, env, gid, "manager");
+      if (!authCheck.ok) return corsResponse(request, jsonResponse({ error: authCheck.error }, authCheck.status));
+      try {
+        const group = await getGroup(env, gid);
+        if (!group) return corsResponse(request, jsonResponse({ error: "団体が見つかりません" }, 404));
+        const token = crypto.randomUUID().replace(/-/g, "");
+        group.invite_token = token;
+        group.updated_at = new Date().toISOString();
+        await env.CHAT_HISTORY.put(`group:${gid}`, JSON.stringify(group));
+        return corsResponse(request, jsonResponse({ ok: true, token }));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+      }
+    }
+
+    // ★ 団体メンバー管理 API
+    const memberApiMatch = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/members(?:\/(.+))?$/);
+    if (memberApiMatch) {
+      const gid = memberApiMatch[1];
+      const sub = memberApiMatch[2] || "";
+
+      // POST /api/groups/:id/members/join — 参加申請（ログイン済みなら誰でも）
+      if (sub === "join" && request.method === "POST") {
+        const joinRes = await requestGroupJoin(request, env, gid);
+        const joinData = await joinRes.clone().json().catch(() => ({}));
+        if (joinData.ok && joinData.status === "requested" && env.RESEND_API_KEY) {
+          const group = await getGroup(env, gid);
+          const groupName = group ? group.name : gid;
+          const displayName = joinData.displayName || "（名前未取得）";
+          const email = joinData.email || "（メール未取得）";
+          ctx.waitUntil(
+            fetch("https://api.resend.com/emails", {
+              method: "POST",
+              headers: {
+                "Authorization": `Bearer ${env.RESEND_API_KEY}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                from: "onboarding@resend.dev",
+                to: ["kerakabuki@gmail.com"],
+                subject: `【JIKABUKI】団体参加申請が届きました — ${groupName}`,
+                html: `
+                  <h2>団体への参加申請が届きました</h2>
+                  <table style="border-collapse:collapse;font-size:14px;">
+                    <tr><td style="padding:4px 12px 4px 0;color:#666;">団体名</td><td><strong>${groupName}</strong></td></tr>
+                    <tr><td style="padding:4px 12px 4px 0;color:#666;">申請者</td><td>${displayName}</td></tr>
+                    <tr><td style="padding:4px 12px 4px 0;color:#666;">メール</td><td>${email}</td></tr>
+                    <tr><td style="padding:4px 12px 4px 0;color:#666;">申請日時</td><td>${new Date().toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" })}</td></tr>
+                  </table>
+                  <p style="margin-top:16px;">
+                    <a href="https://kabukiplus.com/groups/${gid}/members" style="display:inline-block;padding:10px 20px;background:#c5a255;color:#fff;text-decoration:none;border-radius:6px;">メンバー管理で確認・承認する</a>
+                  </p>
+                `,
+              }),
+            }).then(r => r.json()).then(j => console.log("Resend join request:", JSON.stringify(j))).catch(e => console.error("Resend join request error:", e))
+          );
+        }
+        return corsResponse(request, joinRes);
+      }
+
+      // POST /api/groups/:id/members/approve — 承認（manager以上）
+      if (sub === "approve" && request.method === "POST") {
+        const authCheck = await requireGroupRole(request, env, gid, "manager");
+        if (!authCheck.ok) return corsResponse(request, jsonResponse({ error: authCheck.error }, authCheck.status));
+        try {
+          const body = await request.json();
+          if (!body.userId) return corsResponse(request, jsonResponse({ error: "userId is required" }, 400));
+          // 申請レコードから pictureUrl を取得
+          const reqRaw = await env.CHAT_HISTORY.get(`group_join_request:${gid}:${body.userId}`);
+          const reqData = reqRaw ? JSON.parse(reqRaw) : {};
+          const pictureUrl = body.pictureUrl || reqData.pictureUrl || "";
+          const members = await approveGroupMember(env, gid, body.userId, body.displayName, pictureUrl);
+          return corsResponse(request, jsonResponse({ ok: true, members }));
+        } catch (e) {
+          return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+        }
+      }
+
+      // POST /api/groups/:id/members/reject — 申請却下（manager以上）
+      if (sub === "reject" && request.method === "POST") {
+        const authCheck = await requireGroupRole(request, env, gid, "manager");
+        if (!authCheck.ok) return corsResponse(request, jsonResponse({ error: authCheck.error }, authCheck.status));
+        try {
+          const body = await request.json();
+          if (!body.userId) return corsResponse(request, jsonResponse({ error: "userId is required" }, 400));
+          await env.CHAT_HISTORY.delete(`group_join_request:${gid}:${body.userId}`);
+          return corsResponse(request, jsonResponse({ ok: true }));
+        } catch (e) {
+          return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+        }
+      }
+
+      // POST /api/groups/:id/members/role — 役割変更（manager以上）
+      if (sub === "role" && request.method === "POST") {
+        const authCheck = await requireGroupRole(request, env, gid, "manager");
+        if (!authCheck.ok) return corsResponse(request, jsonResponse({ error: authCheck.error }, authCheck.status));
+        try {
+          const body = await request.json();
+          if (!body.userId || !body.role) return corsResponse(request, jsonResponse({ error: "userId and role are required" }, 400));
+          const members = await changeGroupMemberRole(env, gid, body.userId, body.role);
+          if (!members) return corsResponse(request, jsonResponse({ error: "Member not found or invalid role" }, 404));
+          return corsResponse(request, jsonResponse({ ok: true, members }));
+        } catch (e) {
+          return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+        }
+      }
+
+      // DELETE /api/groups/:id/members/:userId — 除名（manager以上）
+      if (sub && sub !== "join" && sub !== "approve" && sub !== "reject" && sub !== "role" && request.method === "DELETE") {
+        const authCheck = await requireGroupRole(request, env, gid, "manager");
+        if (!authCheck.ok) return corsResponse(request, jsonResponse({ error: authCheck.error }, authCheck.status));
+        try {
+          const targetUserId = decodeURIComponent(sub);
+          const members = await removeGroupMember(env, gid, targetUserId);
+          return corsResponse(request, jsonResponse({ ok: true, members }));
+        } catch (e) {
+          return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+        }
+      }
+
+      // GET /api/groups/:id/members — メンバー一覧 + 申請一覧（member以上）
+      if (!sub && request.method === "GET") {
+        const authCheck = await requireGroupRole(request, env, gid, "member");
+        if (!authCheck.ok) return corsResponse(request, jsonResponse({ error: authCheck.error }, authCheck.status));
+        try {
+          const members = await loadGroupMembers(env, gid);
+          const isManager = authCheck.role === "manager" || authCheck.role === "master";
+          const requests = isManager ? await listGroupJoinRequests(env, gid) : [];
+          return corsResponse(request, jsonResponse({ members, requests }));
+        } catch (e) {
+          return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+        }
+      }
+    }
+
+    // DELETE /api/groups/:id — グループ削除（master限定）
+    const groupDeleteMatch = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)$/);
+    if (groupDeleteMatch && request.method === "DELETE") {
+      const gid = groupDeleteMatch[1];
+      const session = await getSession(request, env);
+      if (!session) return corsResponse(request, jsonResponse({ error: "ログインが必要です" }, 401));
+      const isMaster = await checkIsMaster(env, session.userId);
+      if (!isMaster) return corsResponse(request, jsonResponse({ error: "マスター権限が必要です" }, 403));
+      try {
+        const result = await cleanupGroup(env, gid);
+        await removeFromGateRegistry(env, gid);
+        return corsResponse(request, jsonResponse(result));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+      }
+    }
+
+    // ★ 稽古パック API（training_pack.json from R2）
+    const trainingMatch = path.match(/^\/api\/training\/(kakegoe|serifu)\/([a-zA-Z0-9_-]+)$/);
+    if (trainingMatch && request.method === "GET") {
+      const tType = trainingMatch[1];
+      const tId = trainingMatch[2];
+      try {
+        const r2Key = `training/${tType}/${tId}.json`;
+        const obj = await env.CONTENT_BUCKET.get(r2Key);
+        if (!obj) return corsResponse(request, jsonResponse({ error: "Not found" }, 404));
+        const data = await obj.json();
+        return corsResponse(request, new Response(JSON.stringify(data), {
+          headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "public, max-age=3600" }
+        }));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+      }
+    }
+
     /* =====================================================
        0.5) JSON API（WEBページ用データ取得）
     ===================================================== */
 
     if (path === "/api/news") {
       try {
+        const newsUrl = new URL(request.url);
+        const feedKeyFilter = newsUrl.searchParams.get("feedKey") || null;
         // KV読み取りに5秒タイムアウト（ハング防止）
         const raw = await Promise.race([
           env.CHAT_HISTORY.get("news:latest"),
           new Promise((_, reject) => setTimeout(() => reject(new Error("KV timeout")), 5000)),
         ]);
         if (raw) {
-          return corsResponse(request, jsonResponse(JSON.parse(raw)));
+          const data = JSON.parse(raw);
+          if (feedKeyFilter && data.articles) {
+            data.articles = data.articles.filter(a => a.feedKey === feedKeyFilter);
+          }
+          return corsResponse(request, jsonResponse(data));
         }
         // キャッシュなし → バックグラウンドで取得開始して即返却
         ctx.waitUntil(fetchAndCacheNews(env));
@@ -609,7 +1503,30 @@ export default {
           ctx.waitUntil(refreshPerformancesCache(env));
           return corsResponse(request, jsonResponse({ items: [], count: 0, fetched_at: null, refreshing: true }));
         }
-        return corsResponse(request, jsonResponse(data));
+        // サーバー側で period_text から month_key / start_date / end_date を付与
+        // 例: "2026年2月1日（日）～26日（木）" / "2026年7月〜8月" / "2025年12月25日～2026年1月26日"
+        const items = (data.items || []).map(p => {
+          if (!p.period_text) return p;
+          const ms = p.period_text.match(/(\d{4})年(\d{1,2})月(?:(\d{1,2})日)?/);
+          if (!ms) return p;
+          const y = +ms[1], mo = +ms[2], d = ms[3] ? +ms[3] : 1;
+          const extra = {
+            month_key: y * 100 + mo,
+            start_date: `${y}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}`,
+          };
+          // 終了日: 〜 / ～ 以降を解析
+          const endPart = p.period_text.split(/[〜～]/).slice(1).join('');
+          if (endPart) {
+            const ef = endPart.match(/(\d{4})年(\d{1,2})月(\d{1,2})日/); // 年月日フル
+            const em = endPart.match(/(\d{1,2})月(\d{1,2})日/);          // 月日のみ
+            const ed = endPart.match(/^[^\d]*(\d{1,2})日/);              // 日のみ
+            if (ef) extra.end_date = `${ef[1]}-${String(+ef[2]).padStart(2,'0')}-${String(+ef[3]).padStart(2,'0')}`;
+            else if (em) extra.end_date = `${y}-${String(+em[1]).padStart(2,'0')}-${String(+em[2]).padStart(2,'0')}`;
+            else if (ed) extra.end_date = `${y}-${String(mo).padStart(2,'0')}-${String(+ed[1]).padStart(2,'0')}`;
+          }
+          return { ...p, ...extra };
+        });
+        return corsResponse(request, jsonResponse({ ...data, items }));
       } catch (e) {
         return corsResponse(request, jsonResponse({ items: [], error: String(e) }, 500));
       }
@@ -623,6 +1540,62 @@ export default {
         return corsResponse(request, jsonResponse({ ok: true, count: data.count }));
       } catch (e) {
         return corsResponse(request, jsonResponse({ ok: false, error: String(e) }, 500));
+      }
+    }
+
+    // ★ 注目演目 API（LIVE×NAVI連携）
+    if (path === "/api/featured") {
+      try {
+        const perfData = await getPerformancesCached(env);
+        const items = (perfData.items || []).map(p => {
+          if (!p.period_text) return p;
+          const ms = p.period_text.match(/(\d{4})年(\d{1,2})月(?:(\d{1,2})日)?/);
+          if (!ms) return p;
+          const y = +ms[1], mo = +ms[2], d = ms[3] ? +ms[3] : 1;
+          const extra = { month_key: y * 100 + mo, start_date: `${y}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}` };
+          const endPart = p.period_text.split(/[〜～]/).slice(1).join('');
+          if (endPart) {
+            const ef = endPart.match(/(\d{4})年(\d{1,2})月(\d{1,2})日/);
+            const em = endPart.match(/(\d{1,2})月(\d{1,2})日/);
+            const ed = endPart.match(/^[^\d]*(\d{1,2})日/);
+            if (ef) extra.end_date = `${ef[1]}-${String(+ef[2]).padStart(2,'0')}-${String(+ef[3]).padStart(2,'0')}`;
+            else if (em) extra.end_date = `${y}-${String(+em[1]).padStart(2,'0')}-${String(+em[2]).padStart(2,'0')}`;
+            else if (ed) extra.end_date = `${y}-${String(mo).padStart(2,'0')}-${String(+ed[1]).padStart(2,'0')}`;
+          }
+          return { ...p, ...extra };
+        });
+        const featured = await pickFeatured(items, env);
+        return corsResponse(request, jsonResponse(featured));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+      }
+    }
+
+    // ★ LABO用: 未整備候補 API（リアルタイム計算）
+    if (path === "/api/missed") {
+      try {
+        const perfData = await getPerformancesCached(env);
+        const items = (perfData.items || []).map(p => {
+          if (!p.period_text) return p;
+          const ms = p.period_text.match(/(\d{4})年(\d{1,2})月(?:(\d{1,2})日)?/);
+          if (!ms) return p;
+          const y = +ms[1], mo = +ms[2], d = ms[3] ? +ms[3] : 1;
+          const extra = { month_key: y * 100 + mo, start_date: `${y}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}` };
+          const endPart = p.period_text.split(/[〜～]/).slice(1).join('');
+          if (endPart) {
+            const ef = endPart.match(/(\d{4})年(\d{1,2})月(\d{1,2})日/);
+            const em = endPart.match(/(\d{1,2})月(\d{1,2})日/);
+            const ed = endPart.match(/^[^\d]*(\d{1,2})日/);
+            if (ef) extra.end_date = `${ef[1]}-${String(+ef[2]).padStart(2,'0')}-${String(+ef[3]).padStart(2,'0')}`;
+            else if (em) extra.end_date = `${y}-${String(+em[1]).padStart(2,'0')}-${String(+em[2]).padStart(2,'0')}`;
+            else if (ed) extra.end_date = `${y}-${String(mo).padStart(2,'0')}-${String(+ed[1]).padStart(2,'0')}`;
+          }
+          return { ...p, ...extra };
+        });
+        const featured = await pickFeatured(items, env);
+        return corsResponse(request, jsonResponse({ missed: featured.missed || [] }));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
       }
     }
 
@@ -640,6 +1613,11 @@ export default {
     if (groupApiMatch) {
       const groupId = groupApiMatch[1];
       if (request.method === "POST") {
+        let authCheck = await requireGroupRole(request, env, groupId, "manager");
+        if (!authCheck.ok) {
+          authCheck = await requireEditor(request, env);
+        }
+        if (!authCheck.ok) return corsResponse(request, jsonResponse({ error: authCheck.error }, authCheck.status));
         try {
           const body = await request.json();
           const existing = await getGroup(env, groupId);
@@ -665,14 +1643,22 @@ export default {
       const gid = groupNotesApiMatch[1];
       const kvKey = `group_notes:${gid}`;
       if (request.method === "POST") {
+        const authCheck = await requireGroupRole(request, env, gid, "member");
+        if (!authCheck.ok) return corsResponse(request, jsonResponse({ error: authCheck.error }, authCheck.status));
         try {
           const body = await request.json();
-          await env.CHAT_HISTORY.put(kvKey, JSON.stringify({ notes: body.notes || [] }));
+          const MAX_NOTES = 200;
+          let notes = body.notes || [];
+          if (notes.length > MAX_NOTES) notes = notes.slice(-MAX_NOTES);
+          await env.CHAT_HISTORY.put(kvKey, JSON.stringify({ notes }));
           return corsResponse(request, jsonResponse({ ok: true }));
         } catch (e) {
           return corsResponse(request, jsonResponse({ error: String(e) }, 500));
         }
       }
+      // GET: メンバー以上のみ
+      const readCheck = await requireGroupRole(request, env, gid, "member");
+      if (!readCheck.ok) return corsResponse(request, jsonResponse({ error: readCheck.error }, readCheck.status));
       try {
         const raw = await env.CHAT_HISTORY.get(kvKey);
         const data = raw ? JSON.parse(raw) : { notes: [] };
@@ -682,10 +1668,605 @@ export default {
       }
     }
 
+    // ★ 稽古スケジュール API
+    const scheduleApiBase = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/schedule$/);
+    const scheduleApiAttend = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/schedule\/([^/]+)\/attend$/);
+    const scheduleApiItem = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/schedule\/([^/]+)$/);
+
+    if (scheduleApiAttend) {
+      // POST /api/groups/:id/schedule/:schedId/attend — 出欠回答
+      const gid = scheduleApiAttend[1];
+      const schedId = decodeURIComponent(scheduleApiAttend[2]);
+      if (request.method !== "POST") return corsResponse(request, jsonResponse({ error: "Method not allowed" }, 405));
+      const authCheck = await requireGroupRole(request, env, gid, "member");
+      if (!authCheck.ok) return corsResponse(request, jsonResponse({ error: authCheck.error }, authCheck.status));
+      const session = authCheck.session;
+      try {
+        const body = await request.json();
+        const status = body.status;
+        if (!["ok", "maybe", "ng"].includes(status)) {
+          return corsResponse(request, jsonResponse({ error: "Invalid status" }, 400));
+        }
+        const kvKey = `group_schedule:${gid}`;
+        const raw = await env.CHAT_HISTORY.get(kvKey);
+        const data = raw ? JSON.parse(raw) : { schedules: [] };
+        const scheds = data.schedules || [];
+        const idx = scheds.findIndex(s => s.id === schedId);
+        if (idx < 0) return corsResponse(request, jsonResponse({ error: "Schedule not found" }, 404));
+        scheds[idx].attendance = scheds[idx].attendance || {};
+        scheds[idx].attendance[session.userId] = { status, note: "" };
+        await env.CHAT_HISTORY.put(kvKey, JSON.stringify({ schedules: scheds }));
+        return corsResponse(request, jsonResponse({ ok: true }));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+      }
+    }
+
+    if (scheduleApiItem) {
+      // DELETE /api/groups/:id/schedule/:schedId — 個別削除
+      const gid = scheduleApiItem[1];
+      const schedId = decodeURIComponent(scheduleApiItem[2]);
+      if (request.method !== "DELETE") return corsResponse(request, jsonResponse({ error: "Method not allowed" }, 405));
+      const authCheck = await requireGroupRole(request, env, gid, "member");
+      if (!authCheck.ok) return corsResponse(request, jsonResponse({ error: authCheck.error }, authCheck.status));
+      const session = authCheck.session;
+      const isMaster = await checkIsMaster(env, session.userId);
+      try {
+        const kvKey = `group_schedule:${gid}`;
+        const raw = await env.CHAT_HISTORY.get(kvKey);
+        const data = raw ? JSON.parse(raw) : { schedules: [] };
+        let scheds = data.schedules || [];
+        const target = scheds.find(s => s.id === schedId);
+        if (!target) return corsResponse(request, jsonResponse({ error: "Schedule not found" }, 404));
+        // 削除可: 作成者 or マネージャー以上 or マスター
+        const members = await loadGroupMembers(env, gid);
+        const me = members.find(m => m.userId === session.userId);
+        const myRole = me ? me.role : null;
+        const canDel = isMaster || myRole === "manager" || target.created_by === session.userId;
+        if (!canDel) return corsResponse(request, jsonResponse({ error: "権限がありません" }, 403));
+        scheds = scheds.filter(s => s.id !== schedId);
+        await env.CHAT_HISTORY.put(kvKey, JSON.stringify({ schedules: scheds }));
+        return corsResponse(request, jsonResponse({ ok: true }));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+      }
+    }
+
+    if (scheduleApiBase) {
+      const gid = scheduleApiBase[1];
+      const kvKey = `group_schedule:${gid}`;
+
+      if (request.method === "POST") {
+        // POST /api/groups/:id/schedule — スケジュール追加・更新 or 公演目標保存
+        const authCheck = await requireGroupRole(request, env, gid, "member");
+        if (!authCheck.ok) return corsResponse(request, jsonResponse({ error: authCheck.error }, authCheck.status));
+        try {
+          const body = await request.json();
+          const raw = await env.CHAT_HISTORY.get(kvKey);
+          const data = raw ? JSON.parse(raw) : { schedules: [] };
+
+          // 公演目標の保存 + GATE next_performance 自動同期
+          if ("performance_goal" in body) {
+            const goal = body.performance_goal || null;
+            data.performance_goal = goal;
+            await env.CHAT_HISTORY.put(kvKey, JSON.stringify(data));
+
+            // 団体KVの next_performance を同期
+            try {
+              const group = await getGroup(env, gid);
+              if (group) {
+                if (goal) {
+                  let dateStr = "";
+                  if (goal.date) {
+                    const parts = goal.date.split("-");
+                    const dt = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+                    const dayNames = ["日","月","火","水","木","金","土"];
+                    dateStr = `${dt.getFullYear()}年${dt.getMonth()+1}月${dt.getDate()}日(${dayNames[dt.getDay()]})`;
+                  }
+                  const playsStr = (goal.plays && goal.plays.length) ? " / " + goal.plays.map(p => typeof p === "string" ? p : (p.name || "")).filter(Boolean).join("・") : "";
+                  const dateLine = (dateStr + playsStr) || "";
+                  group.next_performance = {
+                    title: goal.title || "",
+                    date: dateLine,
+                    venue: goal.venue || "",
+                    note: goal.note || "",
+                    image: (group.next_performance && group.next_performance.image) || ""
+                  };
+                } else {
+                  group.next_performance = null;
+                }
+                group.updated_at = new Date().toISOString();
+                await env.CHAT_HISTORY.put(`group:${gid}`, JSON.stringify(group));
+              }
+            } catch (_) { /* 同期失敗してもスケジュール保存自体は成功扱い */ }
+
+            return corsResponse(request, jsonResponse({ ok: true }));
+          }
+
+          // 師匠の一言の保存
+          if ("shisho_hitokoto" in body) {
+            data.shisho_hitokoto = body.shisho_hitokoto || null;
+            await env.CHAT_HISTORY.put(kvKey, JSON.stringify(data));
+            return corsResponse(request, jsonResponse({ ok: true }));
+          }
+
+          const entry = body.schedule;
+          const isNew = !!body.isNew;
+          if (!entry || !entry.id || !entry.title || !entry.date) {
+            return corsResponse(request, jsonResponse({ error: "Invalid schedule data" }, 400));
+          }
+          const MAX_SCHEDULES = 500;
+          let scheds = data.schedules || [];
+          if (isNew) {
+            if (scheds.length >= MAX_SCHEDULES) {
+              return corsResponse(request, jsonResponse({ error: `スケジュール上限(${MAX_SCHEDULES}件)に達しました` }, 400));
+            }
+            scheds.push(entry);
+            env && notifyScheduleToMembers(env, gid, entry).catch(() => {});
+          } else {
+            const idx = scheds.findIndex(s => s.id === entry.id);
+            if (idx >= 0) scheds[idx] = entry; else scheds.push(entry);
+          }
+          data.schedules = scheds;
+          await env.CHAT_HISTORY.put(kvKey, JSON.stringify(data));
+          return corsResponse(request, jsonResponse({ ok: true }));
+        } catch (e) {
+          return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+        }
+      }
+
+      // GET /api/groups/:id/schedule — 一覧取得
+      const readCheck = await requireGroupRole(request, env, gid, "member");
+      if (!readCheck.ok) return corsResponse(request, jsonResponse({ error: readCheck.error }, readCheck.status));
+      try {
+        const raw = await env.CHAT_HISTORY.get(kvKey);
+        const data = raw ? JSON.parse(raw) : { schedules: [] };
+        return corsResponse(request, jsonResponse(data));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ schedules: [], error: String(e) }, 500));
+      }
+    }
+
+    // ★ 公演記録詳細 API
+    const recordsApiMatch = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/records$/);
+    if (recordsApiMatch) {
+      const gid = recordsApiMatch[1];
+      const kvKey = `group_records:${gid}`;
+      if (request.method === "POST") {
+        let authCheck = await requireGroupRole(request, env, gid, "manager");
+        if (!authCheck.ok) authCheck = await requireEditor(request, env);
+        if (!authCheck.ok) return corsResponse(request, jsonResponse({ error: authCheck.error }, authCheck.status));
+        try {
+          const body = await request.json();
+          const records = body.records || [];
+          if (records.length > 200) return corsResponse(request, jsonResponse({ error: "Too many records (max 200)" }, 400));
+          await env.CHAT_HISTORY.put(kvKey, JSON.stringify({ records, updatedAt: new Date().toISOString() }));
+          return corsResponse(request, jsonResponse({ ok: true }));
+        } catch (e) {
+          return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+        }
+      }
+      try {
+        const raw = await env.CHAT_HISTORY.get(kvKey);
+        return corsResponse(request, jsonResponse(raw ? JSON.parse(raw) : { records: [] }));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ records: [], error: String(e) }, 500));
+      }
+    }
+
+    // ★ 演目選定サポート: 候補一覧 API
+    const enmokuSelectCandidatesMatch = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/enmoku-select\/candidates$/);
+    if (enmokuSelectCandidatesMatch) {
+      const gid = enmokuSelectCandidatesMatch[1];
+      try {
+        const catalog = await loadEnmokuCatalog(env);
+        const kvRaw = await env.CHAT_HISTORY.get(`group_records:${gid}`);
+        const records = kvRaw ? JSON.parse(kvRaw).records || [] : [];
+
+        // 過去公演から演目別の使用回数・キャスト数・時間・ジャンルを集計
+        const pastCounts = {};
+        const pastRecordsByNorm = {};
+        const pastCastSizes = {};   // norm -> [cast_count, ...]
+        const pastDurations = {};   // norm -> [duration_min, ...]
+        const pastGenres = {};      // norm -> { genre: count }
+        for (const rec of records) {
+          for (const play of (rec.plays || [])) {
+            const norm = normalizeTitle(play.title || "");
+            if (!norm) continue;
+            pastCounts[norm] = (pastCounts[norm] || 0) + 1;
+            if (!pastRecordsByNorm[norm]) pastRecordsByNorm[norm] = [];
+            pastRecordsByNorm[norm].push({ year: rec.year, date_display: rec.date_display, title: rec.title });
+            // cast size
+            const castLen = (play.cast || []).length;
+            if (castLen > 0) {
+              if (!pastCastSizes[norm]) pastCastSizes[norm] = [];
+              pastCastSizes[norm].push(castLen);
+            }
+            // duration
+            if (play.duration_min) {
+              if (!pastDurations[norm]) pastDurations[norm] = [];
+              pastDurations[norm].push(play.duration_min);
+            }
+            // genre
+            if (play.genre) {
+              if (!pastGenres[norm]) pastGenres[norm] = {};
+              pastGenres[norm][play.genre] = (pastGenres[norm][play.genre] || 0) + 1;
+            }
+          }
+        }
+
+        // 全演目JSONを並列ロードしてジャンル・キャスト・時間を取得
+        const catalogList = catalog || [];
+        const enmokuJsons = await Promise.all(
+          catalogList.map(entry => loadEnmokuJson(env, entry.id).catch(() => null))
+        );
+
+        // 子役を示すキーワード
+        const KODOMO_KEYWORDS = ["子", "若君", "稚児", "姫", "幼", "童"];
+
+        // enmoku JSON から各種データを抽出してマップ化
+        const naviDataMap = {};
+        for (let i = 0; i < catalogList.length; i++) {
+          const data = enmokuJsons[i];
+          if (!data) continue;
+          const id = catalogList[i].id;
+
+          // info フィールド（オブジェクト or 文字列）
+          const info = data.info || (data.sections && data.sections.info);
+          let gt = null, naviDuration = null;
+          if (info && typeof info === "object") {
+            gt = info["種別"] ? String(info["種別"]) : null;
+            naviDuration = info["上演時間"] ? String(info["上演時間"]) : null;
+          } else if (typeof info === "string") {
+            const mg = info.match(/種別[：:]\s*([^\n]+)/);
+            if (mg) gt = mg[1].trim();
+            const md = info.match(/上演時間[：:]\s*([^\n]+)/);
+            if (md) naviDuration = md[1].trim();
+          }
+
+          // 上演時間の文字列から数値をパース（"約90分" → 90）
+          let naviDurationMin = null;
+          if (naviDuration) {
+            const mn = naviDuration.match(/(\d+)/);
+            if (mn) naviDurationMin = parseInt(mn[1], 10);
+          }
+
+          // ジャンルコード
+          const genre = gt
+            ? (gt.includes("世話") ? "sewamono"
+              : gt.includes("時代") ? "jidaimono"
+              : (gt.includes("舞踊") || gt.includes("所作")) ? "shosagoto"
+              : "other")
+            : null;
+
+          // キャスト（登場人物名のリスト）
+          const castList = Array.isArray(data.cast) ? data.cast : [];
+          const castNames = castList.map(c => (c.name || "").replace(/（[^）]*）/g, "").trim()).filter(Boolean);
+          const naviCastSize = castList.length || null;
+
+          // 子役検出（役名または人物名にキーワードが含まれる）
+          const hasKodomo = castList.some(c => {
+            const name = (c.name || "") + (c.desc || "");
+            return KODOMO_KEYWORDS.some(k => name.includes(k));
+          });
+
+          naviDataMap[id] = { genre, naviDurationMin, castNames, naviCastSize, hasKodomo };
+        }
+
+        const candidates = catalogList.map(entry => {
+          const norm = normalizeTitle(entry.short || entry.full || "");
+          const navi = naviDataMap[entry.id] || {};
+
+          // known_cast_size: 自団体記録の最大値 > NAVIキャスト数
+          const castArr = pastCastSizes[norm] || [];
+          const known_cast_size = castArr.length ? Math.max(...castArr)
+            : (navi.naviCastSize != null ? navi.naviCastSize : null);
+          const cast_source = castArr.length ? "own"
+            : navi.naviCastSize != null ? "catalog" : null;
+
+          // known_duration_min: 自団体記録の平均 > NAVIの上演時間
+          const durArr = pastDurations[norm] || [];
+          const known_duration_min = durArr.length
+            ? Math.round(durArr.reduce((a, b) => a + b, 0) / durArr.length)
+            : (navi.naviDurationMin != null ? navi.naviDurationMin : null);
+          const duration_source = durArr.length ? "own"
+            : navi.naviDurationMin != null ? "catalog" : null;
+
+          // known_genre: 公演記録の最多ジャンル
+          const genreMap = pastGenres[norm] || {};
+          const known_genre = Object.keys(genreMap).sort((a, b) => genreMap[b] - genreMap[a])[0] || null;
+
+          return {
+            id: entry.id,
+            title: entry.short || entry.full || entry.id,
+            full_title: entry.full || "",
+            naviId: entry.id,
+            past_count: pastCounts[norm] || 0,
+            past_records: (pastRecordsByNorm[norm] || []).slice(0, 3),
+            known_cast_size,
+            cast_source,
+            cast_names: navi.castNames || [],
+            known_duration_min,
+            duration_source,
+            has_kodomo: navi.hasKodomo || false,
+            known_genre,
+            catalog_genre: navi.genre || entry.genre || null,
+          };
+        });
+
+        return corsResponse(request, jsonResponse({ candidates }));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ candidates: [], error: String(e) }, 500));
+      }
+    }
+
+    // ★ 演目選定サポート: 選定ログ 個別操作 API（PUT / DELETE）
+    const enmokuSelectLogItemMatch = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/enmoku-select\/log\/([a-zA-Z0-9_-]+)$/);
+    if (enmokuSelectLogItemMatch) {
+      const gid   = enmokuSelectLogItemMatch[1];
+      const logId = decodeURIComponent(enmokuSelectLogItemMatch[2]);
+      const kvKey = `group_enmoku_select_log:${gid}`;
+
+      let authCheck = await requireGroupRole(request, env, gid, "member");
+      if (!authCheck.ok) authCheck = await requireEditor(request, env);
+      if (!authCheck.ok) return corsResponse(request, jsonResponse({ error: authCheck.error }, authCheck.status));
+
+      try {
+        const raw  = await env.CHAT_HISTORY.get(kvKey);
+        const data = raw ? JSON.parse(raw) : { logs: [] };
+
+        if (request.method === "PUT") {
+          const body  = await request.json();
+          const index = data.logs.findIndex(l => l.id === logId);
+          if (index === -1) return corsResponse(request, jsonResponse({ error: "not found" }, 404));
+          if (body.enmoku_title !== undefined) data.logs[index].enmoku_title = String(body.enmoku_title).slice(0, 200);
+          if (body.reason  !== undefined) data.logs[index].reason  = String(body.reason).slice(0, 2000);
+          if (body.person  !== undefined) data.logs[index].person  = String(body.person).slice(0, 100);
+          data.logs[index].updated_at = new Date().toISOString();
+          await env.CHAT_HISTORY.put(kvKey, JSON.stringify(data));
+          return corsResponse(request, jsonResponse({ ok: true }));
+        }
+
+        if (request.method === "DELETE") {
+          const before = data.logs.length;
+          data.logs = data.logs.filter(l => l.id !== logId);
+          if (data.logs.length === before) return corsResponse(request, jsonResponse({ error: "not found" }, 404));
+          await env.CHAT_HISTORY.put(kvKey, JSON.stringify(data));
+          return corsResponse(request, jsonResponse({ ok: true }));
+        }
+
+        return corsResponse(request, jsonResponse({ error: "method not allowed" }, 405));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+      }
+    }
+
+    // ★ 演目選定サポート: 選定ログ API（GET / POST）
+    const enmokuSelectLogMatch = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/enmoku-select\/log$/);
+    if (enmokuSelectLogMatch) {
+      const gid = enmokuSelectLogMatch[1];
+      const kvKey = `group_enmoku_select_log:${gid}`;
+
+      if (request.method === "POST") {
+        let authCheck = await requireGroupRole(request, env, gid, "member");
+        if (!authCheck.ok) authCheck = await requireEditor(request, env);
+        if (!authCheck.ok) return corsResponse(request, jsonResponse({ error: authCheck.error }, authCheck.status));
+        try {
+          const body = await request.json();
+          if (!body.enmoku_title) return corsResponse(request, jsonResponse({ error: "enmoku_title required" }, 400));
+          const raw = await env.CHAT_HISTORY.get(kvKey);
+          const data = raw ? JSON.parse(raw) : { logs: [] };
+          data.logs.unshift({
+            id: `esl_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+            enmoku_title: String(body.enmoku_title).slice(0, 200),
+            enmoku_navi_id: String(body.enmoku_navi_id || "").slice(0, 100),
+            reason: String(body.reason || "").slice(0, 2000),
+            person: String(body.person || "").slice(0, 100),
+            conditions: body.conditions || {},
+            created_at: new Date().toISOString(),
+          });
+          if (data.logs.length > 100) data.logs = data.logs.slice(0, 100);
+          await env.CHAT_HISTORY.put(kvKey, JSON.stringify(data));
+          return corsResponse(request, jsonResponse({ ok: true }));
+        } catch (e) {
+          return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+        }
+      }
+
+      // GET
+      try {
+        const raw = await env.CHAT_HISTORY.get(kvKey);
+        return corsResponse(request, jsonResponse(raw ? JSON.parse(raw) : { logs: [] }));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ logs: [], error: String(e) }, 500));
+      }
+    }
+
+    // ★ 配役サポート: コンテキスト API
+    const castingContextMatch = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/casting\/context\/([a-zA-Z0-9_-]+)$/);
+    if (castingContextMatch && request.method === "GET") {
+      const gid = castingContextMatch[1];
+      const enmokuId = castingContextMatch[2];
+      try {
+        const catalog = await loadEnmokuCatalog(env);
+        const entry = (catalog || []).find(e => e.id === enmokuId);
+        if (!entry) return corsResponse(request, jsonResponse({ error: "enmoku not found" }, 404));
+
+        const kvRaw = await env.CHAT_HISTORY.get(`group_records:${gid}`);
+        const records = kvRaw ? JSON.parse(kvRaw).records || [] : [];
+
+        const targetNorm = normalizeTitle(entry.short || entry.full || "");
+        const pastCasts = [];
+        const actorMap = {};
+
+        // 役者名の括弧注記（例: 太郎（代役）→太郎）を除去
+        const stripParen = s => (s || "").replace(/[\(（][^)）]*[\)）]/g, "").replace(/\s+/g, " ").trim();
+
+        for (const rec of records) {
+          for (const play of (rec.plays || [])) {
+            const playNorm = normalizeTitle(play.title || "");
+            for (const c of (play.cast || [])) {
+              const actor = stripParen(c.name);
+              if (!actor) continue;
+              if (!actorMap[actor]) actorMap[actor] = { count: 0, last_year: 0 };
+              actorMap[actor].count++;
+              if ((rec.year || 0) > actorMap[actor].last_year) actorMap[actor].last_year = rec.year || 0;
+            }
+            if (targetNorm && playNorm && (playNorm === targetNorm || playNorm.includes(targetNorm) || targetNorm.includes(playNorm))) {
+              pastCasts.push({
+                year: rec.year,
+                date_display: rec.date_display || "",
+                assignments: (play.cast || []).map(c => ({ role: c.role || "", actor: stripParen(c.name) }))
+              });
+            }
+          }
+        }
+
+        pastCasts.sort((a, b) => (b.year || 0) - (a.year || 0));
+        const actorPool = Object.entries(actorMap)
+          .map(([name, info]) => ({ name, count: info.count, last_year: info.last_year }))
+          .sort((a, b) => b.last_year - a.last_year || b.count - a.count);
+
+        return corsResponse(request, jsonResponse({
+          enmoku_id: enmokuId,
+          title: entry.short || entry.full || "",
+          full_title: entry.full || "",
+          roles: entry.cast_names || [],
+          past_casts: pastCasts,
+          actor_pool: actorPool,
+        }));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+      }
+    }
+
+    // ★ 配役サポート: プラン 個別削除 API
+    const castingPlanItemMatch = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/casting\/plans\/([a-zA-Z0-9_-]+)$/);
+    if (castingPlanItemMatch && request.method === "DELETE") {
+      const gid = castingPlanItemMatch[1];
+      const planId = decodeURIComponent(castingPlanItemMatch[2]);
+      const kvKey = `group_casting_plans:${gid}`;
+      let authCheck = await requireGroupRole(request, env, gid, "member");
+      if (!authCheck.ok) authCheck = await requireEditor(request, env);
+      if (!authCheck.ok) return corsResponse(request, jsonResponse({ error: authCheck.error }, authCheck.status));
+      try {
+        const raw = await env.CHAT_HISTORY.get(kvKey);
+        const data = raw ? JSON.parse(raw) : { plans: [] };
+        const before = data.plans.length;
+        data.plans = data.plans.filter(p => p.id !== planId);
+        if (data.plans.length === before) return corsResponse(request, jsonResponse({ error: "not found" }, 404));
+        await env.CHAT_HISTORY.put(kvKey, JSON.stringify(data));
+        return corsResponse(request, jsonResponse({ ok: true }));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+      }
+    }
+
+    // ★ 配役サポート: プラン一覧取得 / 新規保存 API
+    const castingPlansMatch = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/casting\/plans$/);
+    if (castingPlansMatch) {
+      const gid = castingPlansMatch[1];
+      const kvKey = `group_casting_plans:${gid}`;
+
+      if (request.method === "POST") {
+        let authCheck = await requireGroupRole(request, env, gid, "member");
+        if (!authCheck.ok) authCheck = await requireEditor(request, env);
+        if (!authCheck.ok) return corsResponse(request, jsonResponse({ error: authCheck.error }, authCheck.status));
+        try {
+          const body = await request.json();
+          if (!body.enmoku_title) return corsResponse(request, jsonResponse({ error: "enmoku_title required" }, 400));
+          const raw = await env.CHAT_HISTORY.get(kvKey);
+          const data = raw ? JSON.parse(raw) : { plans: [] };
+          data.plans.unshift({
+            id: `cp_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+            enmoku_id: String(body.enmoku_id || "").slice(0, 100),
+            enmoku_title: String(body.enmoku_title).slice(0, 200),
+            assignments: (body.assignments || []).slice(0, 50).map(a => ({
+              role: String(a.role || "").slice(0, 100),
+              actor: String(a.actor || "").slice(0, 100),
+            })),
+            note: String(body.note || "").slice(0, 1000),
+            created_at: new Date().toISOString(),
+          });
+          if (data.plans.length > 50) data.plans = data.plans.slice(0, 50);
+          await env.CHAT_HISTORY.put(kvKey, JSON.stringify(data));
+          return corsResponse(request, jsonResponse({ ok: true }));
+        } catch (e) {
+          return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+        }
+      }
+
+      try {
+        const raw = await env.CHAT_HISTORY.get(kvKey);
+        return corsResponse(request, jsonResponse(raw ? JSON.parse(raw) : { plans: [] }));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ plans: [], error: String(e) }, 500));
+      }
+    }
+
+    // ★ 画像 API（アップロード / 配信）
+    const imageUploadMatch = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/images$/);
+    if (imageUploadMatch && request.method === "POST") {
+      const gid = imageUploadMatch[1];
+      let imgUploadAuth = await requireGroupRole(request, env, gid, "manager");
+      if (!imgUploadAuth.ok) imgUploadAuth = await requireEditor(request, env);
+      if (!imgUploadAuth.ok) return corsResponse(request, jsonResponse({ error: imgUploadAuth.error }, imgUploadAuth.status));
+      try {
+        const formData = await request.formData();
+        const file = formData.get("file");
+        const imgType = (formData.get("type") || "misc").replace(/[^a-z0-9_-]/g, "");
+        if (!file || !file.name) {
+          return corsResponse(request, jsonResponse({ error: "No file provided" }, 400));
+        }
+        if (file.size > 5 * 1024 * 1024) {
+          return corsResponse(request, jsonResponse({ error: "File too large (max 5MB)" }, 400));
+        }
+        const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+        if (!allowedTypes.includes(file.type)) {
+          return corsResponse(request, jsonResponse({ error: "Unsupported file type. Allowed: jpeg, png, webp, gif" }, 400));
+        }
+        const extMap = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/gif": "gif" };
+        const ext = extMap[file.type] || "jpg";
+        const filename = `${imgType}-${Date.now()}.${ext}`;
+        const r2Key = `images/${gid}/${filename}`;
+        const arrayBuffer = await file.arrayBuffer();
+        await env.CONTENT_BUCKET.put(r2Key, arrayBuffer, {
+          httpMetadata: { contentType: file.type }
+        });
+        const url = `/api/groups/${gid}/images/${filename}`;
+        return corsResponse(request, jsonResponse({ url }));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: e.message }, 500));
+      }
+    }
+
+    const imageServeMatch = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/images\/([a-zA-Z0-9_.\-]+)$/);
+    if (imageServeMatch && request.method === "GET") {
+      const gid = imageServeMatch[1];
+      const filename = imageServeMatch[2];
+      const r2Key = `images/${gid}/${filename}`;
+      const obj = await env.CONTENT_BUCKET.get(r2Key);
+      if (!obj) return new Response("Not Found", { status: 404 });
+      const ext = (filename.match(/\.([a-z0-9]+)$/i) || [])[1] || "jpg";
+      const ctMap = { jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp", gif: "image/gif" };
+      const ct = ctMap[ext.toLowerCase()] || "image/jpeg";
+      return new Response(obj.body, {
+        headers: {
+          "Content-Type": ct,
+          "Cache-Control": "public, max-age=31536000",
+          "Access-Control-Allow-Origin": "*"
+        }
+      });
+    }
+
     // ★ 台本 API（アップロード / 一覧 / rawダウンロード / 削除）
     const scriptUploadMatch = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/scripts\/upload$/);
     if (scriptUploadMatch && request.method === "POST") {
       const gid = scriptUploadMatch[1];
+      const uploadAuth = gid === "labo"
+        ? await requireEditor(request, env)
+        : await requireGroupRole(request, env, gid, "manager");
+      if (!uploadAuth.ok) return corsResponse(request, jsonResponse({ error: uploadAuth.error }, uploadAuth.status));
       try {
         const formData = await request.formData();
         const file = formData.get("file");
@@ -693,6 +2274,7 @@ export default {
         const play = formData.get("play") || "";
         const perfDate = formData.get("perf_date") || "";
         const perfVenue = formData.get("perf_venue") || "";
+        const perfTag = formData.get("performance_tag") || "";
         const memo = formData.get("memo") || "";
         const visibility = formData.get("visibility") || "private";
 
@@ -736,6 +2318,7 @@ export default {
           size: file.size,
           perf_date: perfDate,
           perf_venue: perfVenue,
+          performance_tag: perfTag,
           memo,
           visibility,
           uploaded_at: new Date().toISOString()
@@ -751,6 +2334,10 @@ export default {
     const scriptRawMatch = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/scripts\/([^/]+)\/raw$/);
     if (scriptRawMatch) {
       const gid = scriptRawMatch[1];
+      const rawAuth = gid === "labo"
+        ? await requireEditor(request, env)
+        : await requireGroupRole(request, env, gid, "member");
+      if (!rawAuth.ok) return corsResponse(request, jsonResponse({ error: rawAuth.error }, rawAuth.status));
       const sid = decodeURIComponent(scriptRawMatch[2]);
       try {
         const kvKey = `group_scripts:${gid}`;
@@ -780,6 +2367,10 @@ export default {
     const scriptDeleteMatch = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/scripts\/([^/]+)$/);
     if (scriptDeleteMatch && request.method === "DELETE") {
       const gid = scriptDeleteMatch[1];
+      const delAuth = gid === "labo"
+        ? await requireEditor(request, env)
+        : await requireGroupRole(request, env, gid, "manager");
+      if (!delAuth.ok) return corsResponse(request, jsonResponse({ error: delAuth.error }, delAuth.status));
       const sid = decodeURIComponent(scriptDeleteMatch[2]);
       try {
         const kvKey = `group_scripts:${gid}`;
@@ -799,6 +2390,10 @@ export default {
 
     if (scriptDeleteMatch && request.method === "PATCH") {
       const gid = scriptDeleteMatch[1];
+      const patchAuth = gid === "labo"
+        ? await requireEditor(request, env)
+        : await requireGroupRole(request, env, gid, "manager");
+      if (!patchAuth.ok) return corsResponse(request, jsonResponse({ error: patchAuth.error }, patchAuth.status));
       const sid = decodeURIComponent(scriptDeleteMatch[2]);
       try {
         const body = await request.json();
@@ -807,7 +2402,7 @@ export default {
         const data = raw ? JSON.parse(raw) : { scripts: [] };
         const idx = data.scripts.findIndex(s => s.id === sid);
         if (idx < 0) return corsResponse(request, jsonResponse({ error: "Not found" }, 404));
-        const allowed = ["title", "play", "perf_date", "perf_venue", "memo", "visibility"];
+        const allowed = ["title", "play", "perf_date", "perf_venue", "performance_tag", "memo", "visibility"];
         for (const key of allowed) {
           if (body[key] !== undefined) data.scripts[idx][key] = body[key];
         }
@@ -820,8 +2415,12 @@ export default {
     }
 
     const scriptListApiMatch = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/scripts$/);
-    if (scriptListApiMatch) {
+    if (scriptListApiMatch && request.method === "GET") {
       const gid = scriptListApiMatch[1];
+      const listAuth = gid === "labo"
+        ? await requireEditor(request, env)
+        : await requireGroupRole(request, env, gid, "member");
+      if (!listAuth.ok) return corsResponse(request, jsonResponse({ error: listAuth.error }, listAuth.status));
       try {
         const kvKey = `group_scripts:${gid}`;
         const raw = await env.CHAT_HISTORY.get(kvKey);
@@ -855,6 +2454,195 @@ export default {
       return corsResponse(request, jsonResponse(venues));
     }
 
+    // 演目タイトル一覧（軽量: catalog.json のみ。LIVE ページの NAVI 照合用）
+    // 著者データ一括マイグレーション（マスターのみ）
+    if (path === "/api/enmoku/migrate-authors" && request.method === "POST") {
+      const session = await getSession(request, env);
+      if (!session) return corsResponse(request, jsonResponse({ error: "ログインが必要です" }, 401));
+      const isMaster = await checkIsMaster(env, session.userId);
+      if (!isMaster) return corsResponse(request, jsonResponse({ error: "マスター権限が必要です" }, 403));
+      try {
+        const body = await request.json();
+        const oldUserId = body.oldUserId || "keranosuke_system";
+        const newUserId = body.newUserId || session.userId;
+        const newDisplayName = body.displayName || "けらのすけ";
+        const catalog = await loadEnmokuCatalog(env);
+        let updated = 0;
+        for (const entry of catalog) {
+          const obj = await env.ENMOKU_BUCKET.get(`${entry.id}.json`);
+          if (!obj) continue;
+          const data = await obj.json();
+          if (!data.authors || !data.authors.length) continue;
+          let changed = false;
+          data.authors = data.authors.map(a => {
+            if (a.userId === oldUserId) {
+              changed = true;
+              return { ...a, userId: newUserId, displayName: newDisplayName };
+            }
+            if (a.userId === newUserId && a.displayName !== newDisplayName) {
+              changed = true;
+              return { ...a, displayName: newDisplayName };
+            }
+            return a;
+          });
+          if (changed) {
+            await env.ENMOKU_BUCKET.put(`${entry.id}.json`, JSON.stringify(data, null, 2), {
+              httpMetadata: { contentType: "application/json" },
+            });
+            updated++;
+          }
+        }
+        return corsResponse(request, jsonResponse({ ok: true, updated, total: catalog.length }));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+      }
+    }
+
+    // ★ DEBUG: RAGコンテキスト確認エンドポイント（開発時のみ）
+    if (path === "/api/debug/kera-context") {
+      const q = new URL(request.url).searchParams.get("q") || "忠臣蔵ってどんな話？";
+      try {
+        const catalog = await loadEnmokuCatalog(env);
+        const glossary = await loadGlossary(env);
+        const topics = await loadTalkTopics(env);
+
+        // gionichiriki の N-gram マッチを直接確認
+        const qNorm = q.toLowerCase().replace(/[\s　]/g, "");
+        const ngrams = [];
+        for (let i = 0; i <= qNorm.length - 3; i++) ngrams.push(qNorm.slice(i, i + 3));
+
+        const gioni = catalog.find(c => c.id === "gionichiriki");
+        let gioniDebug = null;
+        if (gioni) {
+          const full  = (gioni.full  || "").toLowerCase().replace(/[\s　]/g, "");
+          const short = (gioni.short || "").toLowerCase().replace(/[\s　]/g, "");
+          const hay   = full + short;
+          const matchedGrams = ngrams.filter(g => hay.includes(g));
+          gioniDebug = {
+            full_charcount: full.length,
+            full_codes: Array.from(full).slice(0, 8).map(c => c.charCodeAt(0).toString(16)),
+            short: gioni.short,
+            matched_grams: matchedGrams.slice(0, 5),
+            ngram_match: matchedGrams.length > 0,
+          };
+        }
+
+        // buildKabukiContext をステップごとに手動でシミュレート
+        const simParts = [];
+        let simFirstMatch = null;
+        let simData = null;
+        let simDataErr = null;
+        for (const item of catalog) {
+          const full  = (item.full  || item.title       || "").toLowerCase().replace(/[\s　]/g, "");
+          const short = (item.short || item.title_short || "").toLowerCase().replace(/[\s　]/g, "");
+          const hay   = full + short;
+          const anyMatch = ngrams.some(g => hay.includes(g));
+          if (anyMatch) {
+            simFirstMatch = item.id;
+            try {
+              simData = await loadEnmokuJson(env, item.id);
+            } catch (e) {
+              simDataErr = String(e);
+            }
+            const title = simData?.title || item.full || item.short || item.id;
+            simParts.push(`【演目】${title}`);
+            break;
+          }
+        }
+
+        // buildKabukiContext の内部を完全に再現したインラインテスト
+        const inlineParts = [];
+        const qN2 = q.toLowerCase().replace(/[\s　]/g, "");
+        const grams2 = [];
+        for (let i = 0; i <= qN2.length - 3; i++) grams2.push(qN2.slice(i, i + 3));
+        for (const item of catalog) {
+          const full2  = (item.full  || "").toLowerCase().replace(/[\s　]/g, "");
+          const short2 = (item.short || "").toLowerCase().replace(/[\s　]/g, "");
+          const hay2   = full2 + short2;
+          const m = grams2.some(g => hay2.includes(g));
+          if (m) {
+            inlineParts.push("[enmoku] " + (item.full || item.id));
+            break;
+          }
+        }
+
+        // buildKabukiContext を完全再現した詳細シミュレーション
+        const fullSimParts = [];
+        let fullSimMatchId = null, fullSimDataNull = true, fullSimErr = null;
+        const qGramsFull = new Set();
+        for (let i = 0; i <= qNorm.length - 3; i++) qGramsFull.add(qNorm.slice(i, i + 3));
+        for (const item of catalog) {
+          const full  = (item.full  || item.title || "").toLowerCase().replace(/[\s　]/g, "");
+          const short = (item.short || item.title_short || "").toLowerCase().replace(/[\s　]/g, "");
+          const hay   = full + short;
+          let m = hay.includes(qNorm) || qNorm.includes(hay) ||
+            (qGramsFull.size > 0 && [...qGramsFull].some(g => hay.includes(g)));
+          if (!m && hay.length >= 3) {
+            for (let i = 0; i <= hay.length - 3 && !m; i++) {
+              if (qNorm.includes(hay.slice(i, i + 3))) m = true;
+            }
+          }
+          if (m) {
+            fullSimMatchId = item.id;
+            try {
+              const data = await loadEnmokuJson(env, item.id).catch(() => null);
+              fullSimDataNull = data === null;
+              let ctxLine = `【演目】${data?.title || item.full || item.short || item.id}`;
+              if (data) {
+                const details = [];
+                if (data.synopsis) details.push(`あらすじ: ${String(data.synopsis).slice(0, 100)}`);
+                const hiA = Array.isArray(data.highlights) ? data.highlights : (typeof data.highlights === "string" && data.highlights ? [data.highlights] : []);
+                if (hiA.length) details.push(`見どころ: ${hiA.slice(0, 2).join("／")}`);
+                try {
+                  if (data.cast?.length) {
+                    const cl = data.cast.slice(0, 3).map(c => `${(c && c.name)||""}（${(c && c.role)||""}）`).filter(s=>s!=="（）").join("、");
+                    if (cl) details.push(`登場: ${cl}`);
+                  }
+                } catch (_) {}
+                if (details.length) ctxLine += "\n" + details.join("\n");
+              }
+              fullSimParts.push(ctxLine.slice(0, 80));
+            } catch (e2) { fullSimErr = String(e2); }
+            break;
+          }
+        }
+
+        const context = await buildKabukiContext(env, q);
+        return corsResponse(request, jsonResponse({
+          v: "2",
+          qNorm_len: qNorm.length,
+          grams_count: ngrams.length,
+          catalog_count: catalog.length,
+          gioni_ngram: gioniDebug?.ngram_match,
+          sim_first_match: simFirstMatch,
+          sim_parts: simParts.length,
+          inline_parts: inlineParts.length,
+          full_sim_match: fullSimMatchId,
+          full_sim_parts: fullSimParts.length,
+          full_sim_data_null: fullSimDataNull,
+          full_sim_first: fullSimParts[0]?.slice(0, 60) || null,
+          full_sim_err: fullSimErr,
+          glossary_count: glossary.length,
+          topics_count: topics.length,
+          context_found: !!context,
+          context_null: context === null,
+          context_length: context != null ? context.length : -1,
+        }));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+      }
+    }
+
+    if (path === "/api/enmoku/titles") {
+      try {
+        const catalog = await loadEnmokuCatalog(env);
+        const titles = (catalog || []).map(e => ({ id: e.id, short: e.short || "", full: e.full || "" }));
+        return corsResponse(request, jsonResponse(titles));
+      } catch (e) {
+        return corsResponse(request, jsonResponse([]));
+      }
+    }
+
     if (path === "/api/enmoku/catalog") {
       try {
         if (!globalThis.__enhancedCatalogCache) {
@@ -881,6 +2669,85 @@ export default {
     if (path.startsWith("/api/enmoku/")) {
       const rawId = path.replace("/api/enmoku/", "").split("?")[0].trim();
       const id = rawId ? decodeURIComponent(rawId) : "";
+
+      // PUT: R2 への保存（LABO エディタ用・承認済みエディターのみ）
+      if (id && id !== "catalog" && request.method === "PUT") {
+        try {
+          const editorCheck = await requireEditor(request, env);
+          if (!editorCheck.ok) {
+            return corsResponse(request, jsonResponse({ error: editorCheck.error }, editorCheck.status));
+          }
+
+          const body = await request.json();
+          if (!body || !body.title) {
+            return corsResponse(request, jsonResponse({ error: "title is required" }, 400));
+          }
+
+          // catalog用メタデータを分離して保存
+          const catalogGroup = body._catalog_group || null;
+          const catalogSortKey = body._catalog_sort_key || null;
+          delete body._catalog_group;
+          delete body._catalog_sort_key;
+
+          // R2 に演目データを保存
+          await env.ENMOKU_BUCKET.put(`${id}.json`, JSON.stringify(body, null, 2), {
+            httpMetadata: { contentType: "application/json" },
+          });
+
+          // catalog.json を更新（無ければフォールバックカタログを元に新規作成）
+          try {
+            let catalog = [];
+            const catObj = await env.ENMOKU_BUCKET.get("catalog.json");
+            if (catObj) {
+              catalog = await catObj.json();
+            } else {
+              catalog = (await loadEnmokuCatalog(env)).map(c => ({
+                id: c.id, short: c.short, full: c.full,
+                sort_key: c.sort_key || "", group: c.group || null,
+              }));
+            }
+
+            const idx = catalog.findIndex(c => c.id === id);
+            // info["種別"] からジャンルコードを生成
+            const genreText = (body.info && body.info["種別"]) ? String(body.info["種別"]) : "";
+            const genreCode = genreText.includes("世話") ? "sewamono"
+              : genreText.includes("時代") ? "jidaimono"
+              : genreText.includes("舞踊") || genreText.includes("所作") ? "shosagoto"
+              : genreText ? "other" : null;
+            const entry = {
+              id,
+              short: body.title_short || body.title,
+              full: body.title,
+              sort_key: catalogSortKey || "",
+              group: catalogGroup,
+              ...(genreCode ? { genre: genreCode } : {}),
+              ...(body.duration_min != null ? { duration_min: body.duration_min } : {}),
+            };
+            if (idx >= 0) {
+              catalog[idx] = { ...catalog[idx], ...entry };
+            } else {
+              catalog.push(entry);
+            }
+            catalog.sort((a, b) => (a.sort_key || a.short || "").localeCompare(b.sort_key || b.short || "", "ja"));
+
+            await env.ENMOKU_BUCKET.put("catalog.json", JSON.stringify(catalog, null, 2), {
+              httpMetadata: { contentType: "application/json" },
+            });
+
+            // キャッシュを無効化
+            clearEnmokuCatalogCache();
+            globalThis.__enhancedCatalogCache = null;
+          } catch (catErr) {
+            console.log("catalog.json update error:", String(catErr));
+          }
+
+          return corsResponse(request, jsonResponse({ ok: true, id }));
+        } catch (e) {
+          return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+        }
+      }
+
+      // GET: 演目データ取得
       if (id && id !== "catalog") {
         try {
           let data = await loadEnmokuJson(env, id);
@@ -898,6 +2765,19 @@ export default {
             }
           }
           if (!data) return corsResponse(request, jsonResponse({ error: "not found" }, 404));
+
+          // 編集用: catalog からグループ・ソートキーを付与
+          if (request.method === "GET") {
+            try {
+              const catalog = await loadEnmokuCatalog(env);
+              const catEntry = catalog.find(c => c.id === id);
+              if (catEntry) {
+                data._catalog_group = catEntry.group || null;
+                data._catalog_sort_key = catEntry.sort_key || null;
+              }
+            } catch (_) {}
+          }
+
           return corsResponse(request, jsonResponse(data));
         } catch (e) {
           return corsResponse(request, jsonResponse({ error: String(e) }, 500));
@@ -918,12 +2798,202 @@ export default {
       }
     }
 
-    if (path === "/api/glossary") {
+    if (path === "/api/jikabuki/groups" && request.method === "GET") {
+      try {
+        const GATE_MAP = Object.fromEntries((await loadGateGroups(env)).map(g => [g.name, g.id]));
+        const obj = await env.CONTENT_BUCKET.get("jikabuki_groups.json");
+        if (!obj) return corsResponse(request, jsonResponse({ groups: [], count: 0 }));
+        const data = await obj.json();
+        const groups = (data.groups || []).map(g => ({
+          name: g.name,
+          prefecture: g.prefecture || "",
+          venue: g.venue || "",
+          gate_id: GATE_MAP[g.name] || "",
+          links: g.links || {},
+        }));
+        return corsResponse(request, jsonResponse({ groups, count: groups.length }));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+      }
+    }
+
+    // ★ 芝居小屋 共有DB API
+    if (path === "/api/theaters" && request.method === "GET") {
+      try {
+        const raw = await env.CHAT_HISTORY.get("theaters_registry");
+        const data = raw ? JSON.parse(raw) : { theaters: [] };
+        return corsResponse(request, jsonResponse(data));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+      }
+    }
+    if (path === "/api/theaters" && request.method === "POST") {
+      let authCheck = await requireEditor(request, env);
+      if (!authCheck.ok) return corsResponse(request, jsonResponse({ error: authCheck.error }, authCheck.status));
+      try {
+        const body = await request.json();
+        const t = body.theater;
+        if (!t || !t.id || !t.name) return corsResponse(request, jsonResponse({ error: "id and name are required" }, 400));
+        const raw = await env.CHAT_HISTORY.get("theaters_registry");
+        const data = raw ? JSON.parse(raw) : { theaters: [] };
+        const idx = data.theaters.findIndex(x => x.id === t.id);
+        t.updated_at = new Date().toISOString();
+        if (idx >= 0) { data.theaters[idx] = { ...data.theaters[idx], ...t }; } else { data.theaters.push(t); }
+        await env.CHAT_HISTORY.put("theaters_registry", JSON.stringify(data));
+        return corsResponse(request, jsonResponse({ ok: true, theater: t }));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+      }
+    }
+    {
+      const theaterDeleteMatch = path.match(/^\/api\/theaters\/([a-zA-Z0-9_-]+)$/);
+      if (theaterDeleteMatch && request.method === "DELETE") {
+        let authCheck = await requireEditor(request, env);
+        if (!authCheck.ok) return corsResponse(request, jsonResponse({ error: authCheck.error }, authCheck.status));
+        try {
+          const tid = theaterDeleteMatch[1];
+          const raw = await env.CHAT_HISTORY.get("theaters_registry");
+          const data = raw ? JSON.parse(raw) : { theaters: [] };
+          data.theaters = data.theaters.filter(x => x.id !== tid);
+          await env.CHAT_HISTORY.put("theaters_registry", JSON.stringify(data));
+          return corsResponse(request, jsonResponse({ ok: true }));
+        } catch (e) {
+          return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+        }
+      }
+    }
+
+    // ★ 芝居小屋 画像 API（アップロード / 配信）
+    if (path === "/api/theaters/images" && request.method === "POST") {
+      let authCheck = await requireEditor(request, env);
+      if (!authCheck.ok) return corsResponse(request, jsonResponse({ error: authCheck.error }, authCheck.status));
+      try {
+        const formData = await request.formData();
+        const file = formData.get("file");
+        if (!file || !file.name) {
+          return corsResponse(request, jsonResponse({ error: "No file provided" }, 400));
+        }
+        if (file.size > 5 * 1024 * 1024) {
+          return corsResponse(request, jsonResponse({ error: "File too large (max 5MB)" }, 400));
+        }
+        const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+        if (!allowedTypes.includes(file.type)) {
+          return corsResponse(request, jsonResponse({ error: "Unsupported file type. Allowed: jpeg, png, webp, gif" }, 400));
+        }
+        const extMap = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/gif": "gif" };
+        const ext = extMap[file.type] || "jpg";
+        const filename = `theater-${Date.now()}.${ext}`;
+        const r2Key = `images/theaters/${filename}`;
+        const arrayBuffer = await file.arrayBuffer();
+        await env.CONTENT_BUCKET.put(r2Key, arrayBuffer, {
+          httpMetadata: { contentType: file.type }
+        });
+        const url = `/api/theaters/images/${filename}`;
+        return corsResponse(request, jsonResponse({ url }));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: e.message }, 500));
+      }
+    }
+    {
+      const theaterImageMatch = path.match(/^\/api\/theaters\/images\/([a-zA-Z0-9_.\-]+)$/);
+      if (theaterImageMatch && request.method === "GET") {
+        const filename = theaterImageMatch[1];
+        const r2Key = `images/theaters/${filename}`;
+        const obj = await env.CONTENT_BUCKET.get(r2Key);
+        if (!obj) return new Response("Not Found", { status: 404 });
+        const ext = (filename.match(/\.([a-z0-9]+)$/i) || [])[1] || "jpg";
+        const ctMap = { jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp", gif: "image/gif" };
+        const ct = ctMap[ext.toLowerCase()] || "image/jpeg";
+        return new Response(obj.body, {
+          headers: {
+            "Content-Type": ct,
+            "Cache-Control": "public, max-age=31536000, immutable",
+            "Access-Control-Allow-Origin": "*",
+          }
+        });
+      }
+    }
+
+    // 旧互換: /api/jikabuki/theaters → /api/theaters にリダイレクト
+    if (path === "/api/jikabuki/theaters" && request.method === "GET") {
+      try {
+        const raw = await env.CHAT_HISTORY.get("theaters_registry");
+        const data = raw ? JSON.parse(raw) : { theaters: [] };
+        return corsResponse(request, jsonResponse(data));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+      }
+    }
+
+    if (path === "/api/jikabuki/fav-news" && request.method === "GET") {
+      try {
+        const url = new URL(request.url);
+        const groupsParam = url.searchParams.get("groups");
+        if (!groupsParam) return corsResponse(request, jsonResponse({ results: [] }));
+
+        const groupNames = groupsParam.split(",").map(s => s.trim()).filter(Boolean).slice(0, 10);
+        if (!groupNames.length) return corsResponse(request, jsonResponse({ results: [] }));
+
+        const cacheKey = "jikabuki-fav-news:" + [...groupNames].sort().join(",");
+        const cached = await env.CHAT_HISTORY.get(cacheKey);
+        if (cached) return corsResponse(request, jsonResponse(JSON.parse(cached)));
+
+        // jikabuki_groups.json から keywords を取得
+        const groupsObj = await env.CONTENT_BUCKET.get("jikabuki_groups.json");
+        const groupsData = groupsObj ? await groupsObj.json() : { groups: [] };
+        const groupMeta = {};
+        for (const g of (groupsData.groups || [])) {
+          groupMeta[g.name] = g.keywords || [g.name];
+        }
+
+        // news:latest KV から全記事取得
+        const newsRaw = await env.CHAT_HISTORY.get("news:latest");
+        const allArticles = newsRaw ? (JSON.parse(newsRaw).articles || []) : [];
+
+        const norm = s => (s || "").replace(/\s/g, "");
+
+        const results = groupNames.map(name => {
+          const keywords = groupMeta[name] || [name];
+          const matched = allArticles.filter(a => {
+            const t = norm(a.title || "");
+            return keywords.some(k => t.includes(norm(k)));
+          }).slice(0, 2).map(a => ({ title: a.title, link: a.link, pubTs: a.pubTs || null }));
+          return { group: name, articles: matched };
+        });
+
+        const payload = { results, updatedAt: new Date().toISOString() };
+        ctx.waitUntil(env.CHAT_HISTORY.put(cacheKey, JSON.stringify(payload), { expirationTtl: 1800 }));
+        return corsResponse(request, jsonResponse(payload));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ results: [], error: String(e) }, 500));
+      }
+    }
+
+    if (path === "/api/glossary" && request.method === "GET") {
       try {
         const obj = await env.CONTENT_BUCKET.get("glossary.json");
         if (!obj) return corsResponse(request, jsonResponse({ error: "not found" }, 404));
         const data = await obj.json();
         return corsResponse(request, jsonResponse(data));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+      }
+    }
+
+    if (path === "/api/glossary" && request.method === "PUT") {
+      const editorCheck = await requireEditor(request, env);
+      if (!editorCheck.ok) return corsResponse(request, jsonResponse({ error: editorCheck.error }, editorCheck.status));
+      try {
+        const body = await request.json();
+        if (!body || !Array.isArray(body.terms)) {
+          return corsResponse(request, jsonResponse({ error: "Invalid body: { terms: [] } required" }, 400));
+        }
+        const payload = JSON.stringify({ terms: body.terms });
+        await env.CONTENT_BUCKET.put("glossary.json", payload, {
+          httpMetadata: { contentType: "application/json; charset=utf-8" }
+        });
+        GLOSSARY_CACHE = null;
+        return corsResponse(request, jsonResponse({ ok: true, count: body.terms.length }));
       } catch (e) {
         return corsResponse(request, jsonResponse({ error: String(e) }, 500));
       }
@@ -935,6 +3005,24 @@ export default {
         if (!obj) return corsResponse(request, jsonResponse({ error: "not found" }, 404));
         const data = await obj.json();
         return corsResponse(request, jsonResponse(data));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+      }
+    }
+
+    if (path === "/api/quiz" && request.method === "PUT") {
+      const editorCheck = await requireEditor(request, env);
+      if (!editorCheck.ok) return corsResponse(request, jsonResponse({ error: editorCheck.error }, editorCheck.status));
+      try {
+        const body = await request.json();
+        if (!Array.isArray(body)) {
+          return corsResponse(request, jsonResponse({ error: "Invalid body: array required" }, 400));
+        }
+        await env.QUIZ_BUCKET.put("quizzes.json", JSON.stringify(body, null, 2), {
+          httpMetadata: { contentType: "application/json; charset=utf-8" }
+        });
+        clearQuizCache();
+        return corsResponse(request, jsonResponse({ ok: true, count: body.length }));
       } catch (e) {
         return corsResponse(request, jsonResponse({ error: String(e) }, 500));
       }
@@ -997,6 +3085,68 @@ export default {
       }
     }
 
+    // ★ 推し俳優ニュース一括取得（各俳優の直近1件を返す）
+    if (path === "/api/oshi-news") {
+      try {
+        const url = new URL(request.url);
+        const actorsParam = url.searchParams.get("actors");
+        if (!actorsParam) {
+          return corsResponse(request, jsonResponse({ error: "actors parameter required" }, 400));
+        }
+        const actors = actorsParam.split(",").map(s => s.trim()).filter(Boolean).slice(0, 5);
+        if (!actors.length) {
+          return corsResponse(request, jsonResponse({ results: [] }));
+        }
+
+        // KVキャッシュキー（俳優リストのハッシュ）
+        const cacheKey = "oshi-news:" + actors.sort().join(",");
+        const cached = await env.CHAT_HISTORY.get(cacheKey);
+        if (cached) {
+          return corsResponse(request, jsonResponse(JSON.parse(cached)));
+        }
+
+        // news:latest KV → キャッシュヒットした俳優はそのまま、未ヒットは外部 RSS で補完
+        const norm = s => (s || "").replace(/\s/g, "");
+        const newsRaw = await env.CHAT_HISTORY.get("news:latest");
+        const allArticles = newsRaw ? (JSON.parse(newsRaw).articles || []) : [];
+
+        const cacheResults = actors.map(actor => {
+          const actorN = norm(actor);
+          const article = allArticles.find(a => norm(a.title || "").includes(actorN)) || null;
+          return { actor, article };
+        });
+
+        const needSearch = cacheResults.filter(r => !r.article).map(r => r.actor);
+
+        let searchMap = {};
+        if (needSearch.length) {
+          const searchResults = await Promise.all(needSearch.map(async (actor) => {
+            try {
+              const arts = await searchActorNews(actor, 3);
+              return { actor, article: arts.length ? arts[0] : null };
+            } catch (e) {
+              return { actor, article: null };
+            }
+          }));
+          searchResults.forEach(r => { searchMap[r.actor] = r.article; });
+        }
+
+        const results = cacheResults.map(r =>
+          r.article ? r : { actor: r.actor, article: searchMap[r.actor] || null }
+        );
+        const payload = { results, updatedAt: new Date().toISOString() };
+
+        // 30分キャッシュ
+        ctx.waitUntil(
+          env.CHAT_HISTORY.put(cacheKey, JSON.stringify(payload), { expirationTtl: 1800 })
+        );
+
+        return corsResponse(request, jsonResponse(payload));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ results: [], error: String(e) }, 500));
+      }
+    }
+
     // ★ テスト用: 半年分バックフィル
     if (path === "/api/news-backfill") {
       try {
@@ -1035,374 +3185,22 @@ export default {
     }
 
     /* =====================================================
-       2) Web埋め込みAPI（署名検証なし）
+       2) 404 Not Found
     ===================================================== */
-    if (path === "/web") {
-      if (request.method !== "POST") {
-        return corsResponse(request, new Response("OK", { status: 200 }));
-      }
-
-      let body;
-      try {
-        body = await request.json();
-      } catch {
-        return corsResponse(request, jsonResponse({ error: "Bad JSON" }, 400));
-      }
-
-      const { message, session_id } = body || {};
-      const text = (message || "").toString().trim();
-      const sid = (session_id || "").toString().trim();
-
-      if (!text) {
-        return corsResponse(
-          request,
-          jsonResponse({ reply: "メッセージが空だよ🙂", session_id: sid || null })
-        );
-      }
-
-      const sourceKey = sid ? `web:${sid}` : "web:anon";
-      const modeKey = `mode:${sourceKey}`;
-      let mode = await env.CHAT_HISTORY.get(modeKey);
-
-      console.log("WEB IN:", { sourceKey, text, mode });
-
-      // ===== Web postback（フロントからのボタンアクション）=====
-      if (text.startsWith("postback:")) {
-        const pbData = text.substring("postback:".length);
-        const result = await handleWebPostback(env, sourceKey, pbData);
-        return corsResponse(
-          request,
-          jsonResponse({ ...result, session_id: sid || null })
-        );
-      }
-
-      // メニュー（"メニュー" / "menu"）
-      if (isMenuCommand(text)) {
-        await env.CHAT_HISTORY.delete(modeKey);
-        await env.CHAT_HISTORY.delete(`enmoku:${sourceKey}`);
-        await env.CHAT_HISTORY.delete(`laststep:${sourceKey}`);
-
-        const trainingUrl = url.origin + "/training";
-        return corsResponse(
-          request,
-          jsonResponse({ reply: menuText(), session_id: sid || null, ui: webMenuUI(trainingUrl) })
-        );
-      }
-
-      // ナビホーム（"0" / "戻る"）
-      if (isNaviHomeCommand(text)) {
-        await env.CHAT_HISTORY.delete(`laststep:${sourceKey}`);
-        const trainingUrl = url.origin + "/training";
-        return corsResponse(
-          request,
-          jsonResponse({ ...naviHomeWeb(trainingUrl), session_id: sid || null })
-        );
-      }
-
-      // ひとつ戻る（"9"）
-      if (isBackCommand(text)) {
-        const lastStep = await env.CHAT_HISTORY.get(`laststep:${sourceKey}`);
-        const backPb = computeNavBack(lastStep);
-        const bp = parsePostback(backPb);
-        if (bp.step === "navi_home" || !bp.step) {
-          await env.CHAT_HISTORY.delete(`laststep:${sourceKey}`);
-          const trainingUrl2 = url.origin + "/training";
-          return corsResponse(request, jsonResponse({ ...naviHomeWeb(trainingUrl2), session_id: sid || null }));
-        }
-        // 戻った先を laststep に更新
-        await env.CHAT_HISTORY.put(`laststep:${sourceKey}`, backPb);
-        const result = await handleWebPostback(env, sourceKey, backPb);
-        return corsResponse(request, jsonResponse({ ...result, session_id: sid || null }));
-      }
-
-      // ニュース
-      if (/ニュース/.test(text)) {
-        const html = await newsWebHTML(env);
-        return corsResponse(
-          request,
-          jsonResponse({
-            reply: html, isHTML: true, session_id: sid || null,
-            ui: { type: "nav_buttons", items: [{ label: "🧭 ナビ", action: "postback:step=navi_home" }] }
-          })
-        );
-      }
-
-      // mode未選択：数字で選ばせる
-      if (!mode) {
-        const selected = normalizeModeSelection(text);
-        if (selected) {
-          if (selected === "news") {
-            const html = await newsWebHTML(env);
-            return corsResponse(
-              request,
-              jsonResponse({ reply: html, isHTML: true, session_id: sid || null, ui: { type: "nav_buttons", items: [{ label: "🧭 ナビ", action: "postback:step=navi_home" }] } })
-            );
-          }
-          mode = selected;
-          await env.CHAT_HISTORY.put(modeKey, mode);
-
-          const initResult = await getWebModeInit(env, mode, sourceKey);
-          return corsResponse(
-            request,
-            jsonResponse({ ...initResult, session_id: sid || null, mode })
-          );
-        }
-        const trainingUrl2 = url.origin + "/training";
-        return corsResponse(
-          request,
-          jsonResponse({ reply: menuText(), session_id: sid || null, ui: webMenuUI(trainingUrl2) })
-        );
-      }
-
-      // 例（ヘルプ）
-      if (isHelpCommand(text)) {
-        return corsResponse(
-          request,
-          jsonResponse({ reply: exampleTextForMode(mode), session_id: sid || null, mode })
-        );
-      }
-
-      // ★ クイズ中は「モード切替」より先に処理
-      if (mode === "quiz") {
-        const t = toHalfWidthDigits(text).trim();
-        if (t === "5") {
-          return corsResponse(
-            request,
-            jsonResponse({ reply: quizIntroText(), session_id: sid || null, mode })
-          );
-        }
-
-        const out = await handleQuizMessage(env, sourceKey, text, toHalfWidthDigits, { channel: "web" });
-
-        if (typeof out === "string") {
-          return corsResponse(request, jsonResponse({ reply: out, session_id: sid || null, mode }));
-        }
-        const judge = out?.judge || "OK🙂";
-        return corsResponse(request, jsonResponse({ reply: judge, session_id: sid || null, mode }));
-      }
-
-      // モード切替（クイズ以外）
-      const selectedAnytime = normalizeModeSelection(text);
-      if (selectedAnytime) {
-        if (selectedAnytime === "news") {
-          const html = await newsWebHTML(env);
-          return corsResponse(
-            request,
-            jsonResponse({ reply: html, isHTML: true, session_id: sid || null, ui: { type: "nav_buttons", items: [{ label: "🧭 ナビ", action: "postback:step=navi_home" }] } })
-          );
-        }
-        mode = selectedAnytime;
-        await env.CHAT_HISTORY.put(modeKey, mode);
-
-        const initResult = await getWebModeInit(env, mode, sourceKey);
-        return corsResponse(
-          request,
-          jsonResponse({ ...initResult, session_id: sid || null, mode })
-        );
-      }
-
-      // 迷ってそうなら例を出す
-      if (looksLost(text)) {
-        if (mode === "kera") {
-          return corsResponse(
-            request,
-            jsonResponse({
-              reply: `気良歌舞伎ナビ🙂\nカテゴリから選んでね！`,
-              session_id: sid || null,
-              mode,
-              ui: {
-                type: "buttons",
-                items: [
-                  { label: "📁 カテゴリから選ぶ", action: "postback:step=talk_list" }
-                ],
-                footer: [{ label: "🧭 ナビ", action: "postback:step=navi_home" }]
-              }
-            })
-          );
-        }
-
-        return corsResponse(
-          request,
-          jsonResponse({ reply: exampleTextForMode(mode), session_id: sid || null, mode })
-        );
-      }
-
-      // ★ kera（FAQ）モード：R2 topics を検索 → miss ならローカルフォールバック
-      if (mode === "kera") {
-        const topics = await loadTalkTopics(env);
-        const hit = findTalkTopic(topics, text);
-
-        if (hit) {
-          // WebはカードUIで返しつつ、カテゴリ/一覧へ戻れる導線
-          const cat = String(hit.category || "").trim();
-          return corsResponse(request, jsonResponse({
-            reply: "",
-            session_id: sid || null,
-            mode,
-            ui: {
-              type: "card",
-              title: hit.label || hit.question || "回答",
-              subtitle: cat ? `📁 ${cat}` : "🎭 気良歌舞伎ナビ",
-              body: hit.answer || "",
-              items: [
-                ...(cat ? [{ label: `${cat}に戻る`, action: `postback:step=talk_cat&cat=${encodeURIComponent(cat)}&page=1` }] : []),
-                { label: "カテゴリ一覧", action: "postback:step=talk_list" },
-                { label: "🧭 ナビ", action: "postback:step=navi_home" }
-              ]
-            }
-          }));
-        }
-
-        // FAQ miss → ローカルフォールバック（NAVI/DOJOへ誘導）
-        {
-          const fallback = "その質問はまだカバーできていないよ🙏\n"
-            + "NAVIで演目や用語を調べてみてね！\n"
-            + "👉 https://kerakabuki.kerakabuki.workers.dev/navi";
-
-          return corsResponse(request, jsonResponse({
-            reply: fallback,
-            session_id: sid || null,
-            mode,
-            ui: {
-              type: "nav_buttons",
-              items: [
-                { label: "カテゴリ一覧", action: "postback:step=talk_list" },
-                { label: "🧭 ナビ", action: "postback:step=navi_home" }
-              ]
-            }
-          }));
-        }
-      }
-
-      // 用語モード：R2から直接検索（Web版はテキストで返す）
-      if (mode === "general") {
-        const glossary = await loadGlossary(env);
-        const results = searchGlossary(glossary, text);
-
-        if (results.length > 0) {
-          if (results.length === 1) {
-            const top = results[0];
-            return corsResponse(request, jsonResponse({
-              reply: "",
-              session_id: sid || null,
-              mode,
-              ui: {
-                type: "card",
-                title: top.term,
-                subtitle: top.category,
-                body: top.desc,
-                items: [
-                  { label: "カテゴリ一覧", action: "postback:step=glossary_cat" },
-                  { label: "🧭 ナビ", action: "postback:step=navi_home" }
-                ]
-              }
-            }));
-          }
-
-          return corsResponse(request, jsonResponse({
-            reply: `「${text}」の検索結果（${results.length}件）`,
-            session_id: sid || null,
-            mode,
-            ui: {
-              type: "buttons",
-              items: results.slice(0, 10).map(t => ({
-                label: t.term,
-                action: `postback:step=glossary_term&id=${encodeURIComponent(t.id)}`
-              })),
-              footer: [
-                { label: "カテゴリ一覧", action: "postback:step=glossary_cat" },
-                { label: "🧭 ナビ", action: "postback:step=navi_home" }
-              ]
-            }
-          }));
-        }
-
-        return corsResponse(request, jsonResponse({
-          reply: `「${text}」に該当する用語が見つからなかったよ🙏\n用語名やよみがなで検索してみてね。`,
-          session_id: sid || null,
-          mode,
-          ui: {
-            type: "nav_buttons",
-            items: [
-              { label: "カテゴリ一覧", action: "postback:step=glossary_cat" },
-              { label: "🧭 ナビ", action: "postback:step=navi_home" }
-            ]
-          }
-        }));
-      }
-
-      // おすすめモード：R2から直接検索（Web版はテキストで返す）
-      if (mode === "recommend") {
-        const recData = await loadRecommend(env);
-        const results = searchRecommend(recData.faqs, text);
-
-        if (results.length > 0) {
-          const top = results[0];
-          const reply = `Q: ${top.question}\n\n${top.answer}`;
-
-          const vids = recData.videos || {};
-          const links = (top.enmoku || []).filter(e => vids[e]).map(e => vids[e]);
-
-          return corsResponse(request, jsonResponse({
-            reply,
-            session_id: sid || null,
-            mode,
-            ui: {
-              type: "detail",
-              videos: links.slice(0, 3).map(v => ({ title: v.title, url: v.url })),
-              footer: [
-                { label: "おすすめ一覧", action: "postback:step=recommend_list" },
-                { label: "🧭 ナビ", action: "postback:step=navi_home" }
-              ]
-            }
-          }));
-        }
-
-        return corsResponse(request, jsonResponse({
-          reply: `おすすめの聞き方はこんな感じ🙂\n（例）\n・初心者におすすめは？\n・泣ける演目は？`,
-          session_id: sid || null,
-          mode,
-          ui: {
-            type: "nav_buttons",
-            items: [
-              { label: "おすすめ一覧", action: "postback:step=recommend_list" },
-              { label: "🧭 ナビ", action: "postback:step=navi_home" }
-            ]
-          }
-        }));
-      }
-
-      // ローカルフォールバック（R2データ外のテキスト → NAVIへ誘導）
-      {
-        const base = "その質問にはまだ対応できていないよ🙏\n"
-          + "演目や用語はNAVIで調べてみてね！\n"
-          + "👉 https://kerakabuki.kerakabuki.workers.dev/navi";
-
-        const uiNav = (mode === "performance") ? {
-          type: "nav_buttons",
-          items: [
-            { label: "演目一覧", action: "postback:step=enmoku_list" },
-            { label: "🧭 ナビ", action: "postback:step=navi_home" }
-          ]
-        } : {
-          type: "nav_buttons",
-          items: [
-            { label: "🧭 ナビ", action: "postback:step=navi_home" },
-            { label: "🥋 DOJO", action: "uri:https://kerakabuki.kerakabuki.workers.dev/dojo" }
-          ]
-        };
-
-        return corsResponse(
-          request,
-          jsonResponse({ reply: base, session_id: sid || null, mode, ui: uiNav })
-        );
-      }
-    }
-
-    /* =====================================================
-       3) その他（ヘルスチェック）
-    ===================================================== */
-    return new Response("OK", { status: 200 });
+    const notFoundHTML = pageShell({
+      title: "ページが見つかりません",
+      bodyHTML: `
+        <div style="text-align:center;padding:60px 20px;">
+          <div style="font-size:64px;margin-bottom:16px;">🎭</div>
+          <h2 style="font-size:20px;color:var(--text-primary);margin-bottom:12px;">お探しのページは見つかりませんでした</h2>
+          <p style="color:var(--text-tertiary);font-size:14px;line-height:1.8;margin-bottom:32px;">
+            ページが移動・削除されたか、URLが間違っている可能性があります。
+          </p>
+          <a href="/" style="display:inline-block;padding:12px 32px;background:var(--gold);color:#fff;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">トップページへ戻る</a>
+        </div>`,
+      activeNav: "",
+    });
+    return new Response(notFoundHTML, { status: 404, headers: HTML_HEADERS });
   },
 
   // ── Cron Trigger: ニュース＋公演情報の自動取得 ──
@@ -1424,6 +3222,8 @@ function corsResponse(request, res) {
   const origin = request.headers.get("Origin") || "";
 
   const ALLOW = new Set([
+    "https://kabukiplus.com",
+    "https://www.kabukiplus.com",
     "https://kerakabuki.jimdofree.com",
     "https://cms.e.jimdo.com"
     // "http://localhost:5173"
@@ -1434,7 +3234,7 @@ function corsResponse(request, res) {
     h.set("Vary", "Origin");
   }
 
-  h.set("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS");
+  h.set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
   h.set("Access-Control-Allow-Headers", "Content-Type");
   h.set("Access-Control-Max-Age", "86400");
 
@@ -1476,23 +3276,28 @@ async function handleEvent(event, env, ctx) {
       // ガード: data が空または解析不能なときだけデフォルトでメニューを表示
       const hasKnownAction = p.step != null || p.mode != null || p.quiz != null || /^(mode|step|quiz)=/.test(data);
       if (!data || !hasKnownAction) {
-        await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env, env._origin)]);
+        const welcome = "やあ！けらのすけだよ\n歌舞伎のことなら何でも聞いてね。\n\n「歌舞伎座に初めて行く」\n「義経千本桜ってどんな話？」\nなんて気軽にどうぞ！";
+        await respondLineMessages(env, replyToken, destId, [{
+          type: "text", text: welcome,
+          quickReply: { items: [
+            { type: "action", action: { type: "uri", label: "KABUKI PLUS+", uri: env._origin + "/kabuki/navi" }},
+          ]}
+        }]);
         return;
       }
 
-      // step=menu のみ：メニュー表示（明示的なメニュー戻り）
-      if (p.step === "menu") {
+      // step=menu / step=navi_home → けらのすけ挨拶
+      if (p.step === "menu" || p.step === "navi_home") {
         await env.CHAT_HISTORY.delete(modeKey);
         await env.CHAT_HISTORY.delete(enmokuKey);
         await env.CHAT_HISTORY.delete(`laststep:${sourceKey}`);
-        await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env, env._origin)]);
-        return;
-      }
-
-      // step=navi_home：歌舞伎ナビホーム
-      if (p.step === "navi_home") {
-        await env.CHAT_HISTORY.delete(`laststep:${sourceKey}`);
-        await respondLineMessages(env, replyToken, destId, [naviHomeFlex(env, env._origin)]);
+        const welcome = "やあ！けらのすけだよ\n歌舞伎のことなら何でも聞いてね。\n\n「歌舞伎座に初めて行く」\n「義経千本桜ってどんな話？」\nなんて気軽にどうぞ！";
+        await respondLineMessages(env, replyToken, destId, [{
+          type: "text", text: welcome,
+          quickReply: { items: [
+            { type: "action", action: { type: "uri", label: "KABUKI PLUS+", uri: env._origin + "/kabuki/navi" }},
+          ]}
+        }]);
         return;
       }
 
@@ -1593,13 +3398,8 @@ async function handleEvent(event, env, ctx) {
             return;
           }
           if (modeVal === "quiz") {
-            const qst = await loadQuizState(env, userId || sourceKey);
-            const introText = qst.answered_total > 0
-              ? quizIntroText("line") + `\n\n📊 前回の成績：${qst.correct_total}/${qst.answered_total}問正解`
-              : quizIntroText("line");
-            await respondLineMessages(env, replyToken, destId, [
-              { type: "text", text: introText, quickReply: startQuickReplyForMode("quiz", qst) }
-            ]);
+            await respondLine(env, replyToken, destId,
+              "クイズは KABUKI DOJO でできるよ！\n全100問に挑戦してみてね\n" + env._origin + "/kabuki/dojo");
             return;
           }
           if (modeVal === "news") {
@@ -1714,48 +3514,11 @@ async function handleEvent(event, env, ctx) {
       const mm = data.match(/(?:^|&)mode=([^&]+)/);
       const pickedMode = p.mode || (mm && mm[1] ? decodeURIComponent(mm[1]) : null);
 
-      // ★ クイズ用postback（Quick Reply）
+      // ★ クイズ用postback → Web誘導
       const qm = data.match(/(?:^|&)quiz=([^&]+)/);
       if (qm) {
-        const quizInput = decodeURIComponent(qm[1]);
-
-        // 0=メニュー
-        if (quizInput === "0") {
-          await env.CHAT_HISTORY.delete(modeKey);
-          await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env, env._origin)]);
-          return;
-        }
-
-        const out = await handleQuizMessage(
-          env,
-          userId || sourceKey,
-          quizInput,
-          toHalfWidthDigits,
-          { channel: "line" }
-        );
-
-        if (out?.messages && Array.isArray(out.messages)) {
-          const msgs = [...out.messages];
-          if (out.quickReply && msgs.length > 0) msgs[msgs.length - 1].quickReply = out.quickReply;
-          await respondLineMessages(env, replyToken, destId, msgs);
-          return;
-        }
-
-        if (out?.text && out?.quickReply) {
-          await respondLineMessages(env, replyToken, destId, [{
-            type: "text",
-            text: out.text,
-            quickReply: out.quickReply
-          }]);
-          return;
-        }
-
-        if (typeof out === "string") {
-          await respondLine(env, replyToken, destId, out);
-          return;
-        }
-
-        await respondLine(env, replyToken, destId, out?.judge || "OK🙂");
+        await respondLine(env, replyToken, destId,
+          "クイズは KABUKI DOJO でできるよ！\n全100問に挑戦してみてね\n" + env._origin + "/kabuki/dojo");
         return;
       }
 
@@ -1796,13 +3559,8 @@ async function handleEvent(event, env, ctx) {
         }
 
         if (mode === "quiz") {
-          const qst = await loadQuizState(env, userId || sourceKey);
-          const introText = qst.answered_total > 0
-            ? quizIntroText("line") + `\n\n📊 前回の成績：${qst.correct_total}/${qst.answered_total}問正解`
-            : quizIntroText("line");
-          await respondLineMessages(env, replyToken, destId, [
-            { type: "text", text: introText, quickReply: startQuickReplyForMode("quiz", qst) }
-          ]);
+          await respondLine(env, replyToken, destId,
+            "クイズは KABUKI DOJO でできるよ！\n全100問に挑戦してみてね\n" + env._origin + "/kabuki/dojo");
           return;
         }
 
@@ -1811,7 +3569,7 @@ async function handleEvent(event, env, ctx) {
         return;
       }
 
-      // ここに到達した = 解析はできたがどの分岐にも一致しなかった → デフォルトでメニューのみ表示
+      // ここに到達した = 解析はできたがどの分岐にも一致しなかった
       console.log("POSTBACK unhandled branch:", { sourceKey, data, p: JSON.stringify(p) });
       await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env, env._origin)]);
       return;
@@ -1826,19 +3584,52 @@ async function handleEvent(event, env, ctx) {
     const text = (event.message?.text || "").trim();
     console.log("IN:", { sourceKey, userId, destId, text, mode });
 
-    // メニュー（"メニュー" / "menu"）
-    if (isMenuCommand(text)) {
+    // ★ BASE連携コマンド（LINEグループ専用）
+    const baseLinkMatch = text.match(/^BASE連携\s+([a-zA-Z0-9_-]+)$/);
+    const baseUnlink = /^BASE連携解除$/.test(text);
+    if ((baseLinkMatch || baseUnlink) && event.source?.type === "group") {
+      const lineGroupId = event.source.groupId;
+      if (baseUnlink) {
+        const allGroups = await listGroups(env);
+        let unlinked = false;
+        for (const g of allGroups) {
+          const group = await getGroup(env, g.group_id);
+          if (group && group.line_group_id === lineGroupId) {
+            delete group.line_group_id;
+            await env.CHAT_HISTORY.put(`group:${group.group_id}`, JSON.stringify(group));
+            await respondLine(env, replyToken, destId, `✅ ${group.name} とのBASE連携を解除しました。`);
+            unlinked = true;
+            break;
+          }
+        }
+        if (!unlinked) {
+          await respondLine(env, replyToken, destId, "このLINEグループはどの団体とも連携されていません。");
+        }
+      } else {
+        const kabukiGroupId = baseLinkMatch[1];
+        const group = await getGroup(env, kabukiGroupId);
+        if (!group) {
+          await respondLine(env, replyToken, destId, `❌ 団体「${kabukiGroupId}」が見つかりません。IDを確認してください。`);
+        } else {
+          group.line_group_id = lineGroupId;
+          await env.CHAT_HISTORY.put(`group:${group.group_id}`, JSON.stringify(group));
+          await respondLine(env, replyToken, destId,
+            `✅ ${group.name} とこのLINEグループを連携しました！\n稽古スケジュール登録時にこのグループへ通知されます。\n\n解除するには「BASE連携解除」と送信してください。`);
+        }
+      }
+      return;
+    }
+    if ((baseLinkMatch || baseUnlink) && event.source?.type !== "group") {
+      await respondLine(env, replyToken, destId, "BASE連携コマンドはLINEグループ内でのみ使えます。");
+      return;
+    }
+
+    // メニュー / ナビホーム → Flex Menu
+    if (isMenuCommand(text) || isNaviHomeCommand(text)) {
       await env.CHAT_HISTORY.delete(modeKey);
       await env.CHAT_HISTORY.delete(enmokuKey);
       await env.CHAT_HISTORY.delete(`laststep:${sourceKey}`);
       await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env, env._origin)]);
-      return;
-    }
-
-    // ナビホーム（"0" / "戻る"）
-    if (isNaviHomeCommand(text)) {
-      await env.CHAT_HISTORY.delete(`laststep:${sourceKey}`);
-      await respondLineMessages(env, replyToken, destId, [naviHomeFlex(env, env._origin)]);
       return;
     }
 
@@ -1855,226 +3646,36 @@ async function handleEvent(event, env, ctx) {
       return;
     }
 
-    // mode未選択：数字で選ばせる
-    if (!mode) {
-      const selected = normalizeModeSelection(text);
-      if (selected) {
-        if (selected === "news") {
-          const msg = await newsFlexMessage(env);
-          await respondLineMessages(env, replyToken, destId, [msg]);
-          return;
-        }
-        mode = selected;
-        await env.CHAT_HISTORY.put(modeKey, mode);
-
-        // ★ kera はFAQメニュー
-        if (mode === "kera") {
-          const topics = await loadTalkTopics(env);
-          await respondLineMessages(env, replyToken, destId, [talkMenuFlex(topics, 1)]);
-          return;
-        }
-
-        if (mode === "performance") {
-          await respondLineMessages(env, replyToken, destId, [await enmokuListFlex(env)]);
-          return;
-        }
-        if (mode === "general") {
-          const glossary = await loadGlossary(env);
-          await respondLineMessages(env, replyToken, destId, [glossaryCategoryFlex(glossary)]);
-          return;
-        }
-        if (mode === "recommend") {
-          const recData = await loadRecommend(env);
-          await respondLineMessages(env, replyToken, destId, [recommendListFlex(recData.faqs)]);
-          return;
-        }
-        if (mode === "quiz") {
-          const qst = await loadQuizState(env, userId || sourceKey);
-          const introText = qst.answered_total > 0
-            ? quizIntroText("line") + `\n\n📊 前回の成績：${qst.correct_total}/${qst.answered_total}問正解`
-            : quizIntroText("line");
-          await respondLineMessages(env, replyToken, destId, [
-            { type: "text", text: introText, quickReply: startQuickReplyForMode("quiz", qst) }
-          ]);
-          return;
-        }
-
-        await respondLine(env, replyToken, destId, exampleTextForMode(mode, "line"));
-        return;
-      }
-
-      await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env, env._origin)]);
+    // クイズ → Web誘導
+    if (/クイズ|quiz/i.test(text)) {
+      await respondLine(env, replyToken, destId,
+        "クイズは KABUKI DOJO でできるよ！\n全100問に挑戦してみてね\n" + env._origin + "/kabuki/dojo");
       return;
     }
 
-    // 例（ヘルプ）
-    if (isHelpCommand(text)) {
-      if (mode === "kera") {
-        const topics = await loadTalkTopics(env);
-        await respondLineMessages(env, replyToken, destId, [talkMenuFlex(topics, 1)]);
-        return;
-      }
-      await respondLine(env, replyToken, destId, exampleTextForMode(mode, "line"));
-      return;
-    }
-
-    // クイズ中
-    if (mode === "quiz") {
-      const t = toHalfWidthDigits(text).trim();
-      if (t === "5") {
-        const qst = await loadQuizState(env, userId || sourceKey);
-        const introText = qst.answered_total > 0
-          ? quizIntroText("line") + `\n\n📊 前回の成績：${qst.correct_total}/${qst.answered_total}問正解`
-          : quizIntroText("line");
-        await respondLineMessages(env, replyToken, destId, [
-          { type: "text", text: introText, quickReply: startQuickReplyForMode("quiz", qst) }
-        ]);
-        return;
-      }
-
-      const out = await handleQuizMessage(env, userId || sourceKey, text, toHalfWidthDigits, { channel: "line" });
-
-      if (out?.messages && Array.isArray(out.messages)) {
-        const msgs = [...out.messages];
-        if (out.quickReply && msgs.length > 0) msgs[msgs.length - 1].quickReply = out.quickReply;
-        await respondLineMessages(env, replyToken, destId, msgs);
-        return;
-      }
-
-      if (out?.text && out?.quickReply) {
+    // フォールバック → RAG-AI で回答を試みる
+    // コンテキストが取れた場合のみ AI を呼ぶ（ハルシネーション防止）
+    const aiContext = await buildKabukiContext(env, text).catch((e) => {
+      console.error("buildKabukiContext error:", String(e));
+      return null;
+    });
+    console.log("keraAI context:", aiContext ? `${aiContext.length}chars` : "null", "| text:", text.slice(0, 40));
+    if (aiContext) {
+      const aiReply = await keraAI(env, text, aiContext);
+      if (aiReply) {
         await respondLineMessages(env, replyToken, destId, [{
           type: "text",
-          text: out.text,
-          quickReply: out.quickReply
+          text: aiReply,
+          quickReply: { items: [
+            { type: "action", action: { type: "message", label: "メニュー",      text: "メニュー" } },
+            { type: "action", action: { type: "uri",     label: "KABUKI PLUS+", uri: env._origin + "/kabuki/navi" } },
+          ]},
         }]);
         return;
       }
-
-      if (typeof out === "string") {
-        await respondLine(env, replyToken, destId, out);
-        return;
-      }
-
-      await respondLine(env, replyToken, destId, out?.judge || "OK🙂");
-      return;
     }
-
-    // モード切替（クイズ以外）
-    const selectedAnytime = normalizeModeSelection(text);
-    if (selectedAnytime) {
-      if (selectedAnytime === "news") {
-        const msg = await newsFlexMessage(env);
-        await respondLineMessages(env, replyToken, destId, [msg]);
-        return;
-      }
-      mode = selectedAnytime;
-      await env.CHAT_HISTORY.put(modeKey, mode);
-
-      if (mode === "kera") {
-        const topics = await loadTalkTopics(env);
-        await respondLineMessages(env, replyToken, destId, [talkMenuFlex(topics, 1)]);
-        return;
-      }
-
-      if (mode === "performance") {
-        await respondLineMessages(env, replyToken, destId, [await enmokuListFlex(env)]);
-        return;
-      }
-      if (mode === "general") {
-        const glossary = await loadGlossary(env);
-        await respondLineMessages(env, replyToken, destId, [glossaryCategoryFlex(glossary)]);
-        return;
-      }
-      if (mode === "recommend") {
-        const recData = await loadRecommend(env);
-        await respondLineMessages(env, replyToken, destId, [recommendListFlex(recData.faqs)]);
-        return;
-      }
-      if (mode === "quiz") {
-        const qst = await loadQuizState(env, userId || sourceKey);
-        const introText = qst.answered_total > 0
-          ? quizIntroText("line") + `\n\n📊 前回の成績：${qst.correct_total}/${qst.answered_total}問正解`
-          : quizIntroText("line");
-        await respondLineMessages(env, replyToken, destId, [
-          { type: "text", text: introText, quickReply: startQuickReplyForMode("quiz", qst) }
-        ]);
-        return;
-      }
-
-      await respondLine(env, replyToken, destId, exampleTextForMode(mode, "line"));
-      return;
-    }
-
-    // 迷ってそうなら例を出す
-    if (looksLost(text)) {
-      if (mode === "kera") {
-        const topics = await loadTalkTopics(env);
-        await respondLineMessages(env, replyToken, destId, [talkMenuFlex(topics, 1)]);
-      } else if (mode === "general") {
-        const glossary = await loadGlossary(env);
-        await respondLineMessages(env, replyToken, destId, [glossaryCategoryFlex(glossary)]);
-      } else if (mode === "recommend") {
-        const recData = await loadRecommend(env);
-        await respondLineMessages(env, replyToken, destId, [recommendListFlex(recData.faqs)]);
-      } else {
-        await respondLine(env, replyToken, destId, exampleTextForMode(mode, "line"));
-      }
-      return;
-    }
-
-    // ★ kera（FAQ）モード：R2直検索 → miss ならローカルフォールバック
-    if (mode === "kera") {
-      const topics = await loadTalkTopics(env);
-      const hit = findTalkTopic(topics, text);
-
-      if (hit) {
-        await respondLineMessages(env, replyToken, destId, [talkAnswerFlex(hit)]);
-        return;
-      }
-
-      // FAQ miss → ローカルフォールバック（NAVIへ誘導）
-      await respondLineMessages(env, replyToken, destId, [
-        { type: "text", text: "その質問はまだカバーできていないよ🙏\nNAVIで演目や用語を調べてみてね！\n👉 https://kerakabuki.kerakabuki.workers.dev/navi" },
-        talkMenuFlex(topics, 1)
-      ]);
-      return;
-    }
-
-    // 用語モード：R2直検索
-    if (mode === "general") {
-      const glossary = await loadGlossary(env);
-      const results = searchGlossary(glossary, text);
-      if (results.length > 0) {
-        await respondLineMessages(env, replyToken, destId, [glossarySearchResultFlex(results, text)]);
-      } else {
-        await respondLineMessages(env, replyToken, destId, [{
-          type: "text",
-          text: `「${text}」に該当する用語が見つからなかったよ🙏\n用語名やよみがなで検索してみてね。`
-        }, glossaryCategoryFlex(glossary)]);
-      }
-      return;
-    }
-
-    // おすすめモード：R2直検索
-    if (mode === "recommend") {
-      const recData = await loadRecommend(env);
-      const results = searchRecommend(recData.faqs, text);
-      if (results.length > 0) {
-        await respondLineMessages(env, replyToken, destId, [recommendDetailFlex(results[0], recData)]);
-      } else {
-        await respondLineMessages(env, replyToken, destId, [recommendListFlex(recData.faqs)]);
-      }
-      return;
-    }
-
-    // ローカルフォールバック（R2データ外 → NAVIへ誘導）
-    {
-      const fallbackText = "その質問にはまだ対応できていないよ🙏\n"
-        + "演目や用語はNAVIで調べてみてね！\n"
-        + "👉 https://kerakabuki.kerakabuki.workers.dev/navi"
-        + footerHint(mode, "line");
-      await respondLine(env, replyToken, destId, fallbackText);
-    }
+    // コンテキストなし or AI 失敗 → メニューを表示
+    await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env, env._origin)]);
 
   } catch (e) {
     console.error("handleEvent exception:", String(e?.stack || e));
@@ -2267,7 +3868,7 @@ async function handleLineBack(env, sourceKey, userId, replyToken, destId) {
   }
 
   if (bp.step === "navi_home" || !bp.step) {
-    await respondLineMessages(env, replyToken, destId, [naviHomeFlex(env, env._origin)]);
+    await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env, env._origin)]);
     return;
   }
   if (bp.step === "enmoku_list") {
@@ -2327,7 +3928,7 @@ async function handleLineBack(env, sourceKey, userId, replyToken, destId) {
     return;
   }
   // フォールバック
-  await respondLineMessages(env, replyToken, destId, [naviHomeFlex(env, env._origin)]);
+  await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env, env._origin)]);
 }
 
 function looksLost(text) {
@@ -2542,7 +4143,7 @@ async function handleEnmokuGuidePostback(env, sourceKey, p) {
 
   if (step === "navi_home") {
     await env.CHAT_HISTORY.delete(`laststep:${sourceKey}`);
-    return { messages: [naviHomeFlex(env, env._origin)] };
+    return { messages: [mainMenuFlex(env, env._origin)] };
   }
 
   if (step === "enmoku_list") {
@@ -2780,121 +4381,174 @@ function searchGlossary(terms, query) {
 }
 
 /* =========================================================
-   Web UI 初期表示/ポストバック処理
+   RAG-based AI（ハルシネーション防止）
+   ─────────────────────────────────────────────────────────
+   設計方針：
+   1. ユーザーのテキストから演目・用語・FAQをキーワードマッチ
+   2. ヒットしたデータのみをコンテキストとして AI に渡す
+   3. コンテキストなし → AI を呼ばずメニューへフォールバック
+   4. システムプロンプトで「参考データ外は答えるな」と厳命
+   5. max_tokens 制限で短い回答を強制（長い回答ほど幻覚が増える）
 ========================================================= */
-async function getWebModeInit(env, mode, sourceKey) {
-  // ★ kera：カテゴリ一覧（フォルダ）→ talk_cat へ
-  if (mode === "kera") {
-    const { topics, categories } = await loadTalkData(env);
 
-    // categories があるならそれを優先。無い場合は topics から推定
-    let cats = (categories || []).filter(c => c && c.key && c.key !== "メニュー");
-    if (cats.length === 0) {
-      const set = new Set((topics || []).map(t => String(t.category || "").trim()).filter(Boolean));
-      set.delete("メニュー");
-      cats = Array.from(set).map((k, i) => ({ key: k, icon: "📁", order: i + 1 }));
-    }
+/**
+ * ユーザーのテキストに関連するデータを R2 から収集してコンテキスト文字列を返す。
+ * 何も見つからなければ null を返す（AI 呼び出しをスキップするシグナル）。
+ */
+async function buildKabukiContext(env, userText) {
+  const q = (userText || "").toLowerCase();
+  const qNorm = q.replace(/[\s　]/g, ""); // スペース・全角スペース除去
+  const parts = [];
 
-    cats.sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+  // クエリから 3-gram セットを事前生成（演目・用語・FAQ 共用）
+  const qGrams = new Set();
+  for (let i = 0; i <= qNorm.length - 3; i++) qGrams.add(qNorm.slice(i, i + 3));
 
-    return {
-      reply: `気良歌舞伎ナビ🙂\nカテゴリをえらんでね！`,
-      ui: {
-        type: "buttons",
-        items: cats.map(c => ({
-          label: `${c.icon || "📁"} ${c.key}`,
-          action: `postback:step=talk_cat&cat=${encodeURIComponent(c.key)}&page=1`
-        })),
-        footer: [{ label: "🧭 ナビ", action: "postback:step=navi_home" }]
-      }
-    };
-  }
-
-  if (mode === "performance") {
+  // ── 1. 演目マッチング（N-gram、双方向） ────────────────────
+  // catalog エントリのフィールド: { id, short, full, sort_key, group }
+  try {
     const catalog = await loadEnmokuCatalog(env);
+    console.log("keraCtx catalog:", catalog.length, "| qNorm:", qNorm.slice(0, 20));
+    for (const item of (catalog || [])) {
+      const full  = (item.full  || item.title       || "").toLowerCase().replace(/[\s　]/g, "");
+      const short = (item.short || item.title_short || "").toLowerCase().replace(/[\s　]/g, "");
+      const hay   = full + short;
 
-    const groups = [];
-    const groupMap = {};
-    for (const e of catalog) {
-      if (e.group) {
-        if (!(e.group in groupMap)) {
-          groupMap[e.group] = groups.length;
-          groups.push({ label: e.group, items: [] });
+      // 方向1: クエリの3-gram がタイトルに含まれるか
+      let matched = hay.includes(qNorm) || qNorm.includes(hay) ||
+        (qGrams.size > 0 && [...qGrams].some(g => hay.includes(g)));
+      // 方向2: タイトルの3-gram がクエリに含まれるか（逆方向）
+      if (!matched && hay.length >= 3) {
+        for (let i = 0; i <= hay.length - 3 && !matched; i++) {
+          if (qNorm.includes(hay.slice(i, i + 3))) matched = true;
         }
-        groups[groupMap[e.group]].items.push(e);
-      } else {
-        groups.push({ label: null, items: [e] });
+      }
+
+      if (matched) {
+        console.log("keraCtx enmoku match:", item.id);
+        // enmoku JSONが壊れていても catalog のタイトルだけでコンテキストを作る
+        const data = await loadEnmokuJson(env, item.id).catch(() => null);
+        let ctxLine = `【演目】${data?.title || item.full || item.short || item.id}`;
+        if (data) {
+          const details = [];
+          if (data.synopsis) details.push(`あらすじ: ${String(data.synopsis).slice(0, 300)}`);
+          const hiArr = Array.isArray(data.highlights) ? data.highlights : (typeof data.highlights === "string" && data.highlights ? [data.highlights] : []);
+          if (hiArr.length) details.push(`見どころ: ${hiArr.slice(0, 3).join("／")}`);
+          try {
+            if (data.cast?.length) {
+              const castLine = data.cast.slice(0, 4)
+                .map(c => `${(c && c.name) || ""}（${(c && c.role) || ""}）`)
+                .filter(s => s !== "（）").join("、");
+              if (castLine) details.push(`主な登場人物: ${castLine}`);
+            }
+          } catch (_) {} // castデータが壊れていても synopsis/highlights は保持
+          if (details.length) ctxLine += "\n" + details.join("\n");
+        }
+        console.log("keraCtx enmoku push:", item.id, "linelen:", ctxLine.length);
+        parts.push(ctxLine); // 例外の外で必ず push
+        break;
       }
     }
+  } catch (e) { console.error("keraCtx enmoku err:", String(e)); }
 
-    const buttons = [];
-    for (const g of groups) {
-      if (g.label && g.items.length > 1) {
-        buttons.push({
-          label: `📁 ${g.label}（${g.items.length}演目）`,
-          action: `postback:step=group&group=${encodeURIComponent(g.label)}`
-        });
-      } else {
-        buttons.push({
-          label: g.items[0].short,
-          action: `postback:step=enmoku&enmoku=${encodeURIComponent(g.items[0].id)}`
-        });
-      }
-    }
-
-    return {
-      reply: `演目をえらんでね🙂（全${catalog.length}演目）\nテキストで質問してもOKだよ！`,
-      ui: { type: "buttons", items: buttons, footer: [{ label: "🧭 ナビ", action: "postback:step=navi_home" }] }
-    };
-  }
-
-  if (mode === "general") {
+  // ── 2. 用語マッチング ─────────────────────────────────────
+  // 「クエリに用語名が含まれるか」方向でマッチ（旧実装の逆）
+  // 例: "忠臣蔵ってどんな話？" → qNorm に "忠臣蔵" が含まれる → マッチ
+  try {
     const glossary = await loadGlossary(env);
-    const catCounts = {};
-    glossary.forEach(t => { catCounts[t.category] = (catCounts[t.category] || 0) + 1; });
+    console.log("keraCtx glossary:", glossary.length);
+    const matched = (glossary || []).filter(t => {
+      const term    = (t.term    || "").toLowerCase().replace(/[\s　]/g, "");
+      const reading = (t.reading || "").toLowerCase().replace(/[\s　]/g, "");
+      if (term.length < 2) return false;
+      // クエリにterm名またはよみが含まれる
+      if (qNorm.includes(term))                              return true;
+      if (reading.length >= 2 && qNorm.includes(reading))   return true;
+      // または term の3-gram がクエリの3-gram セットと重複
+      if (term.length >= 3) {
+        for (let i = 0; i <= term.length - 3; i++) {
+          if (qGrams.has(term.slice(i, i + 3))) return true;
+        }
+      }
+      return false;
+    }).slice(0, 3);
+    for (const t of matched) {
+      const desc = (t.desc || t.description || "").slice(0, 200);
+      if (desc) parts.push(`【用語】${t.term}（${t.reading || ""}）: ${desc}`);
+    }
+  } catch (e) { console.error("keraCtx gloss err:", String(e)); }
 
-    const buttons = GLOSSARY_CAT_ORDER
-      .filter(c => catCounts[c.key])
-      .map(c => ({
-        label: `${c.icon} ${c.key}（${catCounts[c.key]}語）`,
-        action: `postback:step=glossary_list&cat=${encodeURIComponent(c.key)}`
-      }));
+  // ── 3. FAQ マッチング（FAQ質問の3-gram → クエリ方向） ─────────
+  // FAQ 質問の 3-gram がクエリに含まれる場合にマッチ（ノイズ語混入を防ぐ逆方向）
+  try {
+    const topics = await loadTalkTopics(env);
+    console.log("keraCtx topics:", topics.length);
+    for (const topic of (topics || [])) {
+      const tq = (topic.q || "").toLowerCase().replace(/[\s　？。、！]/g, "");
+      if (tq.length < 3) continue;
+      // FAQ質問の3-gramがクエリに含まれる個数をカウント
+      let matchCount = 0;
+      for (let i = 0; i <= tq.length - 3; i++) {
+        if (qNorm.includes(tq.slice(i, i + 3))) matchCount++;
+      }
+      // 短い質問は1gram一致でOK、長い質問は2gram以上必要
+      const threshold = tq.length <= 6 ? 1 : 2;
+      if (matchCount >= threshold) {
+        parts.push(`【FAQ】Q: ${topic.q}\nA: ${String(topic.a || "").slice(0, 250)}`);
+        if (parts.length >= 5) break;
+      }
+    }
+  } catch (e) { console.error("keraCtx faq err:", String(e)); }
 
-    return {
-      reply: `歌舞伎用語いろは（全${glossary.length}語）🙂\nカテゴリをえらんでね！用語を直接入力しても検索できるよ。`,
-      ui: { type: "buttons", items: buttons, footer: [{ label: "🧭 ナビ", action: "postback:step=navi_home" }] }
-    };
-  }
+  console.log("keraCtx parts:", parts.length, "| first50:", parts[0]?.slice(0, 50));
+  if (parts.length === 0) return null;
 
-  if (mode === "recommend") {
-    const recData = await loadRecommend(env);
-    const buttons = (recData.faqs || []).map(f => ({
-      label: f.label,
-      action: `postback:step=recommend_detail&id=${encodeURIComponent(f.id)}`
-    }));
-
-    return {
-      reply: `おすすめ演目🙂\n気になる質問をタップしてね！テキストで聞いてもOK。`,
-      ui: { type: "buttons", items: buttons, footer: [{ label: "🧭 ナビ", action: "postback:step=navi_home" }] }
-    };
-  }
-
-  if (mode === "quiz") {
-    return { reply: quizIntroText() };
-  }
-
-  if (mode === "news") {
-    const html = await newsWebHTML(env);
-    return {
-      reply: html,
-      isHTML: true,
-      ui: { type: "nav_buttons", items: [{ label: "🧭 ナビ", action: "postback:step=navi_home" }] }
-    };
-  }
-
-  return { reply: exampleTextForMode(mode) };
+  const result = parts.join("\n\n");
+  console.log("keraCtx result len:", result.length);
+  return result.slice(0, 1800);
 }
 
+/** Workers AI（無料枠）を使って歌舞伎 Q&A に回答する。
+ *  ハルシネーション防止のコアルール：
+ *  - 参考データにない情報は「わからない」と正直に答える
+ *  - 俳優名・年号・史実を推測・創作しない
+ *  - コンテキストなしでは呼ばない（呼び出し元で制御）
+ */
+async function keraAI(env, userText, context) {
+  const systemPrompt = [
+    "You are けらのすけ, a friendly kabuki assistant for 気良歌舞伎 in Gujo City, Japan.",
+    "Answer in Japanese only. Keep answers under 150 characters.",
+    "",
+    "Rules:",
+    "- Use ONLY the information in [DATA] below.",
+    "- If [DATA] covers the topic partially, answer with what you know and say 「詳しくは演目ガイドを見てね🙏」",
+    "- If [DATA] has no relevant info, say 「けらのすけには詳しい情報がないや🙏 演目ガイドで確認してみてね！」",
+    "- Do NOT add facts, names, dates, or story details that are not in [DATA].",
+    "- Be warm and friendly, like talking to a kabuki fan.",
+    "",
+    "[DATA]",
+    context,
+  ].join("\n");
+
+  try {
+    const result = await env.AI.run("@cf/meta/llama-3.1-8b-instruct", {
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user",   content: userText },
+      ],
+      max_tokens: 350,
+    });
+    const reply = (result?.response || "").trim();
+    return reply || null;
+  } catch (e) {
+    console.error("keraAI error:", String(e));
+    return null;
+  }
+}
+
+/* (getWebModeInit / handleWebPostback は Web ウィジェット廃止に伴い削除) */
+
+/* handleWebPostback 関数はウィジェット廃止により削除
 async function handleWebPostback(env, sourceKey, pbData) {
   const params = new URLSearchParams(pbData);
   const step = params.get("step");
@@ -3348,11 +5002,7 @@ async function handleWebPostback(env, sourceKey, pbData) {
 
   return { reply: "ごめん、うまく処理できなかったよ🙏" };
 }
-
-/* =========================================================
-   LLM フォールバック（将来 Workers AI で置き換え予定）
-   現在は Dify 依存を排除し、R2データ＋ローカル応答で完結。
-========================================================= */
+handleWebPostback 関数ここまで */
 
 /* =========================================================
    LINE send helpers（LINE専用: Messaging API）
@@ -3462,6 +5112,40 @@ function normalizeLineMessages(messages) {
 async function respondLineMessages(env, replyToken, destId, messages) {
   const ok = await replyLineMessages(env, replyToken, messages);
   if (!ok && destId) await pushLineMessages(env, destId, messages);
+}
+
+/* =========================================================
+   稽古スケジュール LINE通知
+========================================================= */
+async function notifyScheduleToMembers(env, groupId, schedule) {
+  const group = await getGroup(env, groupId);
+  if (!group || !group.line_group_id) return;
+
+  const days = ["日","月","火","水","木","金","土"];
+  function dateLabel(d) {
+    if (!d) return "";
+    const parts = d.split("-");
+    const dt = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
+    return `${dt.getMonth()+1}月${dt.getDate()}日(${days[dt.getDay()]})`;
+  }
+
+  const datePart = dateLabel(schedule.date);
+  const timePart = schedule.time_start
+    ? (schedule.time_end ? `${schedule.time_start}〜${schedule.time_end}` : schedule.time_start)
+    : "";
+  const locPart = schedule.location ? `📍 ${schedule.location}` : "";
+  const lines = [
+    `【稽古スケジュール登録】`,
+    `${datePart}${timePart ? " " + timePart : ""}`,
+    schedule.title,
+    locPart,
+    schedule.note ? schedule.note : "",
+    ``,
+    `出欠回答はこちら 👇`,
+    `https://kabukiplus.com/groups/${groupId}/schedule`
+  ].filter(l => l !== undefined && l !== null && !(l === "" && !locPart && !schedule.note)).join("\n").trim();
+
+  await pushLine(env, group.line_group_id, lines);
 }
 
 /* =========================================================

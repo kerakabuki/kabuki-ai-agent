@@ -10,7 +10,7 @@ export function groupNotesPageHTML(group) {
       title: "団体が見つかりません",
       bodyHTML: `<div class="empty-state">指定された団体は登録されていません。</div>`,
       brand: "jikabuki",
-      activeNav: "jikabuki",
+      activeNav: "base",
     });
   }
 
@@ -20,7 +20,7 @@ export function groupNotesPageHTML(group) {
 
   const bodyHTML = `
     <div class="breadcrumb">
-      <a href="/">トップ</a><span>&rsaquo;</span><a href="/jikabuki">JIKABUKI PLUS+</a><span>&rsaquo;</span><a href="/groups/${gid}">${name}</a><span>&rsaquo;</span>稽古メモ
+      <a href="/">トップ</a><span>&rsaquo;</span><a href="/jikabuki/base">BASE</a><span>&rsaquo;</span><a href="/jikabuki/gate/${gid}">${name}</a><span>&rsaquo;</span>稽古メモ
     </div>
 
     <div id="gn-app">
@@ -44,8 +44,8 @@ export function groupNotesPageHTML(group) {
       function loadNotes() {
         fetch("/api/groups/" + GID + "/notes")
           .then(function(r){ return r.json(); })
-          .then(function(data){ notes = data.notes || []; render(); })
-          .catch(function(){ notes = []; render(); });
+          .then(function(data){ notes = data.notes || []; render(); checkUrlParams(); })
+          .catch(function(){ notes = []; render(); checkUrlParams(); });
       }
 
       function render() {
@@ -156,6 +156,26 @@ export function groupNotesPageHTML(group) {
         }).catch(function(e){ console.error("Save error:", e); });
       }
 
+      function checkUrlParams() {
+        var params = new URLSearchParams(window.location.search);
+        var tag = params.get("tag");
+        var date = params.get("date");
+        if (tag || date) {
+          var preset = { text: "", tags: [], video_url: "" };
+          if (tag) preset.tags = [tag];
+          if (date) {
+            preset.tags = preset.tags || [];
+            if (date && preset.tags.indexOf(date) < 0) {
+              preset.tags.push(date);
+            }
+          }
+          showForm(preset, null);
+          if (window.history && window.history.replaceState) {
+            window.history.replaceState({}, "", window.location.pathname);
+          }
+        }
+      }
+
       window.GN = {
         showAdd: function(){ showForm(null, null); },
         editNote: function(idx){ showForm(notes[idx], idx); },
@@ -174,7 +194,7 @@ export function groupNotesPageHTML(group) {
     title: `稽古メモ - ${g.name}`,
     subtitle: "気づきの記録＋参考URLリンク",
     bodyHTML,
-    activeNav: "jikabuki",
+    activeNav: "base",
     brand: "jikabuki",
     headExtra: `<style>
       .gn-toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 1rem; }

@@ -5,10 +5,10 @@
 // =========================================================
 import { pageShell, escHTML } from "./web_layout.js";
 
-export function enmokuPageHTML() {
+export function enmokuPageHTML({ googleClientId = "" } = {}) {
   const bodyHTML = `
     <div class="breadcrumb" id="breadcrumb">
-      <a href="/">トップ</a><span>›</span><span id="bc-tail">演目ガイド</span>
+      <a href="/">トップ</a><span>›</span><a href="/kabuki/navi">KABUKI NAVI</a><span>›</span><span id="bc-tail">演目ガイド</span>
     </div>
     <div id="app">
       <div class="loading">演目データを読み込み中…</div>
@@ -174,6 +174,14 @@ export function enmokuPageHTML() {
           }
           html += '</div>';
         });
+
+        // 執筆者クレジット
+        if (data.authors && data.authors.length) {
+          html += '<div class="enmoku-authors">';
+          html += '<span class="enmoku-authors-label">\u270D\uFE0F \u57F7\u7B46:</span> ';
+          html += data.authors.map(function(a) { return esc(a.displayName || '\u533F\u540D'); }).join('\u3001');
+          html += '</div>';
+        }
 
         html += '<div style="margin-top:1.5rem;display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">';
         html += '<a href="/kabuki/navi/enmoku" class="btn btn-secondary" onclick="return nav(this)">← 演目一覧に戻る</a>';
@@ -393,6 +401,7 @@ export function enmokuPageHTML() {
     subtitle: "あらすじ・みどころ・登場人物",
     bodyHTML,
     activeNav: "navi",
+    googleClientId,
     headExtra: `<style>
       .enmoku-group {
         margin-bottom: 1.5rem;
@@ -508,6 +517,18 @@ export function enmokuPageHTML() {
         color: var(--aka);
         font-size: 0.88rem;
         font-weight: bold;
+      }
+      .enmoku-authors {
+        margin-top: 1.2rem;
+        padding: 10px 14px;
+        font-size: 13px;
+        color: var(--text-secondary);
+        background: var(--bg-subtle);
+        border-radius: var(--radius-sm);
+      }
+      .enmoku-authors-label {
+        font-weight: 600;
+        color: var(--text-tertiary);
       }
     </style>`,
   });

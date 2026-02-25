@@ -37,7 +37,7 @@ export function kawarabanPageHTML() {
 
   const bodyHTML = `
     <div class="breadcrumb">
-      <a href="/">トップ</a><span>›</span><a href="/jikabuki/gate/kera">JIKABUKI PLUS+</a><span>›</span><a href="/jikabuki/gate/kera/about">気良歌舞伎とは</a><span>›</span>地歌舞伎かわら版
+      <a href="/">トップ</a><span>›</span><a href="/jikabuki/gate/kera">JIKABUKI PLUS+</a><span>›</span><a href="/jikabuki/gate/kera">気良歌舞伎</a><span>›</span>地歌舞伎かわら版
     </div>
 
     <section class="kw-intro fade-up">

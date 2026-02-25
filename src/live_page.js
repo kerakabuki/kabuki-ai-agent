@@ -5,14 +5,95 @@
 // =========================================================
 import { pageShell } from "./web_layout.js";
 import { loadEnmokuCatalog } from "./flex_enmoku.js";
+import { pickFeatured, saveMissedToKV } from "./featured_enmoku.js";
+import { getPerformancesCached } from "./kabuki_bito.js";
+
+/* ── 注目演目ブロック HTML 生成 ── */
+function buildFeaturedHTML(featured) {
+  if (!featured) return "";
+  const { thisMonth, nextMonth, showNextMonth } = featured;
+  if (!thisMonth && !nextMonth) return "";
+
+  function card(item, labelPrefix, icon) {
+    if (!item) return "";
+    const naviLink = item.naviId
+      ? `<a href="/kabuki/navi/enmoku/${encodeURIComponent(item.naviId)}" class="featured-navi-link">演目ガイドを見る →</a>`
+      : `<span class="featured-no-navi">ガイド準備中</span>`;
+    const cdText = item.countdown != null
+      ? `<span class="featured-countdown">${icon} ${item.countdownLabel}あと<strong>${item.countdown}</strong>日</span>`
+      : "";
+    const theaters = item.theaters.length
+      ? `<span class="featured-theaters">${item.theaters.join("・")}</span>`
+      : "";
+    return `<div class="featured-card">
+      <div class="featured-label">${labelPrefix}</div>
+      <div class="featured-title">${escHtml(item.title)}</div>
+      ${cdText}
+      ${theaters}
+      <div class="featured-actions">${naviLink}</div>
+    </div>`;
+  }
+
+  let html = '<section class="live-section fade-up" id="featured-section">';
+  html += '<h2 class="section-title">🎯 注目の演目</h2>';
+  html += '<div class="featured-grid">';
+  html += card(thisMonth, "今月の注目", "⏳");
+  if (showNextMonth && nextMonth) {
+    html += card(nextMonth, "来月の注目", "⏳");
+  }
+  html += '</div></section>';
+  return html;
+}
+
+function escHtml(s) {
+  return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
 
 export async function livePageHTML(env) {
   /* enmoku タイトルをサーバー側で取得して HTML に埋め込む（クライアントフェッチ不要） */
   let enmokuTitlesJson = "[]";
+  let featuredHTML = "";
   try {
     const catalog = env ? await loadEnmokuCatalog(env) : [];
     const titles = (catalog || []).map(e => ({ id: e.id, short: e.short || "", full: e.full || "" }));
     enmokuTitlesJson = JSON.stringify(titles).replace(/</g, "\\u003c").replace(/>/g, "\\u003e");
+
+    // 注目演目を計算
+    if (env) {
+      try {
+        const perfData = await getPerformancesCached(env);
+        const items = (perfData.items || []).map(p => {
+          if (!p.period_text) return p;
+          const ms = p.period_text.match(/(\d{4})年(\d{1,2})月(?:(\d{1,2})日)?/);
+          if (!ms) return p;
+          const y = +ms[1], mo = +ms[2], d = ms[3] ? +ms[3] : 1;
+          const extra = { month_key: y * 100 + mo, start_date: `${y}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}` };
+          const endPart = p.period_text.split(/[〜～]/).slice(1).join('');
+          if (endPart) {
+            const ef = endPart.match(/(\d{4})年(\d{1,2})月(\d{1,2})日/);
+            const em = endPart.match(/(\d{1,2})月(\d{1,2})日/);
+            const ed = endPart.match(/^[^\d]*(\d{1,2})日/);
+            if (ef) extra.end_date = `${ef[1]}-${String(+ef[2]).padStart(2,'0')}-${String(+ef[3]).padStart(2,'0')}`;
+            else if (em) extra.end_date = `${y}-${String(+em[1]).padStart(2,'0')}-${String(+em[2]).padStart(2,'0')}`;
+            else if (ed) extra.end_date = `${y}-${String(mo).padStart(2,'0')}-${String(+ed[1]).padStart(2,'0')}`;
+          }
+          return { ...p, ...extra };
+        });
+        const featured = await pickFeatured(items, env);
+        featuredHTML = buildFeaturedHTML(featured);
+
+        // LABO用: missed をKVに保存（非同期・失敗しても無視）
+        if (featured.missed.length) {
+          const jst = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Tokyo" }));
+          const nextKey = jst.getMonth() === 11
+            ? (jst.getFullYear() + 1) * 100 + 1
+            : jst.getFullYear() * 100 + (jst.getMonth() + 2);
+          saveMissedToKV(env, featured.missed, nextKey).catch(() => {});
+        }
+      } catch (e) {
+        console.error("featured_enmoku error:", String(e?.stack || e));
+      }
+    }
   } catch (_) { /* フォールバック: マッチなしで表示 */ }
   const bodyHTML = `
     <div class="breadcrumb">
@@ -26,10 +107,12 @@ export async function livePageHTML(env) {
       </p>
     </section>
 
+    ${featuredHTML}
+
     <!-- ── 推し俳優ニュース ── -->
     <section class="live-section fade-up" id="oshi-section">
       <div class="section-title-row">
-        <h2 class="section-title">⭐ 推し俳優ニュース</h2>
+        <h2 class="section-title">⭐ 推し俳優ニュース<span class="oshi-count-badge" id="oshi-count-badge"></span></h2>
         <button class="oshi-manage-btn" id="oshi-manage-btn" onclick="LiveOshi.openPanel()">推しを管理</button>
       </div>
       <div id="oshi-section-body"><div class="loading" style="font-size:13px;">読み込み中…</div></div>
@@ -198,30 +281,42 @@ export async function livePageHTML(env) {
         fetchOshiNews(favs);
       }
 
+      /* oshi-news-items を毎回 ID で再取得して更新（stale 参照を避ける） */
+      function setOshiNews(html) {
+        var el = document.getElementById("oshi-news-items");
+        if (el) el.innerHTML = html;
+        var count = el ? el.querySelectorAll('a.oshi-news-row').length : 0;
+        var badge = document.getElementById('oshi-count-badge');
+        if (badge) badge.textContent = count > 0 ? count + '件' : '';
+      }
+
       function fetchOshiNews(favs) {
         var names = favs.map(normName).filter(Boolean);
-        var el = document.getElementById("oshi-news-items");
-        if (!el || !names.length) return;
+        if (!names.length) { setOshiNews('<p class="oshi-no-news">\u63a8\u3057\u4ff3\u512a\u3092\u767b\u9332\u3057\u3066\u304f\u3060\u3055\u3044\u3002<\/p>'); return; }
+        var timer = setTimeout(function() {
+          setOshiNews('<p class="oshi-no-news">\u30cb\u30e5\u30fc\u30b9\u306e\u53d6\u5f97\u306b\u6642\u9593\u304c\u304b\u304b\u3063\u3066\u3044\u307e\u3059\u3002\u3057\u3070\u3089\u304f\u304a\u5f85\u3061\u304f\u3060\u3055\u3044\u3002<\/p>');
+        }, 12000);
         fetch("/api/oshi-news?actors=" + encodeURIComponent(names.join(",")))
           .then(function(r){ return r.json(); })
           .then(function(data) {
-            if (!el) return;
+            clearTimeout(timer);
             var rows = ((data && data.results) || []).filter(function(r){ return r.article; });
             if (!rows.length) {
-              el.innerHTML = '<p class="oshi-no-news">\u73fe\u5728\u3001\u63a8\u3057\u4ff3\u512a\u306e\u6700\u65b0\u30cb\u30e5\u30fc\u30b9\u306f\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3067\u3057\u305f\u3002<\/p>';
+              setOshiNews('<p class="oshi-no-news">\u73fe\u5728\u3001\u63a8\u3057\u4ff3\u512a\u306e\u30cb\u30e5\u30fc\u30b9\u306f\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3067\u3057\u305f\u3002<\/p>');
               return;
             }
-            el.innerHTML = rows.map(function(r) {
+            setOshiNews(rows.map(function(r) {
               var pub = r.article.pubTs ? (function(ts){ var d=new Date(ts); return (d.getMonth()+1)+"/"+d.getDate(); })(r.article.pubTs) : "";
               return '<a href="' + esc(r.article.link||"#") + '" target="_blank" rel="noopener" class="oshi-news-row">'
-                + '<span class="oshi-news-actor-tag">' + esc(normName(r.actor)) + '<\/span>'
+                + '<span class="oshi-news-actor-tag">' + esc(normName(r.actor||"")) + '<\/span>'
                 + '<span class="oshi-news-title">' + esc(r.article.title||"") + '<\/span>'
                 + (pub ? '<span class="oshi-news-date">' + esc(pub) + '<\/span>' : '')
                 + '<\/a>';
-            }).join('');
+            }).join(''));
           })
           .catch(function() {
-            if (el) el.innerHTML = '<p class="oshi-no-news">\u30cb\u30e5\u30fc\u30b9\u306e\u8aad\u307f\u8fbc\u307f\u306b\u5931\u6557\u3057\u307e\u3057\u305f\u3002<\/p>';
+            clearTimeout(timer);
+            setOshiNews('<p class="oshi-no-news">\u30cb\u30e5\u30fc\u30b9\u306e\u8aad\u307f\u8fbc\u307f\u306b\u5931\u6557\u3057\u307e\u3057\u305f\u3002<\/p>');
           });
       }
 
@@ -282,7 +377,7 @@ export async function livePageHTML(env) {
           return '<div class="oshi-reg-row">'
             + '<span class="oshi-reg-icon">\uD83C\uDFAD<\/span>'
             + '<span class="oshi-reg-name">\u2605 ' + esc(name) + '<\/span>'
-            + '<button class="oshi-remove-btn" onclick="LiveOshi.toggle(\'' + name.replace(/'/g,"\\'") + '\')">\u89e3\u9664<\/button>'
+            + '<button class="oshi-remove-btn" onclick="LiveOshi.toggle(\\'' + name.replace(/'/g,"\\\\'") + '\\')">\u89e3\u9664<\/button>'
             + '<\/div>';
         }).join('');
       }
@@ -300,7 +395,7 @@ export async function livePageHTML(env) {
           return '<div class="oshi-reg-row">' + badge
             + '<div class="oshi-reg-info"><div class="oshi-reg-name">\u2605 ' + esc(name) + '<\/div>'
             + (sub ? '<div class="oshi-reg-sub">' + esc(sub) + '<\/div>' : '') + '<\/div>'
-            + '<button class="oshi-remove-btn" onclick="LiveOshi.toggle(\'' + name.replace(/'/g,"\\'") + '\')">\u89e3\u9664<\/button>'
+            + '<button class="oshi-remove-btn" onclick="LiveOshi.toggle(\\'' + name.replace(/'/g,"\\\\'") + '\\')">\u89e3\u9664<\/button>'
             + '<\/div>';
         }).join('');
       }
@@ -309,7 +404,7 @@ export async function livePageHTML(env) {
         return POPULAR.map(function(name) {
           var isFav = favs.indexOf(name) >= 0;
           var yago = meikan ? (function(){ var i = findMeikan(meikan, name); return i && i.yago ? i.yago.substring(0,3) : ''; })() : '';
-          return '<div class="oshi-actor-chip' + (isFav ? ' is-fav' : '') + '" onclick="LiveOshi.toggle(\'' + name.replace(/'/g,"\\'") + '\')">'
+          return '<div class="oshi-actor-chip' + (isFav ? ' is-fav' : '') + '" onclick="LiveOshi.toggle(\\'' + name.replace(/'/g,"\\\\'") + '\\')">'
             + (yago ? '<span class="oshi-chip-yago">' + esc(yago) + '<\/span>' : '')
             + '<span class="oshi-chip-name">' + esc(name) + '<\/span>'
             + '<span class="oshi-chip-badge">' + (isFav ? '\u767b\u9332\u6e08' : '\uff0b') + '<\/span>'
@@ -366,7 +461,7 @@ export async function livePageHTML(env) {
               var name = (a.name_kanji||'').replace(/\s+/g,'');
               var isFav = f.indexOf(name) >= 0;
               var yago = a.yago ? a.yago.substring(0,3) : '';
-              return '<div class="oshi-actor-chip' + (isFav ? ' is-fav' : '') + '" onclick="LiveOshi.toggle(\'' + name.replace(/'/g,"\\'") + '\')">'
+              return '<div class="oshi-actor-chip' + (isFav ? ' is-fav' : '') + '" onclick="LiveOshi.toggle(\\'' + name.replace(/'/g,"\\\\'") + '\\')">'
                 + (yago ? '<span class="oshi-chip-yago">' + esc(yago) + '<\/span>' : '')
                 + '<span class="oshi-chip-name">' + esc(name) + '<\/span>'
                 + '<span class="oshi-chip-badge">' + (isFav ? '\u767b\u9332\u6e08' : '\uff0b') + '<\/span>'
@@ -376,26 +471,30 @@ export async function livePageHTML(env) {
         }
       };
 
-      /* ── 初期化：auth 確認 → サーバーデータマージ → 描画 ── */
+      /* ── 初期化：ローカルデータで即時描画 → auth 後にサーバーマージ ── */
+      renderSection(); // localStorage のデータで即時表示
+
       fetch('/api/auth/me', { credentials: 'same-origin' })
         .then(function(r){ return r.json(); })
         .then(function(auth) {
           authChecked = true;
-          if (!auth.loggedIn) { renderSection(); return; }
+          if (!auth.loggedIn) return;
           isLoggedIn = true;
           return fetch('/api/userdata', { credentials: 'same-origin' })
             .then(function(r){ return r.json(); })
             .then(function(ud) {
               var serverFavs = (ud && ud.favorite_actors) || [];
-              if (serverFavs.length) {
-                var local = loadFavs();
-                serverFavs.forEach(function(n) { if (local.indexOf(n)<0) local.push(n); });
+              if (!serverFavs.length) return;
+              var local = loadFavs();
+              var added = false;
+              serverFavs.forEach(function(n) { if (local.indexOf(n)<0) { local.push(n); added = true; } });
+              if (added) {
                 try { localStorage.setItem(FAV_KEY, JSON.stringify(local.slice(0, MAX_FAV))); } catch(e){}
+                renderSection(); // サーバーで新規の推しが見つかった場合のみ再描画
               }
-              renderSection();
             });
         })
-        .catch(function() { authChecked = true; renderSection(); });
+        .catch(function() { authChecked = true; });
     })();
     </script>
 
@@ -481,10 +580,10 @@ export async function livePageHTML(env) {
       }
 
       /* NAVI 演目照合マップ: サーバー埋め込みデータから構築 */
+      function n2(s) { return (s||"").replace(/[\\s\\u3000（）()【】「」『』〈〉・]/g,""); }
       var enmokuMap = {};
       (function() {
         var list = ${enmokuTitlesJson};
-        function n2(s) { return (s||"").replace(/[\\s\\u3000（）()【】「」『』〈〉・]/g,""); }
         list.forEach(function(e) {
           if (e.short) enmokuMap[n2(e.short)] = e.id;
           if (e.full && e.full !== e.short) enmokuMap[n2(e.full)] = e.id;
@@ -541,31 +640,21 @@ export async function livePageHTML(env) {
           return null;
         }
         /* NAVI リンクは全演目から収集 */
-        var totalPlayCount = 0;
         if (p.programs && p.programs.length > 0) {
           for (var ai = 0; ai < p.programs.length; ai++) {
             if (p.programs[ai].plays) p.programs[ai].plays.forEach(function(play) {
-              totalPlayCount++;
               var eid = findEnmokuId(play.title);
               if (eid) naviLinks.push({ title: play.title, id: eid });
             });
           }
         }
-        /* 表示は MAX_PLAYS 件まで、残りは「他○演目」 */
-        var shownPlayCount = 0, MAX_PLAYS = 3;
         if (p.programs && p.programs.length > 0) {
           for (var pi = 0; pi < p.programs.length; pi++) {
             var prog = p.programs[pi];
-            if (shownPlayCount >= MAX_PLAYS) break;
             if (prog.program) playsHTML += '<div class="perf-prog-label">' + esc(prog.program) + '<\/div>';
             if (prog.plays) for (var pj = 0; pj < prog.plays.length; pj++) {
-              if (shownPlayCount >= MAX_PLAYS) break;
               playsHTML += '<div class="perf-play-title">' + esc(prog.plays[pj].title) + '<\/div>';
-              shownPlayCount++;
             }
-          }
-          if (totalPlayCount > MAX_PLAYS) {
-            playsHTML += '<div class="perf-play-more">\u4ed6' + (totalPlayCount - MAX_PLAYS) + '\u6f14\u76ee<\/div>';
           }
         }
 
@@ -990,11 +1079,6 @@ export async function livePageHTML(env) {
         color: var(--text-secondary);
         line-height: 1.4;
       }
-      .perf-play-more {
-        font-size: 11px;
-        color: var(--text-tertiary);
-        margin-top: 2px;
-      }
       .perf-cell-ticket {
         font-size: 11px;
         color: var(--accent-3);
@@ -1232,9 +1316,102 @@ export async function livePageHTML(env) {
         text-decoration: none;
       }
       .live-ext-link:hover { color: var(--gold-dark); text-decoration: underline; }
+
+      /* ── 注目演目ブロック ── */
+      .featured-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .featured-card {
+        background: var(--bg-card);
+        border: 1px solid var(--gold-light, #e8d5a0);
+        border-radius: var(--radius-md);
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        box-shadow: var(--shadow-sm);
+        transition: border-color 0.15s, box-shadow 0.15s;
+      }
+      .featured-card:hover {
+        border-color: var(--gold);
+        box-shadow: var(--shadow-md);
+      }
+      .featured-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--gold-dark);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .featured-title {
+        font-family: 'Noto Serif JP', serif;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text-primary);
+        line-height: 1.4;
+      }
+      .featured-countdown {
+        font-size: 13px;
+        color: var(--accent-1, #c0392b);
+        font-weight: 600;
+      }
+      .featured-countdown strong {
+        font-size: 18px;
+        margin: 0 2px;
+      }
+      .featured-theaters {
+        font-size: 11px;
+        color: var(--text-tertiary);
+      }
+      .featured-actions {
+        margin-top: 4px;
+      }
+      .featured-navi-link {
+        display: inline-block;
+        font-size: 12px;
+        color: var(--gold-dark);
+        text-decoration: none;
+        padding: 4px 12px;
+        border: 1px solid var(--gold-soft, #e8d5a0);
+        border-radius: 20px;
+        background: var(--gold-soft, #fdf8ec);
+        transition: all 0.15s;
+      }
+      .featured-navi-link:hover {
+        background: var(--gold);
+        color: #fff;
+        border-color: var(--gold);
+      }
+      .featured-no-navi {
+        font-size: 11px;
+        color: var(--text-tertiary);
+        font-style: italic;
+      }
+
       @media (max-width: 600px) {
         .perf-tab-btn { padding: 5px 14px; font-size: 13px; }
+        .featured-grid { grid-template-columns: 1fr; }
+        .featured-title { font-size: 15px; }
       }
+
+      /* ── 推しニュース件数バッジ ── */
+      .oshi-count-badge {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--gold-dark);
+        background: var(--gold-soft);
+        border: 1px solid var(--gold-light);
+        border-radius: 10px;
+        padding: 1px 7px;
+        margin-left: 8px;
+        vertical-align: middle;
+        font-family: 'Noto Sans JP', sans-serif;
+        letter-spacing: 0;
+      }
+      .oshi-count-badge:empty { display: none; }
     </style>`
   });
 }

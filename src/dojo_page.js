@@ -5,7 +5,7 @@
 // =========================================================
 import { pageShell } from "./web_layout.js";
 
-export function dojoPageHTML() {
+export function dojoPageHTML({ googleClientId = "" } = {}) {
   const bodyHTML = `
     <div class="breadcrumb">
       <a href="/">トップ</a><span>›</span>KABUKI DOJO
@@ -35,7 +35,7 @@ export function dojoPageHTML() {
         <div class="dojo-card-icon">📣</div>
         <div class="dojo-card-body">
           <h3>大向う道場</h3>
-          <p>リズムに合わせて掛け声を練習。タイミングをマスターしよう。</p>
+          <p>「白浪五人男」の動画で掛け声と拍手のタイミングを練習しよう。</p>
           <div class="dojo-card-stats" id="kakegoe-stats"></div>
         </div>
         <span class="dojo-card-arrow">→</span>
@@ -46,7 +46,7 @@ export function dojoPageHTML() {
         <div class="dojo-card-icon">🎤</div>
         <div class="dojo-card-body">
           <h3>台詞稽古チャレンジ</h3>
-          <p>名台詞をカラオケ感覚で体験。音声認識で発声をチェック。</p>
+          <p>弁天小僧の名台詞「知らざぁ言って聞かせやしょう」をカラオケ感覚で体験。</p>
           <div class="dojo-card-stats" id="serifu-stats"></div>
         </div>
         <span class="dojo-card-arrow">→</span>
@@ -145,6 +145,7 @@ export function dojoPageHTML() {
     subtitle: "歌舞伎道場",
     bodyHTML,
     activeNav: "dojo",
+    googleClientId,
     headExtra: `<style>
       .dojo-intro {
         text-align: center;

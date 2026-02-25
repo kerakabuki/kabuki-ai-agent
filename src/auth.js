@@ -3,6 +3,26 @@
 // 認証: LINE Login + Google Sign-In + セッション管理
 // アカウントリンク: 同一メールアドレスならデータ共有
 // =========================================================
+//
+// ── Permission Matrix ──────────────────────────────────────
+//
+// Role        Scope    Capabilities
+// ----------  -------  -------------------------------------------
+// master      global   All operations. Bypasses all group checks.
+//                      Group creation approval, editor management,
+//                      author migration, data backfill.
+// editor      global   Enmoku (play guide) content: create & edit.
+//                      NOT group-scoped — an editor can edit any
+//                      enmoku regardless of group membership.
+// manager     group    Group operations: approve/reject members,
+//                      change roles, update group profile, manage
+//                      scripts (upload/delete/edit metadata).
+// member      group    Read group content (notes, scripts, training).
+//                      Upload scripts. Post notes.
+//
+// Account linking: email-based. Same email = same canonical userId.
+// Audit log written to KV account_link_log:{userId} on every link event.
+// ────────────────────────────────────────────────────────────
 
 const LINE_AUTH_URL = "https://access.line.me/oauth2/v2.1/authorize";
 const LINE_TOKEN_URL = "https://api.line.me/oauth2/v2.1/token";
@@ -13,24 +33,29 @@ const SESSION_COOKIE = "kl_session";
 
 // ─── アカウントリンク: メールベースの userId 解決 ───
 // 同じメールアドレスなら同じ userId を返す
-async function resolveUserId(env, email, providerUserId) {
+async function resolveUserId(env, email, providerUserId, providerName) {
   if (!email) return providerUserId;
 
   const emailKey = `email_link:${email.toLowerCase()}`;
   try {
     const existing = await env.CHAT_HISTORY.get(emailKey);
     if (existing) {
-      // 既にこのメールで登録済み → 既存の canonical userId を使う
       const link = JSON.parse(existing);
-      // プロバイダー情報を追記（重複排除）
       if (!link.providers.includes(providerUserId)) {
         link.providers.push(providerUserId);
         link.updated_at = new Date().toISOString();
         await env.CHAT_HISTORY.put(emailKey, JSON.stringify(link));
+
+        await writeAccountLinkLog(env, link.canonicalUserId, {
+          event: "link_added",
+          newProvider: providerUserId,
+          providerName: providerName || "unknown",
+          email: email.toLowerCase(),
+          allProviders: link.providers,
+        });
       }
       return link.canonicalUserId;
     } else {
-      // 新規 → このプロバイダーの userId をcanonicalとして登録
       const link = {
         canonicalUserId: providerUserId,
         email: email.toLowerCase(),
@@ -39,11 +64,30 @@ async function resolveUserId(env, email, providerUserId) {
         updated_at: new Date().toISOString(),
       };
       await env.CHAT_HISTORY.put(emailKey, JSON.stringify(link));
+
+      await writeAccountLinkLog(env, providerUserId, {
+        event: "account_created",
+        providerName: providerName || "unknown",
+        email: email.toLowerCase(),
+      });
       return providerUserId;
     }
   } catch (e) {
     console.error("resolveUserId error:", e);
     return providerUserId;
+  }
+}
+
+async function writeAccountLinkLog(env, userId, entry) {
+  try {
+    const logKey = `account_link_log:${userId}`;
+    const raw = await env.CHAT_HISTORY.get(logKey);
+    const logs = raw ? JSON.parse(raw) : [];
+    logs.push({ ...entry, timestamp: new Date().toISOString() });
+    if (logs.length > 50) logs.splice(0, logs.length - 50);
+    await env.CHAT_HISTORY.put(logKey, JSON.stringify(logs));
+  } catch (e) {
+    console.error("writeAccountLinkLog error:", e);
   }
 }
 
@@ -150,7 +194,7 @@ async function lineLoginCallback(request, env) {
 
   // アカウントリンク: メールで userId を解決
   const providerUserId = `line_${profile.userId}`;
-  const canonicalUserId = await resolveUserId(env, lineEmail, providerUserId);
+  const canonicalUserId = await resolveUserId(env, lineEmail, providerUserId, "line");
 
   // セッション作成
   const userInfo = {
@@ -242,7 +286,7 @@ async function verifyGoogleToken(request, env) {
     // アカウントリンク: メールで userId を解決
     const providerUserId = `google_${payload.sub}`;
     const googleEmail = payload.email || "";
-    const canonicalUserId = await resolveUserId(env, googleEmail, providerUserId);
+    const canonicalUserId = await resolveUserId(env, googleEmail, providerUserId, "google");
 
     // セッション作成
     const userInfo = {
@@ -313,6 +357,258 @@ async function destroySession(request, env) {
   return new Response(JSON.stringify({ ok: true }), { status: 200, headers });
 }
 
+// ─── マスター権限 ───
+const MASTER_KV_KEY = "master_users";
+
+async function loadMasterUsers(env) {
+  try {
+    const raw = await env.CHAT_HISTORY.get(MASTER_KV_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+async function checkIsMaster(env, userId) {
+  const masters = await loadMasterUsers(env);
+  return masters.includes(userId);
+}
+
+// ─── 団体メンバーシップ管理 ───
+const ROLE_HIERARCHY = { manager: 2, member: 1 };
+
+async function loadGroupMembers(env, groupId) {
+  try {
+    const raw = await env.CHAT_HISTORY.get(`group_members:${groupId}`);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+async function saveGroupMembers(env, groupId, members) {
+  await env.CHAT_HISTORY.put(`group_members:${groupId}`, JSON.stringify(members));
+}
+
+async function getGroupRole(env, userId, groupId) {
+  const members = await loadGroupMembers(env, groupId);
+  const member = members.find(m => m.userId === userId);
+  return member ? member.role : null;
+}
+
+async function requireGroupRole(request, env, groupId, minRole) {
+  const session = await getSession(request, env);
+  if (!session) return { ok: false, status: 401, error: "ログインが必要です" };
+
+  const master = await checkIsMaster(env, session.userId);
+  if (master) return { ok: true, session, role: "master" };
+
+  const role = await getGroupRole(env, session.userId, groupId);
+  if (!role) return { ok: false, status: 403, error: "この団体のメンバーではありません" };
+
+  const minLevel = ROLE_HIERARCHY[minRole] || 0;
+  const userLevel = ROLE_HIERARCHY[role] || 0;
+  if (userLevel < minLevel) return { ok: false, status: 403, error: "権限が不足しています" };
+
+  return { ok: true, session, role };
+}
+
+// 団体参加申請
+async function requestGroupJoin(request, env, groupId) {
+  const session = await getSession(request, env);
+  if (!session) return jsonResponse({ error: "ログインが必要です" }, 401);
+
+  const members = await loadGroupMembers(env, groupId);
+  if (members.some(m => m.userId === session.userId)) {
+    return jsonResponse({ ok: true, status: "already_member" });
+  }
+
+  const reqKey = `group_join_request:${groupId}:${session.userId}`;
+  const existing = await env.CHAT_HISTORY.get(reqKey);
+  if (existing) return jsonResponse({ ok: true, status: "already_requested" });
+
+  await env.CHAT_HISTORY.put(reqKey, JSON.stringify({
+    userId: session.userId,
+    displayName: session.displayName || "",
+    email: session.email || "",
+    provider: session.provider || "",
+    pictureUrl: session.pictureUrl || "",
+    groupId,
+    requestedAt: new Date().toISOString(),
+  }), { expirationTtl: 60 * 60 * 24 * 365 });
+
+  return jsonResponse({
+    ok: true,
+    status: "requested",
+    displayName: session.displayName || "",
+    email: session.email || "",
+  });
+}
+
+// 団体参加申請一覧
+async function listGroupJoinRequests(env, groupId) {
+  const list = await env.CHAT_HISTORY.list({ prefix: `group_join_request:${groupId}:` });
+  const requests = [];
+  for (const key of list.keys) {
+    const raw = await env.CHAT_HISTORY.get(key.name);
+    if (raw) requests.push(JSON.parse(raw));
+  }
+  return requests;
+}
+
+// 団体メンバー承認
+async function approveGroupMember(env, groupId, userId, displayName, pictureUrl) {
+  const members = await loadGroupMembers(env, groupId);
+  if (!members.some(m => m.userId === userId)) {
+    members.push({
+      userId,
+      displayName: displayName || "",
+      pictureUrl: pictureUrl || "",
+      role: "member",
+      joinedAt: new Date().toISOString(),
+    });
+    await saveGroupMembers(env, groupId, members);
+  }
+  await env.CHAT_HISTORY.delete(`group_join_request:${groupId}:${userId}`);
+  return members;
+}
+
+// 団体メンバー役割変更
+async function changeGroupMemberRole(env, groupId, userId, newRole) {
+  if (!ROLE_HIERARCHY[newRole]) return null;
+  const members = await loadGroupMembers(env, groupId);
+  const member = members.find(m => m.userId === userId);
+  if (!member) return null;
+  member.role = newRole;
+  await saveGroupMembers(env, groupId, members);
+  return members;
+}
+
+// 団体メンバー除名
+async function removeGroupMember(env, groupId, userId) {
+  const members = await loadGroupMembers(env, groupId);
+  const filtered = members.filter(m => m.userId !== userId);
+  await saveGroupMembers(env, groupId, filtered);
+  return filtered;
+}
+
+// ユーザーの所属団体一覧を取得
+async function getUserGroups(env, userId) {
+  const list = await env.CHAT_HISTORY.list({ prefix: "group_members:" });
+  const groups = [];
+  for (const key of list.keys) {
+    const gid = key.name.replace("group_members:", "");
+    const raw = await env.CHAT_HISTORY.get(key.name);
+    if (!raw) continue;
+    const members = JSON.parse(raw);
+    const me = members.find(m => m.userId === userId);
+    if (me) groups.push({ groupId: gid, role: me.role });
+  }
+  return groups;
+}
+
+// ─── エディター権限管理 ───
+const EDITORS_KV_KEY = "approved_editors";
+
+async function loadApprovedEditors(env) {
+  try {
+    const raw = await env.CHAT_HISTORY.get(EDITORS_KV_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+async function saveApprovedEditors(env, editors) {
+  await env.CHAT_HISTORY.put(EDITORS_KV_KEY, JSON.stringify(editors));
+}
+
+async function isEditor(request, env) {
+  const session = await getSession(request, env);
+  if (!session || !session.userId) return false;
+  const editors = await loadApprovedEditors(env);
+  return editors.some(e => e.userId === session.userId);
+}
+
+async function requireEditor(request, env) {
+  const session = await getSession(request, env);
+  if (!session) return { ok: false, status: 401, error: "ログインが必要です" };
+  const master = await checkIsMaster(env, session.userId);
+  if (master) return { ok: true, session };
+  const editors = await loadApprovedEditors(env);
+  const approved = editors.some(e => e.userId === session.userId);
+  if (!approved) return { ok: false, status: 403, error: "編集権限がありません" };
+  return { ok: true, session };
+}
+
+// 編集権限の申請
+async function requestEditorAccess(request, env) {
+  const session = await getSession(request, env);
+  if (!session) return jsonResponse({ error: "ログインが必要です" }, 401);
+
+  const reqKey = `editor_request:${session.userId}`;
+  const existing = await env.CHAT_HISTORY.get(reqKey);
+  if (existing) return jsonResponse({ ok: true, status: "already_requested" });
+
+  const editors = await loadApprovedEditors(env);
+  if (editors.some(e => e.userId === session.userId)) {
+    return jsonResponse({ ok: true, status: "already_approved" });
+  }
+
+  await env.CHAT_HISTORY.put(reqKey, JSON.stringify({
+    userId: session.userId,
+    displayName: session.displayName || "",
+    email: session.email || "",
+    provider: session.provider || "",
+    requestedAt: new Date().toISOString(),
+  }), { expirationTtl: 60 * 60 * 24 * 365 });
+
+  return jsonResponse({
+    ok: true,
+    status: "requested",
+    displayName: session.displayName || "",
+    email: session.email || "",
+  });
+}
+
+// 管理用: 申請一覧
+async function listEditorRequests(request, env) {
+  const list = await env.CHAT_HISTORY.list({ prefix: "editor_request:" });
+  const requests = [];
+  for (const key of list.keys) {
+    const raw = await env.CHAT_HISTORY.get(key.name);
+    if (raw) requests.push(JSON.parse(raw));
+  }
+  const editors = await loadApprovedEditors(env);
+  return jsonResponse({ requests, editors });
+}
+
+// 管理用: 承認
+async function approveEditor(request, env) {
+  const body = await request.json();
+  const { userId, displayName } = body;
+  if (!userId) return jsonResponse({ error: "userId is required" }, 400);
+
+  const editors = await loadApprovedEditors(env);
+  if (!editors.some(e => e.userId === userId)) {
+    editors.push({
+      userId,
+      displayName: displayName || "",
+      approvedAt: new Date().toISOString(),
+    });
+    await saveApprovedEditors(env, editors);
+  }
+
+  await env.CHAT_HISTORY.delete(`editor_request:${userId}`);
+  return jsonResponse({ ok: true, editors });
+}
+
+// 管理用: 権限取消
+async function revokeEditor(request, env) {
+  const body = await request.json();
+  const { userId } = body;
+  if (!userId) return jsonResponse({ error: "userId is required" }, 400);
+
+  const editors = await loadApprovedEditors(env);
+  const filtered = editors.filter(e => e.userId !== userId);
+  await saveApprovedEditors(env, filtered);
+  return jsonResponse({ ok: true, editors: filtered });
+}
+
 // ─── /api/auth/me: セッション情報返却 ───
 async function authMe(request, env) {
   const session = await getSession(request, env);
@@ -333,14 +629,36 @@ async function authMe(request, env) {
     } catch (_) { /* ignore */ }
   }
 
+  // マスター判定
+  const masterFlag = await checkIsMaster(env, session.userId);
+
+  // エディター権限チェック（マスターは自動エディター）
+  const editors = await loadApprovedEditors(env);
+  const editorApproved = masterFlag || editors.some(e => e.userId === session.userId);
+
+  // 申請中かチェック
+  let editorRequested = false;
+  if (!editorApproved) {
+    const reqRaw = await env.CHAT_HISTORY.get(`editor_request:${session.userId}`);
+    editorRequested = !!reqRaw;
+  }
+
+  // 所属団体リスト
+  const groups = await getUserGroups(env, session.userId);
+
   return jsonResponse({
     loggedIn: true,
     user: {
+      userId: session.userId,
       displayName: session.displayName,
       pictureUrl: session.pictureUrl,
       provider: session.provider,
       email: session.email || "",
       linkedProviders,
+      isMaster: masterFlag,
+      isEditor: editorApproved,
+      editorRequested,
+      groups,
     },
   });
 }
@@ -447,6 +765,12 @@ async function putUserData(request, env) {
   const kvKey = `userdata:${session.userId}`;
   const body = await request.json();
   body.updated_at = new Date().toISOString();
+
+  const MAX_THEATER_LOG = 500;
+  if (body.theater_log?.entries && body.theater_log.entries.length > MAX_THEATER_LOG) {
+    body.theater_log.entries = body.theater_log.entries.slice(-MAX_THEATER_LOG);
+  }
+
   await env.CHAT_HISTORY.put(kvKey, JSON.stringify(body));
   return jsonResponse({ ok: true });
 }
@@ -469,6 +793,44 @@ function jsonResponse(data, status = 200) {
   });
 }
 
+// ─── グループ削除時のクリーンアップ ───
+// 関連するKVキーとR2オブジェクトを一括削除
+async function cleanupGroup(env, groupId) {
+  const errors = [];
+
+  const directKeys = [
+    `group:${groupId}`,
+    `group_members:${groupId}`,
+    `group_notes:${groupId}`,
+    `group_scripts:${groupId}`,
+  ];
+  for (const key of directKeys) {
+    try { await env.CHAT_HISTORY.delete(key); } catch (e) {
+      errors.push(`KV delete ${key}: ${e.message}`);
+    }
+  }
+
+  try {
+    const joinReqs = await env.CHAT_HISTORY.list({ prefix: `group_join_request:${groupId}:` });
+    for (const key of joinReqs.keys) {
+      await env.CHAT_HISTORY.delete(key.name);
+    }
+  } catch (e) {
+    errors.push(`KV list/delete join_requests: ${e.message}`);
+  }
+
+  try {
+    const r2List = await env.CONTENT_BUCKET.list({ prefix: `scripts/${groupId}/` });
+    for (const obj of r2List.objects) {
+      await env.CONTENT_BUCKET.delete(obj.key);
+    }
+  } catch (e) {
+    errors.push(`R2 cleanup scripts/${groupId}/: ${e.message}`);
+  }
+
+  return { ok: errors.length === 0, errors };
+}
+
 export {
   lineLoginRedirect,
   lineLoginCallback,
@@ -479,4 +841,19 @@ export {
   migrateUserData,
   getUserData,
   putUserData,
+  requireEditor,
+  requestEditorAccess,
+  listEditorRequests,
+  approveEditor,
+  revokeEditor,
+  checkIsMaster,
+  requireGroupRole,
+  loadGroupMembers,
+  saveGroupMembers,
+  requestGroupJoin,
+  listGroupJoinRequests,
+  approveGroupMember,
+  changeGroupMemberRole,
+  removeGroupMember,
+  cleanupGroup,
 };

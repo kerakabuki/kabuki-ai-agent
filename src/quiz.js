@@ -8,6 +8,10 @@ import { KABUKI } from "./flex_menu.js";
 
 let QUIZ_CACHE = null;
 
+export function clearQuizCache() {
+  QUIZ_CACHE = null;
+}
+
 // ---------------------
 // KVキー
 // ---------------------
@@ -67,7 +71,7 @@ export async function loadQuizzesFromR2(env) {
   try {
     list = JSON.parse(text);
   } catch (e) {
-    console.log("quizzes.json parse error:", String(e));
+    console.error("quizzes.json parse error:", String(e));
   }
 
   // quiz_id -> quiz

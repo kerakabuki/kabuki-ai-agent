@@ -7,6 +7,10 @@ import { KABUKI } from "./flex_menu.js";
 ========================================================= */
 let ENMOKU_CATALOG_CACHE = null;
 
+export function clearEnmokuCatalogCache() {
+  ENMOKU_CATALOG_CACHE = null;
+}
+
 export async function loadEnmokuCatalog(env) {
   if (ENMOKU_CATALOG_CACHE) return ENMOKU_CATALOG_CACHE;
 
@@ -17,18 +21,15 @@ export async function loadEnmokuCatalog(env) {
       const catalog = await obj.json();
       catalog.sort((a, b) => (a.sort_key || "").localeCompare(b.sort_key || "", "ja"));
       ENMOKU_CATALOG_CACHE = catalog;
-      console.log("loadEnmokuCatalog: loaded from catalog.json,", catalog.length, "items");
       return catalog;
     }
 
-    // フォールバック：R2の全ファイルから動的構築
-    console.log("loadEnmokuCatalog: catalog.json not found, building from R2 files...");
     const listed = await env.ENMOKU_BUCKET.list();
     const catalog = [];
 
     for (const item of listed.objects) {
       const key = item.key;
-      if (!key.endsWith(".json") || key === "catalog.json" || key === "quizzes.json") continue;
+      if (!key.endsWith(".json") || key === "catalog.json" || key === "quizzes.json" || key === "glossary.json" || key === "recommend.json") continue;
       const id = key.replace(/\.json$/, "");
 
       try {
@@ -42,29 +43,25 @@ export async function loadEnmokuCatalog(env) {
           group: null
         });
       } catch (e2) {
-        console.log("loadEnmokuCatalog: skip", id, String(e2));
       }
     }
 
     catalog.sort((a, b) => a.short.localeCompare(b.short, "ja"));
     ENMOKU_CATALOG_CACHE = catalog;
-    console.log("loadEnmokuCatalog: built from R2,", catalog.length, "items");
     return catalog;
   } catch (e) {
-    console.log("loadEnmokuCatalog error:", String(e?.stack || e));
+    console.error("loadEnmokuCatalog error:", String(e?.stack || e));
     return [];
   }
 }
 
 export async function loadEnmokuJson(env, enmokuId) {
   try {
-    console.log("loadEnmokuJson: fetching", `${enmokuId}.json`);
     const obj = await env.ENMOKU_BUCKET.get(`${enmokuId}.json`);
-    console.log("loadEnmokuJson: obj is", obj ? "found" : "null");
     if (!obj) return null;
     return await obj.json();
   } catch (e) {
-    console.log("loadEnmokuJson error:", String(e?.stack || e));
+    console.error("loadEnmokuJson error:", String(e?.stack || e));
     return null;
   }
 }

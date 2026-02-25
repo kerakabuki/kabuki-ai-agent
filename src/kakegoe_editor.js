@@ -1,5 +1,5 @@
 // =============================================================
-// 大向こう キュー編集ツール — /training/kakegoe/editor
+// 大向こう キュー編集ツール — /kabuki/dojo/training/kakegoe/editor
 // =============================================================
 export function kakegoeEditorHTML() {
   return `<!DOCTYPE html>
@@ -7,7 +7,7 @@ export function kakegoeEditorHTML() {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>大向こう キュー編集 - 気良歌舞伎</title>
+<title>大向う キュー編集 - KABUKI DOJO</title>
 <style>
   :root{--kuro:#1a1a1a;--aka:#C41E3A;--moegi:#6B8E23;--kin:#C5A55A;--shiro:#F5F0E8;}
   *{margin:0;padding:0;box-sizing:border-box;}
@@ -125,7 +125,7 @@ export function kakegoeEditorHTML() {
   </div>
 </div>
 
-<footer><a href="/training/kakegoe">大向こう稽古へ戻る</a></footer>
+<footer><a href="/kabuki/dojo">← KABUKI DOJO へ戻る</a></footer>
 
 <script>
 // ── state ──

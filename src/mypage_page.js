@@ -1536,7 +1536,6 @@ export function mypagePageHTML(opts) {
           var nameChars = Array.from(pp.theater).map(function(c){ return c.charCodeAt(0).toString(16); }).join(",");
           var venueChars = Array.from(venueName).map(function(c){ return c.charCodeAt(0).toString(16); }).join(",");
           var pr = parsePeriod(pp.period_text);
-          console.log("[歌舞伎ログ debug]", pp.theater, "codes:", nameChars, "vs", venueChars, "match:", nameMatch, "period:", pp.period_text, "parsed:", pr ? (pr.start + " ~ " + pr.end) : "NULL");
         }
         return allPerfs.filter(function(p){
           if (p.theater !== venueName) return false;
@@ -3419,10 +3418,7 @@ export function mypagePageHTML(opts) {
         }
         area.innerHTML = '<div class="tl-perf-loading">公演候補を検索中…</div>';
         fetchPerformances(function(allPerfs) {
-          console.log("[歌舞伎ログ] 全公演:", allPerfs.length, "件, 日付:", formState.date, "会場:", formState.venue_name);
           var matched = matchPerformances(allPerfs, formState.date, formState.venue_name);
-          console.log("[歌舞伎ログ] マッチ:", matched.length, "件");
-          matched.forEach(function(p){ console.log("  →", p.title, "programs:", p.programs ? p.programs.length : 0); });
           perfCandidates = matched;
           if (matched.length === 0) {
             area.innerHTML = '<div class="tl-perf-none">候補なし（手入力で追加できます）</div>'

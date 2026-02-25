@@ -4,10 +4,10 @@
 // =========================================================
 import { pageShell, escHTML } from "./web_layout.js";
 
-export function recommendPageHTML() {
+export function recommendPageHTML({ googleClientId = "" } = {}) {
   const bodyHTML = `
     <div class="breadcrumb" id="breadcrumb">
-      <a href="/">トップ</a><span>›</span><span id="bc-tail">おすすめ演目</span>
+      <a href="/">トップ</a><span>›</span><a href="/kabuki/navi">KABUKI NAVI</a><span>›</span><span id="bc-tail">おすすめ演目</span>
     </div>
     <div id="app">
       <div class="loading">おすすめデータを読み込み中…</div>
@@ -176,6 +176,7 @@ export function recommendPageHTML() {
     subtitle: "初心者向け・ジャンル別のおすすめ",
     bodyHTML,
     activeNav: "navi",
+    googleClientId,
     headExtra: `<style>
       .rec-tags {
         display: flex;

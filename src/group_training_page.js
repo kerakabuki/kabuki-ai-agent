@@ -11,7 +11,7 @@ export function groupTrainingPageHTML(group) {
       title: "団体が見つかりません",
       bodyHTML: `<div class="empty-state">指定された団体は登録されていません。</div>`,
       brand: "jikabuki",
-      activeNav: "jikabuki",
+      activeNav: "base",
     });
   }
 
@@ -21,7 +21,7 @@ export function groupTrainingPageHTML(group) {
 
   const bodyHTML = `
     <div class="breadcrumb">
-      <a href="/">トップ</a><span>&rsaquo;</span><a href="/jikabuki">JIKABUKI PLUS+</a><span>&rsaquo;</span><a href="/groups/${gid}">${name}</a><span>&rsaquo;</span>稽古モード
+      <a href="/">トップ</a><span>&rsaquo;</span><a href="/jikabuki/base">BASE</a><span>&rsaquo;</span><a href="/jikabuki/gate/${gid}">${name}</a><span>&rsaquo;</span>稽古モード
     </div>
 
     <section class="gt-hero fade-up">
@@ -68,6 +68,14 @@ export function groupTrainingPageHTML(group) {
           </div>
           <span class="gt-menu-arrow">&rarr;</span>
         </a>
+        <a href="/groups/${gid}/schedule" class="gt-menu-card">
+          <div class="gt-menu-icon">📅</div>
+          <div class="gt-menu-body">
+            <h3>稽古スケジュール</h3>
+            <p>日程管理・出欠確認（○△×）</p>
+          </div>
+          <span class="gt-menu-arrow">&rarr;</span>
+        </a>
       </div>
     </section>
 
@@ -92,15 +100,20 @@ export function groupTrainingPageHTML(group) {
             el.innerHTML = '<div class="empty-state">参考動画はまだ登録されていません。<br>稽古メモに動画URLを登録すると、ここに表示されます。</div>';
             return;
           }
+          function esc(s) { return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
           el.innerHTML = videos.slice(0,6).map(function(n){
             var m = (n.video_url||"").match(/(?:youtube\\.com\\/watch\\?v=|youtu\\.be\\/)([\\w-]+)/);
+            var textPreview = (n.text||"").length > 50 ? n.text.slice(0,50) + "\u2026" : (n.text||"");
             if (m) {
               return '<div class="gt-ref-card">'
                 + '<div class="gt-ref-thumb"><iframe src="https://www.youtube.com/embed/' + m[1] + '" frameborder="0" allowfullscreen></iframe></div>'
-                + '<div class="gt-ref-tags">' + (n.tags||[]).map(function(t){ return '<span class="gn-card-tag">' + t.replace(/</g,"&lt;") + '</span>'; }).join("") + '</div>'
+                + '<div class="gt-ref-info">'
+                + '<div class="gt-ref-tags">' + (n.tags||[]).map(function(t){ return '<span class="gn-card-tag">' + esc(t) + '</span>'; }).join("") + '</div>'
+                + (textPreview ? '<div class="gt-ref-memo">' + esc(textPreview) + '</div>' : '')
+                + '</div>'
                 + '</div>';
             }
-            return '<a href="' + (n.video_url||"").replace(/"/g,"&quot;") + '" target="_blank" class="gt-ref-link">🔗 ' + (n.tags||[]).join(", ") + '</a>';
+            return '<a href="' + (n.video_url||"").replace(/"/g,"&quot;") + '" target="_blank" class="gt-ref-link">\uD83D\uDD17 ' + (n.tags||[]).join(", ") + (textPreview ? ' \u2014 ' + esc(textPreview) : '') + '</a>';
           }).join("");
         })
         .catch(function(){ document.getElementById("gt-ref-videos").innerHTML = '<div class="empty-state">読み込みに失敗しました。</div>'; });
@@ -116,7 +129,7 @@ export function groupTrainingPageHTML(group) {
     title: `稽古モード - ${g.name}`,
     subtitle: "自分の役の台詞稽古・台本/動画連動",
     bodyHTML,
-    activeNav: "jikabuki",
+    activeNav: "base",
     brand: "jikabuki",
     headExtra: `<style>
       .gt-hero {
@@ -155,8 +168,15 @@ export function groupTrainingPageHTML(group) {
       }
       .gt-ref-thumb { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; }
       .gt-ref-thumb iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-      .gt-ref-tags { padding: 8px 10px; display: flex; flex-wrap: wrap; gap: 4px; }
+      .gt-ref-info { padding: 8px 10px; }
+      .gt-ref-tags { display: flex; flex-wrap: wrap; gap: 4px; }
       .gn-card-tag { font-size: 10px; padding: 2px 8px; background: var(--gold-soft); color: var(--gold-dark); border-radius: 4px; }
+      .gt-ref-memo {
+        font-size: 12px; color: var(--text-secondary);
+        margin-top: 4px; line-height: 1.5;
+        display: -webkit-box; -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical; overflow: hidden;
+      }
       .gt-ref-link { display: block; padding: 12px; font-size: 13px; color: var(--gold-dark); text-decoration: none; }
       .gt-footer { text-align: center; padding-top: 1rem; border-top: 1px solid var(--border-light); margin-top: 1rem; }
     </style>`

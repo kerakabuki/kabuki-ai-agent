@@ -58,11 +58,11 @@ export function topPageHTML() {
             <span class="hub-arrow">&rarr;</span>
           </a>
           <a href="/kabuki/reco" class="hub-card hub-reco">
-            <div class="hub-icon">📖</div>
+            <div class="hub-icon">📝</div>
             <div class="hub-body">
               <h3>KABUKI RECO</h3>
               <span class="hub-subtitle">歌舞伎帖</span>
-              <p>観劇記録・推し俳優</p>
+              <p>観劇記録・推し俳優・統計</p>
             </div>
             <span class="hub-arrow">&rarr;</span>
           </a>
@@ -105,171 +105,113 @@ export function topPageHTML() {
         </p>
       </section>
 
-      <!-- JIKABUKI の価値 -->
+      <!-- JIKABUKIでできること -->
       <section class="tp-section fade-up-d1">
-        <h2 class="tp-section-title">JIKABUKI PLUS+ でできること</h2>
-        <div class="jk-value-grid">
-          <div class="jk-value-item">
-            <div class="jk-value-icon">💬</div>
-            <div class="jk-value-text"><strong>チャットで導入完了</strong><br>質問に答えるだけで公式サイト＋ボットが完成</div>
+        <h2 class="tp-section-title">JIKABUKIでできること</h2>
+        <div class="jk-val-grid">
+          <div class="jk-val-card">
+            <div class="jk-val-icon">💬</div>
+            <div class="jk-val-title">チャットで導入完了</div>
+            <div class="jk-val-desc">LINE感覚のチャットで団体情報を入力するだけ。AIが公式ページを自動生成します。</div>
           </div>
-          <div class="jk-value-item">
-            <div class="jk-value-icon">🤝</div>
-            <div class="jk-value-text"><strong>台本共有で横展開</strong><br>団体間で台本を共有し事務局負担を軽減</div>
+          <div class="jk-val-card">
+            <div class="jk-val-icon">📖</div>
+            <div class="jk-val-title">台本共有 &amp; 配役管理</div>
+            <div class="jk-val-desc">台本をアップロードして団体内で共有。公演ごとの配役も一元管理できます。</div>
           </div>
-          <div class="jk-value-item">
-            <div class="jk-value-icon">🗄️</div>
-            <div class="jk-value-text"><strong>業界共有データベース</strong><br>芝居小屋・貸衣装・かつら師・大道具を検索</div>
+          <div class="jk-val-card">
+            <div class="jk-val-icon">📅</div>
+            <div class="jk-val-title">稽古スケジュール</div>
+            <div class="jk-val-desc">稽古日程の登録・出欠確認・LINEへの共有がワンストップ。公演目標に向けた進捗も見える化。</div>
           </div>
-          <div class="jk-value-item">
-            <div class="jk-value-icon">🎬</div>
-            <div class="jk-value-text"><strong>記録を、未来の資料に</strong><br>公演記録・出演記録をデジタルアーカイブ化</div>
+          <div class="jk-val-card">
+            <div class="jk-val-icon">🗂️</div>
+            <div class="jk-val-title">業界データベース</div>
+            <div class="jk-val-desc">演目ガイド・用語辞典・団体情報を横断的にデータベース化。ナレッジを次世代へ。</div>
           </div>
         </div>
       </section>
 
-      <!-- GATE -->
+      <!-- 4モジュール詳細 -->
       <section class="tp-section fade-up-d2">
-        <div class="jk-section-header">
-          <span class="jk-section-badge jk-pub-badge">🏯 GATE</span>
-          <div>
-            <h3 class="jk-section-label">JIKABUKI GATE ── 表玄関</h3>
-            <p class="jk-section-sublabel">団体を知ってもらう</p>
-          </div>
-        </div>
-        <div class="hub-grid">
-          <a href="/jikabuki/gate/kera/about" class="hub-card hub-jk-pub">
-            <div class="hub-icon hub-icon-pub">🏠</div>
-            <div class="hub-body">
-              <h3>団体公式サイト</h3>
-              <p>テンプレで自動生成・チャットボット付き</p>
+        <h2 class="tp-section-title">4つのモジュール</h2>
+        <div class="jk-mod-grid">
+          <a href="/jikabuki/gate" class="jk-mod-card jk-mod-accent-1">
+            <div class="jk-mod-icon">🏯</div>
+            <div class="jk-mod-body">
+              <div class="jk-mod-title">GATE</div>
+              <div class="jk-mod-sub">ぶたい</div>
+              <div class="jk-mod-desc">団体紹介・公演情報・ストーリーなど、外に向けた公式サイト。チャットボットで質問にも自動対応。</div>
             </div>
-            <span class="hub-arrow">&rarr;</span>
+            <span class="jk-mod-arrow">&rarr;</span>
           </a>
-          <a href="/jikabuki/gate/kera/performance" class="hub-card hub-jk-pub">
-            <div class="hub-icon hub-icon-pub">📅</div>
-            <div class="hub-body">
-              <h3>公演情報ページ</h3>
-              <p>次回公演・過去公演を自動掲載</p>
+          <a href="/jikabuki/info" class="jk-mod-card jk-mod-accent-2">
+            <div class="jk-mod-icon">📡</div>
+            <div class="jk-mod-body">
+              <div class="jk-mod-title">INFO</div>
+              <div class="jk-mod-sub">たより</div>
+              <div class="jk-mod-desc">全国の地歌舞伎団体ディレクトリ、ニュース自動取得、公演カレンダー。</div>
             </div>
-            <span class="hub-arrow">&rarr;</span>
+            <span class="jk-mod-arrow">&rarr;</span>
           </a>
-          <a href="/jikabuki/gate/kera/story" class="hub-card hub-jk-pub">
-            <div class="hub-icon hub-icon-pub">🔥</div>
-            <div class="hub-body">
-              <h3>ストーリー</h3>
-              <p>気良歌舞伎の歩み──全10話</p>
+          <a href="/jikabuki/base" class="jk-mod-card jk-mod-accent-3">
+            <div class="jk-mod-icon">🔧</div>
+            <div class="jk-mod-body">
+              <div class="jk-mod-title">BASE</div>
+              <div class="jk-mod-sub">がくや</div>
+              <div class="jk-mod-desc">稽古スケジュール・配役管理・台本共有・公演記録など、団体運営に必要なツールが揃う楽屋。</div>
             </div>
-            <span class="hub-arrow">&rarr;</span>
+            <span class="jk-mod-arrow">&rarr;</span>
           </a>
-        </div>
-      </section>
-
-      <!-- INFO -->
-      <section class="tp-section fade-up-d2">
-        <div class="jk-section-header">
-          <span class="jk-section-badge jk-pub-badge">📡 INFO</span>
-          <div>
-            <h3 class="jk-section-label">JIKABUKI INFO ── お知らせ</h3>
-            <p class="jk-section-sublabel">地歌舞伎の今を知る</p>
-          </div>
-        </div>
-        <div class="hub-grid">
-          <a href="/jikabuki/info/news" class="hub-card hub-jk-pub">
-            <div class="hub-icon hub-icon-pub">📰</div>
-            <div class="hub-body">
-              <h3>地歌舞伎ニュース</h3>
-              <p>地歌舞伎に関するニュースを自動取得</p>
+          <a href="/jikabuki/labo" class="jk-mod-card jk-mod-accent-4">
+            <div class="jk-mod-icon">🧪</div>
+            <div class="jk-mod-body">
+              <div class="jk-mod-title">LABO</div>
+              <div class="jk-mod-sub">こうぼう</div>
+              <div class="jk-mod-desc">演目ガイド・用語辞典・クイズなど、全団体で共有するコンテンツの制作・編集。</div>
             </div>
-            <span class="hub-arrow">&rarr;</span>
-          </a>
-          <a href="/jikabuki/info/calendar" class="hub-card hub-jk-pub">
-            <div class="hub-icon hub-icon-pub">🗓️</div>
-            <div class="hub-body">
-              <h3>イベントカレンダー</h3>
-              <p>全国の地歌舞伎公演・イベント一覧</p>
-            </div>
-            <span class="hub-arrow">&rarr;</span>
+            <span class="jk-mod-arrow">&rarr;</span>
           </a>
         </div>
       </section>
 
-      <!-- BASE -->
-      <section class="tp-section fade-up-d3" style="margin-top:0.5rem;">
-        <div class="jk-section-header">
-          <span class="jk-section-badge jk-int-badge">🔧 BASE</span>
-          <div>
-            <h3 class="jk-section-label">JIKABUKI BASE ── 楽屋</h3>
-            <p class="jk-section-sublabel">運営に使う＋業界共有データベース</p>
-          </div>
-        </div>
-        <div class="hub-grid">
-          <a href="/jikabuki/base" class="hub-card hub-jk-int">
-            <div class="hub-icon hub-icon-int">📋</div>
-            <div class="hub-body">
-              <h3>公演記録・出演記録</h3>
-              <p>演目・配役・日程のアーカイブ</p>
-            </div>
-            <span class="hub-arrow">&rarr;</span>
-          </a>
-          <a href="/jikabuki/base" class="hub-card hub-jk-int">
-            <div class="hub-icon hub-icon-int">📖</div>
-            <div class="hub-body">
-              <h3>デジタル台本</h3>
-              <p>スマホ・タブレットで稽古に使える</p>
-            </div>
-            <span class="hub-arrow">&rarr;</span>
-          </a>
-          <a href="/jikabuki/base/scripts" class="hub-card hub-jk-int">
-            <div class="hub-icon hub-icon-int">🤝</div>
-            <div class="hub-body">
-              <h3>台本共有ライブラリ</h3>
-              <p>団体間で台本を共有し事務局負担を軽減</p>
-            </div>
-            <span class="hub-arrow">&rarr;</span>
-          </a>
-          <a href="/jikabuki/base/db" class="hub-card hub-jk-int">
-            <div class="hub-icon hub-icon-int">🗄️</div>
-            <div class="hub-body">
-              <h3>業界共有データベース</h3>
-              <p>芝居小屋・貸衣装・かつら師・大道具</p>
-            </div>
-            <span class="hub-arrow">&rarr;</span>
-          </a>
+      <!-- 地歌舞伎ニュース -->
+      <section class="tp-section jk-news-section fade-up-d3" id="tp-jk-news" style="display:none;">
+        <h2 class="tp-section-title">地歌舞伎ニュース</h2>
+        <div id="tp-jk-news-items" class="jk-news-list"></div>
+        <div class="jk-news-more">
+          <a href="/jikabuki/info/news" class="jk-news-link">ニュース一覧 &rarr;</a>
         </div>
       </section>
+      <script>
+      (function(){
+        fetch("/api/news").then(function(r){ return r.json(); }).then(function(data){
+          var articles = data && data.articles || [];
+          if (!articles.length) return;
+          var jika = articles.filter(function(a){ return a.feedKey === "jikabuki"; }).slice(0, 5);
+          if (!jika.length) return;
+          var el = document.getElementById("tp-jk-news-items");
+          if (!el) return;
+          el.innerHTML = jika.map(function(a){
+            var d = a.pubTs ? new Date(a.pubTs) : null;
+            var ds = d ? (d.getMonth()+1) + "/" + d.getDate() : "";
+            return '<a href="' + a.link + '" target="_blank" rel="noopener" class="jk-news-item">'
+              + '<span class="jk-news-date">' + ds + '</span>'
+              + '<span class="jk-news-title">' + (a.title||"").replace(/</g,"&lt;") + '</span>'
+              + '</a>';
+          }).join("");
+          document.getElementById("tp-jk-news").style.display = "";
+        }).catch(function(){});
+      })();
+      </script>
 
-      <!-- LABO -->
-      <section class="tp-section fade-up-d3">
-        <div class="jk-section-header">
-          <span class="jk-section-badge jk-int-badge">🧪 LABO</span>
-          <div>
-            <h3 class="jk-section-label">JIKABUKI LABO ── 試す・作る</h3>
-            <p class="jk-section-sublabel">稽古ツール＋ベータテスト</p>
-          </div>
-        </div>
-        <div class="hub-grid">
-          <a href="/jikabuki/labo" class="hub-card hub-jk-int">
-            <div class="hub-icon hub-icon-int">🎤</div>
-            <div class="hub-body">
-              <h3>稽古モード【実践版】</h3>
-              <p>自分の役の台詞稽古・台本/動画連動</p>
-            </div>
-            <span class="hub-arrow">&rarr;</span>
-          </a>
-          <a href="/jikabuki/labo" class="hub-card hub-jk-int">
-            <div class="hub-icon hub-icon-int">🎙️</div>
-            <div class="hub-body">
-              <h3>台詞稽古チャレンジ</h3>
-              <p>カラオケ風の台詞練習ツール</p>
-            </div>
-            <span class="hub-arrow">&rarr;</span>
-          </a>
-        </div>
-      </section>
-
-      <div class="jk-more-link fade-up-d4">
-        <a href="/jikabuki/gate/kera" class="tp-link">JIKABUKI PLUS+ 詳細 &rarr;</a>
+      <!-- プロジェクトリンク -->
+      <div class="tp-section fade-up-d4" style="text-align:center;">
+        <p class="tp-mission">
+          気良歌舞伎（岐阜県）から、全国の地歌舞伎へ。<br>
+          伝統をテクノロジーで守るプロジェクトです。
+        </p>
+        <p class="tp-mission-link"><a href="/project">プロジェクト概要を読む →</a></p>
       </div>
 
     </div>
@@ -513,83 +455,84 @@ export function topPageHTML() {
         text-decoration: none;
       }
       .tp-mission-link a:hover { text-decoration: underline; }
-      /* ── JIKABUKI PLUS+ セクション ── */
-      .jk-section-header {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 12px;
-      }
-      .jk-section-badge {
-        font-size: 11px;
-        font-weight: 600;
-        padding: 4px 10px;
-        border-radius: 6px;
-        letter-spacing: 0.5px;
-        white-space: nowrap;
-        flex-shrink: 0;
-      }
-      .jk-pub-badge { background: var(--accent-1-soft); color: var(--accent-1); }
-      .jk-int-badge { background: var(--bg-subtle); color: var(--text-secondary); }
-      .jk-section-label {
-        font-family: 'Noto Serif JP', serif;
-        font-size: 15px;
-        font-weight: 600;
-        color: var(--text-primary);
-        letter-spacing: 1px;
-      }
-      .jk-section-sublabel {
-        font-size: 11px;
-        color: var(--text-tertiary);
-        margin-top: 1px;
-      }
-      .hub-jk-pub { border-left: 3px solid var(--accent-1); }
-      .hub-jk-int { border-left: 3px solid var(--text-tertiary); }
-      .hub-icon-pub { background: var(--accent-1-soft); }
-      .hub-icon-int { background: var(--bg-subtle); }
-      .jk-more-link {
-        text-align: center;
-        margin-top: 1.5rem;
-        padding-top: 1rem;
-        border-top: 1px solid var(--border-light);
-      }
-
-      /* ── JIKABUKI 特徴セクション ── */
-      .jk-value-grid {
+      /* ── JIKABUKI バリューカード ── */
+      .jk-val-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        margin-top: 0.5rem;
+        gap: 12px;
+        margin-bottom: 0;
       }
-      .jk-value-item {
+      .jk-val-card {
+        padding: 16px;
         background: var(--bg-card);
         border: 1px solid var(--border-light);
-        border-radius: var(--radius-sm);
-        padding: 14px 16px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
+        border-radius: var(--radius-md);
         box-shadow: var(--shadow-sm);
       }
-      .jk-value-icon {
-        font-size: 20px;
-        flex-shrink: 0;
+      .jk-val-icon { font-size: 22px; margin-bottom: 6px; }
+      .jk-val-title { font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+      .jk-val-desc { font-size: 11px; color: var(--text-secondary); line-height: 1.7; }
+
+      /* ── JIKABUKI モジュールカード ── */
+      .jk-mod-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
       }
-      .jk-value-text {
-        font-size: 13px;
-        color: var(--text-secondary);
-        line-height: 1.6;
-      }
-      .jk-value-text strong {
+      .jk-mod-card {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 18px 16px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-lg);
+        text-decoration: none;
         color: var(--text-primary);
-        font-weight: 600;
+        transition: all 0.18s;
+        box-shadow: var(--shadow-sm);
+        position: relative;
+        border-top: 3px solid transparent;
       }
+      .jk-mod-accent-1 { border-top-color: var(--accent-1); }
+      .jk-mod-accent-2 { border-top-color: var(--accent-2); }
+      .jk-mod-accent-3 { border-top-color: var(--accent-3); }
+      .jk-mod-accent-4 { border-top-color: var(--accent-4); }
+      .jk-mod-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); text-decoration: none; }
+      .jk-mod-icon { font-size: 28px; }
+      .jk-mod-body { flex: 1; }
+      .jk-mod-title { font-family: 'Noto Serif JP', serif; font-size: 16px; font-weight: 700; letter-spacing: 2px; }
+      .jk-mod-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+      .jk-mod-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.7; margin-top: 6px; }
+      .jk-mod-arrow { position: absolute; top: 16px; right: 14px; font-size: 16px; color: var(--text-tertiary); transition: transform 0.15s; }
+      .jk-mod-card:hover .jk-mod-arrow { transform: translateX(3px); color: var(--gold); }
+
+      /* ── JIKABUKI ニュース ── */
+      .jk-news-section {
+        padding: 20px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-sm);
+      }
+      .jk-news-list { display: flex; flex-direction: column; }
+      .jk-news-item {
+        display: flex; align-items: baseline; gap: 10px; padding: 8px 4px;
+        text-decoration: none; color: var(--text-primary); border-bottom: 1px solid var(--bg-subtle);
+        transition: background 0.12s;
+      }
+      .jk-news-item:last-child { border-bottom: none; }
+      .jk-news-item:hover { background: var(--gold-soft); text-decoration: none; }
+      .jk-news-date { font-size: 11px; color: var(--text-tertiary); flex-shrink: 0; min-width: 3em; }
+      .jk-news-title { font-size: 13px; line-height: 1.6; }
+      .jk-news-more { text-align: right; margin-top: 8px; }
+      .jk-news-link { font-size: 13px; color: var(--gold-dark); }
 
       /* ── レスポンシブ ── */
       @media (max-width: 600px) {
         .hub-grid-4 { grid-template-columns: 1fr; }
-        .feature-trio { grid-template-columns: 1fr; }
-        .jk-value-grid { grid-template-columns: 1fr; }
+        .jk-val-grid { grid-template-columns: 1fr; }
+        .jk-mod-grid { grid-template-columns: 1fr; }
         .catch-lead { font-size: 14px; letter-spacing: 1px; }
       }
     </style>`,

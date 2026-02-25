@@ -3,9 +3,9 @@ export default String.raw`/* keranosuke-widget v4.2 - \u6b4c\u821e\u4f0e\u30cb\u
 (function(){
   "use strict";
 
-  var WORKER_WEB_URL = "https://kerakabuki.kerakabuki.workers.dev/web";
-  var AVATAR_URL = "https://kerakabuki.kerakabuki.workers.dev/assets/keranosukelogo.png";
-  var ASSET_BASE = "https://kerakabuki.kerakabuki.workers.dev";
+  var WORKER_WEB_URL = "https://kabukiplus.com/web";
+  var AVATAR_URL = "https://kabukiplus.com/assets/keranosukelogo.png";
+  var ASSET_BASE = "https://kabukiplus.com";
 
   if (document.getElementById("keranosuke-fab-wrap")) return;
 
@@ -63,7 +63,7 @@ export default String.raw`/* keranosuke-widget v4.2 - \u6b4c\u821e\u4f0e\u30cb\u
     { icon: "\ud83d\udcd6", label: "\u6b4c\u821e\u4f0e\u7528\u8a9e\u3044\u308d\u306f", desc: "126\u306e\u7528\u8a9e\u3092\u30ab\u30c6\u30b4\u30ea\u5225\u306b\u89e3\u8aac", link: ASSET_BASE + "/glossary", color: "#252028", border: "rgba(224,184,74,.35)" },
     { icon: "\ud83d\udc79", label: "\u6b4c\u821e\u4f0e\u30af\u30a4\u30ba", desc: "\u4e09\u629e\u30af\u30a4\u30ba\u3067\u697d\u3057\u304f\u5b66\u307c\u3046", link: ASSET_BASE + "/quiz", color: "#252028", border: "rgba(224,184,74,.35)" },
     { icon: "\ud83d\udcf0", label: "\u6b4c\u821e\u4f0e\u30cb\u30e5\u30fc\u30b9", desc: "\u6700\u65b0\u30cb\u30e5\u30fc\u30b9\u3092\u30c1\u30a7\u30c3\u30af", link: ASSET_BASE + "/news", color: "#252028", border: "rgba(224,184,74,.35)" },
-    { icon: "\ud83c\udfa4", label: "\u304a\u7a3d\u53e4\u30e2\u30fc\u30c9", desc: "\u5927\u5411\u3053\u3046\u7a3d\u53e4\u30fb\u53f0\u8a5e\u7a3d\u53e4\u3092\u30d6\u30e9\u30a6\u30b6\u3067\u4f53\u9a13", link: ASSET_BASE + "/training", color: "#252028", border: "rgba(224,184,74,.35)" }
+    { icon: "\ud83e\udd4b", label: "KABUKI DOJO", desc: "\u30af\u30a4\u30ba\u30fb\u5927\u5411\u3046\u30fb\u53f0\u8a5e\u7a3d\u53e4\u306b\u6311\u6226", link: ASSET_BASE + "/kabuki/dojo", color: "#252028", border: "rgba(224,184,74,.35)" }
   ];
 
   /* ---- Talk Category Order (LINE flex_talk.js TALK_CAT_ORDER と同一) ---- */

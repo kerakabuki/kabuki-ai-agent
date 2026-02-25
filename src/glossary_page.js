@@ -4,10 +4,10 @@
 // =========================================================
 import { pageShell, escHTML } from "./web_layout.js";
 
-export function glossaryPageHTML() {
+export function glossaryPageHTML({ googleClientId = "" } = {}) {
   const bodyHTML = `
     <div class="breadcrumb" id="breadcrumb">
-      <a href="/">トップ</a><span>›</span><span id="bc-tail">歌舞伎用語いろは</span>
+      <a href="/">トップ</a><span>›</span><a href="/kabuki/navi">KABUKI NAVI</a><span>›</span><span id="bc-tail">用語辞典</span>
     </div>
 
     <div class="search-bar">
@@ -268,6 +268,7 @@ export function glossaryPageHTML() {
     subtitle: "126の用語をカテゴリ別に解説",
     bodyHTML,
     activeNav: "navi",
+    googleClientId,
     headExtra: `<style>
       .search-bar {
         margin-bottom: 1rem;

@@ -45,7 +45,7 @@ export function groupScriptListPageHTML(group, scripts) {
     return pageShell({
       title: "団体が見つかりません",
       bodyHTML: `<div class="empty-state">指定された団体は登録されていません。</div>`,
-      brand: "jikabuki", activeNav: "jikabuki",
+      brand: "jikabuki", activeNav: "base",
     });
   }
 
@@ -55,21 +55,38 @@ export function groupScriptListPageHTML(group, scripts) {
 
   const bodyHTML = `
     <div class="breadcrumb">
-      <a href="/">トップ</a><span>&rsaquo;</span><a href="/jikabuki">JIKABUKI PLUS+</a><span>&rsaquo;</span><a href="/groups/${gid}">${name}</a><span>&rsaquo;</span>デジタル台本
+      <a href="/">トップ</a><span>&rsaquo;</span><a href="/jikabuki/base">BASE</a><span>&rsaquo;</span><a href="/jikabuki/gate/${gid}">${name}</a><span>&rsaquo;</span>デジタル台本
     </div>
 
     <section class="fade-up">
       <p class="gs-intro">スマホ・タブレットで稽古に使えるデジタル台本です。演目名・場面はKABUKI PLUS+の演目ガイドと対応しています。</p>
 
       <div class="gs-toolbar">
-        <button class="btn btn-primary" onclick="SU.toggleForm()">+ 台本をアップロード</button>
+        <div class="gs-toolbar-left">
+          <select id="gs-perf-filter" class="gs-perf-filter" onchange="SU.filterByPerf(this.value)">
+            <option value="">すべての台本</option>
+          </select>
+        </div>
+        <button id="su-upload-main-btn" class="btn btn-primary" onclick="SU.toggleForm()" style="display:none;">+ 台本をアップロード</button>
       </div>
 
       <div id="su-form-area" style="display:none;" class="su-form">
         <h3 class="su-form-title">台本をアップロード</h3>
+        <div class="su-copyright-notice">
+          <div class="su-copyright-title">&#9888; 著作権について</div>
+          <ul>
+            <li>自団体が作成・所有する台本、または著作権者から許諾を得た台本のみアップロードできます。</li>
+            <li>他団体・出版社等の台本を無断でアップロードすることは著作権侵害となる場合があります。</li>
+            <li>アップロードした台本の取り扱いについては、団体内で事前に合意を取ってください。</li>
+          </ul>
+        </div>
         <div class="su-form-row">
           <label>ファイル（.txt / .pdf / .json）</label>
           <input type="file" id="su-file" accept=".txt,.pdf,.json" class="su-file-input">
+          <div class="su-format-note">
+            <span class="su-format-ok">✓ 対応: .txt &nbsp;.pdf &nbsp;.json</span>
+            <span class="su-format-ng">✗ 非対応: .doc .docx — WordはPDFに変換してからアップロードしてください</span>
+          </div>
         </div>
         <div class="su-form-row">
           <label>演目名</label>
@@ -90,15 +107,33 @@ export function groupScriptListPageHTML(group, scripts) {
           </div>
         </div>
         <div class="su-form-row">
+          <label>公演記録と紐付け（任意）</label>
+          <select id="su-record-picker" onchange="SU.onRecordPick(this.value)" class="su-record-picker">
+            <option value="">-- 読み込み中... --</option>
+          </select>
+          <input type="text" id="su-perf-tag" class="su-perf-tag-input" placeholder="例: 令和8年 気良歌舞伎公演">
+          <div id="su-record-hint" class="su-record-hint" style="display:none;"></div>
+        </div>
+        <div class="su-form-row">
           <label>備考メモ（任意）</label>
           <textarea id="su-memo" rows="2" placeholder="例: 2024年秋公演で使用。一部アレンジあり"></textarea>
         </div>
         <div class="su-form-row">
           <label>公開設定</label>
-          <select id="su-visibility">
+          <select id="su-visibility" onchange="SU.onVisibilityChange(this.value)">
             <option value="private">非公開（自団体のみ）</option>
             <option value="shared">共有（台本共有ライブラリに公開）</option>
           </select>
+          <div id="su-share-notice" class="su-share-notice" style="display:none;">
+            <span class="su-share-notice-icon">&#128275;</span>
+            <span>「共有」に設定すると、この台本は他の歌舞伎団体も閲覧・参考利用できる状態になります。アップロード前に著作権者の許諾を得ていること、および他団体への共有に同意していることをご確認ください。</span>
+          </div>
+        </div>
+        <div class="su-rights-row">
+          <label class="su-rights-label">
+            <input type="checkbox" id="su-rights-check" class="su-rights-check">
+            <span id="su-rights-text">この台本のデジタル保存・団体内共有について著作権上の問題がないことを確認し、団体内で合意済みです</span>
+          </label>
         </div>
         <div class="su-form-actions">
           <button class="btn btn-primary" onclick="SU.upload()" id="su-upload-btn">アップロード</button>
@@ -135,6 +170,10 @@ export function groupScriptListPageHTML(group, scripts) {
           </div>
         </div>
         <div class="su-form-row">
+          <label>公演名</label>
+          <input type="text" id="se-perf-tag">
+        </div>
+        <div class="su-form-row">
           <label>備考メモ</label>
           <textarea id="se-memo" rows="2"></textarea>
         </div>
@@ -159,47 +198,172 @@ export function groupScriptListPageHTML(group, scripts) {
 
       function esc(s) { return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 
+      var allScripts = [];
+      var perfFilter = "";
+      var canUpload = false;
+
+      function initFilter() {
+        var params = new URLSearchParams(window.location.search);
+        perfFilter = params.get("perf") || "";
+      }
+
+      function buildFilterDropdown() {
+        var tags = {};
+        allScripts.forEach(function(s) {
+          var t = s.performance_tag || "";
+          if (t) tags[t] = true;
+        });
+        var sel = document.getElementById("gs-perf-filter");
+        if (!sel) return;
+        var opts = '<option value="">\\u3059\\u3079\\u3066\\u306E\\u53F0\\u672C</option>';
+        Object.keys(tags).sort().forEach(function(t) {
+          opts += '<option value="' + esc(t) + '"' + (perfFilter === t ? ' selected' : '') + '>' + esc(t) + '</option>';
+        });
+        opts += '<option value="__none__"' + (perfFilter === "__none__" ? ' selected' : '') + '>\\u516C\\u6F14\\u672A\\u8A2D\\u5B9A</option>';
+        sel.innerHTML = opts;
+      }
+
+      function renderList() {
+        var el = document.getElementById("gs-list");
+        var filtered = allScripts;
+        if (perfFilter === "__none__") {
+          filtered = allScripts.filter(function(s) { return !s.performance_tag; });
+        } else if (perfFilter) {
+          filtered = allScripts.filter(function(s) { return s.performance_tag === perfFilter; });
+        }
+        if (!filtered.length) {
+          el.innerHTML = '<div class="empty-state">' + (allScripts.length ? '\\u8A72\\u5F53\\u3059\\u308B\\u53F0\\u672C\\u306F\\u3042\\u308A\\u307E\\u305B\\u3093\\u3002' : '\\u53F0\\u672C\\u306F\\u307E\\u3060\\u767B\\u9332\\u3055\\u308C\\u3066\\u3044\\u307E\\u305B\\u3093\\u3002<br>\\u4E0A\\u306E\\u300C\\u53F0\\u672C\\u3092\\u30A2\\u30C3\\u30D7\\u30ED\\u30FC\\u30C9\\u300D\\u30DC\\u30BF\\u30F3\\u304B\\u3089\\u30D5\\u30A1\\u30A4\\u30EB\\u3092\\u8FFD\\u52A0\\u3057\\u3066\\u304F\\u3060\\u3055\\u3044\\u3002') + '</div>';
+          return;
+        }
+        el.innerHTML = filtered.map(function(s){
+          var typeClass = s.type === "pdf" ? "gs-type-pdf" : s.type === "json" ? "gs-type-json" : "gs-type-text";
+          var typeLabel = s.type === "pdf" ? "PDF" : s.type === "json" ? "JSON" : "TEXT";
+          var perfBadge = s.performance_tag ? '<span class="gs-perf-badge">' + esc(s.performance_tag) + '</span>' : '';
+          return '<div class="gs-script-card" style="cursor:default;">'
+            + '<span class="gs-script-icon">' + (s.type === "pdf" ? "\\uD83D\\uDCC4" : "\\uD83D\\uDCD6") + '</span>'
+            + '<a href="/groups/' + GID + '/scripts/' + esc(s.id) + '" class="gs-script-body" style="text-decoration:none;color:inherit;">'
+            + '<div class="gs-script-title">' + esc(s.title || s.id) + '</div>'
+            + (s.play ? '<div class="gs-script-play">' + esc(s.play) + '</div>' : '')
+            + perfBadge
+            + (s.perf_date || s.perf_venue ? '<div class="gs-script-perf">\\uD83C\\uDFAD ' + (s.perf_date ? esc(s.perf_date) : '') + (s.perf_date && s.perf_venue ? ' / ' : '') + (s.perf_venue ? esc(s.perf_venue) : '') + '</div>' : '')
+            + (s.memo ? '<div class="gs-script-memo">' + esc(s.memo) + '</div>' : '')
+            + (s.uploaded_at ? '<div class="gs-script-meta">' + s.uploaded_at.slice(0,10) + '</div>' : '')
+            + '</a>'
+            + '<span class="gs-type-badge ' + typeClass + '">' + typeLabel + '</span>'
+            + (s.visibility === "shared" ? '<span class="gs-shared-badge">\\u5171\\u6709</span>' : '<span class="gs-private-badge">\\u975E\\u516C\\u958B</span>')
+            + (canUpload ? '<div class="gs-card-actions">'
+            + '<button class="gs-edit-btn" onclick="SU.openEdit(\\'' + esc(s.id) + '\\')">\\u7DE8\\u96C6</button>'
+            + '<button class="gs-del-btn" onclick="SU.del(\\'' + esc(s.id) + '\\')">\\u524A\\u9664</button>'
+            + '</div>' : '')
+            + '</div>';
+        }).join("");
+      }
+
       function loadList() {
         fetch("/api/groups/" + GID + "/scripts")
           .then(function(r){ return r.json(); })
           .then(function(data){
-            var scripts = data.scripts || [];
-            allScripts = scripts;
-            var el = document.getElementById("gs-list");
-            if (!scripts.length) {
-              el.innerHTML = '<div class="empty-state">台本はまだ登録されていません。<br>上の「台本をアップロード」ボタンからファイルを追加してください。</div>';
-              return;
-            }
-            el.innerHTML = scripts.map(function(s){
-              var typeClass = s.type === "pdf" ? "gs-type-pdf" : s.type === "json" ? "gs-type-json" : "gs-type-text";
-              var typeLabel = s.type === "pdf" ? "PDF" : s.type === "json" ? "JSON" : "TEXT";
-              return '<div class="gs-script-card" style="cursor:default;">'
-                + '<span class="gs-script-icon">' + (s.type === "pdf" ? "📄" : "📖") + '</span>'
-                + '<a href="/groups/' + GID + '/scripts/' + esc(s.id) + '" class="gs-script-body" style="text-decoration:none;color:inherit;">'
-                + '<div class="gs-script-title">' + esc(s.title || s.id) + '</div>'
-                + (s.play ? '<div class="gs-script-play">' + esc(s.play) + '</div>' : '')
-                + (s.perf_date || s.perf_venue ? '<div class="gs-script-perf">🎭 ' + (s.perf_date ? esc(s.perf_date) : '') + (s.perf_date && s.perf_venue ? ' / ' : '') + (s.perf_venue ? esc(s.perf_venue) : '') + '</div>' : '')
-                + (s.memo ? '<div class="gs-script-memo">' + esc(s.memo) + '</div>' : '')
-                + (s.uploaded_at ? '<div class="gs-script-meta">' + s.uploaded_at.slice(0,10) + '</div>' : '')
-                + '</a>'
-                + '<span class="gs-type-badge ' + typeClass + '">' + typeLabel + '</span>'
-                + (s.visibility === "shared" ? '<span class="gs-shared-badge">共有</span>' : '<span class="gs-private-badge">非公開</span>')
-                + '<div class="gs-card-actions">'
-                + '<button class="gs-edit-btn" onclick="SU.openEdit(\\'' + esc(s.id) + '\\')">編集</button>'
-                + '<button class="gs-del-btn" onclick="SU.del(\\'' + esc(s.id) + '\\')">削除</button>'
-                + '</div>'
-                + '</div>';
-            }).join("");
+            allScripts = data.scripts || [];
+            buildFilterDropdown();
+            renderList();
           })
-          .catch(function(){ document.getElementById("gs-list").innerHTML = '<div class="empty-state">読み込みに失敗しました。</div>'; });
+          .catch(function(){ document.getElementById("gs-list").innerHTML = '<div class="empty-state">\\u8AAD\\u307F\\u8FBC\\u307F\\u306B\\u5931\\u6557\\u3057\\u307E\\u3057\\u305F\\u3002</div>'; });
       }
 
-      var allScripts = [];
+      function init() {
+        Promise.all([
+          fetch("/api/auth/me").then(function(r){ return r.json(); }).catch(function(){ return {}; }),
+          fetch("/api/groups/" + GID + "/scripts").then(function(r){ return r.json(); }).catch(function(){ return { scripts: [] }; })
+        ]).then(function(results) {
+          var me = results[0];
+          allScripts = results[1].scripts || [];
+
+          // 権限判定: master / editor / 当グループの manager 以上
+          if (me && me.loggedIn && me.user) {
+            var u = me.user;
+            if (u.isMaster || u.isEditor) {
+              canUpload = true;
+            } else if (u.groups) {
+              var mem = u.groups.find(function(g){ return g.group_id === GID; });
+              if (mem && (mem.role === "manager")) canUpload = true;
+            }
+          }
+
+          var uploadBtn = document.getElementById("su-upload-main-btn");
+          if (uploadBtn) uploadBtn.style.display = canUpload ? "" : "none";
+
+          buildFilterDropdown();
+          renderList();
+        });
+      }
+
+      var recordList = null; // キャッシュ
 
       window.SU = {
         toggleForm: function() {
           var area = document.getElementById("su-form-area");
-          area.style.display = area.style.display === "none" ? "" : "none";
+          var isHidden = area.style.display === "none";
+          area.style.display = isHidden ? "" : "none";
+          if (isHidden) SU.loadRecordOptions();
+        },
+        loadRecordOptions: function() {
+          var sel = document.getElementById("su-record-picker");
+          if (!sel) return;
+          if (recordList !== null) { SU.buildRecordOptions(recordList); return; }
+          fetch("/api/groups/" + GID + "/records")
+            .then(function(r){ return r.json(); })
+            .catch(function(){ return { records: [] }; })
+            .then(function(data) {
+              recordList = (data.records || []).slice().sort(function(a,b){ return (b.year||0)-(a.year||0); });
+              SU.buildRecordOptions(recordList);
+            });
+        },
+        buildRecordOptions: function(recs) {
+          var sel = document.getElementById("su-record-picker");
+          if (!sel) return;
+          var h = '<option value="">-- 公演記録から選ぶ --</option>';
+          recs.forEach(function(r) {
+            var label = (r.year ? r.year + "年 " : "") + esc(r.title || "（無題）");
+            h += '<option value="' + esc(r.id || "") + '">' + label + '</option>';
+          });
+          h += '<option value="__manual__">✏ 手入力する</option>';
+          sel.innerHTML = h;
+        },
+        onRecordPick: function(val) {
+          var tagInput = document.getElementById("su-perf-tag");
+          var hint = document.getElementById("su-record-hint");
+          if (val === "" || val === "__manual__") {
+            if (tagInput) { tagInput.readOnly = false; tagInput.style.background = ""; }
+            if (hint) hint.style.display = "none";
+            if (val === "__manual__" && tagInput) tagInput.focus();
+            return;
+          }
+          var r = (recordList || []).find(function(x){ return x.id === val; });
+          if (!r) return;
+          if (tagInput) {
+            tagInput.value = r.title || "";
+            tagInput.readOnly = true;
+            tagInput.style.background = "var(--bg-subtle)";
+          }
+          var dateEl = document.getElementById("su-perf-date");
+          var venueEl = document.getElementById("su-perf-venue");
+          if (dateEl && !dateEl.value && r.perf_date) dateEl.value = r.perf_date;
+          if (venueEl && !venueEl.value && r.venue) venueEl.value = r.venue;
+          if (hint) {
+            hint.textContent = "紐付け: " + esc(r.title || "") + (r.year ? "（" + r.year + "年）" : "");
+            hint.style.display = "block";
+          }
+        },
+        onVisibilityChange: function(val) {
+          var notice = document.getElementById("su-share-notice");
+          var rightsText = document.getElementById("su-rights-text");
+          if (val === "shared") {
+            if (notice) notice.style.display = "flex";
+            if (rightsText) rightsText.textContent = "この台本のデジタル保存・団体内共有および他団体への共有・参考利用について著作権上の問題がないことを確認し、同意済みです";
+          } else {
+            if (notice) notice.style.display = "none";
+            if (rightsText) rightsText.textContent = "この台本のデジタル保存・団体内共有について著作権上の問題がないことを確認し、団体内で合意済みです";
+          }
         },
         openEdit: function(id) {
           var s = allScripts.find(function(x){ return x.id === id; });
@@ -209,6 +373,7 @@ export function groupScriptListPageHTML(group, scripts) {
           document.getElementById("se-play").value = s.play || "";
           document.getElementById("se-perf-date").value = s.perf_date || "";
           document.getElementById("se-perf-venue").value = s.perf_venue || "";
+          document.getElementById("se-perf-tag").value = s.performance_tag || "";
           document.getElementById("se-memo").value = s.memo || "";
           document.getElementById("se-visibility").value = s.visibility || "private";
           document.getElementById("se-status").textContent = "";
@@ -224,6 +389,7 @@ export function groupScriptListPageHTML(group, scripts) {
             play: document.getElementById("se-play").value.trim(),
             perf_date: document.getElementById("se-perf-date").value.trim(),
             perf_venue: document.getElementById("se-perf-venue").value.trim(),
+            performance_tag: document.getElementById("se-perf-tag").value.trim(),
             memo: document.getElementById("se-memo").value.trim(),
             visibility: document.getElementById("se-visibility").value
           };
@@ -252,6 +418,8 @@ export function groupScriptListPageHTML(group, scripts) {
           });
         },
         upload: function() {
+          var rightsCheck = document.getElementById("su-rights-check");
+          if (!rightsCheck.checked) { alert("権利確認のチェックを入れてください。"); return; }
           var fileEl = document.getElementById("su-file");
           var file = fileEl.files[0];
           if (!file) { alert("ファイルを選択してください。"); return; }
@@ -261,6 +429,7 @@ export function groupScriptListPageHTML(group, scripts) {
           var play = document.getElementById("su-play").value.trim();
           var perfDate = document.getElementById("su-perf-date").value.trim();
           var perfVenue = document.getElementById("su-perf-venue").value.trim();
+          var perfTag = document.getElementById("su-perf-tag").value.trim();
           var memo = document.getElementById("su-memo").value.trim();
           var vis = document.getElementById("su-visibility").value;
           var status = document.getElementById("su-status");
@@ -272,6 +441,7 @@ export function groupScriptListPageHTML(group, scripts) {
           fd.append("play", play);
           fd.append("perf_date", perfDate);
           fd.append("perf_venue", perfVenue);
+          fd.append("performance_tag", perfTag);
           fd.append("memo", memo);
           fd.append("visibility", vis);
 
@@ -291,6 +461,7 @@ export function groupScriptListPageHTML(group, scripts) {
                 document.getElementById("su-play").value = "";
                 document.getElementById("su-perf-date").value = "";
                 document.getElementById("su-perf-venue").value = "";
+                document.getElementById("su-perf-tag").value = "";
                 document.getElementById("su-memo").value = "";
                 loadList();
               } else {
@@ -304,14 +475,19 @@ export function groupScriptListPageHTML(group, scripts) {
             });
         },
         del: function(id) {
-          if (!confirm("この台本を削除しますか？")) return;
+          if (!confirm("\\u3053\\u306E\\u53F0\\u672C\\u3092\\u524A\\u9664\\u3057\\u307E\\u3059\\u304B\\uFF1F")) return;
           fetch("/api/groups/" + GID + "/scripts/" + encodeURIComponent(id), { method: "DELETE" })
             .then(function(){ loadList(); })
-            .catch(function(e){ alert("削除に失敗しました: " + e); });
+            .catch(function(e){ alert("\\u524A\\u9664\\u306B\\u5931\\u6557\\u3057\\u307E\\u3057\\u305F: " + e); });
+        },
+        filterByPerf: function(val) {
+          perfFilter = val;
+          renderList();
         }
       };
 
-      loadList();
+      initFilter();
+      init();
     })();
     </script>
   `;
@@ -320,11 +496,25 @@ export function groupScriptListPageHTML(group, scripts) {
     title: `デジタル台本 - ${g.name}`,
     subtitle: "スマホ・タブレットで稽古に使える",
     bodyHTML,
-    activeNav: "jikabuki",
+    activeNav: "base",
     brand: "jikabuki",
     headExtra: `<style>
       ${SHARED_CSS}
-      .gs-toolbar { margin-bottom: 1rem; }
+      .gs-toolbar { margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+      .gs-toolbar-left { flex: 1; min-width: 0; }
+      .gs-perf-filter {
+        width: 100%; max-width: 250px;
+        padding: 7px 10px; border: 1px solid var(--border-medium);
+        border-radius: var(--radius-sm); font-size: 13px; font-family: inherit;
+        background: var(--bg-page); color: var(--text-primary);
+      }
+      .gs-perf-filter:focus { border-color: var(--gold); outline: none; }
+      .gs-perf-badge {
+        display: inline-block; font-size: 10px; padding: 2px 8px;
+        border-radius: 10px; font-weight: 600;
+        background: var(--gold-soft, #fdf6e3); color: var(--gold-dark, #a0850a);
+        margin-top: 2px;
+      }
       .su-form {
         background: var(--bg-card); border: 2px solid var(--gold-light);
         border-radius: var(--radius-md); padding: 20px; margin-bottom: 1.5rem;
@@ -339,18 +529,64 @@ export function groupScriptListPageHTML(group, scripts) {
         background: var(--bg-page); color: var(--text-primary); resize: vertical;
       }
       .su-form-row textarea:focus { border-color: var(--gold); outline: none; }
-      .su-form-row input, .su-form-row select {
+      .su-form-row input:not([type="checkbox"]), .su-form-row select {
         width: 100%; padding: 10px 12px; border: 1px solid var(--border-medium);
         border-radius: var(--radius-sm); font-size: 14px; font-family: inherit;
         background: var(--bg-page); color: var(--text-primary);
       }
-      .su-form-row input:focus, .su-form-row select:focus { border-color: var(--gold); outline: none; }
+      .su-form-row input:not([type="checkbox"]):focus, .su-form-row select:focus { border-color: var(--gold); outline: none; }
       .su-file-input { padding: 8px !important; }
       .su-form-row-half { display: flex; gap: 12px; }
       .su-form-row-half .su-form-row { flex: 1; }
       @media (max-width: 480px) { .su-form-row-half { flex-direction: column; gap: 0; } }
       .su-form-actions { display: flex; gap: 10px; margin-top: 16px; }
       .su-status { margin-top: 8px; font-size: 13px; }
+      .su-copyright-notice {
+        background: #fff8e1; border: 1px solid #f0c040; border-radius: 8px;
+        padding: 12px 14px; margin-bottom: 16px; font-size: 12px; line-height: 1.7;
+        color: var(--text-primary);
+      }
+      .su-copyright-title { font-weight: 700; margin-bottom: 6px; color: #a07010; }
+      .su-copyright-notice ul { margin: 0; padding-left: 18px; }
+      .su-copyright-notice li { margin-bottom: 2px; }
+      .su-format-note { margin-top: 6px; display: flex; flex-direction: column; gap: 3px; font-size: 12px; }
+      .su-format-ok { color: #27ae60; font-weight: 600; }
+      .su-format-ng { color: #c0392b; font-weight: 600; background: #fdedec; padding: 3px 8px; border-radius: 4px; }
+      .su-record-picker {
+        width: 100%; padding: 10px 12px; border: 1px solid var(--gold-light);
+        border-radius: var(--radius-sm); font-size: 14px; font-family: inherit;
+        background: var(--bg-page); color: var(--text-primary);
+        margin-bottom: 6px; cursor: pointer;
+      }
+      .su-record-picker:focus { border-color: var(--gold); outline: none; }
+      .su-perf-tag-input {
+        width: 100%; padding: 10px 12px; border: 1px solid var(--border-medium);
+        border-radius: var(--radius-sm); font-size: 14px; font-family: inherit;
+        background: var(--bg-page); color: var(--text-primary);
+        box-sizing: border-box;
+      }
+      .su-perf-tag-input:focus { border-color: var(--gold); outline: none; }
+      .su-record-hint {
+        margin-top: 5px; font-size: 11px; color: var(--gold-dark, #a0850a);
+        background: var(--gold-soft, #fdf6e3); padding: 4px 8px;
+        border-radius: 4px; font-weight: 600;
+      }
+      .su-share-notice {
+        display: flex; align-items: flex-start; gap: 8px;
+        background: #e8f4fd; border: 1px solid #90caf9; border-radius: 6px;
+        padding: 10px 12px; margin-top: 8px; font-size: 12px; line-height: 1.7;
+        color: #1a5276;
+      }
+      .su-share-notice-icon { flex-shrink: 0; font-size: 16px; line-height: 1.5; }
+      .su-rights-row {
+        background: var(--bg-subtle); padding: 12px; border-radius: 8px; margin-top: 8px; margin-bottom: 12px;
+      }
+      .su-rights-label {
+        display: flex; align-items: flex-start; gap: 8px;
+        cursor: pointer; font-size: 13px; line-height: 1.6; font-weight: normal;
+        color: var(--text-primary); margin-bottom: 0;
+      }
+      .su-rights-check { flex-shrink: 0; margin-top: 3px; width: auto !important; }
       .gs-card-actions { display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
       .gs-edit-btn {
         font-size: 10px; color: var(--gold-dark); background: none; border: 1px solid var(--gold-light);
@@ -382,7 +618,7 @@ export function groupScriptViewerPageHTML(group, script) {
     return pageShell({
       title: "台本が見つかりません",
       bodyHTML: `<div class="empty-state">指定された台本は登録されていません。</div>`,
-      brand: "jikabuki", activeNav: "jikabuki",
+      brand: "jikabuki", activeNav: "base",
     });
   }
 
@@ -400,7 +636,7 @@ export function groupScriptViewerPageHTML(group, script) {
 
   const bodyHTML = `
     <div class="breadcrumb">
-      <a href="/">トップ</a><span>&rsaquo;</span><a href="/groups/${gid}">${name}</a><span>&rsaquo;</span><a href="/groups/${gid}/scripts">台本</a><span>&rsaquo;</span>${escHTML(s.title || "")}
+      <a href="/">トップ</a><span>&rsaquo;</span><a href="/jikabuki/gate/${gid}">${name}</a><span>&rsaquo;</span><a href="/groups/${gid}/scripts">台本</a><span>&rsaquo;</span>${escHTML(s.title || "")}
     </div>
 
     <div class="sv-controls fade-up">
@@ -456,7 +692,7 @@ export function groupScriptViewerPageHTML(group, script) {
     title: s.title || "台本",
     subtitle: s.play || "",
     bodyHTML,
-    activeNav: "jikabuki",
+    activeNav: "base",
     brand: "jikabuki",
     headExtra: `<style>
       .sv-controls {
@@ -505,7 +741,7 @@ export function groupScriptTextViewerHTML(group, meta, content) {
     return pageShell({
       title: "台本が見つかりません",
       bodyHTML: `<div class="empty-state">指定された台本は登録されていません。</div>`,
-      brand: "jikabuki", activeNav: "jikabuki",
+      brand: "jikabuki", activeNav: "base",
     });
   }
 
@@ -521,7 +757,7 @@ export function groupScriptTextViewerHTML(group, meta, content) {
 
   const bodyHTML = `
     <div class="breadcrumb">
-      <a href="/">トップ</a><span>&rsaquo;</span><a href="/groups/${gid}">${name}</a><span>&rsaquo;</span><a href="/groups/${gid}/scripts">台本</a><span>&rsaquo;</span>${title}
+      <a href="/">トップ</a><span>&rsaquo;</span><a href="/jikabuki/gate/${gid}">${name}</a><span>&rsaquo;</span><a href="/groups/${gid}/scripts">台本</a><span>&rsaquo;</span>${title}
     </div>
 
     <div class="tv-header fade-up">
@@ -541,7 +777,7 @@ export function groupScriptTextViewerHTML(group, meta, content) {
     title: title,
     subtitle: meta.play || "",
     bodyHTML,
-    activeNav: "jikabuki",
+    activeNav: "base",
     brand: "jikabuki",
     headExtra: `<style>
       ${SHARED_CSS}
@@ -587,7 +823,7 @@ export function groupScriptPdfViewerHTML(group, meta) {
     return pageShell({
       title: "台本が見つかりません",
       bodyHTML: `<div class="empty-state">指定された台本は登録されていません。</div>`,
-      brand: "jikabuki", activeNav: "jikabuki",
+      brand: "jikabuki", activeNav: "base",
     });
   }
 
@@ -599,7 +835,7 @@ export function groupScriptPdfViewerHTML(group, meta) {
 
   const bodyHTML = `
     <div class="breadcrumb">
-      <a href="/">トップ</a><span>&rsaquo;</span><a href="/groups/${gid}">${name}</a><span>&rsaquo;</span><a href="/groups/${gid}/scripts">台本</a><span>&rsaquo;</span>${title}
+      <a href="/">トップ</a><span>&rsaquo;</span><a href="/jikabuki/gate/${gid}">${name}</a><span>&rsaquo;</span><a href="/groups/${gid}/scripts">台本</a><span>&rsaquo;</span>${title}
     </div>
 
     <div class="pv-header fade-up">
@@ -623,7 +859,7 @@ export function groupScriptPdfViewerHTML(group, meta) {
     title: title,
     subtitle: meta.play || "",
     bodyHTML,
-    activeNav: "jikabuki",
+    activeNav: "base",
     brand: "jikabuki",
     headExtra: `<style>
       ${SHARED_CSS}

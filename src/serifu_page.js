@@ -3,102 +3,14 @@
 // YouTube + カラオケ字幕（弁天小僧「知らざぁ言って聞かせやしょう」）
 // =============================================================
 
-// charTimings: large/medium のいいとこ取り（崩壊したフレーズは他方を採用）
-const CUES = [
-  { time: 9.1, end: 18.5, type: "serifu", text: "知らざあ言って聞かせやしょう", reading: "しらざぁいって　きかせやしょう",
-    charTimings: [0, 0.44, 0.60, 0.99, 1.38, 2.02, 2.94, 6.32, 6.54, 7.06, 7.23, 7.40, 8.06, 8.22] },  // large: 間合いが最も自然
-  { time: 19.3, type: "pause" },
-  { time: 30.5, end: 34.5, type: "serifu", text: "浜の真砂と五右衛門が", reading: "はまのまさごとごえもんが",
-    charTimings: [0.40, 1.00, 1.18, 1.48, 1.62, 1.88, 2.06, 2.36, 2.64, 2.84] },  // large
-  { time: 35.1, end: 38.5, type: "serifu", text: "歌に残した盗人の", reading: "うたにのこしたぬすっとの",
-    charTimings: [0.08, 0.42, 0.84, 1.02, 1.24, 1.40, 1.92, 2.00] },  // medium: large は先頭-0.96で崩壊
-  { time: 39.2, end: 44.0, type: "serifu", text: "種は尽きねぇ七里が浜", reading: "たにゃぁつきねえしちりがはま",
-    charTimings: [0, 0.04, 0.50, 0.74, 1.18, 2.02, 2.04, 2.28, 2.80, 3.10] },  // large: ねぇの伸びが自然
-  { time: 44.7, end: 47.5, type: "serifu", text: "その白浪の夜働き", reading: "そのしらなみのよばらたらき",
-    charTimings: [0, 0.42, 0.58, 0.78, 0.94, 1.06, 1.26, 1.46] },  // large
-  { time: 48.2, end: 51.0, type: "serifu", text: "以前を言やァ江の島で", reading: "いぜんをいやぁえのしまで",
-    charTimings: [0, 0.12, 0.20, 0.50, 0.71, 0.92, 1.10, 1.44, 1.60, 1.75] },  // large
-  { time: 51.5, end: 56.0, type: "serifu", text: "年季勤めの稚児ヶ渕", reading: "ねんきづとめのちごがふち",
-    charTimings: [0, 0.16, 0.36, 0.76, 1.26, 1.66, 2.08, 2.54, 2.55] },  // large: 文字間が均等
-  { time: 56.8, end: 59.0, type: "serifu", text: "百味で散らす蒔銭を", reading: "ひゃくみでちらすまきせんを",
-    charTimings: [0, 0.18, 0.29, 0.40, 0.72, 1.08, 1.32, 1.62, 1.64] },  // large
-  { time: 59.7, end: 64.0, type: "serifu", text: "当に小皿の一文子", reading: "あてにこざらのいちもんこ",
-    charTimings: [0, 0.04, 0.60, 0.84, 1.14, 1.36, 1.58, 1.80] },  // medium: large は 0.28-0.33 に密集
-  { time: 64.6, end: 67.5, type: "serifu", text: "百が二百と賽銭の", reading: "ひゃくがにひゃくとさいせんの",
-    charTimings: [0, 0.36, 0.54, 0.82, 0.90, 1.18, 1.40, 1.62] },  // large: 均等で自然
-  { time: 68.3, end: 72.0, type: "serifu", text: "くすね銭せえだんだんに", reading: "くすねぜにせえだんだんに",
-    charTimings: [0, 0.20, 0.40, 0.65, 0.95, 1.35, 1.75, 2.05, 2.35, 2.70, 3.10] },  // 手動: だんだんに均等+にを早め
-  { time: 72.6, end: 80.0, type: "serifu", text: "悪事はのぼる上の宮", reading: "あくじはのぼるかみのみや",
-    charTimings: [0, 0.15, 0.40, 0.96, 1.40, 2.78, 3.40, 3.88, 4.24] },  // large: る→上の間合い
-  { time: 80.8, end: 83.0, type: "serifu", text: "岩本院で講中の", reading: "いわもといんでこうじゅうの",
-    charTimings: [0, 0.26, 0.28, 0.52, 0.78, 1.04, 1.46] },  // large
-  { time: 83.7, end: 87.5, type: "serifu", text: "枕さがしも度重なり", reading: "まくらさがしもたびかさなり",
-    charTimings: [0, 0.22, 0.46, 0.74, 0.96, 1.36, 1.52, 1.80, 2.18] },  // large: 全体的に均等
-  { time: 88.0, end: 90.5, type: "serifu", text: "お手長講と札附きに", reading: "おてながこうとふだつきに",
-    charTimings: [0, 0.08, 0.42, 0.62, 0.82, 1.00, 1.34, 1.56, 1.74] },  // large
-  { time: 91.2, end: 97.0, type: "serifu", text: "とうとう島を追い出され", reading: "とうとうしまぁおいだされ",
-    charTimings: [0, 0.30, 0.60, 0.90, 1.30, 2.30, 3.20, 3.65, 4.10, 4.60, 5.10] },  // 手動: しまぁ伸ばし+追い出されの前に間
-  { time: 97.7, end: 101.0, type: "serifu", text: "それから若衆の美人局", reading: "それからわかしゅのつつもたせ",
-    charTimings: [0, 0.06, 0.40, 0.64, 1.00, 1.14, 1.44, 1.56, 1.80, 1.96] },  // large
-  { time: 101.8, end: 104.8, type: "serifu", text: "ここやかしこの寺島で", reading: "ここやかしこのてらしまで",
-    charTimings: [0, 0.22, 0.52, 0.70, 0.91, 1.12, 1.46, 1.60, 1.82, 2.01] },  // large: 均等で自然
-  { time: 105.4, end: 108.2, type: "serifu", text: "小耳に聞いた音羽屋の", reading: "こみみにきいたおとわやの",
-    charTimings: [0, 0.10, 0.40, 0.62, 0.89, 1.16, 1.32, 1.58, 1.76, 2.02] },  // large: 均等で自然
-  { time: 108.9, end: 117.5, type: "serifu", text: "似ぬ声色で小ゆすりかたり", reading: "にぬこえいろでこゆすりかたり",
-    charTimings: [0, 0.55, 1.10, 1.70, 2.30, 3.20, 3.80, 4.40, 5.00, 5.70, 6.40, 7.20] },  // 手動: かたり の伸びを反映
-  { time: 118.3, end: 123.5, type: "serifu", text: "名さえ由縁の弁天小僧", reading: "なせぇゆかりのべんてんこぞう",
-    charTimings: [0, 0.90, 1.38, 1.72, 1.90, 2.08, 2.30, 2.68, 2.83, 2.98] },  // medium: large は 1.43-1.48 に密集
-  { time: 124.4, end: 136.0, type: "serifu", text: "菊之助たァおれがことだ", reading: "きくのすけたぁ　おれがことだ",
-    charTimings: [0, 0.25, 0.50, 1.00, 1.80, 6.60, 7.10, 7.60, 8.20, 8.80, 9.60] },  // 手動: お=2:11, だぁ=2:16まで伸ばし
-];
-
-function esc(s) {
-  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-}
-
-function fmtTime(sec) {
-  const m = Math.floor((sec || 0) / 60);
-  const s = Math.floor((sec || 0) % 60);
-  return m + ":" + (s < 10 ? "0" : "") + s;
-}
-
-function buildLyricsHTML() {
-  let phraseNum = 0;
-  return CUES.map((cue, i) => {
-    if (cue.type === "pause") {
-      return '<div class="pause-marker"><span class="pause-dots">\u30FB\u30FB\u30FB</span></div>';
-    }
-    phraseNum++;
-    const chars = Array.from(cue.text).map(ch => {
-      const e = esc(ch);
-      return '<span class="kchar">'
-        + '<span class="kchar-sizer">' + e + '</span>'
-        + '<span class="kchar-base">' + e + '</span>'
-        + '<span class="kchar-lit" style="width:0%">' + e + '</span>'
-        + '</span>';
-    }).join("");
-    const readingHTML = cue.reading ? '<div class="phrase-reading">' + esc(cue.reading) + '</div>' : '';
-    return '<div class="phrase" data-idx="' + i + '">'
-      + '<div class="phrase-meta">#' + phraseNum + '\u3000' + fmtTime(cue.time) + '</div>'
-      + '<div class="phrase-text">' + chars + '</div>'
-      + readingHTML
-      + '</div>';
-  }).join("\n");
-}
-
-function buildCuesJSON() {
-  return JSON.stringify(CUES);
-}
-
 export function serifuPageHTML() {
-  const CUES_JSON = buildCuesJSON();
 
   return `<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>台詞道場 ─ 弁天小僧 | 気良歌舞伎</title>
+<title>台詞稽古 ─ 弁天小僧 | KABUKI PLUS+</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -196,6 +108,7 @@ export function serifuPageHTML() {
     box-shadow: var(--shadow-gold), 0 12px 28px rgba(0,0,0,0.35);
   }
   .start-choice:active { transform: translateY(-1px); }
+  .start-choice:disabled { opacity: 0.5; cursor: wait; }
   .choice-icon { font-size: 2.2rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
   .choice-title {
     font-family: 'Noto Serif JP', serif; font-size: 1.15rem;
@@ -543,16 +456,20 @@ export function serifuPageHTML() {
 <body>
 
 <div class="header">
+  <a href="/kabuki/dojo" style="color:var(--gold);text-decoration:none;font-size:0.85rem;">← DOJO</a>
   <span style="font-size:24px">🎭</span>
   <div>
-    <div class="header-title">台詞道場</div>
+    <div class="header-title">台詞稽古</div>
     <div class="header-sub">弁天小僧（浜松屋の場）</div>
   </div>
 </div>
 
 <!-- ===== イントロ画面 ===== -->
 <div id="intro">
-  <h1>台詞道場</h1>
+  <div style="text-align:left;margin-bottom:0.5rem;align-self:flex-start;">
+    <a href="/kabuki/dojo" style="color:var(--gold);text-decoration:none;font-size:0.9rem;">← KABUKI DOJO</a>
+  </div>
+  <h1>台詞稽古</h1>
   <div class="subtitle">弁天小僧（浜松屋の場）<br>「知らざぁ言って聞かせやしょう」</div>
 
   <div class="how-to">
@@ -577,17 +494,17 @@ export function serifuPageHTML() {
 
   <div class="pre-btn">練習モードを選んでね</div>
   <div class="start-choices">
-    <button class="start-choice" id="start-karaoke">
+    <button class="start-choice" id="start-karaoke" disabled>
       <span class="choice-icon">🎵</span>
       <span class="choice-title">お手本と一緒に</span>
       <span class="choice-desc">動画に合わせて<br>声を出してみよう</span>
     </button>
-    <button class="start-choice" id="start-repeat">
+    <button class="start-choice" id="start-repeat" disabled>
       <span class="choice-icon">📢</span>
       <span class="choice-title">復唱しよう</span>
       <span class="choice-desc">1フレーズずつ止めて<br>お手本を復唱</span>
     </button>
-    <button class="start-choice" id="start-micjudge">
+    <button class="start-choice" id="start-micjudge" disabled>
       <span class="choice-icon">🎤</span>
       <span class="choice-title">マイク判定</span>
       <span class="choice-desc">全編流して<br>声のタイミングを採点</span>
@@ -661,11 +578,24 @@ export function serifuPageHTML() {
   </div>
 </div>
 <div style="flex:1"></div>
-<div class="footer">気良歌舞伎 ─ 台詞道場チャレンジ</div>
+<div class="footer"><a href="/kabuki/dojo" style="color:var(--gold);text-decoration:none;">← KABUKI DOJO へ戻る</a></div>
 
 <script>
 (function() {
-  var CUES = ${CUES_JSON};
+  var CUES = [];
+  var packLoaded = false;
+
+  fetch("/api/training/serifu/benten")
+    .then(function(r) { return r.json(); })
+    .then(function(pack) {
+      CUES = pack.cues;
+      packLoaded = true;
+      var btns = document.querySelectorAll(".start-choice");
+      for (var i = 0; i < btns.length; i++) btns[i].disabled = false;
+    })
+    .catch(function(e) {
+      console.error("Training pack load error:", e);
+    });
 
   function fmtTime(sec) {
     var m = Math.floor((sec || 0) / 60);
