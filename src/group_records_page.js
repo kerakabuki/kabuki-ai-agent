@@ -182,9 +182,9 @@ export function groupRecordsPageHTML(group, googleClientId) {
           h += '<div class="gr-play">'
             + '<div class="gr-play-title">' + esc(play.title || "（演目名なし）") + '</div>';
           if (play.cast && play.cast.length) {
-            h += '<table class="gr-cast-table"><thead><tr><th>役名</th><th>出演者</th></tr></thead><tbody>';
+            h += '<div class="gr-table-scroll"><table class="gr-cast-table"><thead><tr><th>役名</th><th>出演者</th></tr></thead><tbody>';
             play.cast.forEach(function(c){ h += '<tr><td>' + esc(c.role) + '</td><td>' + esc(c.name) + '</td></tr>'; });
-            h += '</tbody></table>';
+            h += '</tbody></table></div>';
           }
           var staffItems = [];
           ALL_STAFF_FIELDS.forEach(function(sf) {
@@ -667,6 +667,14 @@ export function groupRecordsPageHTML(group, googleClientId) {
         display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s;
       }
       .gr-btn-del-xs:hover { border-color: var(--accent-1); color: var(--accent-1); }
+
+      /* ── キャストテーブル横スクロール ── */
+      .gr-table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .gr-table-scroll .gr-cast-table { min-width: 300px; }
+      @media (max-width: 480px) {
+        .gr-cast-table { font-size: 12px; }
+        .gr-cast-table th, .gr-cast-table td { padding: 3px 6px; }
+      }
     </style>`
   });
 }

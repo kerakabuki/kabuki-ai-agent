@@ -818,6 +818,54 @@ export function mypagePageHTML(opts) {
         backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
       }
       @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+      /* ── バッジ解除演出 ── */
+      .badge-celebration-overlay {
+        position: fixed; inset: 0; z-index: 2000;
+        background: rgba(20, 15, 10, 0.8);
+        display: flex; align-items: center; justify-content: center;
+        padding: 20px;
+        animation: fadeIn 0.3s ease-out;
+        backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      }
+      .badge-celebration {
+        background: var(--bg-page, #FAF7F2); border-radius: 20px;
+        box-shadow: 0 16px 48px rgba(30, 25, 20, 0.4);
+        width: 100%; max-width: 320px;
+        text-align: center; padding: 40px 24px 28px;
+        animation: slideUp 0.35s ease-out;
+      }
+      .badge-celebration-icon {
+        font-size: 64px; line-height: 1;
+        animation: badgeBounce 0.6s ease-out;
+        display: inline-block;
+        filter: drop-shadow(0 0 12px rgba(242, 208, 107, 0.6));
+      }
+      .badge-celebration-label {
+        margin-top: 4px; font-size: 11px; letter-spacing: 1px;
+        color: var(--kl-gold-dark); font-weight: 600; text-transform: uppercase;
+      }
+      .badge-celebration-name {
+        margin-top: 12px; font-size: 20px; font-weight: 700;
+        color: var(--kl-text); letter-spacing: 0.5px;
+      }
+      .badge-celebration-desc {
+        margin-top: 6px; font-size: 13px; color: var(--kl-text2); line-height: 1.5;
+      }
+      .badge-celebration-ok {
+        margin-top: 24px; padding: 10px 32px;
+        background: var(--kl-gold); color: #fff; border: none; border-radius: 8px;
+        font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer;
+        transition: background 0.15s;
+      }
+      .badge-celebration-ok:hover { background: var(--kl-gold-dark); }
+      @keyframes badgeBounce {
+        0%   { transform: scale(0.3) rotate(-15deg); opacity: 0; }
+        50%  { transform: scale(1.25) rotate(5deg); opacity: 1; }
+        70%  { transform: scale(0.9) rotate(-2deg); }
+        100% { transform: scale(1) rotate(0deg); }
+      }
+
       .fav-modal {
         background: var(--bg-page, #FAF7F2); border-radius: 16px;
         box-shadow: 0 12px 40px rgba(30, 25, 20, 0.35);
@@ -1020,6 +1068,37 @@ export function mypagePageHTML(opts) {
         width: 100%; min-height: 60px; resize: vertical; transition: border-color 0.15s;
       }
       .tl-memo-input:focus { border-color: var(--kl-gold); outline: none; }
+
+      /* ── 写真アップロード ── */
+      .tl-upload-status { font-size: 12px; margin-left: 8px; }
+      .tl-image-preview { position: relative; display: inline-block; margin-top: 8px; }
+      .tl-image-preview img {
+        max-width: 100%; max-height: 200px; border-radius: 8px;
+        border: 1px solid var(--kl-border); display: block;
+      }
+      .tl-image-remove {
+        position: absolute; top: 4px; right: 4px;
+        background: rgba(0,0,0,0.6); color: #fff; border: none;
+        border-radius: 50%; width: 24px; height: 24px;
+        font-size: 14px; cursor: pointer; line-height: 24px; text-align: center;
+      }
+      .tl-entry-image { margin-top: 10px; }
+      .tl-entry-image img {
+        max-width: 100%; border-radius: 8px; cursor: pointer;
+        border: 1px solid var(--kl-border);
+      }
+      /* ── 画像拡大モーダル ── */
+      .tl-image-lightbox {
+        position: fixed; inset: 0; z-index: 2000;
+        background: rgba(0,0,0,0.85); display: flex;
+        align-items: center; justify-content: center;
+        padding: 20px; cursor: pointer;
+        animation: fadeIn 0.2s ease-out;
+      }
+      .tl-image-lightbox img {
+        max-width: 95%; max-height: 90vh; border-radius: 4px;
+        object-fit: contain;
+      }
 
       .tl-save-row { margin-top: 1rem; display: flex; gap: 0.5rem; }
       .tl-save-btn {
@@ -1286,6 +1365,20 @@ export function mypagePageHTML(opts) {
         saveTlog(tlog);
         return tlog;
       }
+      function updateEntry(id, fields) {
+        var tlog = loadTlog();
+        for (var i = 0; i < tlog.entries.length; i++) {
+          if (tlog.entries[i].id === id) {
+            for (var k in fields) {
+              if (fields.hasOwnProperty(k)) tlog.entries[i][k] = fields[k];
+            }
+            tlog.entries[i].updated_at = Math.floor(Date.now() / 1000);
+            break;
+          }
+        }
+        saveTlog(tlog);
+        return tlog;
+      }
 
       /* =====================================================
          推し俳優 CRUD (localStorage)
@@ -1454,6 +1547,7 @@ export function mypagePageHTML(opts) {
         if (!log) log = loadLog();
         var qs = loadQuizState();
         var tlog = loadTlog();
+        var prevBadges = (log.badges || []).slice();
         var earned = log.badges || [];
         function award(id) {
           if (earned.indexOf(id) < 0) earned.push(id);
@@ -1479,6 +1573,49 @@ export function mypagePageHTML(opts) {
         if (totalClips >= 50) award('clip_all');
         log.badges = earned;
         saveLog(log);
+        /* 新規取得バッジを検出して演出 */
+        var newBadges = [];
+        for (var ni = 0; ni < earned.length; ni++) {
+          if (prevBadges.indexOf(earned[ni]) < 0) newBadges.push(earned[ni]);
+        }
+        if (newBadges.length > 0) showBadgeCelebration(newBadges);
+      }
+      function showBadgeCelebration(badgeIds) {
+        var queue = [];
+        for (var i = 0; i < badgeIds.length; i++) {
+          for (var j = 0; j < BADGE_DEFS.length; j++) {
+            if (BADGE_DEFS[j].id === badgeIds[i]) { queue.push(BADGE_DEFS[j]); break; }
+          }
+        }
+        if (!queue.length) return;
+        var idx = 0;
+        function showNext() {
+          if (idx >= queue.length) return;
+          var b = queue[idx];
+          var overlay = document.createElement('div');
+          overlay.className = 'badge-celebration-overlay';
+          overlay.innerHTML = '<div class="badge-celebration">'
+            + '<div class="badge-celebration-icon">' + b.icon + '</div>'
+            + '<div class="badge-celebration-label">BADGE UNLOCKED</div>'
+            + '<div class="badge-celebration-name">' + b.name + '</div>'
+            + '<div class="badge-celebration-desc">' + b.desc + '</div>'
+            + '<button class="badge-celebration-ok" onclick="this.closest(\\'.badge-celebration-overlay\\').remove()">OK</button>'
+            + '</div>';
+          document.body.appendChild(overlay);
+          overlay.querySelector('.badge-celebration-ok').addEventListener('click', function() {
+            idx++;
+            setTimeout(showNext, 200);
+          });
+          overlay.addEventListener('click', function(ev) {
+            if (ev.target === overlay) {
+              overlay.remove();
+              idx++;
+              setTimeout(showNext, 200);
+            }
+          });
+        }
+        /* 最初のバッジは即表示、以降は1.5秒間隔（OKボタンで即進む） */
+        showNext();
       }
 
       /* =====================================================
@@ -1682,6 +1819,7 @@ export function mypagePageHTML(opts) {
       ===================================================== */
       var formOpen = false;
       var formState = {};
+      var editingEntryId = null; /* 編集中エントリID */
       var perfCandidates = []; /* マッチした公演候補（programs付き） */
 
       /* メディア視聴タイプ定義 */
@@ -1707,6 +1845,7 @@ export function mypagePageHTML(opts) {
       }
 
       function resetForm() {
+        editingEntryId = null;
         formState = {
           viewing_type: null,     /* null=未選択, "theater"=劇場, その他=メディア視聴 */
           date: todayStr(),
@@ -1716,6 +1855,7 @@ export function mypagePageHTML(opts) {
           performance_title: null,
           play_titles: [],
           memo: "",
+          image_url: "",
           /* メディア視聴用 */
           media_title: "",
           media_plays: [],       /* 演目名リスト（手入力） */
@@ -2145,6 +2285,9 @@ export function mypagePageHTML(opts) {
             if (e.memo) {
               h += '<div class="tl-entry-memo">💬 ' + esc(e.memo) + '</div>';
             }
+            if (e.image_url) {
+              h += '<div class="tl-entry-image"><img src="' + esc(e.image_url) + '" alt="写真" loading="lazy" onclick="MP.openLightbox(\\'' + esc(e.image_url) + '\\')"></div>';
+            }
             h += '</div>'; /* tl-entry-detail */
 
             h += '<button class="tl-entry-toggle" onclick="MP.toggleDetail(\\'' + e.id + '\\',this)">▼ 詳細</button>';
@@ -2155,6 +2298,7 @@ export function mypagePageHTML(opts) {
           h += '<div class="tl-entry-more-menu">';
           h += '<button class="tl-entry-more-btn" onclick="MP.toggleMenu(\\'' + e.id + '\\')">⋯</button>';
           h += '<div class="tl-entry-dropdown" id="menu-' + e.id + '">';
+          h += '<button onclick="MP.editEntry(\\'' + e.id + '\\')">編集</button>';
           h += '<button class="tl-drop-danger" onclick="MP.deleteEntry(\\'' + e.id + '\\')">削除</button>';
           h += '</div>';
           h += '</div>';
@@ -3116,7 +3260,8 @@ export function mypagePageHTML(opts) {
       ===================================================== */
       function renderForm() {
         var h = '<div class="tl-form">';
-        h += '<div class="tl-form-title"><span>🎭 観劇を記録</span><button class="tl-form-close" onclick="MP.closeForm()">✕</button></div>';
+        var formTitle = editingEntryId ? '記録を編集' : '🎭 観劇を記録';
+        h += '<div class="tl-form-title"><span>' + formTitle + '</span><button class="tl-form-close" onclick="MP.closeForm()">✕</button></div>';
 
         /* Step 0: 視聴方法 */
         h += '<div class="tl-step">';
@@ -3286,12 +3431,29 @@ export function mypagePageHTML(opts) {
           h += '<div class="tl-step-label"><span class="tl-step-num">6</span>ひとこと（任意）</div>';
           h += '<textarea class="tl-memo-input" id="tl-f-memo" placeholder="感想、気づき、メモ…">' + esc(formState.memo) + '</textarea>';
           h += '</div>';
+
+          /* Step 7: 写真 */
+          h += '<div class="tl-step">';
+          h += '<div class="tl-step-label">写真（任意）</div>';
+          h += '<input type="file" id="tl-f-image-file" accept="image/jpeg,image/png,image/webp" style="display:none;" onchange="MP.uploadImage(this)">';
+          h += '<button class="tl-chip" onclick="document.getElementById(\\'tl-f-image-file\\').click()" style="margin-bottom:8px;">📷 写真を追加</button>';
+          h += '<span class="tl-upload-status" id="tl-upload-status"></span>';
+          if (formState.image_url) {
+            h += '<div class="tl-image-preview" id="tl-image-preview">';
+            h += '<img src="' + esc(formState.image_url) + '" alt="プレビュー">';
+            h += '<button class="tl-image-remove" onclick="MP.removeImage()">✕</button>';
+            h += '</div>';
+          } else {
+            h += '<div class="tl-image-preview" id="tl-image-preview"></div>';
+          }
+          h += '</div>';
         }
 
         /* 保存ボタン */
         var canSave = formState.date && formState.venue_id;
         h += '<div class="tl-save-row">';
-        h += '<button class="tl-save-btn" onclick="MP.saveEntry()"' + (canSave ? '' : ' disabled') + '>🎭 記録する</button>';
+        var saveBtnLabel = editingEntryId ? '保存する' : '🎭 記録する';
+        h += '<button class="tl-save-btn" onclick="MP.saveEntry()"' + (canSave ? '' : ' disabled') + '>' + saveBtnLabel + '</button>';
         h += '</div>';
 
         h += '</div>';
@@ -3349,10 +3511,27 @@ export function mypagePageHTML(opts) {
         h += '<textarea class="tl-memo-input" id="tl-f-memo" placeholder="感想、気づき、メモ…">' + esc(formState.memo) + '</textarea>';
         h += '</div>';
 
+        /* Step 6: 写真 */
+        h += '<div class="tl-step">';
+        h += '<div class="tl-step-label">写真（任意）</div>';
+        h += '<input type="file" id="tl-f-image-file" accept="image/jpeg,image/png,image/webp" style="display:none;" onchange="MP.uploadImage(this)">';
+        h += '<button class="tl-chip" onclick="document.getElementById(\\'tl-f-image-file\\').click()" style="margin-bottom:8px;">📷 写真を追加</button>';
+        h += '<span class="tl-upload-status" id="tl-upload-status"></span>';
+        if (formState.image_url) {
+          h += '<div class="tl-image-preview" id="tl-image-preview">';
+          h += '<img src="' + esc(formState.image_url) + '" alt="プレビュー">';
+          h += '<button class="tl-image-remove" onclick="MP.removeImage()">✕</button>';
+          h += '</div>';
+        } else {
+          h += '<div class="tl-image-preview" id="tl-image-preview"></div>';
+        }
+        h += '</div>';
+
         /* 保存ボタン */
         var canSave = formState.date && formState.media_title;
         h += '<div class="tl-save-row">';
-        h += '<button class="tl-save-btn" onclick="MP.saveMediaEntry()"' + (canSave ? '' : ' disabled') + '>' + mediaIcon(vt) + ' 記録する</button>';
+        var saveBtnLabel = editingEntryId ? '保存する' : mediaIcon(vt) + ' 記録する';
+        h += '<button class="tl-save-btn" onclick="MP.saveMediaEntry()"' + (canSave ? '' : ' disabled') + '>' + saveBtnLabel + '</button>';
         h += '</div>';
 
         h += '</div>'; /* tl-form */
@@ -4196,7 +4375,47 @@ export function mypagePageHTML(opts) {
 
         /* フォーム */
         openForm: function() { resetForm(); formOpen = true; render(); },
-        closeForm: function() { formOpen = false; render(); },
+        closeForm: function() { formOpen = false; editingEntryId = null; render(); },
+        uploadImage: function(fileInput) {
+          var file = fileInput.files && fileInput.files[0];
+          if (!file) return;
+          var statusEl = document.getElementById('tl-upload-status');
+          if (statusEl) { statusEl.textContent = 'アップロード中…'; statusEl.style.color = 'var(--kl-text3)'; }
+          var fd = new FormData();
+          fd.append('file', file);
+          fd.append('user_id', 'reco_' + (Date.now().toString(36)));
+          fetch('/api/user/images', { method: 'POST', body: fd })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+              if (data.url) {
+                formState.image_url = data.url;
+                if (statusEl) { statusEl.textContent = ''; }
+                var prev = document.getElementById('tl-image-preview');
+                if (prev) {
+                  prev.innerHTML = '<img src="' + data.url + '" alt="プレビュー"><button class="tl-image-remove" onclick="MP.removeImage()">✕</button>';
+                }
+              } else {
+                if (statusEl) { statusEl.textContent = 'エラー: ' + (data.error || '失敗'); statusEl.style.color = 'var(--kl-red)'; }
+              }
+              fileInput.value = '';
+            })
+            .catch(function(err) {
+              if (statusEl) { statusEl.textContent = '通信エラー'; statusEl.style.color = 'var(--kl-red)'; }
+              fileInput.value = '';
+            });
+        },
+        removeImage: function() {
+          formState.image_url = "";
+          var prev = document.getElementById('tl-image-preview');
+          if (prev) prev.innerHTML = '';
+        },
+        openLightbox: function(url) {
+          var lb = document.createElement('div');
+          lb.className = 'tl-image-lightbox';
+          lb.innerHTML = '<img src="' + url + '" alt="拡大">';
+          lb.addEventListener('click', function() { lb.remove(); });
+          document.body.appendChild(lb);
+        },
         setViewingType: function(type) {
           var prevType = formState.viewing_type;
           formState.viewing_type = type;
@@ -4240,15 +4459,22 @@ export function mypagePageHTML(opts) {
 
           if (!formState.date || !formState.media_title) return;
 
-          addEntry({
+          var entryData = {
             viewing_type: formState.viewing_type,
             date: formState.date,
             media_title: formState.media_title,
             play_titles: formState.media_plays.slice(),
             actors_text: formState.media_actors_text,
-            memo: formState.memo || ""
-          });
+            memo: formState.memo || "",
+            image_url: formState.image_url || ""
+          };
+          if (editingEntryId) {
+            updateEntry(editingEntryId, entryData);
+          } else {
+            addEntry(entryData);
+          }
           formOpen = false;
+          editingEntryId = null;
           render();
           window.scrollTo(0, 0);
         },
@@ -4349,7 +4575,7 @@ export function mypagePageHTML(opts) {
             }
           }
 
-          addEntry({
+          var entryData = {
             viewing_type: "theater",
             date: formState.date,
             venue_id: formState.venue_id,
@@ -4359,11 +4585,47 @@ export function mypagePageHTML(opts) {
             play_titles: formState.play_titles.slice(),
             play_scenes: playSceneMap,
             actors: actors,
-            memo: formState.memo || ""
-          });
+            memo: formState.memo || "",
+            image_url: formState.image_url || ""
+          };
+          if (editingEntryId) {
+            updateEntry(editingEntryId, entryData);
+          } else {
+            addEntry(entryData);
+          }
           formOpen = false;
+          editingEntryId = null;
           render();
           window.scrollTo(0, 0);
+        },
+        editEntry: function(id) {
+          var tlog = loadTlog();
+          var entry = null;
+          for (var i = 0; i < tlog.entries.length; i++) {
+            if (tlog.entries[i].id === id) { entry = tlog.entries[i]; break; }
+          }
+          if (!entry) return;
+          editingEntryId = id;
+          var isMedia = (entry.viewing_type || "theater") !== "theater";
+          formState = {
+            viewing_type: entry.viewing_type || "theater",
+            date: entry.date || todayStr(),
+            venue_id: entry.venue_id || null,
+            venue_name: entry.venue_name || null,
+            seat_type: entry.seat_type || null,
+            performance_title: entry.performance_title || null,
+            play_titles: (entry.play_titles || []).slice(),
+            memo: entry.memo || "",
+            image_url: entry.image_url || "",
+            media_title: entry.media_title || "",
+            media_plays: (entry.media_plays || entry.play_titles || []).slice(),
+            media_actors_text: entry.actors_text || ""
+          };
+          formOpen = true;
+          currentView = "log";
+          render();
+          var formEl = document.querySelector('.tl-form');
+          if (formEl) formEl.scrollIntoView({ behavior: 'smooth' });
         },
         deleteEntry: function(id) {
           if (!confirm("この記録を削除しますか？")) return;

@@ -2303,6 +2303,57 @@ function offlinePage() {
       });
     }
 
+    // ★ ユーザー画像 API（RECO 写真添付用）
+    if (path === "/api/user/images" && request.method === "POST") {
+      try {
+        const formData = await request.formData();
+        const file = formData.get("file");
+        const userId = formData.get("user_id") || "anonymous";
+        const safeUserId = userId.replace(/[^a-zA-Z0-9_-]/g, "_").slice(0, 64);
+        if (!file || !file.name) {
+          return corsResponse(request, jsonResponse({ error: "No file provided" }, 400));
+        }
+        if (file.size > 3 * 1024 * 1024) {
+          return corsResponse(request, jsonResponse({ error: "File too large (max 3MB)" }, 400));
+        }
+        const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+        if (!allowedTypes.includes(file.type)) {
+          return corsResponse(request, jsonResponse({ error: "Unsupported file type. Allowed: jpeg, png, webp" }, 400));
+        }
+        const extMap = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
+        const ext = extMap[file.type] || "jpg";
+        const filename = `reco-${Date.now()}.${ext}`;
+        const r2Key = `user-images/${safeUserId}/${filename}`;
+        const arrayBuffer = await file.arrayBuffer();
+        await env.CONTENT_BUCKET.put(r2Key, arrayBuffer, {
+          httpMetadata: { contentType: file.type }
+        });
+        const url = `/api/user/images/${safeUserId}/${filename}`;
+        return corsResponse(request, jsonResponse({ url }));
+      } catch (e) {
+        return corsResponse(request, jsonResponse({ error: e.message }, 500));
+      }
+    }
+
+    const userImageServeMatch = path.match(/^\/api\/user\/images\/([a-zA-Z0-9_-]+)\/([a-zA-Z0-9_.\-]+)$/);
+    if (userImageServeMatch && request.method === "GET") {
+      const userId = userImageServeMatch[1];
+      const filename = userImageServeMatch[2];
+      const r2Key = `user-images/${userId}/${filename}`;
+      const obj = await env.CONTENT_BUCKET.get(r2Key);
+      if (!obj) return new Response("Not Found", { status: 404 });
+      const ext = (filename.match(/\.([a-z0-9]+)$/i) || [])[1] || "jpg";
+      const ctMap = { jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp" };
+      const ct = ctMap[ext.toLowerCase()] || "image/jpeg";
+      return new Response(obj.body, {
+        headers: {
+          "Content-Type": ct,
+          "Cache-Control": "public, max-age=31536000",
+          "Access-Control-Allow-Origin": "*"
+        }
+      });
+    }
+
     // ★ 台本 API（アップロード / 一覧 / rawダウンロード / 削除）
     const scriptUploadMatch = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/scripts\/upload$/);
     if (scriptUploadMatch && request.method === "POST") {
