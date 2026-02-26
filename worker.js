@@ -101,7 +101,7 @@ import {
 } from "./src/auth.js";
 
 // ★ ニュース（Google News RSS → KV）
-import { fetchAndCacheNews, backfillNews, searchActorNews } from "./src/news.js";
+import { fetchAndCacheNews, getCachedNews, backfillNews, searchActorNews } from "./src/news.js";
 import { newsFlexMessage, newsWebHTML } from "./src/news_card.js";
 
 // ★ 歌舞伎美人 公演情報（kabuki-bito.jp → KV）
@@ -472,7 +472,51 @@ self.addEventListener('fetch', (event) => {
 
 // オフラインフォールバックページ
 function offlinePage() {
-  const html = '<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>\\u30aa\\u30d5\\u30e9\\u30a4\\u30f3 | KABUKI PLUS+</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:sans-serif;background:#FAF7F2;color:#3D3127;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center;padding:2rem}.box{max-width:360px}.icon{font-size:3rem;margin-bottom:1rem}h1{font-size:1.2rem;margin-bottom:.5rem}p{font-size:.9rem;color:#7A6F63;line-height:1.6;margin-bottom:1.5rem}button{padding:.6rem 1.5rem;border:1px solid #C5A255;border-radius:8px;background:none;color:#A8873A;font-size:.9rem;cursor:pointer}button:hover{background:#F5EDD8}</style></head><body><div class="box"><div class="icon">\\ud83c\\udfad</div><h1>\\u30aa\\u30d5\\u30e9\\u30a4\\u30f3\\u3067\\u3059</h1><p>\\u30a4\\u30f3\\u30bf\\u30fc\\u30cd\\u30c3\\u30c8\\u306b\\u63a5\\u7d9a\\u3067\\u304d\\u307e\\u305b\\u3093\\u3002<br>\\u96fb\\u6ce2\\u306e\\u826f\\u3044\\u5834\\u6240\\u3067\\u518d\\u5ea6\\u304a\\u8a66\\u3057\\u304f\\u3060\\u3055\\u3044\\u3002</p><button onclick="location.reload()">\\u518d\\u8aad\\u307f\\u8fbc\\u307f</button></div></body></html>';
+  var html = '<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">'
+    + '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">'
+    + '<title>\\u30aa\\u30d5\\u30e9\\u30a4\\u30f3 | KABUKI PLUS+</title>'
+    + '<meta name="theme-color" content="#A8873A">'
+    + '<style>'
+    + '*{margin:0;padding:0;box-sizing:border-box}'
+    + 'body{font-family:"Noto Sans JP",sans-serif;background:#FAF7F2;color:#3D3127;'
+    + 'display:flex;flex-direction:column;align-items:center;justify-content:center;'
+    + 'min-height:100vh;text-align:center;padding:2rem;'
+    + 'padding-top:env(safe-area-inset-top,0);padding-bottom:env(safe-area-inset-bottom,0)}'
+    + '.brand{font-size:10px;letter-spacing:4px;color:#C5A255;margin-bottom:2rem}'
+    + '.icon{font-size:4rem;margin-bottom:1.5rem;animation:pulse 2s ease infinite}'
+    + '@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}'
+    + 'h1{font-size:1.2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:2px;color:#A8873A}'
+    + 'p{font-size:.9rem;color:#7A6F63;line-height:1.7;margin-bottom:1.5rem}'
+    + 'button{padding:.7rem 2rem;border:1px solid #C5A255;border-radius:8px;'
+    + 'background:linear-gradient(135deg,#C5A255,#A8873A);color:#fff;'
+    + 'font-size:.9rem;cursor:pointer;font-family:inherit;font-weight:600;letter-spacing:1px}'
+    + 'button:hover{opacity:.9}'
+    + '#cp{margin-top:2rem;text-align:left;width:100%;max-width:320px}'
+    + '#cp h2{font-size:.8rem;color:#A89E93;margin-bottom:.5rem;letter-spacing:1px}'
+    + '#cp a{display:block;padding:.5rem 0;color:#A8873A;text-decoration:none;'
+    + 'border-bottom:1px solid #EDE7DD;font-size:.85rem}'
+    + '#cp a:hover{color:#C5A255}'
+    + '</style></head><body>'
+    + '<div class="brand">KABUKI PLUS+</div>'
+    + '<div class="icon">\\ud83c\\udfad</div>'
+    + '<h1>\\u30aa\\u30d5\\u30e9\\u30a4\\u30f3\\u3067\\u3059</h1>'
+    + '<p>\\u30a4\\u30f3\\u30bf\\u30fc\\u30cd\\u30c3\\u30c8\\u306b\\u63a5\\u7d9a\\u3067\\u304d\\u307e\\u305b\\u3093\\u3002<br>'
+    + '\\u96fb\\u6ce2\\u306e\\u826f\\u3044\\u5834\\u6240\\u3067\\u518d\\u5ea6\\u304a\\u8a66\\u3057\\u304f\\u3060\\u3055\\u3044\\u3002</p>'
+    + '<button onclick="location.reload()">\\u518d\\u8aad\\u307f\\u8fbc\\u307f</button>'
+    + '<div id="cp"></div>'
+    + '<script>'
+    + '(async function(){'
+    + 'try{var c=await caches.open("kp-v1-runtime");var k=await c.keys();'
+    + 'var p=k.filter(function(r){return r.url.indexOf("/assets/")<0&&r.url.indexOf("/api/")<0;});'
+    + 'if(!p.length)return;var el=document.getElementById("cp");'
+    + 'var h="<h2>\\u95b2\\u89a7\\u6e08\\u307f\\u30da\\u30fc\\u30b8</h2>";'
+    + 'p.slice(0,8).forEach(function(r){var u=new URL(r.url);'
+    + 'var l=u.pathname==="/"?"\\u30c8\\u30c3\\u30d7":u.pathname.replace(/\\\\//g," / ").trim();'
+    + 'h+="<a href=\\""+u.pathname+"\\">"+l+"</a>";});'
+    + 'el.innerHTML=h;}catch(e){}'
+    + '})();'
+    + '<\\/script>'
+    + '</body></html>';
   return new Response(html, {
     status: 503,
     headers: { 'Content-Type': 'text/html; charset=utf-8' },
@@ -3291,6 +3335,7 @@ async function handleEvent(event, env, ctx) {
         await env.CHAT_HISTORY.delete(modeKey);
         await env.CHAT_HISTORY.delete(enmokuKey);
         await env.CHAT_HISTORY.delete(`laststep:${sourceKey}`);
+        await env.CHAT_HISTORY.delete(`conv:${sourceKey}`);
         const welcome = "やあ！けらのすけだよ\n歌舞伎のことなら何でも聞いてね。\n\n「歌舞伎座に初めて行く」\n「義経千本桜ってどんな話？」\nなんて気軽にどうぞ！";
         await respondLineMessages(env, replyToken, destId, [{
           type: "text", text: welcome,
@@ -3629,6 +3674,7 @@ async function handleEvent(event, env, ctx) {
       await env.CHAT_HISTORY.delete(modeKey);
       await env.CHAT_HISTORY.delete(enmokuKey);
       await env.CHAT_HISTORY.delete(`laststep:${sourceKey}`);
+      await env.CHAT_HISTORY.delete(`conv:${sourceKey}`);
       await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env, env._origin)]);
       return;
     }
@@ -3653,28 +3699,25 @@ async function handleEvent(event, env, ctx) {
       return;
     }
 
-    // フォールバック → RAG-AI で回答を試みる
-    // コンテキストが取れた場合のみ AI を呼ぶ（ハルシネーション防止）
+    // フォールバック → Gemini v2（コンテキスト有無に関わらず回答を試みる）
     const aiContext = await buildKabukiContext(env, text).catch((e) => {
       console.error("buildKabukiContext error:", String(e));
       return null;
     });
-    console.log("keraAI context:", aiContext ? `${aiContext.length}chars` : "null", "| text:", text.slice(0, 40));
-    if (aiContext) {
-      const aiReply = await keraAI(env, text, aiContext);
-      if (aiReply) {
-        await respondLineMessages(env, replyToken, destId, [{
-          type: "text",
-          text: aiReply,
-          quickReply: { items: [
-            { type: "action", action: { type: "message", label: "メニュー",      text: "メニュー" } },
-            { type: "action", action: { type: "uri",     label: "KABUKI PLUS+", uri: env._origin + "/kabuki/navi" } },
-          ]},
-        }]);
-        return;
-      }
+    console.log("keraAIv2 context:", aiContext ? `${aiContext.length}chars` : "null", "| text:", text.slice(0, 40));
+    const aiReply = await keraAIv2(env, sourceKey, text, aiContext);
+    if (aiReply) {
+      await respondLineMessages(env, replyToken, destId, [{
+        type: "text",
+        text: aiReply,
+        quickReply: { items: [
+          { type: "action", action: { type: "message", label: "メニュー",      text: "メニュー" } },
+          { type: "action", action: { type: "uri",     label: "KABUKI PLUS+", uri: env._origin + "/kabuki/navi" } },
+        ]},
+      }]);
+      return;
     }
-    // コンテキストなし or AI 失敗 → メニューを表示
+    // 全失敗 → メニューを表示
     await respondLineMessages(env, replyToken, destId, [mainMenuFlex(env, env._origin)]);
 
   } catch (e) {
@@ -4397,7 +4440,23 @@ function searchGlossary(terms, query) {
  */
 async function buildKabukiContext(env, userText) {
   const q = (userText || "").toLowerCase();
-  const qNorm = q.replace(/[\s　]/g, ""); // スペース・全角スペース除去
+  let qNorm = q.replace(/[\s　]/g, ""); // スペース・全角スペース除去
+
+  // シノニム展開（ひらがな → 正式名称をクエリに追加）
+  const KERA_SYNONYMS = {
+    "かぶき": "歌舞伎", "よしつね": "義経", "べんけい": "弁慶",
+    "ちゅうしんぐら": "忠臣蔵", "かんじんちょう": "勧進帳",
+    "すしや": "鮨屋", "てらこや": "寺子屋", "くまがい": "熊谷",
+    "もりつな": "盛綱", "まくあい": "幕間", "はなみち": "花道",
+    "くろご": "黒衣", "おおむこう": "大向う", "みえ": "見得",
+    "ろっぽう": "六方", "仮名手本": "忠臣蔵",
+  };
+  for (const [from, to] of Object.entries(KERA_SYNONYMS)) {
+    if (qNorm.includes(from) && !qNorm.includes(to)) {
+      qNorm += to;
+    }
+  }
+
   const parts = [];
 
   // クエリから 3-gram セットを事前生成（演目・用語・FAQ 共用）
@@ -4431,12 +4490,12 @@ async function buildKabukiContext(env, userText) {
         let ctxLine = `【演目】${data?.title || item.full || item.short || item.id}`;
         if (data) {
           const details = [];
-          if (data.synopsis) details.push(`あらすじ: ${String(data.synopsis).slice(0, 300)}`);
+          if (data.synopsis) details.push(`あらすじ: ${String(data.synopsis).slice(0, 800)}`);
           const hiArr = Array.isArray(data.highlights) ? data.highlights : (typeof data.highlights === "string" && data.highlights ? [data.highlights] : []);
           if (hiArr.length) details.push(`見どころ: ${hiArr.slice(0, 3).join("／")}`);
           try {
             if (data.cast?.length) {
-              const castLine = data.cast.slice(0, 4)
+              const castLine = data.cast.slice(0, 8)
                 .map(c => `${(c && c.name) || ""}（${(c && c.role) || ""}）`)
                 .filter(s => s !== "（）").join("、");
               if (castLine) details.push(`主な登場人物: ${castLine}`);
@@ -4473,7 +4532,7 @@ async function buildKabukiContext(env, userText) {
       return false;
     }).slice(0, 3);
     for (const t of matched) {
-      const desc = (t.desc || t.description || "").slice(0, 200);
+      const desc = (t.desc || t.description || "").slice(0, 500);
       if (desc) parts.push(`【用語】${t.term}（${t.reading || ""}）: ${desc}`);
     }
   } catch (e) { console.error("keraCtx gloss err:", String(e)); }
@@ -4494,18 +4553,37 @@ async function buildKabukiContext(env, userText) {
       // 短い質問は1gram一致でOK、長い質問は2gram以上必要
       const threshold = tq.length <= 6 ? 1 : 2;
       if (matchCount >= threshold) {
-        parts.push(`【FAQ】Q: ${topic.q}\nA: ${String(topic.a || "").slice(0, 250)}`);
+        parts.push(`【FAQ】Q: ${topic.q}\nA: ${String(topic.a || "").slice(0, 500)}`);
         if (parts.length >= 5) break;
       }
     }
   } catch (e) { console.error("keraCtx faq err:", String(e)); }
+
+  // ── 4. 公演スケジュールコンテキスト ────────────────────────────
+  const perfKeywords = /公演|スケジュール|予定|いつ|チケット|日程|今月|来月|上演|開催|歌舞伎座|国立劇場|南座|松竹座|御園座/;
+  if (perfKeywords.test(userText)) {
+    try {
+      const perfData = await getPerformancesCached(env);
+      if (perfData?.items?.length) {
+        const perfLines = perfData.items.slice(0, 5).map(p => {
+          const line = [`${p.theater || ""}`, p.title || ""];
+          if (p.date_range) line.push(p.date_range);
+          if (p.time) line.push(p.time);
+          return line.filter(Boolean).join(" / ");
+        });
+        if (perfLines.length) {
+          parts.push("【公演情報】\n" + perfLines.join("\n"));
+        }
+      }
+    } catch (e) { console.error("keraCtx perf err:", String(e)); }
+  }
 
   console.log("keraCtx parts:", parts.length, "| first50:", parts[0]?.slice(0, 50));
   if (parts.length === 0) return null;
 
   const result = parts.join("\n\n");
   console.log("keraCtx result len:", result.length);
-  return result.slice(0, 1800);
+  return result.slice(0, 8000);
 }
 
 /** Workers AI（無料枠）を使って歌舞伎 Q&A に回答する。
@@ -4544,6 +4622,422 @@ async function keraAI(env, userText, context) {
     console.error("keraAI error:", String(e));
     return null;
   }
+}
+
+/* =========================================================
+   Gemini 2.0 Flash — API 呼び出し基盤 + 会話履歴 + レート制限
+========================================================= */
+
+/**
+ * Gemini API 呼び出し
+ * @param {object} env - Worker env (GEMINI_API_KEY)
+ * @param {string} systemPrompt - システムプロンプト
+ * @param {Array} messages - [{role:"user"|"assistant", content:string}]
+ * @param {Array|undefined} tools - Gemini function declarations
+ * @returns {Promise<{type:"text",text:string}|{type:"function_call",functionCall:object}|null>}
+ */
+async function callGemini(env, systemPrompt, messages, tools) {
+  if (!env.GEMINI_API_KEY) return null;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${env.GEMINI_API_KEY}`;
+  const body = {
+    contents: messages.map(m => ({
+      role: m.role === "assistant" ? "model" : m.role,
+      parts: [{ text: m.content }],
+    })),
+    systemInstruction: { parts: [{ text: systemPrompt }] },
+    generationConfig: { temperature: 0.7, maxOutputTokens: 500, topP: 0.9 },
+  };
+  if (tools && tools.length > 0) body.tools = tools;
+
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) {
+      console.error("callGemini HTTP error:", res.status, await res.text().catch(() => ""));
+      return null;
+    }
+    const json = await res.json();
+    const candidate = json.candidates?.[0]?.content;
+    if (!candidate?.parts?.length) return null;
+
+    // function call があれば優先
+    const fcPart = candidate.parts.find(p => p.functionCall);
+    if (fcPart) {
+      return { type: "function_call", functionCall: fcPart.functionCall };
+    }
+    // テキスト
+    const textPart = candidate.parts.find(p => p.text);
+    if (textPart) {
+      return { type: "text", text: textPart.text.trim() };
+    }
+    return null;
+  } catch (e) {
+    console.error("callGemini error:", String(e));
+    return null;
+  }
+}
+
+// ── 会話履歴（KV: conv:{sourceKey}） ──────────────────────────
+
+async function loadConversationHistory(env, sourceKey) {
+  try {
+    const raw = await env.CHAT_HISTORY.get(`conv:${sourceKey}`);
+    if (!raw) return [];
+    const arr = JSON.parse(raw);
+    return Array.isArray(arr) ? arr : [];
+  } catch {
+    return [];
+  }
+}
+
+async function saveConversationHistory(env, sourceKey, userText, reply) {
+  try {
+    const history = await loadConversationHistory(env, sourceKey);
+    history.push({ role: "user", content: userText });
+    history.push({ role: "assistant", content: reply });
+    // スライディングウィンドウ: 直近20メッセージ（10ターン）
+    const trimmed = history.slice(-20);
+    await env.CHAT_HISTORY.put(`conv:${sourceKey}`, JSON.stringify(trimmed), { expirationTtl: 3600 });
+  } catch (e) {
+    console.error("saveConversationHistory error:", String(e));
+  }
+}
+
+// ── レート制限（KV: gemini_rpm:{minute}） ─────────────────────
+
+async function checkGeminiRateLimit(env) {
+  try {
+    const minute = Math.floor(Date.now() / 60000);
+    const key = `gemini_rpm:${minute}`;
+    const count = parseInt(await env.CHAT_HISTORY.get(key) || "0", 10);
+    return count < 14; // 15 RPM 上限に余裕
+  } catch {
+    return true; // KVエラー時はリミット解放
+  }
+}
+
+async function incrementGeminiCounter(env) {
+  try {
+    const minute = Math.floor(Date.now() / 60000);
+    const key = `gemini_rpm:${minute}`;
+    const count = parseInt(await env.CHAT_HISTORY.get(key) || "0", 10);
+    await env.CHAT_HISTORY.put(key, String(count + 1), { expirationTtl: 120 });
+  } catch (e) {
+    console.error("incrementGeminiCounter error:", String(e));
+  }
+}
+
+/* =========================================================
+   けらのすけ v2 — システムプロンプト + オーケストレーター + Function Calling
+========================================================= */
+
+/**
+ * けらのすけのシステムプロンプトを構築
+ * @param {string|null} context - buildKabukiContext() の結果
+ * @returns {string}
+ */
+function buildKeraSystemPrompt(context) {
+  const persona = [
+    "あなたは「けらのすけ」。歌舞伎の魅力を伝えるAIアシスタントだよ。",
+    "一人称は「けらのすけ」。親しみやすい口調で、歌舞伎初心者にもわかりやすく答えてね。",
+    "回答は200文字以内を目安にしてね。長くなりすぎないように。",
+    "歌舞伎に関係ない質問には「けらのすけは歌舞伎のことなら何でも聞いてほしいな！」と答えてね。",
+    "",
+    "会話の流れ:",
+    "- 前の会話の文脈を踏まえて自然に回答してね。",
+    "- 「それ」「あれ」などの指示語は直前の話題を参照してね。",
+  ];
+
+  if (context) {
+    persona.push(
+      "",
+      "以下の[DATA]を参考にして回答してね。",
+      "- [DATA]にある情報だけを使って答えてね。",
+      "- [DATA]にない俳優名・年号・史実は推測や創作しないでね。",
+      "- [DATA]で部分的にしかカバーできない場合は、わかる範囲で答えて「詳しくは演目ガイドを見てね🙏」と伝えてね。",
+      "- [DATA]に全く関連情報がない場合は「けらのすけには詳しい情報がないや🙏 演目ガイドで確認してみてね！」と答えてね。",
+      "",
+      "[DATA]",
+      context,
+    );
+  } else {
+    persona.push(
+      "",
+      "参考データが手元にないよ。ツール（search_performances, search_news, lookup_glossary, lookup_enmoku, get_group_info）を使って情報を探してみてね。",
+      "ツールで見つからない場合は「けらのすけには詳しい情報がないや🙏」と正直に答えてね。",
+    );
+  }
+
+  return persona.join("\n");
+}
+
+/**
+ * Gemini に渡すツール定義
+ */
+function getKeraTools() {
+  return [{
+    functionDeclarations: [
+      {
+        name: "search_performances",
+        description: "歌舞伎の公演スケジュールを検索する。劇場名、月、キーワードで絞り込み可能。",
+        parameters: {
+          type: "object",
+          properties: {
+            theater: { type: "string", description: "劇場名（例: 歌舞伎座、国立劇場）" },
+            month: { type: "string", description: "月（例: 2024-03）" },
+            query: { type: "string", description: "検索キーワード" },
+          },
+        },
+      },
+      {
+        name: "search_news",
+        description: "歌舞伎関連のニュースを検索する。",
+        parameters: {
+          type: "object",
+          properties: {
+            category: { type: "string", description: "カテゴリ（kabuki, jikabuki）" },
+            query: { type: "string", description: "検索キーワード" },
+          },
+        },
+      },
+      {
+        name: "lookup_glossary",
+        description: "歌舞伎用語を検索して意味を調べる。",
+        parameters: {
+          type: "object",
+          properties: {
+            term: { type: "string", description: "調べたい用語（例: 花道、見得、六方）" },
+          },
+          required: ["term"],
+        },
+      },
+      {
+        name: "lookup_enmoku",
+        description: "歌舞伎の演目の詳細情報（あらすじ、見どころ、登場人物など）を取得する。",
+        parameters: {
+          type: "object",
+          properties: {
+            title: { type: "string", description: "演目名（例: 義経千本桜、勧進帳）" },
+          },
+          required: ["title"],
+        },
+      },
+      {
+        name: "get_group_info",
+        description: "地歌舞伎団体の情報を取得する。",
+        parameters: {
+          type: "object",
+          properties: {
+            group_id: { type: "string", description: "団体ID" },
+          },
+        },
+      },
+    ],
+  }];
+}
+
+/**
+ * ツール実行
+ * @returns {Promise<string>} ツール実行結果（JSON文字列）
+ */
+async function executeKeraFunction(env, name, args) {
+  try {
+    switch (name) {
+      case "search_performances": {
+        const data = await getPerformancesCached(env);
+        let items = data?.items || [];
+        if (args?.theater) {
+          const t = args.theater.toLowerCase();
+          items = items.filter(p => (p.theater || "").toLowerCase().includes(t));
+        }
+        if (args?.month) {
+          items = items.filter(p => (p.date_range || "").includes(args.month));
+        }
+        if (args?.query) {
+          const q = args.query.toLowerCase();
+          items = items.filter(p =>
+            (p.title || "").toLowerCase().includes(q) ||
+            (p.theater || "").toLowerCase().includes(q)
+          );
+        }
+        const result = items.slice(0, 8).map(p => ({
+          theater: p.theater, title: p.title, date_range: p.date_range, time: p.time,
+        }));
+        return JSON.stringify({ performances: result, count: items.length });
+      }
+
+      case "search_news": {
+        const newsData = await getCachedNews(env);
+        if (!newsData) return JSON.stringify({ articles: [], message: "ニュースデータなし" });
+        let articles = newsData.articles || newsData.items || [];
+        if (args?.category) {
+          articles = articles.filter(a => (a.category || a.key || "").includes(args.category));
+        }
+        if (args?.query) {
+          const q = args.query.toLowerCase();
+          articles = articles.filter(a => (a.title || "").toLowerCase().includes(q));
+        }
+        const result = articles.slice(0, 5).map(a => ({
+          title: a.title, source: a.source, date: a.date || a.pubDate,
+        }));
+        return JSON.stringify({ articles: result, count: articles.length });
+      }
+
+      case "lookup_glossary": {
+        const glossary = await loadGlossary(env);
+        const term = (args?.term || "").toLowerCase().replace(/[\s　]/g, "");
+        const found = (glossary || []).filter(t => {
+          const tn = (t.term || "").toLowerCase().replace(/[\s　]/g, "");
+          const rn = (t.reading || "").toLowerCase().replace(/[\s　]/g, "");
+          return tn.includes(term) || term.includes(tn) || rn.includes(term) || term.includes(rn);
+        }).slice(0, 3);
+        if (!found.length) return JSON.stringify({ message: "該当する用語が見つかりませんでした" });
+        return JSON.stringify({ terms: found.map(t => ({ term: t.term, reading: t.reading, description: (t.desc || t.description || "").slice(0, 500) })) });
+      }
+
+      case "lookup_enmoku": {
+        const catalog = await loadEnmokuCatalog(env);
+        const title = (args?.title || "").toLowerCase().replace(/[\s　]/g, "");
+        const item = (catalog || []).find(c => {
+          const full = (c.full || c.title || "").toLowerCase().replace(/[\s　]/g, "");
+          const short = (c.short || c.title_short || "").toLowerCase().replace(/[\s　]/g, "");
+          return full.includes(title) || title.includes(full) || short.includes(title) || title.includes(short);
+        });
+        if (!item) return JSON.stringify({ message: "該当する演目が見つかりませんでした" });
+        const data = await loadEnmokuJson(env, item.id).catch(() => null);
+        if (!data) return JSON.stringify({ title: item.full || item.short, message: "詳細データなし" });
+        return JSON.stringify({
+          title: data.title,
+          synopsis: (data.synopsis || "").slice(0, 800),
+          highlights: Array.isArray(data.highlights) ? data.highlights.slice(0, 5) : [],
+          cast: (data.cast || []).slice(0, 8).map(c => ({ name: c?.name, role: c?.role })),
+        });
+      }
+
+      case "get_group_info": {
+        const obj = await env.CONTENT_BUCKET.get("jikabuki_groups.json");
+        if (!obj) return JSON.stringify({ message: "団体データなし" });
+        const groups = await obj.json().catch(() => []);
+        if (args?.group_id) {
+          const g = (Array.isArray(groups) ? groups : groups.groups || []).find(g => g.id === args.group_id);
+          return JSON.stringify(g || { message: "該当団体なし" });
+        }
+        const list = (Array.isArray(groups) ? groups : groups.groups || []).slice(0, 10).map(g => ({ id: g.id, name: g.name, prefecture: g.prefecture }));
+        return JSON.stringify({ groups: list });
+      }
+
+      default:
+        return JSON.stringify({ error: "unknown function" });
+    }
+  } catch (e) {
+    console.error("executeKeraFunction error:", name, String(e));
+    return JSON.stringify({ error: String(e) });
+  }
+}
+
+/**
+ * Function call の結果を Gemini に返して最終回答を生成
+ */
+async function handleFunctionCall(env, functionCall, systemPrompt, messages) {
+  const result = await executeKeraFunction(env, functionCall.name, functionCall.args);
+  console.log("keraFnCall:", functionCall.name, "result len:", result.length);
+
+  // Gemini function calling プロトコル: functionResponse で結果を返す
+  const followUpContents = [
+    ...messages.map(m => ({
+      role: m.role === "assistant" ? "model" : m.role,
+      parts: [{ text: m.content }],
+    })),
+    {
+      role: "model",
+      parts: [{ functionCall: { name: functionCall.name, args: functionCall.args } }],
+    },
+    {
+      role: "user",
+      parts: [{ functionResponse: { name: functionCall.name, response: { content: result } } }],
+    },
+  ];
+
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${env.GEMINI_API_KEY}`;
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: followUpContents,
+        systemInstruction: { parts: [{ text: systemPrompt }] },
+        generationConfig: { temperature: 0.7, maxOutputTokens: 500, topP: 0.9 },
+      }),
+    });
+    if (!res.ok) {
+      console.error("handleFunctionCall HTTP error:", res.status);
+      return null;
+    }
+    const json = await res.json();
+    const text = json.candidates?.[0]?.content?.parts?.find(p => p.text)?.text;
+    return text ? text.trim() : null;
+  } catch (e) {
+    console.error("handleFunctionCall error:", String(e));
+    return null;
+  }
+}
+
+/**
+ * けらのすけ v2 メインオーケストレーター
+ * Gemini 2.0 Flash で回答し、失敗時は既存 Workers AI にフォールバック
+ */
+async function keraAIv2(env, sourceKey, userText, context) {
+  // 1. レート確認
+  const withinLimit = await checkGeminiRateLimit(env);
+  if (!withinLimit || !env.GEMINI_API_KEY) {
+    console.log("keraAIv2: rate limit exceeded or no API key, falling back");
+    return context ? await keraAI(env, userText, context) : null;
+  }
+
+  // 2. 履歴取得
+  const history = await loadConversationHistory(env, sourceKey);
+
+  // 3. プロンプト構築
+  const systemPrompt = buildKeraSystemPrompt(context);
+
+  // 4. メッセージ組み立て（履歴 + 今回の発言）
+  const messages = [...history, { role: "user", content: userText }];
+
+  // 5. Gemini 呼び出し（ツール付き）
+  await incrementGeminiCounter(env);
+  const tools = context ? undefined : getKeraTools(); // コンテキストありならツール不要
+  const geminiResult = await callGemini(env, systemPrompt, messages, tools);
+
+  if (!geminiResult) {
+    console.log("keraAIv2: Gemini returned null, falling back");
+    return context ? await keraAI(env, userText, context) : null;
+  }
+
+  // 6. Function call 処理
+  if (geminiResult.type === "function_call") {
+    console.log("keraAIv2: function_call:", geminiResult.functionCall.name);
+    await incrementGeminiCounter(env);
+    const fnResult = await handleFunctionCall(env, geminiResult.functionCall, systemPrompt, messages);
+    if (fnResult) {
+      await saveConversationHistory(env, sourceKey, userText, fnResult);
+      return fnResult;
+    }
+    // function call 失敗→フォールバック
+    console.log("keraAIv2: function call failed, falling back");
+    return context ? await keraAI(env, userText, context) : null;
+  }
+
+  // 7. テキスト回答
+  if (geminiResult.type === "text" && geminiResult.text) {
+    await saveConversationHistory(env, sourceKey, userText, geminiResult.text);
+    return geminiResult.text;
+  }
+
+  // 全失敗→フォールバック
+  return context ? await keraAI(env, userText, context) : null;
 }
 
 /* (getWebModeInit / handleWebPostback は Web ウィジェット廃止に伴い削除) */
