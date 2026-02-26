@@ -3,7 +3,32 @@
     "allow": [
       "Bash(npx wrangler deploy)",
       "Bash(curl:*)",
-      "Bash(curl.exe:*)"
+      "Bash(curl.exe:*)",
+      "Bash(powershell -Command \"Get-Content ''C:\\\\Users\\\\NAO\\\\github\\\\kabuki-ai-agent\\\\package.json''\")",
+      "Bash(powershell -Command:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(node -e:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(git stash:*)",
+      "mcp__ide__getDiagnostics",
+      "WebFetch(domain:kerakabuki.kerakabuki.workers.dev)",
+      "Bash(node -c:*)",
+      "Bash(node --input-type=commonjs:*)",
+      "Bash(npx wrangler r2 object put:*)",
+      "Bash(echo exit: $?:*)",
+      "Bash(cd:*)",
+      "Bash(wc:*)",
+      "Bash(find C:\\\\Users\\\\NAO\\\\github\\\\kabuki-ai-agent\\\\src:*)",
+      "Bash(tail:*)",
+      "Bash(echo Pillow not found:*)",
+      "Bash(python3:*)",
+      "Bash(npx wrangler:*)",
+      "Bash(grep:*)",
+      "Bash(cd /c/Users/NAO/github/kabuki-ai-agent && python -c \"\nfrom PIL import Image\nimport io\n\nsrc = Image.open\\('assets/keranosuke-icon-kabuki.png'\\).convert\\('RGBA'\\)\n\n# apple-touch-icon \\(180x180\\)\napple = src.resize\\(\\(180, 180\\), Image.LANCZOS\\)\napple.save\\('assets/apple-touch-icon.png', 'PNG'\\)\nprint\\('apple-touch-icon.png created'\\)\n\n# favicon.ico \\(multi-size: 16, 32, 48\\)\nsizes = [\\(16,16\\), \\(32,32\\), \\(48,48\\)]\nico_images = [src.resize\\(s, Image.LANCZOS\\) for s in sizes]\nico_images[0].save\\('assets/favicon.ico', format='ICO', sizes=sizes\\)\nprint\\('favicon.ico created'\\)\n\n# favicon.svg - use 32x32 PNG as base64 embedded SVG\nimport base64\nbuf = io.BytesIO\\(\\)\nsrc.resize\\(\\(32,32\\), Image.LANCZOS\\).save\\(buf, 'PNG'\\)\nb64 = base64.b64encode\\(buf.getvalue\\(\\)\\).decode\\(\\)\nsvg = f'<svg xmlns=\\\\\"http://www.w3.org/2000/svg\\\\\" viewBox=\\\\\"0 0 32 32\\\\\"><image href=\\\\\"data:image/png;base64,{b64}\\\\\" width=\\\\\"32\\\\\" height=\\\\\"32\\\\\"/></svg>'\nwith open\\('assets/favicon.svg', 'w'\\) as f:\n    f.write\\(svg\\)\nprint\\('favicon.svg created'\\)\n\" 2>&1)",
+      "Bash(head:*)",
+      "Bash(cat:*)",
+      "Bash(ls:*)"
     ]
   }
 }
