@@ -92,6 +92,9 @@ export function groupNotesPageHTML(group) {
               html += '</div>';
             }
             html += '<div class="gn-card-text">' + esc(note.text).replace(/\\n/g, "<br>") + '</div>';
+            if (note.image_url) {
+              html += '<div class="gn-card-image"><img src="' + esc(note.image_url) + '" alt="写真" loading="lazy"></div>';
+            }
             if (note.video_url) {
               if (vid) {
                 html += '<div class="gn-card-video"><iframe src="https://www.youtube.com/embed/' + vid + '" frameborder="0" allowfullscreen></iframe></div>';
@@ -108,14 +111,46 @@ export function groupNotesPageHTML(group) {
 
       function showForm(note, idx) {
         var isEdit = idx !== null && idx !== undefined;
-        note = note || { text: "", tags: [], video_url: "" };
+        note = note || { text: "", tags: [], video_url: "", image_url: "" };
         var area = document.getElementById("gn-form-area");
         if (!area) { render(); area = document.getElementById("gn-form-area"); }
+
+        /* 既存タグを収集 */
+        var allTags = {};
+        notes.forEach(function(n){ (n.tags||[]).forEach(function(t){ allTags[t] = true; }); });
+        var currentTags = (note.tags || []).slice();
+        var tagChipsHtml = '';
+        var existingTags = Object.keys(allTags).sort();
+        if (existingTags.length) {
+          tagChipsHtml = '<div class="gnf-tag-chips">';
+          existingTags.forEach(function(t) {
+            var active = currentTags.indexOf(t) >= 0 ? ' gnf-tag-chip-active' : '';
+            tagChipsHtml += '<button type="button" class="gnf-tag-chip' + active + '" onclick="GN.toggleTagChip(this,\\'' + esc(t) + '\\')">' + esc(t) + '</button>';
+          });
+          tagChipsHtml += '</div>';
+        }
+
+        var imagePreview = '';
+        if (note.image_url) {
+          imagePreview = '<div class="gnf-image-preview" id="gnf-image-preview"><img src="' + esc(note.image_url) + '" alt="プレビュー"><button type="button" class="gnf-image-remove" onclick="GN.removeImage()">✕</button></div>';
+        } else {
+          imagePreview = '<div class="gnf-image-preview" id="gnf-image-preview"></div>';
+        }
+
         area.innerHTML = '<div class="gr-form">'
           + '<h3 class="gr-form-title">' + (isEdit ? 'メモを編集' : '新しいメモ') + '</h3>'
           + '<div class="gr-form-row"><label>メモ</label><textarea id="gnf-text" rows="5" placeholder="稽古で気づいたこと、参考情報など">' + esc(note.text||"") + '</textarea></div>'
-          + '<div class="gr-form-row"><label>タグ（カンマ区切り）</label><input type="text" id="gnf-tags" value="' + esc((note.tags||[]).join(", ")) + '" placeholder="例: すし屋, 台詞"></div>'
+          + '<div class="gr-form-row"><label>タグ</label>'
+          + tagChipsHtml
+          + '<input type="text" id="gnf-tags" value="' + esc(currentTags.join(", ")) + '" placeholder="カンマ区切りで入力、または上のボタンで追加"></div>'
           + '<div class="gr-form-row"><label>参考動画URL（YouTube等）</label><input type="text" id="gnf-video" value="' + esc(note.video_url||"") + '" placeholder="https://youtu.be/..."></div>'
+          + '<div class="gr-form-row"><label>写真（任意）</label>'
+          + '<input type="file" id="gnf-image-file" accept="image/jpeg,image/png,image/webp" style="display:none;" onchange="GN.uploadImage(this)">'
+          + '<button type="button" class="btn btn-secondary" onclick="document.getElementById(\\'gnf-image-file\\').click()" style="font-size:13px;padding:6px 14px;">📷 写真を追加</button>'
+          + '<span class="gnf-upload-status" id="gnf-upload-status"></span>'
+          + imagePreview
+          + '<input type="hidden" id="gnf-image-url" value="' + esc(note.image_url||"") + '">'
+          + '</div>'
           + '<div class="gr-form-actions">'
           + '<button class="btn btn-primary" onclick="GN.saveForm(' + (isEdit ? idx : "null") + ')">保存</button>'
           + '<button class="btn btn-secondary" onclick="GN.cancelForm()">キャンセル</button>'
@@ -123,11 +158,24 @@ export function groupNotesPageHTML(group) {
         area.scrollIntoView({ behavior: "smooth" });
       }
 
+      function showToast(msg) {
+        var existing = document.querySelector('.gn-toast');
+        if (existing) existing.remove();
+        var toast = document.createElement('div');
+        toast.className = 'gn-toast';
+        toast.textContent = msg;
+        document.body.appendChild(toast);
+        setTimeout(function() { toast.classList.add('gn-toast-hide'); }, 1800);
+        setTimeout(function() { toast.remove(); }, 2200);
+      }
+
       function saveForm(idx) {
+        var imgUrlEl = document.getElementById("gnf-image-url");
         var entry = {
           text: document.getElementById("gnf-text").value.trim(),
           tags: document.getElementById("gnf-tags").value.split(",").map(function(s){ return s.trim(); }).filter(Boolean),
           video_url: document.getElementById("gnf-video").value.trim(),
+          image_url: imgUrlEl ? imgUrlEl.value.trim() : "",
           created_at: (idx !== null && notes[idx]) ? notes[idx].created_at : new Date().toISOString(),
           updated_at: new Date().toISOString()
         };
@@ -139,6 +187,7 @@ export function groupNotesPageHTML(group) {
         }
         saveToServer();
         render();
+        showToast('メモを保存しました');
       }
 
       function delNote(idx) {
@@ -182,7 +231,58 @@ export function groupNotesPageHTML(group) {
         delNote: delNote,
         saveForm: saveForm,
         cancelForm: function(){ var area = document.getElementById("gn-form-area"); if (area) area.innerHTML = ""; },
-        setFilter: function(f){ filter = f; render(); }
+        setFilter: function(f){ filter = f; render(); },
+        toggleTagChip: function(btn, tag) {
+          var input = document.getElementById('gnf-tags');
+          if (!input) return;
+          var tags = input.value.split(",").map(function(s){ return s.trim(); }).filter(Boolean);
+          var idx = tags.indexOf(tag);
+          if (idx >= 0) {
+            tags.splice(idx, 1);
+            btn.classList.remove('gnf-tag-chip-active');
+          } else {
+            tags.push(tag);
+            btn.classList.add('gnf-tag-chip-active');
+          }
+          input.value = tags.join(", ");
+        },
+        uploadImage: function(fileInput) {
+          var file = fileInput.files && fileInput.files[0];
+          if (!file) return;
+          var statusEl = document.getElementById('gnf-upload-status');
+          if (statusEl) { statusEl.textContent = 'アップロード中…'; statusEl.style.color = 'var(--text-tertiary)'; }
+          var fd = new FormData();
+          fd.append('file', file);
+          fd.append('type', 'note');
+          fetch('/api/groups/' + encodeURIComponent(GID) + '/images', {
+            method: 'POST', credentials: 'same-origin', body: fd
+          })
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            if (data.url) {
+              var urlInput = document.getElementById('gnf-image-url');
+              if (urlInput) urlInput.value = data.url;
+              if (statusEl) statusEl.textContent = '';
+              var prev = document.getElementById('gnf-image-preview');
+              if (prev) {
+                prev.innerHTML = '<img src="' + data.url + '" alt="プレビュー"><button type="button" class="gnf-image-remove" onclick="GN.removeImage()">✕</button>';
+              }
+            } else {
+              if (statusEl) { statusEl.textContent = 'エラー: ' + (data.error || '失敗'); statusEl.style.color = 'var(--accent-1)'; }
+            }
+            fileInput.value = '';
+          })
+          .catch(function(err) {
+            if (statusEl) { statusEl.textContent = '通信エラー'; statusEl.style.color = 'var(--accent-1)'; }
+            fileInput.value = '';
+          });
+        },
+        removeImage: function() {
+          var urlInput = document.getElementById('gnf-image-url');
+          if (urlInput) urlInput.value = '';
+          var prev = document.getElementById('gnf-image-preview');
+          if (prev) prev.innerHTML = '';
+        }
       };
 
       loadNotes();
@@ -246,6 +346,49 @@ export function groupNotesPageHTML(group) {
       }
       .gr-form-row input:focus, .gr-form-row textarea:focus { border-color: var(--gold); outline: none; }
       .gr-form-actions { display: flex; gap: 10px; margin-top: 16px; }
+
+      /* ── トースト ── */
+      .gn-toast {
+        position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+        background: #333; color: #fff; padding: 10px 24px; border-radius: 8px;
+        font-size: 14px; font-family: inherit; z-index: 9999;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        animation: gnToastIn 0.25s ease-out;
+      }
+      .gn-toast-hide { opacity: 0; transition: opacity 0.3s; }
+      @keyframes gnToastIn { from { opacity: 0; transform: translateX(-50%) translateY(12px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+
+      /* ── タグオートコンプリート ── */
+      .gnf-tag-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+      .gnf-tag-chip {
+        font-size: 12px; padding: 4px 12px; border: 1px solid var(--border-light);
+        border-radius: 16px; cursor: pointer; background: var(--bg-card);
+        color: var(--text-secondary); font-family: inherit; transition: all 0.15s;
+      }
+      .gnf-tag-chip:hover { border-color: var(--gold); color: var(--gold-dark); }
+      .gnf-tag-chip-active { background: var(--gold-soft); border-color: var(--gold); color: var(--gold-dark); font-weight: 600; }
+
+      /* ── 画像アップロード ── */
+      .gnf-upload-status { font-size: 12px; margin-left: 8px; }
+      .gnf-image-preview { position: relative; display: inline-block; margin-top: 8px; }
+      .gnf-image-preview img { max-width: 100%; max-height: 180px; border-radius: 6px; border: 1px solid var(--border-light); display: block; }
+      .gnf-image-remove {
+        position: absolute; top: 4px; right: 4px;
+        background: rgba(0,0,0,0.6); color: #fff; border: none;
+        border-radius: 50%; width: 22px; height: 22px;
+        font-size: 13px; cursor: pointer; line-height: 22px; text-align: center;
+      }
+      .gn-card-image { margin-top: 10px; }
+      .gn-card-image img { max-width: 100%; border-radius: 6px; border: 1px solid var(--border-light); }
+
+      /* ── モバイル対応 ── */
+      @media (max-width: 480px) {
+        .gr-form { padding: 14px; }
+        .gr-form-row input, .gr-form-row textarea { font-size: 16px; }
+        .gn-card { padding: 12px; }
+        .gn-card-text { font-size: 13px; }
+        .gn-toolbar { flex-wrap: wrap; }
+      }
     </style>`
   });
 }

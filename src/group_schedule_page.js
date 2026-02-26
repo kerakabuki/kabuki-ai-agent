@@ -1534,8 +1534,12 @@ export function groupSchedulePageHTML(group) {
 
       @media (max-width: 480px) {
         .gs-form-row2 { grid-template-columns: 1fr; }
-        .gs-cal-day { min-height: 36px; }
-        .gs-day-num { font-size: 12px; }
+        .gs-cal-day { min-height: 36px; padding: 2px 1px; }
+        .gs-day-num { font-size: 11px; }
+        .gs-dot { width: 4px; height: 4px; }
+        .gs-cal { padding: 10px; }
+        .gs-cal-title { font-size: 14px; }
+        .gs-cal-dow { font-size: 10px; }
       }
     </style>`
   });

@@ -154,7 +154,7 @@ export function groupActorsPageHTML(group, googleClientId) {
         var entries = actor.entries;
 
         var html = '<h3 class="modal-actor-name">' + esc(actor.displayName) + '</h3>';
-        html += '<table class="actor-history-table"><thead><tr><th>年</th><th>演目</th><th>役名</th></tr></thead><tbody>';
+        html += '<div class="ga-table-scroll"><table class="actor-history-table"><thead><tr><th>年</th><th>演目</th><th>役名</th></tr></thead><tbody>';
         entries.forEach(function(e) {
           html += '<tr>';
           html += '<td class="ah-year"><span class="ah-era">' + esc(e.era) + '</span>' + (e.date_display ? '<br><span class="ah-date">' + esc(e.date_display) + '</span>' : '') + '</td>';
@@ -162,7 +162,7 @@ export function groupActorsPageHTML(group, googleClientId) {
           html += '<td class="ah-role">' + esc(e.role) + '</td>';
           html += '</tr>';
         });
-        html += '</tbody></table>';
+        html += '</tbody></table></div>';
 
         document.getElementById("actors-modal-body").innerHTML = html;
         document.getElementById("actors-modal-overlay").style.display = "flex";
@@ -393,6 +393,10 @@ export function groupActorsPageHTML(group, googleClientId) {
         white-space: nowrap;
       }
 
+      /* ── 履歴テーブル横スクロール ── */
+      .ga-table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .ga-table-scroll .actor-history-table { min-width: 320px; }
+
       @media (max-width: 480px) {
         .actors-grid {
           grid-template-columns: 1fr 1fr;
@@ -405,6 +409,10 @@ export function groupActorsPageHTML(group, googleClientId) {
         .actor-history-table {
           font-size: 12px;
         }
+        .actor-history-table th, .actor-history-table td {
+          padding: 5px 6px;
+        }
+        .ah-year { width: 70px; }
       }
     </style>`,
   });

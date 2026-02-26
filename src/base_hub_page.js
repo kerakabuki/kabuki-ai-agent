@@ -282,6 +282,7 @@ export function baseHubPageHTML({ googleClientId = "" } = {}) {
           links.push({ icon: '🏯', label: 'GATE編集', href: '/groups/' + eg + '/gate-edit' });
           links.push({ icon: '👥', label: 'メンバー管理', href: '/groups/' + eg + '/members' });
           links.push({ icon: '🏠', label: '芝居小屋管理', href: '/jikabuki/base/theaters' });
+          links.push({ icon: '🗑', label: '団体削除申請', href: '/jikabuki/base/delete-request?group=' + eg });
         }
         var el = document.getElementById('bd-quicklinks');
         el.innerHTML = links.map(function(l) {
@@ -1349,6 +1350,11 @@ export function baseHubPageHTML({ googleClientId = "" } = {}) {
         .bd-sched-card { gap: 10px; padding: 12px; }
         .bd-sched-date { min-width: 78px; }
         .bd-sched-month { font-size: 12px; }
+      }
+      @media (max-width: 380px) {
+        .bd-quicklinks-grid { grid-template-columns: repeat(2, 1fr); }
+        .bd-ql-item { padding: 10px 6px; font-size: 11px; }
+        .bd-ql-icon { font-size: 18px; }
       }
     </style>`
   });
