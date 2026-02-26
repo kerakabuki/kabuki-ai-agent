@@ -2,6 +2,7 @@
 // =========================================================
 // クイズページ — /quiz
 // localStorage でスコア管理、API からクイズデータ取得
+// 難易度モード（段階解放式）: 初級→中級→上級
 // =========================================================
 import { pageShell } from "./web_layout.js";
 
@@ -20,6 +21,11 @@ export function quizPageHTML() {
       var quizList = [];
       var quizMap = {};
 
+      // ── レベル定義 ──
+      var LEVELS = ["beginner", "intermediate", "advanced"];
+      var LEVEL_LABELS = { beginner: "初級", intermediate: "中級", advanced: "上級" };
+      var LEVEL_ICONS = { beginner: "🟢", intermediate: "🟡", advanced: "🔴" };
+
       // ── ローカルステート ──
       var STATE_KEY = "keranosuke_quiz_state";
       var state = loadState();
@@ -33,10 +39,13 @@ export function quizPageHTML() {
       }
       function defaultState() {
         return {
-          answered_total: 0,
-          correct_total: 0,
-          answered: {},
-          wrong_ids: [],
+          version: 2,
+          levels: {
+            beginner:     { answered: {}, wrong_ids: [] },
+            intermediate: { answered: {}, wrong_ids: [] },
+            advanced:     { answered: {}, wrong_ids: [] }
+          },
+          current_level: null,
           current_id: null,
           mode: "normal",
           phase: "idle"
@@ -45,6 +54,87 @@ export function quizPageHTML() {
       function saveState() {
         try { localStorage.setItem(STATE_KEY, JSON.stringify(state)); } catch(e){}
       }
+
+      // ── V1→V2 マイグレーション ──
+      function migrateV1toV2(old) {
+        var ns = defaultState();
+        if (!old || !old.answered) return ns;
+        var keys = Object.keys(old.answered);
+        for (var i = 0; i < keys.length; i++) {
+          var qid = keys[i];
+          var q = quizMap[qid];
+          var lvl = (q && q.level) ? q.level : "beginner";
+          if (!ns.levels[lvl]) lvl = "beginner";
+          ns.levels[lvl].answered[qid] = old.answered[qid];
+        }
+        var oldWrong = old.wrong_ids || [];
+        for (var j = 0; j < oldWrong.length; j++) {
+          var wid = String(oldWrong[j]);
+          var wq = quizMap[wid];
+          var wlvl = (wq && wq.level) ? wq.level : "beginner";
+          if (!ns.levels[wlvl]) wlvl = "beginner";
+          if (ns.levels[wlvl].wrong_ids.indexOf(oldWrong[j]) < 0) {
+            ns.levels[wlvl].wrong_ids.push(oldWrong[j]);
+          }
+        }
+        return ns;
+      }
+
+      // ── ヘルパー関数 ──
+      function getLevelStats(level) {
+        var ld = state.levels[level] || { answered: {}, wrong_ids: [] };
+        var answered = ld.answered || {};
+        var keys = Object.keys(answered);
+        var answered_total = keys.length;
+        var correct_total = 0;
+        for (var i = 0; i < keys.length; i++) {
+          if (answered[keys[i]] === true) correct_total++;
+        }
+        var total = quizList.filter(function(q){ return q.level === level; }).length;
+        var remaining = total - answered_total;
+        var rate = answered_total > 0 ? correct_total / answered_total : 0;
+        var cleared = remaining <= 0 && answered_total > 0 && rate >= 0.7;
+        return {
+          answered_total: answered_total,
+          correct_total: correct_total,
+          total: total,
+          remaining: remaining < 0 ? 0 : remaining,
+          rate: rate,
+          cleared: cleared,
+          wrong_count: (ld.wrong_ids || []).length
+        };
+      }
+
+      function isLevelUnlocked(level) {
+        if (level === "beginner") return true;
+        if (level === "intermediate") return getLevelStats("beginner").cleared;
+        if (level === "advanced") return getLevelStats("intermediate").cleared;
+        return false;
+      }
+
+      function getOverallTitle() {
+        var adv = getLevelStats("advanced");
+        var mid = getLevelStats("intermediate");
+        var beg = getLevelStats("beginner");
+
+        if (adv.cleared && adv.rate >= 0.9) return "国宝";
+        if (adv.cleared) return "名人";
+        if (adv.answered_total > 0) return "千両役者";
+        if (mid.cleared) return "看板役者";
+        if (mid.answered_total > 0) return "二枚目";
+        if (beg.cleared) return "三枚目";
+        if (beg.answered_total > 0) return "名題下";
+        return "見習い";
+      }
+
+      function getTotalCorrect() {
+        var total = 0;
+        for (var i = 0; i < LEVELS.length; i++) {
+          total += getLevelStats(LEVELS[i]).correct_total;
+        }
+        return total;
+      }
+
       /* XP加算ヘルパー */
       function addQuizXP() {
         try {
@@ -63,20 +153,6 @@ export function quizPageHTML() {
         } catch(e){}
       }
 
-      // ── 称号 ──
-      function calcTitle(correct, total) {
-        var t = total || 100;
-        var p = t > 0 ? correct / t : 0;
-        if (p >= 1.0) return "国宝";
-        if (p >= 0.9) return "名人";
-        if (p >= 0.7) return "千両役者";
-        if (p >= 0.5) return "看板役者";
-        if (p >= 0.3) return "二枚目";
-        if (p >= 0.15) return "三枚目";
-        if (p >= 0.05) return "名題";
-        return "名題下";
-      }
-
       // ── データ読み込み ──
       fetch("/api/quiz")
         .then(function(r){ return r.json(); })
@@ -84,82 +160,135 @@ export function quizPageHTML() {
           if (Array.isArray(data)) { quizList = data; }
           else if (data && Array.isArray(data.list)) { quizList = data.list; }
           else { quizList = []; }
+          // level が無いクイズは beginner にフォールバック
           quizList.forEach(function(q){
             if (q && q.quiz_id != null) quizMap[String(q.quiz_id)] = q;
+            if (!q.level) q.level = "beginner";
           });
-          showMenu();
+          // V1→V2 マイグレーション
+          if (!state.version || state.version < 2) {
+            state = migrateV1toV2(state);
+            saveState();
+          }
+          showLevelSelect();
         })
         .catch(function(){
           app.innerHTML = '<div class="empty-state">クイズデータの読み込みに失敗しました。</div>';
         });
 
-      // ── メニュー画面 ──
-      function showMenu() {
-        var title = calcTitle(state.correct_total, quizList.length);
-        var answered = state.answered_total;
-        var correct = state.correct_total;
-        var total = quizList.length;
-        var remaining = total - Object.keys(state.answered).length;
-        var wrongCount = state.wrong_ids.length;
-
+      // ── レベル選択画面 ──
+      function showLevelSelect() {
+        var title = getOverallTitle();
         var html = '<div class="quiz-menu fade-up">';
         html += '<div class="quiz-hero">';
         html += '<div class="quiz-hero-icon">👺</div>';
         html += '<h2 class="quiz-hero-title">歌舞伎クイズ</h2>';
-        html += '<p class="quiz-hero-sub">全' + total + '問の三択クイズで楽しく学ぼう</p>';
+        html += '<p class="quiz-hero-sub">段階をクリアして称号を上げよう</p>';
         html += '</div>';
 
-        // スコアボード
-        html += '<div class="quiz-score">';
-        html += '<div class="quiz-score-item"><span class="quiz-score-num">' + answered + '</span><span class="quiz-score-label">回答数</span></div>';
-        html += '<div class="quiz-score-item"><span class="quiz-score-num">' + correct + '</span><span class="quiz-score-label">正解数</span></div>';
-        html += '<div class="quiz-score-item"><span class="quiz-score-num">' + remaining + '</span><span class="quiz-score-label">残り</span></div>';
-        html += '<div class="quiz-score-item"><span class="quiz-score-num quiz-title-rank">' + esc(title) + '</span><span class="quiz-score-label">称号</span></div>';
+        // 総合称号
+        html += '<div class="quiz-overall-title">';
+        html += '<span class="quiz-overall-label">称号</span>';
+        html += '<span class="quiz-overall-name">' + esc(title) + '</span>';
         html += '</div>';
 
-        // ボタン
-        html += '<div class="quiz-actions">';
-        if (remaining > 0) {
-          html += '<button class="btn btn-primary quiz-btn" onclick="startQuiz(\\'normal\\')">🎯 クイズに挑戦</button>';
-        } else {
-          html += '<button class="btn btn-primary quiz-btn" disabled>全問回答済み！</button>';
+        // レベルカード
+        html += '<div class="quiz-level-cards">';
+        for (var li = 0; li < LEVELS.length; li++) {
+          var lvl = LEVELS[li];
+          var st = getLevelStats(lvl);
+          var unlocked = isLevelUnlocked(lvl);
+          var label = LEVEL_LABELS[lvl];
+          var icon = LEVEL_ICONS[lvl];
+
+          html += '<div class="quiz-level-card' + (unlocked ? '' : ' locked') + (st.cleared ? ' cleared' : '') + '">';
+          html += '<div class="quiz-level-header">';
+          html += '<span class="quiz-level-icon">' + icon + '</span>';
+          html += '<span class="quiz-level-name">' + label + '</span>';
+          if (st.cleared) {
+            html += '<span class="quiz-level-badge cleared-badge">CLEAR</span>';
+          } else if (!unlocked) {
+            html += '<span class="quiz-level-badge locked-badge">🔒</span>';
+          }
+          html += '</div>';
+
+          if (unlocked) {
+            // 進捗バー
+            var pct = st.total > 0 ? Math.round((st.answered_total / st.total) * 100) : 0;
+            html += '<div class="quiz-level-progress">';
+            html += '<div class="quiz-progress-bar"><div class="quiz-progress-fill' + (st.cleared ? ' fill-cleared' : '') + '" style="width:' + pct + '%"></div></div>';
+            html += '<span class="quiz-progress-text">' + st.answered_total + '/' + st.total + '</span>';
+            html += '</div>';
+            // 正答率
+            if (st.answered_total > 0) {
+              var ratePct = Math.round(st.rate * 100);
+              html += '<div class="quiz-level-detail">正答 ' + st.correct_total + '問（' + ratePct + '%）';
+              if (st.wrong_count > 0) html += '　復習 ' + st.wrong_count + '問';
+              html += '</div>';
+            }
+            // ボタン
+            html += '<div class="quiz-level-actions">';
+            if (st.remaining > 0) {
+              html += '<button class="btn btn-primary quiz-level-btn" onclick="startLevel(\\'' + lvl + '\\',\\'normal\\')">挑戦する</button>';
+            } else {
+              html += '<button class="btn btn-primary quiz-level-btn" disabled>全問回答済み</button>';
+            }
+            if (st.wrong_count > 0) {
+              html += '<button class="btn btn-secondary quiz-level-btn" onclick="startLevel(\\'' + lvl + '\\',\\'review\\')">復習（' + st.wrong_count + '問）</button>';
+            }
+            html += '</div>';
+          } else {
+            // 未解放
+            var prev = lvl === "intermediate" ? "初級" : "中級";
+            html += '<div class="quiz-level-locked-msg">' + prev + 'をクリア（正答率70%以上）で解放</div>';
+          }
+
+          html += '</div>';
         }
-        if (wrongCount > 0) {
-          html += '<button class="btn btn-secondary quiz-btn" onclick="startQuiz(\\'review\\')">🔄 間違い復習（' + wrongCount + '問）</button>';
-        }
-        if (answered > 0) {
-          html += '<button class="btn btn-secondary quiz-btn" onclick="resetQuiz()">🗑 リセット</button>';
-        }
-        html += '<a href="/kabuki/dojo" class="btn btn-secondary quiz-btn" style="display:inline-block;text-align:center;text-decoration:none;margin-top:4px;">← KABUKI DOJO</a>';
         html += '</div>';
+
+        // フッター
+        html += '<div class="quiz-menu-footer">';
+        var anyAnswered = getLevelStats("beginner").answered_total + getLevelStats("intermediate").answered_total + getLevelStats("advanced").answered_total;
+        if (anyAnswered > 0) {
+          html += '<button class="btn btn-secondary quiz-btn" onclick="resetQuiz()">リセット</button>';
+        }
+        html += '<a href="/kabuki/dojo" class="btn btn-secondary quiz-btn" style="display:inline-block;text-align:center;text-decoration:none;">← KABUKI DOJO</a>';
+        html += '</div>';
+
         html += '</div>';
         app.innerHTML = html;
       }
 
-      // ── クイズ開始 ──
-      window.startQuiz = function(mode) {
+      // ── レベル開始 ──
+      window.startLevel = function(level, mode) {
+        state.current_level = level;
         state.mode = mode;
         state.phase = "question";
+        saveState();
         nextQuestion();
       };
 
       function nextQuestion() {
+        var lvl = state.current_level;
+        var ld = state.levels[lvl];
         var qid;
+
         if (state.mode === "review") {
-          if (state.wrong_ids.length === 0) {
+          if (ld.wrong_ids.length === 0) {
             state.phase = "idle";
             saveState();
-            showComplete("復習完了！間違いをすべて復習したよ 🎉");
+            showComplete(lvl, "復習完了！間違いをすべて復習したよ");
             return;
           }
-          qid = state.wrong_ids[0];
+          qid = ld.wrong_ids[0];
         } else {
-          // 未回答からランダム
-          var unanswered = quizList.filter(function(q){ return !state.answered[String(q.quiz_id)]; });
+          var levelQuizzes = quizList.filter(function(q){ return q.level === lvl; });
+          var unanswered = levelQuizzes.filter(function(q){ return !ld.answered[String(q.quiz_id)]; });
           if (unanswered.length === 0) {
             state.phase = "idle";
             saveState();
-            showComplete("全問回答済み！おめでとう 🎉");
+            showComplete(lvl, LEVEL_LABELS[lvl] + " 全問回答完了！");
             return;
           }
           var pick = unanswered[Math.floor(Math.random() * unanswered.length)];
@@ -172,15 +301,20 @@ export function quizPageHTML() {
 
       // ── 問題表示 ──
       function showQuestion(q) {
-        if (!q) { showMenu(); return; }
+        if (!q) { showLevelSelect(); return; }
+        var lvl = state.current_level;
+        var ld = state.levels[lvl];
+        var st = getLevelStats(lvl);
+        var levelLabel = LEVEL_LABELS[lvl];
         var modeLabel = state.mode === "review" ? "【復習】" : "";
         var numLabel = state.mode === "review"
-          ? "（残り" + state.wrong_ids.length + "問）"
-          : "第" + (state.answered_total + 1) + "問";
+          ? "（残り" + ld.wrong_ids.length + "問）"
+          : "第" + (st.answered_total + 1) + "問 / " + st.total + "問";
 
         var html = '<div class="quiz-question fade-up">';
         html += '<div class="quiz-q-header">';
-        html += '<span class="quiz-q-mode">' + modeLabel + '歌舞伎クイズ ' + numLabel + '</span>';
+        html += '<span class="quiz-q-level-tag level-' + lvl + '">【' + levelLabel + '】</span>';
+        html += '<span class="quiz-q-mode">' + modeLabel + numLabel + '</span>';
         html += '</div>';
         html += '<h2 class="quiz-q-text">' + esc(q.question) + '</h2>';
         html += '<div class="quiz-choices">';
@@ -206,24 +340,25 @@ export function quizPageHTML() {
         if (!q) return;
         var correct = q.answer_index != null ? q.answer_index : (q.correct != null ? q.correct : q.answer);
         var isCorrect = (Number(choice) === Number(correct));
+        var lvl = state.current_level;
+        var ld = state.levels[lvl];
 
         if (state.mode !== "review") {
-          state.answered_total++;
+          ld.answered[String(qid)] = isCorrect;
           if (isCorrect) {
-            state.correct_total++;
             addQuizXP();
           }
-          state.answered[String(qid)] = isCorrect;
-          if (!isCorrect && state.wrong_ids.indexOf(qid) < 0) {
-            state.wrong_ids.push(qid);
+          if (!isCorrect && ld.wrong_ids.indexOf(qid) < 0) {
+            ld.wrong_ids.push(qid);
           }
           if (isCorrect) {
-            state.wrong_ids = state.wrong_ids.filter(function(id){ return id !== qid; });
+            ld.wrong_ids = ld.wrong_ids.filter(function(id){ return id !== qid; });
           }
         } else {
-          // 復習モード
+          // 復習モード: 正解なら wrong_ids から除去し answered を更新
           if (isCorrect) {
-            state.wrong_ids = state.wrong_ids.filter(function(id){ return id !== qid; });
+            ld.wrong_ids = ld.wrong_ids.filter(function(id){ return id !== qid; });
+            ld.answered[String(qid)] = true;
             addQuizXP();
           }
         }
@@ -233,6 +368,8 @@ export function quizPageHTML() {
 
       // ── 結果表示 ──
       function showResult(q, choice, isCorrect) {
+        var lvl = state.current_level;
+        var st = getLevelStats(lvl);
         var correctIdx = q.answer_index != null ? q.answer_index : ((q.correct || q.answer) - 1);
         var html = '<div class="quiz-result fade-up">';
         html += isCorrect
@@ -252,32 +389,56 @@ export function quizPageHTML() {
         html += '</div>';
 
         if (q.explanation) {
-          html += '<div class="quiz-explanation">💡 ' + esc(q.explanation) + '</div>';
+          html += '<div class="quiz-explanation">' + esc(q.explanation) + '</div>';
         }
 
-        // スコア
-        var title = calcTitle(state.correct_total, quizList.length);
-        html += '<div class="quiz-mini-score">' + state.correct_total + '/' + state.answered_total + '正解　称号：' + esc(title) + '</div>';
+        // レベル内スコア
+        var ratePct = st.answered_total > 0 ? Math.round(st.rate * 100) : 0;
+        html += '<div class="quiz-mini-score">';
+        html += LEVEL_LABELS[lvl] + '：' + st.correct_total + '/' + st.answered_total + '正解（' + ratePct + '%）';
+        html += '　称号：' + esc(getOverallTitle());
+        html += '</div>';
 
         html += '</div>';
 
         html += '<div class="quiz-result-actions">';
         html += '<button class="btn btn-primary" onclick="nextQuestion()">次の問題 →</button>';
         html += '<button class="btn btn-secondary" onclick="backToMenu()">メニューに戻る</button>';
-        html += '<a href="/kabuki/dojo" class="btn btn-secondary" style="display:inline-block;text-align:center;text-decoration:none;">← KABUKI DOJO</a>';
         html += '</div>';
         app.innerHTML = html;
       }
 
       // ── 完了画面 ──
-      function showComplete(msg) {
-        var title = calcTitle(state.correct_total, quizList.length);
+      function showComplete(level, msg) {
+        var st = getLevelStats(level);
+        var ratePct = st.answered_total > 0 ? Math.round(st.rate * 100) : 0;
+        var title = getOverallTitle();
+        var nextLevel = level === "beginner" ? "intermediate" : (level === "intermediate" ? "advanced" : null);
+
         var html = '<div class="quiz-complete fade-up">';
-        html += '<div class="quiz-hero-icon">🎊</div>';
-        html += '<h2 style="color:var(--kin);margin:0.5rem 0;">' + esc(msg) + '</h2>';
-        html += '<div class="quiz-mini-score">' + state.correct_total + '/' + state.answered_total + '正解　称号：' + esc(title) + '</div>';
-        html += '<div style="margin-top:1rem;display:flex;flex-direction:column;gap:8px;align-items:center;">';
-        html += '<button class="btn btn-primary" onclick="backToMenu()">メニューに戻る</button>';
+
+        if (st.cleared && nextLevel) {
+          // レベルクリア + 次レベル解放
+          html += '<div class="quiz-hero-icon">🎊</div>';
+          html += '<h2 class="quiz-complete-msg">' + esc(msg) + '</h2>';
+          html += '<div class="quiz-unlock-msg">' + LEVEL_LABELS[nextLevel] + ' が解放されました！</div>';
+        } else if (st.remaining <= 0 && !st.cleared) {
+          // 全問回答済みだが正答率不足
+          html += '<div class="quiz-hero-icon">📝</div>';
+          html += '<h2 class="quiz-complete-msg">' + esc(msg) + '</h2>';
+          html += '<div class="quiz-retry-msg">正答率70%以上で次のレベルが解放されます（現在 ' + ratePct + '%）<br>復習で正答率を上げよう！</div>';
+        } else {
+          html += '<div class="quiz-hero-icon">🎊</div>';
+          html += '<h2 class="quiz-complete-msg">' + esc(msg) + '</h2>';
+        }
+
+        html += '<div class="quiz-mini-score">' + st.correct_total + '/' + st.answered_total + '正解（' + ratePct + '%）　称号：' + esc(title) + '</div>';
+
+        html += '<div class="quiz-complete-actions">';
+        if (st.wrong_count > 0) {
+          html += '<button class="btn btn-primary" onclick="startLevel(\\'' + level + '\\',\\'review\\')">復習する（' + st.wrong_count + '問）</button>';
+        }
+        html += '<button class="btn btn-secondary" onclick="backToMenu()">メニューに戻る</button>';
         html += '<a href="/kabuki/dojo" class="btn btn-secondary" style="display:inline-block;text-align:center;text-decoration:none;">← KABUKI DOJO</a>';
         html += '</div>';
         html += '</div>';
@@ -289,13 +450,14 @@ export function quizPageHTML() {
         if (!confirm("クイズの記録をリセットしますか？")) return;
         state = defaultState();
         saveState();
-        showMenu();
+        showLevelSelect();
       };
 
       window.backToMenu = function() {
         state.phase = "idle";
+        state.current_level = null;
         saveState();
-        showMenu();
+        showLevelSelect();
       };
 
       // グローバル公開
@@ -325,7 +487,7 @@ export function quizPageHTML() {
       /* ── ヒーロー ── */
       .quiz-hero {
         text-align: center;
-        padding: 1.5rem 0;
+        padding: 1.5rem 0 1rem;
       }
       .quiz-hero-icon {
         font-size: 3rem;
@@ -342,53 +504,168 @@ export function quizPageHTML() {
         margin-top: 0.2rem;
       }
 
-      /* ── スコアボード ── */
-      .quiz-score {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 0.5rem;
-        margin-bottom: 1.5rem;
-      }
-      .quiz-score-item {
+      /* ── 総合称号 ── */
+      .quiz-overall-title {
+        text-align: center;
+        margin-bottom: 1.2rem;
+        padding: 0.6rem 1rem;
         background: var(--bg-subtle);
         border: 1px solid var(--border-light);
         border-radius: 12px;
-        padding: 0.8rem 0.5rem;
-        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.8rem;
       }
-      .quiz-score-num {
-        display: block;
-        font-size: 1.3rem;
+      .quiz-overall-label {
+        font-size: 0.8rem;
+        color: var(--text-tertiary);
+      }
+      .quiz-overall-name {
+        font-size: 1.1rem;
         font-weight: bold;
         color: var(--kin);
-      }
-      .quiz-score-label {
-        display: block;
-        font-size: 0.7rem;
-        color: var(--text-tertiary);
-        margin-top: 0.2rem;
-      }
-      .quiz-title-rank {
-        font-size: 0.85rem !important;
+        letter-spacing: 0.1em;
       }
 
-      /* ── ボタン群 ── */
-      .quiz-actions {
+      /* ── レベルカード ── */
+      .quiz-level-cards {
         display: flex;
         flex-direction: column;
+        gap: 0.8rem;
+        margin-bottom: 1.2rem;
+      }
+      .quiz-level-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-light);
+        border-radius: 14px;
+        padding: 1rem 1.2rem;
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+      .quiz-level-card:not(.locked):hover {
+        border-color: var(--kin);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      }
+      .quiz-level-card.locked {
+        opacity: 0.55;
+      }
+      .quiz-level-card.cleared {
+        border-color: #4CAF50;
+        background: rgba(76,175,80,0.04);
+      }
+      .quiz-level-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.6rem;
+      }
+      .quiz-level-icon {
+        font-size: 1.1rem;
+      }
+      .quiz-level-name {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        flex: 1;
+      }
+      .quiz-level-badge {
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 2px 10px;
+        border-radius: 20px;
+      }
+      .cleared-badge {
+        background: rgba(76,175,80,0.15);
+        color: #388E3C;
+      }
+      .locked-badge {
+        font-size: 1rem;
+      }
+
+      /* ── 進捗バー ── */
+      .quiz-level-progress {
+        display: flex;
+        align-items: center;
         gap: 0.6rem;
+        margin-bottom: 0.4rem;
+      }
+      .quiz-progress-bar {
+        flex: 1;
+        height: 8px;
+        background: var(--bg-subtle);
+        border-radius: 4px;
+        overflow: hidden;
+        border: 1px solid var(--border-light);
+      }
+      .quiz-progress-fill {
+        height: 100%;
+        background: var(--kin);
+        border-radius: 4px;
+        transition: width 0.4s ease;
+      }
+      .quiz-progress-fill.fill-cleared {
+        background: #4CAF50;
+      }
+      .quiz-progress-text {
+        font-size: 0.8rem;
+        color: var(--text-tertiary);
+        white-space: nowrap;
+        min-width: 3.5rem;
+        text-align: right;
+      }
+
+      /* ── レベル詳細 ── */
+      .quiz-level-detail {
+        font-size: 0.8rem;
+        color: var(--text-tertiary);
+        margin-bottom: 0.5rem;
+      }
+      .quiz-level-actions {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+      .quiz-level-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+      }
+      .quiz-level-locked-msg {
+        font-size: 0.8rem;
+        color: var(--text-tertiary);
+        padding: 0.3rem 0;
+      }
+
+      /* ── メニューフッター ── */
+      .quiz-menu-footer {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: center;
       }
       .quiz-btn {
         width: 100%;
         justify-content: center;
-        padding: 0.8rem;
-        font-size: 1rem;
+        padding: 0.7rem;
+        font-size: 0.9rem;
       }
 
       /* ── 問題 ── */
       .quiz-q-header {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
         margin-bottom: 0.8rem;
+        flex-wrap: wrap;
       }
+      .quiz-q-level-tag {
+        font-size: 0.8rem;
+        font-weight: 700;
+        padding: 2px 8px;
+        border-radius: 6px;
+      }
+      .level-beginner { background: rgba(76,175,80,0.12); color: #388E3C; }
+      .level-intermediate { background: rgba(255,183,77,0.2); color: #e6860e; }
+      .level-advanced { background: rgba(229,57,53,0.12); color: #C62828; }
       .quiz-q-mode {
         font-size: 0.8rem;
         color: var(--kin);
@@ -486,6 +763,39 @@ export function quizPageHTML() {
         justify-content: center;
         margin-top: 1rem;
         flex-wrap: wrap;
+      }
+
+      /* ── 完了画面 ── */
+      .quiz-complete { text-align: center; }
+      .quiz-complete-msg {
+        color: var(--kin);
+        margin: 0.5rem 0;
+        font-size: 1.1rem;
+      }
+      .quiz-unlock-msg {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #388E3C;
+        background: rgba(76,175,80,0.1);
+        border-radius: 10px;
+        padding: 0.8rem 1rem;
+        margin: 0.8rem 0;
+      }
+      .quiz-retry-msg {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        background: var(--bg-subtle);
+        border-radius: 10px;
+        padding: 0.8rem 1rem;
+        margin: 0.8rem 0;
+        line-height: 1.7;
+      }
+      .quiz-complete-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: center;
+        margin-top: 1rem;
       }
     </style>`,
   });

@@ -85,17 +85,71 @@ export function dojoPageHTML({ googleClientId = "" } = {}) {
     (function(){
       try {
         /* クイズ進捗 */
-        var qs = JSON.parse(localStorage.getItem("kabuki_quiz_state") || "{}");
-        if (qs.correct_total) {
-          var titles = [
-            [90,"歌舞伎博士"],[70,"歌舞伎通"],[50,"見巧者"],
-            [30,"若旦那"],[10,"歌舞伎好き"],[0,"見習い"]
-          ];
-          var t = "見習い";
-          for (var ti = 0; ti < titles.length; ti++) {
-            if (qs.correct_total >= titles[ti][0]) { t = titles[ti][1]; break; }
+        var qs = JSON.parse(localStorage.getItem("keranosuke_quiz_state") || "{}");
+        var quizCorrectTotal = 0;
+        var LEVEL_LABELS = { beginner: "初級", intermediate: "中級", advanced: "上級" };
+        if (qs.version === 2 && qs.levels) {
+          // V2: レベル別進捗
+          var parts = [];
+          var levels = ["beginner", "intermediate", "advanced"];
+          for (var li = 0; li < levels.length; li++) {
+            var lvl = levels[li];
+            var ld = qs.levels[lvl] || { answered: {}, wrong_ids: [] };
+            var ans = ld.answered || {};
+            var keys = Object.keys(ans);
+            var cnt = keys.length;
+            var cor = 0;
+            for (var ki = 0; ki < keys.length; ki++) { if (ans[keys[ki]] === true) cor++; }
+            quizCorrectTotal += cor;
+            var rate = cnt > 0 ? Math.round((cor / cnt) * 100) : 0;
+            var cleared = cnt > 0 && rate >= 70;
+            // 前レベルクリア判定
+            var prevCleared = true;
+            if (lvl === "intermediate") {
+              var bAns = qs.levels.beginner ? qs.levels.beginner.answered || {} : {};
+              var bKeys = Object.keys(bAns);
+              var bCor = 0; for (var bi = 0; bi < bKeys.length; bi++) { if (bAns[bKeys[bi]] === true) bCor++; }
+              prevCleared = bKeys.length > 0 && (bCor / bKeys.length) >= 0.7;
+            } else if (lvl === "advanced") {
+              var mAns = qs.levels.intermediate ? qs.levels.intermediate.answered || {} : {};
+              var mKeys = Object.keys(mAns);
+              var mCor = 0; for (var mi = 0; mi < mKeys.length; mi++) { if (mAns[mKeys[mi]] === true) mCor++; }
+              prevCleared = mKeys.length > 0 && (mCor / mKeys.length) >= 0.7;
+            }
+            if (lvl === "beginner" || prevCleared) {
+              var icon = cleared ? "✅" : "🔓";
+              parts.push(LEVEL_LABELS[lvl] + ' ' + icon + ' ' + cor + '/' + cnt + (cnt > 0 ? ' (' + rate + '%)' : ''));
+            } else {
+              parts.push(LEVEL_LABELS[lvl] + ' 🔒');
+            }
           }
-          document.getElementById("quiz-stats").innerHTML = '正答 ' + qs.correct_total + '/' + (qs.answered_total || 0) + ' ── ' + t;
+          // 称号計算
+          var advD = qs.levels.advanced || { answered: {} };
+          var advKeys = Object.keys(advD.answered || {});
+          var advCor = 0; for (var ai = 0; ai < advKeys.length; ai++) { if ((advD.answered || {})[advKeys[ai]] === true) advCor++; }
+          var advRate = advKeys.length > 0 ? advCor / advKeys.length : 0;
+          var midD = qs.levels.intermediate || { answered: {} };
+          var midKeys = Object.keys(midD.answered || {});
+          var midCor = 0; for (var mii = 0; mii < midKeys.length; mii++) { if ((midD.answered || {})[midKeys[mii]] === true) midCor++; }
+          var begD = qs.levels.beginner || { answered: {} };
+          var begKeys = Object.keys(begD.answered || {});
+          var begCor = 0; for (var bii = 0; bii < begKeys.length; bii++) { if ((begD.answered || {})[begKeys[bii]] === true) begCor++; }
+          var advCleared = advKeys.length > 0 && advRate >= 0.7;
+          var midCleared = midKeys.length > 0 && (midCor / midKeys.length) >= 0.7;
+          var begCleared = begKeys.length > 0 && (begCor / begKeys.length) >= 0.7;
+          var qTitle = "見習い";
+          if (advCleared && advRate >= 0.9) qTitle = "国宝";
+          else if (advCleared) qTitle = "名人";
+          else if (advKeys.length > 0) qTitle = "千両役者";
+          else if (midCleared) qTitle = "看板役者";
+          else if (midKeys.length > 0) qTitle = "二枚目";
+          else if (begCleared) qTitle = "三枚目";
+          else if (begKeys.length > 0) qTitle = "名題下";
+          document.getElementById("quiz-stats").innerHTML = parts.join(' | ') + '<br>称号: ' + qTitle;
+        } else if (qs.correct_total) {
+          // V1 フォールバック
+          quizCorrectTotal = qs.correct_total;
+          document.getElementById("quiz-stats").innerHTML = '正答 ' + qs.correct_total + '/' + (qs.answered_total || 0);
         }
         /* 学習ログ進捗 */
         var log = JSON.parse(localStorage.getItem("keranosuke_log_v1") || "{}");
@@ -106,7 +160,7 @@ export function dojoPageHTML({ googleClientId = "" } = {}) {
         var rc = (log.recent || []).length;
         document.getElementById("stat-clips").textContent = (ec + pc + tc);
         document.getElementById("stat-recent").textContent = rc;
-        document.getElementById("stat-quiz").textContent = (qs.correct_total || 0);
+        document.getElementById("stat-quiz").textContent = quizCorrectTotal;
 
         /* 稽古進捗 */
         var practice = log.practice || {};
@@ -123,8 +177,8 @@ export function dojoPageHTML({ googleClientId = "" } = {}) {
         if (rc >= 1) badges.push({e:"📖",n:"初めの一歩",d:"最初のコンテンツを閲覧"});
         if ((ec+pc+tc) >= 5) badges.push({e:"⭐",n:"目利き",d:"5件以上クリップ"});
         if ((ec+pc+tc) >= 20) badges.push({e:"🌟",n:"コレクター",d:"20件以上クリップ"});
-        if ((qs.correct_total||0) >= 10) badges.push({e:"🎓",n:"入門者",d:"クイズ10問正解"});
-        if ((qs.correct_total||0) >= 50) badges.push({e:"🏆",n:"見巧者",d:"クイズ50問正解"});
+        if (quizCorrectTotal >= 10) badges.push({e:"🎓",n:"入門者",d:"クイズ10問正解"});
+        if (quizCorrectTotal >= 50) badges.push({e:"🏆",n:"見巧者",d:"クイズ50問正解"});
         if ((practice.kakegoe||{}).sessions >= 1) badges.push({e:"📣",n:"初大向う",d:"大向う道場1回完了"});
         if (serifuDone >= 1) badges.push({e:"🎤",n:"初台詞",d:"台詞稽古1演目完了"});
         if (badges.length > 0) {
