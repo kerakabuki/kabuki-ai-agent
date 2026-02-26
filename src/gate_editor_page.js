@@ -153,6 +153,39 @@ export function gateEditorPageHTML(groupId, mode) {
         <button type="button" class="ge-add-btn" onclick="GateEditor.addHistory()">+ 略歴を追加</button>
       </section>
 
+      <!-- FAQボット設定 -->
+      <section class="ge-section fade-up-d5">
+        <h3 class="ge-section-title">FAQボット設定</h3>
+        <p class="ge-hint">GATEページに表示されるFAQウィジェットのアイコンと名前を設定します。</p>
+        <div class="ge-bot-toggle">
+          <label class="ge-radio-label"><input type="radio" name="ge-bot-mode" value="keranosuke" id="ge-bot-mode-kera" onchange="GateEditor.switchBotMode('keranosuke')" checked> けらのすけ（デフォルト）</label>
+          <label class="ge-radio-label"><input type="radio" name="ge-bot-mode" value="custom" id="ge-bot-mode-custom" onchange="GateEditor.switchBotMode('custom')"> オリジナルボット</label>
+        </div>
+        <div id="ge-bot-custom-panel" class="ge-bot-custom-panel" style="display:none;">
+          <div class="ge-field">
+            <label>ボット名</label>
+            <input type="text" id="ge-bot-name" placeholder="例: かぶきちゃん" maxlength="20">
+          </div>
+          <div class="ge-field">
+            <label>アイコン画像</label>
+            <div class="ge-upload-row">
+              <input type="file" id="ge-bot-icon-file" accept="image/jpeg,image/png,image/webp,image/gif" class="ge-file-input" onchange="GateEditor.uploadImage('bot_icon', this, 'ge-bot-icon', 'ge-bot-icon-preview')">
+              <button type="button" class="ge-upload-btn" onclick="document.getElementById('ge-bot-icon-file').click()">📷 ファイルを選択</button>
+              <span class="ge-upload-status" id="ge-bot-icon-upload-status"></span>
+            </div>
+            <input type="hidden" id="ge-bot-icon">
+            <div class="ge-img-preview" id="ge-bot-icon-preview"></div>
+          </div>
+          <div class="ge-bot-preview" id="ge-bot-fab-preview">
+            <p class="ge-hint" style="margin:0 0 6px;">プレビュー:</p>
+            <div class="ge-bot-preview-fab">
+              <img id="ge-bot-preview-img" src="https://kabukiplus.com/assets/keranosukelogo.png" class="ge-bot-preview-avatar" alt="">
+              <span id="ge-bot-preview-label" class="ge-bot-preview-label">けらのすけに聞く</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- デフォルトFAQ -->
       <section class="ge-section fade-up-d5">
         <h3 class="ge-section-title">よくある質問 (FAQ)</h3>
@@ -287,6 +320,16 @@ export function gateEditorPageHTML(groupId, mode) {
         histList.innerHTML = '';
         (d.history || []).forEach(function(h) { appendHistoryRow(h.year, h.text); });
 
+        // FAQボット設定
+        if (d.bot_mode === 'custom') {
+          document.getElementById('ge-bot-mode-custom').checked = true;
+          switchBotMode('custom');
+        }
+        setValue('ge-bot-name', d.bot_name);
+        setValue('ge-bot-icon', d.bot_icon);
+        if (d.bot_icon) previewUrl('ge-bot-icon', 'ge-bot-icon-preview');
+        updateBotPreview();
+
         buildDefaultFaqUI(d);
 
         // 芝居小屋・会場情報
@@ -327,6 +370,22 @@ export function gateEditorPageHTML(groupId, mode) {
           + '</div>'
           + '<button type="button" class="ge-remove-btn" onclick="this.parentElement.remove()" title="削除">&times;</button>';
         list.appendChild(row);
+      }
+
+      // FAQボット設定
+      function switchBotMode(mode) {
+        var panel = document.getElementById('ge-bot-custom-panel');
+        if (panel) panel.style.display = mode === 'custom' ? '' : 'none';
+      }
+      function updateBotPreview() {
+        var isCustom = document.getElementById('ge-bot-mode-custom').checked;
+        var name = getValue('ge-bot-name') || 'けらのすけ';
+        var icon = getValue('ge-bot-icon') || 'https://kabukiplus.com/assets/keranosukelogo.png';
+        if (!isCustom) { name = 'けらのすけ'; icon = 'https://kabukiplus.com/assets/keranosukelogo.png'; }
+        var img = document.getElementById('ge-bot-preview-img');
+        var label = document.getElementById('ge-bot-preview-label');
+        if (img) img.src = icon;
+        if (label) label.textContent = name + 'に聞く';
       }
 
       function replTpl(s, name) {
@@ -476,6 +535,10 @@ export function gateEditorPageHTML(groupId, mode) {
 
         var themeVal = getValue('ge-theme-id');
 
+        var botMode = document.getElementById('ge-bot-mode-custom').checked ? 'custom' : 'keranosuke';
+        var botName = botMode === 'custom' ? getValue('ge-bot-name') : undefined;
+        var botIconVal = botMode === 'custom' ? (getValue('ge-bot-icon') || undefined) : undefined;
+
         return {
           name: getValue('ge-name'),
           name_kana: getValue('ge-name_kana'),
@@ -492,6 +555,9 @@ export function gateEditorPageHTML(groupId, mode) {
           theater_id: theater_id || undefined,
           venue: venue || undefined,
           theater: undefined,
+          bot_mode: botMode !== 'keranosuke' ? botMode : undefined,
+          bot_name: botName || undefined,
+          bot_icon: botIconVal || undefined,
         };
       }
 
@@ -542,6 +608,7 @@ export function gateEditorPageHTML(groupId, mode) {
         if (!file) return;
         var statusId = type === 'hero' ? 'ge-hero-upload-status'
                      : type === 'theater' ? 'ge-theater-upload-status'
+                     : type === 'bot_icon' ? 'ge-bot-icon-upload-status'
                      : 'ge-next-perf-upload-status';
         var statusEl = document.getElementById(statusId);
         if (statusEl) { statusEl.textContent = 'アップロード中…'; statusEl.className = 'ge-upload-status uploading'; }
@@ -560,6 +627,7 @@ export function gateEditorPageHTML(groupId, mode) {
             var urlInput = document.getElementById(urlInputId);
             if (urlInput) urlInput.value = data.url;
             previewUrl(urlInputId, previewId);
+            if (type === 'bot_icon') updateBotPreview();
             if (statusEl) { statusEl.textContent = 'アップロード完了'; statusEl.className = 'ge-upload-status ok'; setTimeout(function() { statusEl.textContent = ''; statusEl.className = 'ge-upload-status'; }, 3000); }
           } else {
             if (statusEl) { statusEl.textContent = 'エラー: ' + (data.error || '失敗'); statusEl.className = 'ge-upload-status err'; }
@@ -657,6 +725,10 @@ export function gateEditorPageHTML(groupId, mode) {
 
       checkAuth();
 
+      // ボット名入力時にプレビュー更新
+      var botNameInput = document.getElementById('ge-bot-name');
+      if (botNameInput) botNameInput.addEventListener('input', updateBotPreview);
+
       window.GateEditor = {
         save: save,
         addCustomFaq: function() { appendCustomFaqRow('', '', ''); },
@@ -664,6 +736,7 @@ export function gateEditorPageHTML(groupId, mode) {
         uploadImage: uploadImage,
         previewUrl: previewUrl,
         switchVenueMode: switchVenueMode,
+        switchBotMode: switchBotMode,
         onTheaterSelect: onTheaterSelect,
         selectTheme: selectTheme,
       };
@@ -1026,6 +1099,30 @@ export function gateEditorPageHTML(groupId, mode) {
         padding: 2px 8px; border-radius: 8px;
         background: var(--bg-subtle); color: var(--gold-dark);
         border: 1px solid var(--border-light);
+      }
+
+      /* FAQボット設定 */
+      .ge-bot-toggle {
+        display: flex; flex-wrap: wrap; gap: 0.6rem 1.2rem;
+        margin-bottom: 1rem;
+      }
+      .ge-bot-custom-panel { margin-top: 0.5rem; }
+      .ge-bot-preview {
+        margin-top: 12px; padding: 12px;
+        background: var(--bg-subtle); border-radius: var(--radius-sm);
+        border: 1px solid var(--border-light);
+      }
+      .ge-bot-preview-fab {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 8px 16px; border-radius: 28px;
+        background: linear-gradient(135deg, #1a1a2e, #252028);
+        border: 2px solid #c5a255;
+      }
+      .ge-bot-preview-avatar {
+        width: 28px; height: 28px; border-radius: 50%; object-fit: cover; flex-shrink: 0;
+      }
+      .ge-bot-preview-label {
+        font-size: 0.88rem; font-weight: 700; color: #e0b84a;
       }
 
       /* テーマピッカー */

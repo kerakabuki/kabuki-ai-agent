@@ -301,14 +301,16 @@ export function gatePageHTML(group, extraData = {}) {
     a: faqTplReplace(f.a),
     cat: faqTplReplace(f.category || ""),
   }));
+  const botName = (g.bot_mode === "custom" && g.bot_name) ? escHTML(g.bot_name) : "けらのすけ";
+  const botIcon = (g.bot_mode === "custom" && g.bot_icon) ? escHTML(g.bot_icon) : "https://kabukiplus.com/assets/keranosukelogo.png";
   const keraFaqWidgetHTML = answered.length ? `
     <div id="kera-fab-wrap" class="kera-fab-wrap">
       <div id="kera-faq-panel" class="kera-faq-panel" aria-hidden="true">
         <div class="kera-faq-header">
           <div class="kera-faq-header-left">
-            <img src="https://kabukiplus.com/assets/keranosukelogo.png" class="kera-avatar" alt="けらのすけ">
+            <img src="${botIcon}" class="kera-avatar" alt="${botName}">
             <div>
-              <div class="kera-faq-name">けらのすけ</div>
+              <div class="kera-faq-name">${botName}</div>
               <div class="kera-faq-sub">よくある質問にお答えします</div>
             </div>
           </div>
@@ -317,9 +319,8 @@ export function gatePageHTML(group, extraData = {}) {
         <div class="kera-faq-body" id="kera-faq-list"></div>
       </div>
       <button class="kera-fab-btn" id="kera-fab-btn" onclick="KeraFaq.toggle()">
-        <img src="https://kabukiplus.com/assets/keranosukelogo.png" class="kera-fab-avatar" alt="">
-        <span class="kera-fab-label">けらのすけに聞く</span>
-        <span class="kera-fab-arrow" id="kera-fab-arrow">▲</span>
+        <img src="${botIcon}" class="kera-fab-avatar" alt="${botName}">
+        <span class="kera-fab-label">${botName}に聞く</span>
       </button>
     </div>` : "";
 
@@ -353,7 +354,6 @@ export function gatePageHTML(group, extraData = {}) {
     ${faqHTML}
     ${joinHTML}
     ${applyHTML}
-    ${keraFaqWidgetHTML}
 
     <script>
     (function() {
@@ -588,17 +588,17 @@ export function gatePageHTML(group, extraData = {}) {
           toggle: function() {
             keraOpen = !keraOpen;
             var panel = document.getElementById('kera-faq-panel');
-            var arrow = document.getElementById('kera-fab-arrow');
+            var fab = document.getElementById('kera-fab-btn');
             if (!panel) return;
             if (keraOpen) {
               keraInit();
               panel.style.display = 'block';
               panel.setAttribute('aria-hidden', 'false');
-              if (arrow) arrow.textContent = '▼';
+              if (fab) fab.classList.add('kera-fab-open');
             } else {
               panel.style.display = 'none';
               panel.setAttribute('aria-hidden', 'true');
-              if (arrow) arrow.textContent = '▲';
+              if (fab) fab.classList.remove('kera-fab-open');
             }
           }
         };
@@ -705,6 +705,7 @@ export function gatePageHTML(group, extraData = {}) {
     title: name,
     subtitle: "GATE",
     bodyHTML: themeCSSTag + bodyHTML,
+    overlayHTML: keraFaqWidgetHTML,
     activeNav: "gate",
     brand: "jikabuki",
     googleClientId,
@@ -1179,7 +1180,7 @@ const GATE_CSS = `
 
 /* ── けらのすけ FAQウィジェット ── */
 .kera-fab-wrap {
-  position: fixed; bottom: 20px; right: 16px; z-index: 9999;
+  position: fixed; bottom: calc(64px + env(safe-area-inset-bottom, 0px)); right: 16px; z-index: 9999;
   display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
 }
 .kera-faq-panel {
@@ -1259,8 +1260,7 @@ const GATE_CSS = `
 }
 .kera-fab-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(0,0,0,0.35); }
 .kera-fab-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
-.kera-fab-label { font-size: 0.88rem; font-weight: 700; color: #e0b84a; }
-.kera-fab-arrow { font-size: 0.65rem; color: rgba(224,184,74,0.7); }
+.kera-fab-label { font-size: 0.88rem; font-weight: 700; color: #e0b84a; white-space: nowrap; }
 @media (max-width: 400px) {
   .kera-faq-panel { width: calc(100vw - 32px); }
 }
