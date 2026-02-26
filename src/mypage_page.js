@@ -3,7 +3,7 @@
 // KABUKI RECO — /reco (/mypage 後方互換あり)
 // 記録する：観劇ログ + 推し俳優
 // =========================================================
-import { pageShell } from "./web_layout.js";
+import { pageShell, escHTML } from "./web_layout.js";
 
 export function mypagePageHTML(opts) {
   var googleClientId = (opts && opts.googleClientId) || '';
@@ -117,25 +117,20 @@ export function mypagePageHTML(opts) {
       .mp-tab-active { color: var(--kl-gold-dark); border-bottom-color: var(--kl-gold); }
 
       /* ── 下部固定タブ ── */
-      .kl-bottom-tabs {
-        position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
-        display: flex; background: var(--bg-page, #FAF7F2);
-        border-top: 1px solid var(--kl-border);
-        box-shadow: 0 -2px 8px rgba(61,49,39,0.06);
-        padding-bottom: env(safe-area-inset-bottom, 0);
+      .kl-inline-tabs {
+        display: flex; gap: 0; margin-bottom: 16px;
+        border-bottom: 2px solid var(--kl-border);
       }
       .kl-tab-btn {
-        flex: 1; display: flex; flex-direction: column; align-items: center;
-        gap: 2px; padding: 10px 4px 8px; border: none; background: none;
-        color: var(--kl-text3); font-size: 10px; font-family: inherit;
+        flex: 1; display: flex; align-items: center; justify-content: center;
+        gap: 6px; padding: 12px 4px 10px; border: none; background: none;
+        color: var(--kl-text3); font-size: 13px; font-family: inherit;
         cursor: pointer; transition: color 0.15s; letter-spacing: 0.5px;
+        border-bottom: 2px solid transparent; margin-bottom: -2px;
       }
       .kl-tab-btn:hover { color: var(--kl-text2); }
-      .kl-tab-icon { font-size: 20px; line-height: 1; }
-      .kl-tab-active { color: var(--kl-gold-dark) !important; font-weight: 600; }
-      .kl-tab-active .kl-tab-icon { transform: scale(1.1); }
-      /* メインコンテンツの下部にタブ分の余白 */
-      #app { padding-bottom: 70px; }
+      .kl-tab-icon { font-size: 16px; line-height: 1; }
+      .kl-tab-active { color: var(--kl-gold-dark) !important; font-weight: 600; border-bottom-color: var(--kl-gold); }
 
       /* ── ログタブ フィルタ ── */
       .log-filters {
@@ -152,16 +147,6 @@ export function mypagePageHTML(opts) {
       .log-filter-active { color: var(--kl-gold-dark); border-bottom-color: var(--kl-gold); font-weight: 600; }
 
       /* ── 折りたたみエントリ ── */
-      .tl-entry-detail { display: none; }
-      .tl-entry-detail.tl-entry-expanded { display: block; }
-      .tl-entry-toggle {
-        display: inline-flex; align-items: center; gap: 4px;
-        background: none; border: none; color: var(--kl-text3);
-        font-size: 11px; font-family: inherit; cursor: pointer;
-        padding: 4px 8px; border-radius: 6px; transition: all 0.15s;
-        margin-top: 6px;
-      }
-      .tl-entry-toggle:hover { color: var(--kl-gold-dark); background: var(--kl-gold-soft); }
       .tl-entry-more-menu {
         position: relative; display: inline-block;
       }
@@ -350,11 +335,130 @@ export function mypagePageHTML(opts) {
         background: var(--kl-green-soft); color: var(--kl-green); font-weight: 500;
       }
       .tl-entry-actions { position: absolute; top: 16px; right: 16px; }
+      .tl-entry-footer {
+        display: flex; align-items: center; justify-content: flex-end;
+        gap: 8px; margin-top: 8px; padding-top: 8px;
+        border-top: 1px solid var(--kl-border);
+      }
+      .tl-entry-edit-btn {
+        font-size: 12px; color: var(--kl-text3); background: none; border: 1px solid var(--kl-border);
+        padding: 4px 14px; border-radius: 6px; cursor: pointer; font-family: inherit;
+        transition: all 0.15s;
+      }
+      .tl-entry-edit-btn:hover { border-color: var(--kl-gold); color: var(--kl-gold-dark); }
       .tl-entry-del {
         background: none; border: none; color: #ccc; font-size: 0.82rem;
         cursor: pointer; padding: 2px 6px; border-radius: 6px; font-family: inherit; transition: all 0.15s;
       }
       .tl-entry-del:hover { color: var(--kl-red); background: rgba(212,97,75,0.06); }
+
+      /* ── シェアボタン ── */
+      .tl-share-btn {
+        display: inline-flex; align-items: center; gap: 4px;
+        font-size: 12px; padding: 4px 12px; border-radius: 6px;
+        border: 1px solid var(--kl-border); background: none;
+        color: var(--kl-text3); cursor: pointer; font-family: inherit;
+        transition: all 0.15s;
+      }
+      .tl-share-btn:hover { border-color: var(--kl-gold); color: var(--kl-gold-dark); }
+
+      /* ── シェアダイアログ ── */
+      .tl-share-overlay {
+        position: fixed; inset: 0; z-index: 9999;
+        background: rgba(0,0,0,0.45);
+        display: flex; align-items: center; justify-content: center;
+        padding: 16px;
+      }
+      .tl-share-dialog {
+        background: var(--kl-card); border-radius: 16px; padding: 28px 24px;
+        max-width: 340px; width: 100%; text-align: center;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+        display: flex; flex-direction: column; gap: 14px;
+      }
+      .tl-share-title {
+        font-size: 16px; font-weight: 700; color: var(--kl-text);
+        letter-spacing: 0.05em;
+      }
+      .tl-share-preview {
+        font-size: 12px; color: var(--kl-text2); line-height: 1.7;
+        text-align: left; background: var(--kl-subtle); border-radius: 8px;
+        padding: 12px; white-space: pre-wrap; word-break: break-all;
+        max-height: 120px; overflow-y: auto;
+      }
+      .tl-share-grid {
+        display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+      }
+      .tl-share-icon-btn {
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        gap: 6px; padding: 14px 4px; border-radius: 12px;
+        text-decoration: none; border: none; cursor: pointer;
+        font-family: inherit; font-size: 11px; font-weight: 600;
+        transition: opacity 0.15s, transform 0.15s;
+      }
+      .tl-share-icon-btn:hover { opacity: 0.85; transform: scale(1.05); text-decoration: none; }
+      .tl-share-icon-x { background: #000; color: #fff; }
+      .tl-share-icon-x:hover { color: #fff; }
+      .tl-share-icon-fb { background: #1877F2; color: #fff; }
+      .tl-share-icon-fb:hover { color: #fff; }
+      .tl-share-icon-line { background: #06C755; color: #fff; }
+      .tl-share-icon-line:hover { color: #fff; }
+      .tl-share-icon-copy {
+        background: var(--kl-subtle); color: var(--kl-text);
+        border: 1.5px solid var(--kl-border2);
+      }
+      .tl-share-icon-copy:hover { border-color: var(--kl-gold); color: var(--kl-gold-dark); }
+      .tl-share-copy-hint {
+        font-size: 11px; color: var(--kl-text3); text-align: center; margin-top: -4px;
+      }
+      .tl-share-other-btn {
+        padding: 10px 16px; border-radius: 8px;
+        border: 1.5px solid var(--kl-border2); background: var(--kl-card);
+        color: var(--kl-text); font-size: 14px; font-weight: 500;
+        cursor: pointer; font-family: inherit; transition: all 0.15s;
+      }
+      .tl-share-other-btn:hover { border-color: var(--kl-gold); color: var(--kl-gold-dark); }
+      .tl-share-close {
+        margin-top: 2px; padding: 8px 16px; border-radius: 8px;
+        border: 1px solid var(--kl-border); background: none;
+        color: var(--kl-text3); font-size: 14px; cursor: pointer;
+        font-family: inherit; transition: all 0.15s;
+      }
+      .tl-share-close:hover { border-color: var(--kl-text3); color: var(--kl-text); }
+
+      /* ── プロフィール公開設定 ── */
+      .profile-toggle-row {
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 12px; padding: 4px 0;
+      }
+      .profile-toggle-label { font-size: 14px; color: var(--kl-text); }
+      .profile-toggle-sub { font-size: 11px; color: var(--kl-text3); margin-top: 2px; }
+      .profile-toggle-switch {
+        position: relative; width: 48px; height: 26px;
+        background: var(--kl-border2); border-radius: 13px;
+        cursor: pointer; transition: background 0.2s; flex-shrink: 0;
+        border: none;
+      }
+      .profile-toggle-switch::after {
+        content: ''; position: absolute; top: 3px; left: 3px;
+        width: 20px; height: 20px; border-radius: 50%;
+        background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        transition: transform 0.2s;
+      }
+      .profile-toggle-switch.active { background: var(--kl-gold); }
+      .profile-toggle-switch.active::after { transform: translateX(22px); }
+      .profile-url-box {
+        display: flex; align-items: center; gap: 8px;
+        padding: 8px 12px; margin-top: 10px;
+        background: var(--kl-subtle); border-radius: 8px;
+        font-size: 12px; color: var(--kl-text2); word-break: break-all;
+      }
+      .profile-url-copy {
+        flex-shrink: 0; padding: 4px 10px; border-radius: 6px;
+        font-size: 11px; border: 1px solid var(--kl-border);
+        background: var(--kl-card); color: var(--kl-text3);
+        cursor: pointer; font-family: inherit; transition: all 0.15s;
+      }
+      .profile-url-copy:hover { border-color: var(--kl-gold); color: var(--kl-gold-dark); }
 
       /* ── 学習ログ称号 ── */
       .badge-row {
@@ -1084,8 +1188,9 @@ export function mypagePageHTML(opts) {
       }
       .tl-entry-image { margin-top: 10px; }
       .tl-entry-image img {
-        max-width: 100%; border-radius: 8px; cursor: pointer;
-        border: 1px solid var(--kl-border);
+        max-width: 160px; max-height: 160px; width: auto; height: auto;
+        border-radius: 8px; cursor: pointer;
+        border: 1px solid var(--kl-border); display: block;
       }
       /* ── 画像拡大モーダル ── */
       .tl-image-lightbox {
@@ -1280,6 +1385,10 @@ export function mypagePageHTML(opts) {
           quiz_state: loadQuizState(),
           updated_at: new Date().toISOString()
         };
+        /* profile フィールドがあれば保持 */
+        if (authState.serverData && authState.serverData.profile) {
+          payload.profile = authState.serverData.profile;
+        }
         fetch('/api/userdata', {
           method: 'PUT',
           credentials: 'same-origin',
@@ -1329,6 +1438,19 @@ export function mypagePageHTML(opts) {
         { id: "BOX", label: "桟敷" },
         { id: "NA",  label: "未指定" }
       ];
+
+      /* 登録済み芝居小屋 */
+      var theatersCache = null;
+      function loadTheaters(cb) {
+        if (theatersCache) { cb(theatersCache); return; }
+        fetch('/api/theaters')
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            theatersCache = (data && data.theaters) ? data.theaters : [];
+            cb(theatersCache);
+          })
+          .catch(function() { theatersCache = []; cb([]); });
+      }
 
       /* =====================================================
          観劇ログ CRUD (localStorage)
@@ -1759,6 +1881,126 @@ export function mypagePageHTML(opts) {
         d.textContent = s;
         return d.innerHTML;
       }
+      /* ── シェアテキスト生成 ── */
+      function buildEntryShareText(entry) {
+        var isMedia = (entry.viewing_type || "theater") !== "theater";
+        var parts = [];
+        if (isMedia) {
+          var title = entry.media_title || mediaLabel(entry.viewing_type) + "で視聴";
+          parts.push(title);
+          if (entry.date) {
+            var d = new Date(entry.date + "T00:00:00");
+            parts[0] += "（" + d.getFullYear() + "." + (d.getMonth()+1) + "." + d.getDate() + "）";
+          }
+        } else {
+          var venue = entry.venue_name || venueName(entry.venue_id) || "";
+          if (venue) {
+            parts.push(venue + "で観劇");
+            if (entry.date) {
+              var d2 = new Date(entry.date + "T00:00:00");
+              parts[0] = venue + "で観劇（" + d2.getFullYear() + "." + (d2.getMonth()+1) + "." + d2.getDate() + "）";
+            }
+          }
+        }
+        if (entry.play_titles && entry.play_titles.length > 0) {
+          parts.push("🎭 " + entry.play_titles.join(" / "));
+        }
+        parts.push("#歌舞伎 #KABUKI_RECO");
+        parts.push("https://kabukiplus.com/kabuki/reco");
+        return parts.join("\\n");
+      }
+
+      function showShareDialog(entry) {
+        var text = entry._profileShare ? entry._shareText : buildEntryShareText(entry);
+        var encoded = encodeURIComponent(text);
+        var recoUrl = "https://kabukiplus.com/kabuki/reco";
+        var xUrl = "https://twitter.com/intent/tweet?text=" + encoded;
+        var fbUrl = "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(recoUrl) + "&quote=" + encoded;
+        var lineAppUrl = "line://msg/text/" + encoded;
+        var lineWebUrl = "https://line.me/R/share?text=" + encoded;
+
+        var overlay = document.createElement("div");
+        overlay.className = "tl-share-overlay";
+        overlay.addEventListener("click", function(e) {
+          if (e.target === overlay || e.target.classList.contains("tl-share-close")) overlay.remove();
+        });
+
+        var html = '<div class="tl-share-dialog">'
+          + '<div class="tl-share-title">観劇記録をシェア</div>'
+          + '<div class="tl-share-preview">' + esc(text) + '</div>'
+          + '<div class="tl-share-grid">'
+          + '<a href="' + esc(xUrl) + '" target="_blank" rel="noopener" class="tl-share-icon-btn tl-share-icon-x">'
+          + '<svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>'
+          + '<span>X</span></a>'
+          + '<a href="' + esc(fbUrl) + '" target="_blank" rel="noopener" class="tl-share-icon-btn tl-share-icon-fb">'
+          + '<svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>'
+          + '<span>Facebook</span></a>'
+          + '<button id="tl-share-line-btn" class="tl-share-icon-btn tl-share-icon-line">'
+          + '<svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M12 2C6.48 2 2 5.82 2 10.5c0 4.21 3.74 7.74 8.78 8.4.34.07.8.23.92.52.1.27.07.68.03.95l-.15.91c-.05.27-.21 1.07.94.58s6.27-3.69 8.56-6.32C22.89 13.47 22 11.5 22 10.5 22 5.82 17.52 2 12 2z"/></svg>'
+          + '<span>LINE</span></button>'
+          + '<button id="tl-share-copy-btn" class="tl-share-icon-btn tl-share-icon-copy">'
+          + '<span style="font-size:20px;">📋</span>'
+          + '<span>コピー</span></button>'
+          + '</div>'
+          + '<div class="tl-share-copy-hint">Instagram・TikTokへはコピーして貼り付けてください</div>';
+
+        /* モバイルでWeb Share APIがあれば「その他」ボタンも追加 */
+        if (navigator.share) {
+          html += '<button id="tl-share-other-btn" class="tl-share-other-btn">📱 その他のアプリで共有…</button>';
+        }
+        html += '<button class="tl-share-close">閉じる</button></div>';
+
+        overlay.innerHTML = html;
+        document.body.appendChild(overlay);
+
+        document.getElementById("tl-share-copy-btn").addEventListener("click", function() {
+          copyShareText(text);
+        });
+        document.getElementById("tl-share-line-btn").addEventListener("click", function() {
+          /* LINEアプリを直接開く → 失敗時はWeb版にフォールバック */
+          var opened = false;
+          var timer = setTimeout(function() {
+            if (!opened) window.open(lineWebUrl, "_blank");
+          }, 1500);
+          window.location.href = lineAppUrl;
+          window.addEventListener("blur", function onBlur() {
+            opened = true;
+            clearTimeout(timer);
+            window.removeEventListener("blur", onBlur);
+          }, { once: true });
+        });
+        var otherBtn = document.getElementById("tl-share-other-btn");
+        if (otherBtn) {
+          otherBtn.addEventListener("click", function() {
+            navigator.share({ text: text }).catch(function() {});
+          });
+        }
+      }
+
+      function copyShareText(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function() {
+            var btn = document.getElementById("tl-share-copy-btn");
+            if (btn) { btn.textContent = "✓ コピーしました"; btn.disabled = true; }
+          }).catch(function() { fallbackCopyText(text); });
+        } else {
+          fallbackCopyText(text);
+        }
+      }
+      function fallbackCopyText(text) {
+        var ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.cssText = "position:fixed;opacity:0";
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand("copy");
+          var btn = document.getElementById("tl-share-copy-btn");
+          if (btn) { btn.textContent = "✓ コピーしました"; btn.disabled = true; }
+        } catch(e) { alert("コピーできませんでした。"); }
+        document.body.removeChild(ta);
+      }
+
       function relTime(ts) {
         if (!ts) return "";
         var d = Math.floor(Date.now() / 1000) - ts;
@@ -1854,6 +2096,7 @@ export function mypagePageHTML(opts) {
           seat_type: null,
           performance_title: null,
           play_titles: [],
+          actors_text: "",       /* 出演者テキスト（手入力） */
           memo: "",
           image_url: "",
           /* メディア視聴用 */
@@ -1876,22 +2119,19 @@ export function mypagePageHTML(opts) {
       var migrationDone = false;
 
       function render() {
-        if (subView === "recent") { renderRecent(); renderBottomTabs(); return; }
-        if (subView === "clips") { renderClips(); renderBottomTabs(); return; }
-        if (subView === "review") { renderReview(); renderBottomTabs(); return; }
+        if (subView === "recent") { renderRecent(); return; }
+        if (subView === "clips") { renderClips(); return; }
+        if (subView === "review") { renderReview(); return; }
         if (currentView === "home") renderHome();
         else if (currentView === "log") renderLogTab();
         else if (currentView === "oshi") renderOshiTab();
         else renderHome();
-        renderBottomTabs();
         /* Google ボタンの再描画 */
         setTimeout(function() { if (window.__initGoogleSignIn) window.__initGoogleSignIn(); }, 100);
       }
 
-      function renderBottomTabs() {
-        var existingTabs = document.getElementById("kl-bottom-tabs");
-        if (existingTabs) existingTabs.remove();
-        var t = '<div class="kl-bottom-tabs" id="kl-bottom-tabs">';
+      function renderInlineTabs() {
+        var t = '<div class="kl-inline-tabs">';
         t += '<button class="kl-tab-btn' + (currentView === "home" && !subView ? " kl-tab-active" : "") + '" onclick="MP.switchTab(\\'home\\')">';
         t += '<span class="kl-tab-icon">🏠</span>ホーム</button>';
         t += '<button class="kl-tab-btn' + (currentView === "log" && !subView ? " kl-tab-active" : "") + '" onclick="MP.switchTab(\\'log\\')">';
@@ -1899,7 +2139,7 @@ export function mypagePageHTML(opts) {
         t += '<button class="kl-tab-btn' + (currentView === "oshi" && !subView ? " kl-tab-active" : "") + '" onclick="MP.switchTab(\\'oshi\\')">';
         t += '<span class="kl-tab-icon">⭐</span>推し</button>';
         t += '</div>';
-        document.body.insertAdjacentHTML('beforeend', t);
+        return t;
       }
 
       /* =====================================================
@@ -1933,7 +2173,7 @@ export function mypagePageHTML(opts) {
           else mediaEntries.push(tlog.entries[ei]);
         }
 
-        var h = '';
+        var h = renderInlineTabs();
 
         /* ── 紹介テキスト ── */
         h += '<div class="kl-intro">';
@@ -2025,7 +2265,14 @@ export function mypagePageHTML(opts) {
             if (e.play_titles && e.play_titles.length > 0) {
               h += '<div class="tl-entry-plays" style="font-size:12px;">🎭 ' + e.play_titles.map(function(t){ return esc(t); }).join(' / ') + '</div>';
             }
-            h += '</div></div></div>';
+            h += '</div></div>';
+            if (e.image_url) {
+              h += '<div class="tl-entry-image" style="margin-top:8px;"><img src="' + esc(e.image_url) + '" alt="写真" loading="lazy" onclick="MP.openLightbox(\\'' + esc(e.image_url) + '\\')"></div>';
+            }
+            h += '<div style="display:flex;justify-content:flex-end;margin-top:6px;">';
+            h += '<button class="tl-share-btn" style="font-size:11px;padding:3px 10px;" onclick="MP.shareEntry(\\'' + e.id + '\\')">📤</button>';
+            h += '</div>';
+            h += '</div>';
           }
           if (tlog.entries.length > 3) {
             h += '<div class="mp-actions"><button class="mp-btn" onclick="MP.switchTab(\\'log\\')">ログタブで全件を見る →</button></div>';
@@ -2080,6 +2327,34 @@ export function mypagePageHTML(opts) {
         h += '<span style="color:var(--kl-text3);font-size:18px;">→</span>';
         h += '</a>';
 
+        /* ── 公開プロフィール設定 ── */
+        if (authState.loggedIn && authState.user) {
+          var profileData = (authState.serverData && authState.serverData.profile) || { is_public: false, display_name: "" };
+          var isPublic = !!profileData.is_public;
+          var displayName = profileData.display_name || authState.user.displayName || "";
+          h += '<div class="kl-section-card">';
+          h += '<div class="kl-section-header">🌐 公開プロフィール</div>';
+          h += '<div class="profile-toggle-row">';
+          h += '<div>';
+          h += '<div class="profile-toggle-label">観劇帖を公開する</div>';
+          h += '<div class="profile-toggle-sub">ONにすると観劇記録が公開されます（メモは非公開）</div>';
+          h += '</div>';
+          h += '<button class="profile-toggle-switch' + (isPublic ? " active" : "") + '" onclick="MP.toggleProfilePublic()"></button>';
+          h += '</div>';
+          if (isPublic) {
+            var profileUrl = "https://kabukiplus.com/reco/" + encodeURIComponent(authState.user.userId);
+            h += '<div class="profile-url-box">';
+            h += '<span style="flex:1;">' + esc(profileUrl) + '</span>';
+            h += '<button class="profile-url-copy" onclick="MP.copyProfileUrl()">コピー</button>';
+            h += '</div>';
+            h += '<div style="display:flex;gap:8px;margin-top:8px;">';
+            h += '<button class="mp-btn" onclick="MP.shareProfile()" style="flex:1;">📤 シェア</button>';
+            h += '<a href="/reco/' + encodeURIComponent(authState.user.userId) + '" target="_blank" class="mp-btn" style="flex:1;text-align:center;">👀 プレビュー</a>';
+            h += '</div>';
+          }
+          h += '</div>';
+        }
+
         /* ── データ管理 ── */
         h += '<div class="kl-section-card">';
         h += '<div class="kl-section-header">💾 データ管理</div>';
@@ -2127,7 +2402,7 @@ export function mypagePageHTML(opts) {
         else if (logFilter === "media") displayEntries = mediaEntries;
         else displayEntries = tlog.entries;
 
-        var h = '';
+        var h = renderInlineTabs();
 
         /* ── フォーム ── */
         if (formOpen) {
@@ -2195,109 +2470,86 @@ export function mypagePageHTML(opts) {
 
           if (e.play_titles && e.play_titles.length > 0) {
             var psMap = e.play_scenes || {};
-            var playLinks = e.play_titles.map(function(pt) {
+            var playParts = e.play_titles.map(function(pt) {
               var eid = findEnmokuId(pt);
-              return eid ? '<a href="/kabuki/navi/enmoku/' + esc(eid) + '" class="tl-entry-play-link">' + esc(pt) + '</a>' : esc(pt);
+              var link = eid ? '<a href="/kabuki/navi/enmoku/' + esc(eid) + '" class="tl-entry-play-link">' + esc(pt) + '</a>' : esc(pt);
+              var scene = psMap[pt];
+              if (scene) link += ' <span class="tl-play-scene">' + esc(scene) + '</span>';
+              return link;
             });
-            h += '<div class="tl-entry-plays">🎭 ' + playLinks.join(' / ');
+            h += '<div class="tl-entry-plays">🎭 ' + playParts.join(' / ');
             if (hasOshi) h += ' <span class="tl-oshi-badge">★推し出演</span>';
             h += '</div>';
           } else if (hasOshi) {
             h += '<div style="margin-top:2px;"><span class="tl-oshi-badge">★推し出演</span></div>';
           }
 
-          if (isMedia && e.actors_text) {
+          if (e.actors_text) {
             h += '<div class="tl-entry-actors-text">👤 ' + esc(e.actors_text) + '</div>';
           }
 
           h += '</div>'; /* tl-entry-body */
           h += '</div>'; /* tl-entry-header */
 
-          /* ── 折りたたみ詳細 ── */
-          var hasDetail = false;
-          if (!isMedia && e.actors && e.actors.length > 0) hasDetail = true;
-          if (e.memo) hasDetail = true;
-          if (!isMedia && e.play_scenes) {
-            var sceneKeys = Object.keys(e.play_scenes);
-            if (sceneKeys.length > 0) hasDetail = true;
+          /* ── 配役 ── */
+          if (!isMedia && e.actors && e.actors.length > 0) {
+            var playGroups = {};
+            var playOrder = [];
+            for (var ai = 0; ai < e.actors.length; ai++) {
+              var a = e.actors[ai];
+              var key = a.play || "";
+              if (!playGroups[key]) { playGroups[key] = []; playOrder.push(key); }
+              playGroups[key].push(a);
+            }
+            h += '<div class="tl-entry-actors">';
+            for (var gi = 0; gi < playOrder.length; gi++) {
+              var gKey = playOrder[gi];
+              var gActors = playGroups[gKey];
+              var gEnmokuId = findEnmokuId(gKey);
+              if (playOrder.length > 1 && gKey) {
+                if (gEnmokuId) {
+                  h += '<div class="tl-entry-cast-play"><a href="/kabuki/navi/enmoku/' + esc(gEnmokuId) + '" class="tl-cast-play-link">' + esc(gKey) + '</a></div>';
+                } else {
+                  h += '<div class="tl-entry-cast-play">' + esc(gKey) + '</div>';
+                }
+              }
+              var pairs = [];
+              for (var pi = 0; pi < gActors.length; pi++) {
+                var role = gActors[pi].role;
+                var charId = gEnmokuId && role ? findCharLink(gEnmokuId, role) : null;
+                var pair;
+                if (role && charId) {
+                  pair = '<span class="tl-cast-role">' + esc(role) + '</span> <a href="/kabuki/navi/enmoku/' + esc(gEnmokuId) + '#cast-' + esc(charId) + '" class="tl-cast-linked">' + esc(gActors[pi].actor) + '</a>';
+                } else if (role) {
+                  pair = '<span class="tl-cast-role">' + esc(role) + '</span> ' + esc(gActors[pi].actor);
+                } else {
+                  pair = esc(gActors[pi].actor);
+                }
+                pairs.push(pair);
+              }
+              h += '<div class="tl-entry-cast-pairs">' + pairs.join('<span class="tl-cast-sep">／</span>') + '</div>';
+            }
+            h += '</div>';
           }
 
-          if (hasDetail) {
-            h += '<div class="tl-entry-detail" id="detail-' + e.id + '">';
-
-            /* 配役 */
-            if (!isMedia && e.actors && e.actors.length > 0) {
-              var playGroups = {};
-              var playOrder = [];
-              for (var ai = 0; ai < e.actors.length; ai++) {
-                var a = e.actors[ai];
-                var key = a.play || "";
-                if (!playGroups[key]) { playGroups[key] = []; playOrder.push(key); }
-                playGroups[key].push(a);
-              }
-              h += '<div class="tl-entry-actors">';
-              for (var gi = 0; gi < playOrder.length; gi++) {
-                var gKey = playOrder[gi];
-                var gActors = playGroups[gKey];
-                var gEnmokuId = findEnmokuId(gKey);
-                if (playOrder.length > 1 && gKey) {
-                  if (gEnmokuId) {
-                    h += '<div class="tl-entry-cast-play"><a href="/kabuki/navi/enmoku/' + esc(gEnmokuId) + '" class="tl-cast-play-link">' + esc(gKey) + '</a></div>';
-                  } else {
-                    h += '<div class="tl-entry-cast-play">' + esc(gKey) + '</div>';
-                  }
-                }
-                var pairs = [];
-                for (var pi = 0; pi < gActors.length; pi++) {
-                  var role = gActors[pi].role;
-                  var charId = gEnmokuId && role ? findCharLink(gEnmokuId, role) : null;
-                  var pair;
-                  if (role && charId) {
-                    pair = '<span class="tl-cast-role">' + esc(role) + '</span> <a href="/kabuki/navi/enmoku/' + esc(gEnmokuId) + '#cast-' + esc(charId) + '" class="tl-cast-linked">' + esc(gActors[pi].actor) + '</a>';
-                  } else if (role) {
-                    pair = '<span class="tl-cast-role">' + esc(role) + '</span> ' + esc(gActors[pi].actor);
-                  } else {
-                    pair = esc(gActors[pi].actor);
-                  }
-                  pairs.push(pair);
-                }
-                h += '<div class="tl-entry-cast-pairs">' + pairs.join('<span class="tl-cast-sep">／</span>') + '</div>';
-              }
-              h += '</div>';
-            }
-
-            /* 場名 */
-            if (!isMedia && e.play_titles && e.play_scenes) {
-              var sceneTags = [];
-              for (var si = 0; si < e.play_titles.length; si++) {
-                var pt = e.play_titles[si];
-                if (e.play_scenes[pt]) sceneTags.push('🌿 ' + e.play_scenes[pt]);
-              }
-              if (sceneTags.length > 0) {
-                h += '<div class="tl-entry-bottom">';
-                for (var st = 0; st < sceneTags.length; st++) {
-                  h += '<span class="tl-entry-bottom-tag">' + esc(sceneTags[st]) + '</span>';
-                }
-                h += '</div>';
-              }
-            }
-
-            if (e.memo) {
-              h += '<div class="tl-entry-memo">💬 ' + esc(e.memo) + '</div>';
-            }
-            if (e.image_url) {
-              h += '<div class="tl-entry-image"><img src="' + esc(e.image_url) + '" alt="写真" loading="lazy" onclick="MP.openLightbox(\\'' + esc(e.image_url) + '\\')"></div>';
-            }
-            h += '</div>'; /* tl-entry-detail */
-
-            h += '<button class="tl-entry-toggle" onclick="MP.toggleDetail(\\'' + e.id + '\\',this)">▼ 詳細</button>';
+          /* ── コメント ── */
+          if (e.memo) {
+            h += '<div class="tl-entry-memo">💬 ' + esc(e.memo) + '</div>';
           }
 
-          /* "..."メニュー */
-          h += '<div class="tl-entry-actions">';
+          /* ── 画像 ── */
+          if (e.image_url) {
+            h += '<div class="tl-entry-image"><img src="' + esc(e.image_url) + '" alt="写真" loading="lazy" onclick="MP.openLightbox(\\'' + esc(e.image_url) + '\\')"></div>';
+          }
+
+          /* 編集・メニュー */
+          h += '<div class="tl-entry-footer">';
+          h += '<button class="tl-share-btn" onclick="MP.shareEntry(\\'' + e.id + '\\')">📤 シェア</button>';
+          h += '<button class="tl-entry-edit-btn" onclick="MP.editEntry(\\'' + e.id + '\\')">編集</button>';
           h += '<div class="tl-entry-more-menu">';
           h += '<button class="tl-entry-more-btn" onclick="MP.toggleMenu(\\'' + e.id + '\\')">⋯</button>';
           h += '<div class="tl-entry-dropdown" id="menu-' + e.id + '">';
+          h += '<button onclick="MP.shareEntry(\\'' + e.id + '\\')">📤 シェア</button>';
           h += '<button onclick="MP.editEntry(\\'' + e.id + '\\')">編集</button>';
           h += '<button class="tl-drop-danger" onclick="MP.deleteEntry(\\'' + e.id + '\\')">削除</button>';
           h += '</div>';
@@ -2318,7 +2570,7 @@ export function mypagePageHTML(opts) {
         var favList = loadFavorites();
         var tlog = loadTlog();
 
-        var h = '';
+        var h = renderInlineTabs();
 
         /* ── 登録済み俳優 ── */
         h += '<div class="mp-section">';
@@ -3323,19 +3575,13 @@ export function mypagePageHTML(opts) {
         }
         h += '</div>';
 
-        /* 地歌舞伎 */
-        h += '<div class="tl-chip-group-label">地歌舞伎</div>';
-        h += '<div class="tl-chips">';
-        for (var vi = 0; vi < VENUES.length; vi++) {
-          if (VENUES[vi].group !== "地歌舞伎") continue;
-          var cls = formState.venue_id === VENUES[vi].id ? " tl-chip-active" : "";
-          h += '<button class="tl-chip' + cls + '" onclick="MP.setVenue(\\'' + VENUES[vi].id + '\\',\\'' + esc(VENUES[vi].name) + '\\')">' + esc(VENUES[vi].name) + '</button>';
-        }
-        h += '</div>';
+        /* 地歌舞伎・芝居小屋 */
+        h += '<div class="tl-chip-group-label">地歌舞伎・芝居小屋</div>';
+        h += '<div id="tl-jikabuki-area"><span style="font-size:12px;color:var(--kl-text3);">読込中…</span></div>';
 
-        /* その他 */
+        /* その他（手入力） */
         h += '<div class="tl-venue-custom">';
-        h += '<input type="text" class="tl-venue-custom-input" id="tl-f-venue-custom" placeholder="その他の会場名">';
+        h += '<input type="text" class="tl-venue-custom-input" id="tl-f-venue-custom" placeholder="その他の会場名（手入力）">';
         h += '<button class="tl-venue-custom-btn" onclick="MP.setCustomVenue()">決定</button>';
         h += '</div>';
         h += '</div>';
@@ -3425,10 +3671,23 @@ export function mypagePageHTML(opts) {
           h += '</div>';
         }
 
-        /* Step 6: メモ */
+        /* Step 6: 出演者 */
         if (formState.venue_id) {
           h += '<div class="tl-step">';
-          h += '<div class="tl-step-label"><span class="tl-step-num">6</span>ひとこと（任意）</div>';
+          h += '<div class="tl-step-label"><span class="tl-step-num">6</span>出演者（任意）</div>';
+          /* 公演データから自動取得した出演者 */
+          var autoActors = getSelectedActors();
+          if (autoActors.length > 0) {
+            h += '<div style="font-size:12px;color:var(--kl-text2);background:var(--kl-subtle);padding:8px 12px;border-radius:8px;margin-bottom:6px;line-height:1.8;">👤 ' + autoActors.map(function(a){ return esc(a); }).join('、') + '</div>';
+          }
+          h += '<textarea class="tl-memo-input" id="tl-f-actors-text" placeholder="その他の出演者を追加（手入力）" style="min-height:40px;">' + esc(formState.actors_text || '') + '</textarea>';
+          h += '</div>';
+        }
+
+        /* Step 7: メモ */
+        if (formState.venue_id) {
+          h += '<div class="tl-step">';
+          h += '<div class="tl-step-label"><span class="tl-step-num">7</span>ひとこと（任意）</div>';
           h += '<textarea class="tl-memo-input" id="tl-f-memo" placeholder="感想、気づき、メモ…">' + esc(formState.memo) + '</textarea>';
           h += '</div>';
 
@@ -3585,6 +3844,51 @@ export function mypagePageHTML(opts) {
 
         /* 公演候補ロード */
         loadPerfCandidates();
+
+        /* 芝居小屋ドロップダウン描画 */
+        var jArea = document.getElementById('tl-jikabuki-area');
+        if (jArea) {
+          loadTheaters(function(theaters) {
+            /* VENUES内の地歌舞伎 + 登録済み芝居小屋をマージ */
+            var opts = [];
+            for (var vi = 0; vi < VENUES.length; vi++) {
+              if (VENUES[vi].group === "地歌舞伎") opts.push(VENUES[vi]);
+            }
+            for (var ti = 0; ti < theaters.length; ti++) {
+              var t = theaters[ti];
+              var dup = false;
+              for (var oi = 0; oi < opts.length; oi++) {
+                if (opts[oi].id === t.id || opts[oi].name === t.name) { dup = true; break; }
+              }
+              if (!dup) opts.push({ id: 'theater_' + t.id, name: t.name, group: '地歌舞伎' });
+            }
+            if (opts.length === 0) {
+              jArea.innerHTML = '<span style="font-size:12px;color:var(--kl-text3);">登録なし</span>';
+              return;
+            }
+            var selVal = '';
+            for (var si = 0; si < opts.length; si++) {
+              if (formState.venue_id === opts[si].id) { selVal = opts[si].id; break; }
+            }
+            var sh = '<select class="tl-venue-custom-input" id="tl-jikabuki-select" style="width:100%;padding:0.5rem;font-size:14px;">';
+            sh += '<option value="">-- 芝居小屋を選択 --</option>';
+            for (var ji = 0; ji < opts.length; ji++) {
+              var selected = opts[ji].id === selVal ? ' selected' : '';
+              sh += '<option value="' + esc(opts[ji].id) + '" data-name="' + esc(opts[ji].name) + '"' + selected + '>' + esc(opts[ji].name) + '</option>';
+            }
+            sh += '</select>';
+            jArea.innerHTML = sh;
+            var sel = document.getElementById('tl-jikabuki-select');
+            if (sel) {
+              sel.addEventListener('change', function() {
+                var opt = sel.options[sel.selectedIndex];
+                if (opt && opt.value) {
+                  MP.setVenue(opt.value, opt.getAttribute('data-name'));
+                }
+              });
+            }
+          });
+        }
       }
 
       function loadPerfCandidates() {
@@ -4380,29 +4684,51 @@ export function mypagePageHTML(opts) {
           var file = fileInput.files && fileInput.files[0];
           if (!file) return;
           var statusEl = document.getElementById('tl-upload-status');
-          if (statusEl) { statusEl.textContent = 'アップロード中…'; statusEl.style.color = 'var(--kl-text3)'; }
-          var fd = new FormData();
-          fd.append('file', file);
-          fd.append('user_id', 'reco_' + (Date.now().toString(36)));
-          fetch('/api/user/images', { method: 'POST', body: fd })
-            .then(function(r) { return r.json(); })
-            .then(function(data) {
-              if (data.url) {
-                formState.image_url = data.url;
-                if (statusEl) { statusEl.textContent = ''; }
-                var prev = document.getElementById('tl-image-preview');
-                if (prev) {
-                  prev.innerHTML = '<img src="' + data.url + '" alt="プレビュー"><button class="tl-image-remove" onclick="MP.removeImage()">✕</button>';
-                }
-              } else {
-                if (statusEl) { statusEl.textContent = 'エラー: ' + (data.error || '失敗'); statusEl.style.color = 'var(--kl-red)'; }
+          if (statusEl) { statusEl.textContent = '圧縮中…'; statusEl.style.color = 'var(--kl-text3)'; }
+
+          var MAX_W = 1200, MAX_H = 1200, QUALITY = 0.8;
+          var reader = new FileReader();
+          reader.onload = function(ev) {
+            var img = new Image();
+            img.onload = function() {
+              var w = img.width, h = img.height;
+              if (w > MAX_W || h > MAX_H) {
+                var ratio = Math.min(MAX_W / w, MAX_H / h);
+                w = Math.round(w * ratio);
+                h = Math.round(h * ratio);
               }
-              fileInput.value = '';
-            })
-            .catch(function(err) {
-              if (statusEl) { statusEl.textContent = '通信エラー'; statusEl.style.color = 'var(--kl-red)'; }
-              fileInput.value = '';
-            });
+              var canvas = document.createElement('canvas');
+              canvas.width = w; canvas.height = h;
+              canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+              canvas.toBlob(function(blob) {
+                if (statusEl) { statusEl.textContent = 'アップロード中…'; }
+                var fd = new FormData();
+                fd.append('file', blob, 'photo.jpg');
+                fd.append('user_id', 'reco_' + (Date.now().toString(36)));
+                fetch('/api/user/images', { method: 'POST', body: fd })
+                  .then(function(r) { return r.json(); })
+                  .then(function(data) {
+                    if (data.url) {
+                      formState.image_url = data.url;
+                      if (statusEl) { statusEl.textContent = ''; }
+                      var prev = document.getElementById('tl-image-preview');
+                      if (prev) {
+                        prev.innerHTML = '<img src="' + data.url + '" alt="プレビュー"><button class="tl-image-remove" onclick="MP.removeImage()">✕</button>';
+                      }
+                    } else {
+                      if (statusEl) { statusEl.textContent = 'エラー: ' + (data.error || '失敗'); statusEl.style.color = 'var(--kl-red)'; }
+                    }
+                    fileInput.value = '';
+                  })
+                  .catch(function() {
+                    if (statusEl) { statusEl.textContent = '通信エラー'; statusEl.style.color = 'var(--kl-red)'; }
+                    fileInput.value = '';
+                  });
+              }, 'image/jpeg', QUALITY);
+            };
+            img.src = ev.target.result;
+          };
+          reader.readAsDataURL(file);
         },
         removeImage: function() {
           formState.image_url = "";
@@ -4553,7 +4879,9 @@ export function mypagePageHTML(opts) {
 
         saveEntry: function() {
           if (!formState.date || !formState.venue_id) return;
-          /* メモを読み取り */
+          /* 出演者テキスト・メモを読み取り */
+          var actorsTextEl = document.getElementById("tl-f-actors-text");
+          if (actorsTextEl) formState.actors_text = actorsTextEl.value.trim();
           var memoEl = document.getElementById("tl-f-memo");
           if (memoEl) formState.memo = memoEl.value.trim();
 
@@ -4585,6 +4913,7 @@ export function mypagePageHTML(opts) {
             play_titles: formState.play_titles.slice(),
             play_scenes: playSceneMap,
             actors: actors,
+            actors_text: formState.actors_text || "",
             memo: formState.memo || "",
             image_url: formState.image_url || ""
           };
@@ -4615,6 +4944,7 @@ export function mypagePageHTML(opts) {
             seat_type: entry.seat_type || null,
             performance_title: entry.performance_title || null,
             play_titles: (entry.play_titles || []).slice(),
+            actors_text: entry.actors_text || "",
             memo: entry.memo || "",
             image_url: entry.image_url || "",
             media_title: entry.media_title || "",
@@ -4631,6 +4961,49 @@ export function mypagePageHTML(opts) {
           if (!confirm("この記録を削除しますか？")) return;
           removeEntry(id);
           render();
+        },
+        shareEntry: function(id) {
+          var tlog = loadTlog();
+          var entry = null;
+          for (var i = 0; i < tlog.entries.length; i++) {
+            if (tlog.entries[i].id === id) { entry = tlog.entries[i]; break; }
+          }
+          if (entry) showShareDialog(entry);
+        },
+        toggleProfilePublic: function() {
+          if (!authState.loggedIn) return;
+          var sd = authState.serverData || {};
+          var profile = sd.profile || { is_public: false, display_name: "" };
+          profile.is_public = !profile.is_public;
+          if (!profile.display_name) {
+            profile.display_name = (authState.user && authState.user.displayName) || "";
+          }
+          profile.updated_at = new Date().toISOString();
+          sd.profile = profile;
+          authState.serverData = sd;
+          /* サーバーに保存 */
+          saveToServer();
+          render();
+        },
+        shareProfile: function() {
+          if (!authState.loggedIn || !authState.user) return;
+          var url = "https://kabukiplus.com/reco/" + encodeURIComponent(authState.user.userId);
+          var sd = authState.serverData || {};
+          var profile = sd.profile || {};
+          var name = profile.display_name || authState.user.displayName || "";
+          var tlog = loadTlog();
+          var text = name + " の歌舞伎帖\\n" + tlog.entries.length + "件の観劇記録\\n#歌舞伎 #KABUKI_RECO\\n" + url;
+          showShareDialog({ _profileShare: true, _shareText: text });
+        },
+        copyProfileUrl: function() {
+          if (!authState.loggedIn || !authState.user) return;
+          var url = "https://kabukiplus.com/reco/" + encodeURIComponent(authState.user.userId);
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(url).then(function() {
+              var btn = document.querySelector('.profile-url-copy');
+              if (btn) { btn.textContent = '✓'; setTimeout(function(){ btn.textContent = 'コピー'; }, 2000); }
+            }).catch(function() {});
+          }
         }
       };
 
@@ -4665,5 +5038,163 @@ export function mypagePageHTML(opts) {
       /* ── RECO固有のCSS変数（内部コンポーネント用） ── */
       body::before { display: none; }
     </style>`
+  });
+}
+
+/* =========================================================
+   公開プロフィールページ（サーバーサイドレンダリング）
+   /reco/{userId} でアクセスされる
+========================================================= */
+export function recoProfilePageHTML(profileData) {
+  if (!profileData || !profileData.is_public) {
+    return pageShell({
+      title: "非公開プロフィール",
+      subtitle: "KABUKI RECO",
+      bodyHTML: `
+        <div style="text-align:center;padding:3rem 1rem;">
+          <div style="font-size:48px;margin-bottom:16px;">🔒</div>
+          <h2 style="font-size:1.1rem;color:var(--text-primary);margin-bottom:8px;">非公開のプロフィールです</h2>
+          <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.6;margin-bottom:24px;">
+            このユーザーの観劇帖は公開されていません。
+          </p>
+          <a href="/kabuki/reco" style="display:inline-block;padding:10px 24px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#fff;border-radius:8px;text-decoration:none;font-size:0.9rem;">
+            KABUKI RECO を始める
+          </a>
+        </div>
+      `,
+      activeNav: "reco",
+    });
+  }
+
+  const e = escHTML;
+  const d = profileData;
+  const displayName = e(d.display_name || "歌舞伎ファン");
+  const entries = d.entries || [];
+  const favoriteActors = d.favorite_actors || [];
+  const totalCount = d.total_count || entries.length;
+
+  /* バッジ計算 */
+  const badgeLabel = totalCount >= 100 ? "🏆 大入" : totalCount >= 50 ? "🥇 千穐楽" : totalCount >= 20 ? "🥈 中日" : totalCount >= 5 ? "🥉 初日" : "🎭 前座";
+
+  /* 統計 */
+  const venueSet = new Set();
+  for (const entry of entries) {
+    if (entry.venue_name) venueSet.add(entry.venue_name);
+  }
+
+  /* エントリHTML生成 */
+  const DOW = ["日","月","火","水","木","金","土"];
+  let entriesHTML = "";
+  for (const entry of entries.slice(0, 20)) {
+    const isMedia = (entry.viewing_type || "theater") !== "theater";
+    const dateObj = entry.date ? new Date(entry.date + "T00:00:00") : null;
+    const month = dateObj ? (dateObj.getMonth() + 1) : "";
+    const day = dateObj ? dateObj.getDate() : "";
+    const dow = dateObj ? DOW[dateObj.getDay()] : "";
+
+    entriesHTML += `<div style="background:var(--bg-card,#fff);border:1px solid var(--border-light,#eee);border-radius:var(--radius-md,10px);padding:16px;margin-bottom:10px;box-shadow:var(--shadow-sm);">`;
+    entriesHTML += `<div style="display:flex;align-items:flex-start;gap:14px;">`;
+    if (dateObj) {
+      entriesHTML += `<div style="text-align:center;flex-shrink:0;background:var(--accent-1-soft,#fdf0ee);border-radius:8px;padding:6px 10px;min-width:48px;">`;
+      entriesHTML += `<div style="font-size:10px;color:var(--accent-1,#d4614b);font-weight:500;">${month}月</div>`;
+      entriesHTML += `<div style="font-size:20px;font-weight:700;color:var(--accent-1,#d4614b);line-height:1.2;">${day}</div>`;
+      entriesHTML += `<div style="font-size:9px;color:var(--text-tertiary,#999);">${dow}</div>`;
+      entriesHTML += `</div>`;
+    }
+    entriesHTML += `<div style="flex:1;min-width:0;">`;
+    if (isMedia) {
+      entriesHTML += `<div style="font-size:14px;font-weight:600;color:var(--text-primary);">${e(entry.media_title || "")}</div>`;
+    } else {
+      if (entry.performance_title) {
+        entriesHTML += `<span style="display:inline-block;font-size:11px;color:var(--text-tertiary);background:var(--bg-subtle,#f5f5f5);padding:2px 8px;border-radius:4px;">${e(entry.performance_title)}</span> `;
+      }
+      entriesHTML += `<div style="font-size:14px;font-weight:600;color:var(--text-primary);">${e(entry.venue_name || "")}</div>`;
+    }
+    if (entry.play_titles && entry.play_titles.length > 0) {
+      entriesHTML += `<div style="font-size:12px;color:var(--gold-dark,#a0850a);font-weight:500;margin-top:2px;">🎭 ${entry.play_titles.map(t => e(t)).join(" / ")}</div>`;
+    }
+    entriesHTML += `</div></div>`;
+
+    if (entry.image_url) {
+      entriesHTML += `<div style="margin-top:10px;"><img src="${e(entry.image_url)}" alt="写真" loading="lazy" style="width:100%;border-radius:8px;max-height:300px;object-fit:cover;"></div>`;
+    }
+    entriesHTML += `</div>`;
+  }
+
+  /* シェアバー */
+  const profileUrl = "https://kabukiplus.com/reco/" + encodeURIComponent(d.userId || "");
+  const shareText = displayName + " の歌舞伎帖 - " + totalCount + "件の観劇記録\n#歌舞伎 #KABUKI_RECO\n" + profileUrl;
+  const xShareUrl = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(shareText);
+  const lineShareUrl = "https://line.me/R/share?text=" + encodeURIComponent(shareText);
+
+  const bodyHTML = `
+    <div style="max-width:600px;margin:0 auto;padding:0 8px;">
+      <!-- ヘッダー -->
+      <div style="text-align:center;padding:24px 16px 16px;">
+        <div style="font-size:36px;margin-bottom:8px;">🎭</div>
+        <h1 style="font-size:1.2rem;font-weight:700;color:var(--text-primary);margin:0 0 4px;">${displayName} の歌舞伎帖</h1>
+        <div style="font-size:0.82rem;color:var(--text-secondary);">${badgeLabel} ― ${totalCount}回の観劇</div>
+      </div>
+
+      <!-- 統計 -->
+      <div style="display:flex;gap:8px;margin-bottom:16px;">
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 8px;border-radius:var(--radius-md,10px);background:var(--bg-card,#fff);border:1px solid var(--border-light,#eee);box-shadow:var(--shadow-sm);font-size:13px;">
+          <span style="font-size:18px;font-weight:700;color:var(--gold-dark,#a0850a);">${totalCount}</span>回
+        </div>
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 8px;border-radius:var(--radius-md,10px);background:var(--bg-card,#fff);border:1px solid var(--border-light,#eee);box-shadow:var(--shadow-sm);font-size:13px;">
+          <span style="font-size:18px;font-weight:700;color:var(--gold-dark,#a0850a);">${venueSet.size}</span>劇場
+        </div>
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 8px;border-radius:var(--radius-md,10px);background:var(--bg-card,#fff);border:1px solid var(--border-light,#eee);box-shadow:var(--shadow-sm);font-size:13px;">
+          <span style="font-size:18px;font-weight:700;color:var(--gold-dark,#a0850a);">${favoriteActors.length}</span>推し
+        </div>
+      </div>
+
+      ${favoriteActors.length > 0 ? `
+      <!-- 推し俳優 -->
+      <div style="background:var(--bg-card,#fff);border:1px solid var(--border-light,#eee);border-radius:var(--radius-md,10px);padding:16px;margin-bottom:16px;box-shadow:var(--shadow-sm);">
+        <div style="font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:10px;">⭐ 推し俳優</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          ${favoriteActors.map(a => `<span style="display:inline-block;font-size:13px;padding:4px 12px;border-radius:20px;background:var(--gold-soft,#f5f0e0);color:var(--gold-dark,#a0850a);font-weight:500;">${e(a)}</span>`).join("")}
+        </div>
+      </div>
+      ` : ""}
+
+      <!-- 最近の記録 -->
+      <div style="margin-bottom:16px;">
+        <div style="font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:10px;">📝 観劇記録</div>
+        ${entriesHTML || '<div style="text-align:center;padding:2rem;color:var(--text-tertiary);font-size:0.88rem;">まだ記録がありません</div>'}
+      </div>
+
+      <!-- シェアバー -->
+      <div style="display:flex;gap:8px;margin-bottom:24px;">
+        <a href="${e(xShareUrl)}" target="_blank" rel="noopener" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border-radius:8px;background:#000;color:#fff;text-decoration:none;font-size:13px;font-weight:600;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="#fff"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          シェア
+        </a>
+        <a href="${e(lineShareUrl)}" target="_blank" rel="noopener" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;border-radius:8px;background:#06C755;color:#fff;text-decoration:none;font-size:13px;font-weight:600;">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M12 2C6.48 2 2 5.82 2 10.5c0 4.21 3.74 7.74 8.78 8.4.34.07.8.23.92.52.1.27.07.68.03.95l-.15.91c-.05.27-.21 1.07.94.58s6.27-3.69 8.56-6.32C22.89 13.47 22 11.5 22 10.5 22 5.82 17.52 2 12 2z"/></svg>
+          LINE
+        </a>
+      </div>
+
+      <!-- RECO誘導 -->
+      <div style="text-align:center;padding:16px;font-size:13px;color:var(--text-tertiary);">
+        <a href="/kabuki/reco" style="color:var(--gold-dark,#a0850a);text-decoration:none;">KABUKI RECO で自分の観劇帖を作る →</a>
+      </div>
+    </div>
+  `;
+
+  /* OGP */
+  const ogDesc = displayName + " の歌舞伎帖 - " + totalCount + "件の観劇記録";
+  const firstImage = entries.find(en => en.image_url);
+  const ogImage = firstImage ? firstImage.image_url : "";
+
+  return pageShell({
+    title: displayName + " の歌舞伎帖",
+    subtitle: "KABUKI RECO",
+    bodyHTML,
+    activeNav: "reco",
+    ogDesc,
+    ogImage,
   });
 }

@@ -121,7 +121,7 @@ import { quizPageHTML } from "./src/quiz_page.js";
 import { kawarabanPageHTML } from "./src/kawaraban_page.js";
 import { nftGuidePageHTML } from "./src/nft_guide_page.js";
 import { storyPageHTML } from "./src/story_page.js";
-import { mypagePageHTML } from "./src/mypage_page.js";
+import { mypagePageHTML, recoProfilePageHTML } from "./src/mypage_page.js";
 import { naviPageHTML } from "./src/navi_page.js";
 import { mannersPageHTML } from "./src/manners_page.js";
 import { kangekinaviPageHTML } from "./src/kangekinavi_page.js";
@@ -562,6 +562,46 @@ function offlinePage() {
     if (path === "/kabuki/live") return new Response(await livePageHTML(env), { headers: HTML_HEADERS });
     if (path === "/kabuki/live/news") return new Response(newsPageHTML({ googleClientId: env.GOOGLE_CLIENT_ID || "" }), { headers: HTML_HEADERS });
     if (path === "/kabuki/reco") return new Response(mypagePageHTML({ googleClientId: env.GOOGLE_CLIENT_ID || "" }), { headers: HTML_HEADERS });
+    /* ─── 公開プロフィール /reco/{userId} ─── */
+    {
+      const recoMatch = path.match(/^\/reco\/([^/]+)$/);
+      if (recoMatch) {
+        const recoUserId = decodeURIComponent(recoMatch[1]);
+        try {
+          const raw = await env.CHAT_HISTORY.get(`userdata:${recoUserId}`);
+          if (!raw) {
+            return new Response(recoProfilePageHTML(null), { headers: HTML_HEADERS });
+          }
+          const userData = JSON.parse(raw);
+          const profile = userData.profile || {};
+          if (!profile.is_public) {
+            return new Response(recoProfilePageHTML(null), { headers: HTML_HEADERS });
+          }
+          const entries = (userData.theater_log && userData.theater_log.entries) || [];
+          const profileData = {
+            is_public: true,
+            userId: recoUserId,
+            display_name: profile.display_name || "",
+            favorite_actors: userData.favorite_actors || [],
+            entries: entries.slice(0, 20).map(e => ({
+              date: e.date,
+              venue_name: e.venue_name,
+              venue_id: e.venue_id,
+              performance_title: e.performance_title,
+              play_titles: e.play_titles,
+              viewing_type: e.viewing_type,
+              media_title: e.media_title,
+              image_url: e.image_url,
+              /* memo は除外 */
+            })),
+            total_count: entries.length,
+          };
+          return new Response(recoProfilePageHTML(profileData), { headers: { ...HTML_HEADERS, "Cache-Control": "public, max-age=300" } });
+        } catch (e) {
+          return new Response(recoProfilePageHTML(null), { headers: HTML_HEADERS });
+        }
+      }
+    }
     if (path === "/kabuki/dojo") return new Response(dojoPageHTML({ googleClientId: env.GOOGLE_CLIENT_ID || "" }), { headers: HTML_HEADERS });
     if (path === "/kabuki/dojo/quiz") return new Response(quizPageHTML(), { headers: HTML_HEADERS });
     if (path === "/kabuki/dojo/training") return new Response(null, { status: 301, headers: { "Location": "/kabuki/dojo" } });
@@ -961,6 +1001,46 @@ function offlinePage() {
     }
     if (path === "/api/userdata" && request.method === "PUT") {
       return corsResponse(request, await putUserData(request, env));
+    }
+
+    /* ─── 公開プロフィールAPI: /api/reco/{userId} ─── */
+    {
+      const recoApiMatch = path.match(/^\/api\/reco\/([^/]+)$/);
+      if (recoApiMatch && request.method === "GET") {
+        const recoUserId = decodeURIComponent(recoApiMatch[1]);
+        try {
+          const raw = await env.CHAT_HISTORY.get(`userdata:${recoUserId}`);
+          if (!raw) {
+            return corsResponse(request, jsonResponse({ error: "User not found" }, 404));
+          }
+          const userData = JSON.parse(raw);
+          const profile = userData.profile || {};
+          if (!profile.is_public) {
+            return corsResponse(request, jsonResponse({ error: "Profile is private" }, 403));
+          }
+          const entries = (userData.theater_log && userData.theater_log.entries) || [];
+          const resp = jsonResponse({
+            display_name: profile.display_name || "",
+            favorite_actors: userData.favorite_actors || [],
+            entries: entries.slice(0, 20).map(e => ({
+              date: e.date,
+              venue_name: e.venue_name,
+              venue_id: e.venue_id,
+              performance_title: e.performance_title,
+              play_titles: e.play_titles,
+              viewing_type: e.viewing_type,
+              media_title: e.media_title,
+              image_url: e.image_url,
+            })),
+            total_count: entries.length,
+          });
+          const h = new Headers(resp.headers);
+          h.set("Cache-Control", "public, max-age=300");
+          return corsResponse(request, new Response(resp.body, { status: 200, headers: h }));
+        } catch (e) {
+          return corsResponse(request, jsonResponse({ error: "Server error" }, 500));
+        }
+      }
     }
 
     // エディター権限 API
