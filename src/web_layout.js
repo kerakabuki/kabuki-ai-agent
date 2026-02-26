@@ -148,8 +148,8 @@ function dismissLineCta(){
 })();
 <\/script>`;
 
-  // ── ボトムタブバー ──
-  const tabBarHTML = hideNav ? "" : `
+  // ── ボトムタブバー（トップページ含む全ページで表示） ──
+  const tabBarHTML = `
 <div class="pwa-tab-bar" id="pwa-tab-bar">
   ${navItems.map(n => {
     const active = n.key === activeNav;
@@ -195,7 +195,7 @@ ${headExtra}
 ${BASE_CSS}
 </style>
 </head>
-<body${hideNav ? "" : ' class="has-tab-bar"'}>
+<body class="has-tab-bar">
 <div class="pwa-splash" id="pwa-splash">
   <div class="pwa-splash-inner">
     <div class="pwa-splash-icon">${brandIcon}</div>
