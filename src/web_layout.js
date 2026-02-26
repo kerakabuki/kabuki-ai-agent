@@ -54,9 +54,6 @@ export function pageShell({ title, subtitle, bodyHTML, headExtra = "", activeNav
       <button type="button" class="nav-login-btn" onclick="openLoginModal()" title="\u30ed\u30b0\u30a4\u30f3">\u30ed\u30b0\u30a4\u30f3<\/button>
     </div>
   </div>
-  <div class="nav-inner">
-    <div class="nav-links">${hubLinks}</div>
-  </div>
 </nav>
 <div class="line-cta-bar" id="line-cta-bar">
   <span class="line-cta-text">💬 LINE で「けらのすけ」と話す</span>
@@ -151,6 +148,16 @@ function dismissLineCta(){
 })();
 <\/script>`;
 
+  // ── ボトムタブバー ──
+  const tabBarHTML = hideNav ? "" : `
+<div class="pwa-tab-bar" id="pwa-tab-bar">
+  ${navItems.map(n => {
+    const active = n.key === activeNav;
+    const cls = active ? "pwa-tab-active" : "";
+    return `<a href="${n.href}" class="${cls}"><span class="pwa-tab-icon">${n.icon}</span>${n.label}</a>`;
+  }).join("\n  ")}
+</div>`;
+
   const metaDesc = ogDesc || (brand === "jikabuki"
     ? "地歌舞伎の演者・運営者のためのデジタル楽屋。台本管理・稽古支援・団体運営をサポート。"
     : "歌舞伎をもっと面白く。演目ガイド・公演情報・観劇記録・クイズで歌舞伎の世界を楽しもう。");
@@ -161,7 +168,7 @@ function dismissLineCta(){
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${fullTitle}</title>
 <meta name="description" content="${escHTML(metaDesc)}">
 <meta property="og:title" content="${fullTitle}">
@@ -188,7 +195,13 @@ ${headExtra}
 ${BASE_CSS}
 </style>
 </head>
-<body>
+<body${hideNav ? "" : ' class="has-tab-bar"'}>
+<div class="pwa-splash" id="pwa-splash">
+  <div class="pwa-splash-inner">
+    <div class="pwa-splash-icon">${brandIcon}</div>
+    <div class="pwa-splash-brand">${brandName}</div>
+  </div>
+</div>
 
 <header>
   <div class="header-inner">
@@ -214,10 +227,77 @@ ${bodyHTML}
   <p style="margin-top:4px;"><a href="/">トップへ戻る</a>｜<a href="${brand === 'jikabuki' ? '/jikabuki/help' : '/kabuki/help'}">ヘルプ</a></p>
 </footer>
 
+<div class="pwa-install-banner" id="pwa-install-banner">
+  <span class="pwa-install-banner-icon">🎭</span>
+  <div class="pwa-install-banner-text" id="pwa-install-banner-text">
+    <strong>ホーム画面に追加</strong><br>アプリのように使えます
+  </div>
+  <button class="pwa-install-banner-btn" id="pwa-install-btn">追加</button>
+  <button class="pwa-install-banner-close" id="pwa-install-close">&times;</button>
+</div>
+${tabBarHTML}
+
 <script>
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('/sw.js',{scope:'/'}).catch(function(){});
 }
+/* スタンドアロンモード検出 + スプラッシュ */
+(function(){
+  var s=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;
+  if(s){
+    document.body.classList.add('standalone-mode');
+    var sp=document.getElementById('pwa-splash');
+    if(sp){
+      function hide(){sp.classList.add('pwa-splash-hide');setTimeout(function(){sp.remove();},300);}
+      if(document.readyState==='complete'||document.readyState==='interactive'){setTimeout(hide,100);}
+      else{window.addEventListener('DOMContentLoaded',function(){setTimeout(hide,100);});}
+    }
+  } else {
+    var sp=document.getElementById('pwa-splash');
+    if(sp)sp.remove();
+  }
+})();
+/* PWA インストール導線 */
+(function(){
+  var banner=document.getElementById('pwa-install-banner');
+  if(!banner)return;
+  var isStandalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;
+  if(isStandalone){banner.remove();return;}
+  try{
+    var dismissed=localStorage.getItem('pwa_install_dismissed');
+    if(dismissed&&(Date.now()-parseInt(dismissed,10))<7*86400000){banner.remove();return;}
+  }catch(e){}
+  try{
+    var v=parseInt(localStorage.getItem('pwa_visit_count')||'0',10)+1;
+    localStorage.setItem('pwa_visit_count',String(v));
+    if(v<2){banner.remove();return;}
+  }catch(e){}
+  var deferredPrompt=null;
+  function showBanner(){setTimeout(function(){banner.classList.add('pwa-banner-show');},500);}
+  window.addEventListener('beforeinstallprompt',function(e){
+    e.preventDefault();deferredPrompt=e;showBanner();
+  });
+  var isIOS=/iP(hone|od|ad)/.test(navigator.userAgent)&&!window.MSStream;
+  if(isIOS){
+    var t=document.getElementById('pwa-install-banner-text');
+    if(t)t.innerHTML='<strong>ホーム画面に追加</strong><br>共有ボタン <span style="font-size:16px">⎋</span> →「ホーム画面に追加」';
+    var b=document.getElementById('pwa-install-btn');
+    if(b)b.style.display='none';
+    setTimeout(showBanner,1500);
+  }
+  var btn=document.getElementById('pwa-install-btn');
+  if(btn)btn.addEventListener('click',function(){
+    if(deferredPrompt){
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(function(){deferredPrompt=null;banner.classList.remove('pwa-banner-show');});
+    }
+  });
+  var cls=document.getElementById('pwa-install-close');
+  if(cls)cls.addEventListener('click',function(){
+    try{localStorage.setItem('pwa_install_dismissed',String(Date.now()));}catch(e){}
+    banner.classList.remove('pwa-banner-show');
+  });
+})();
 </script>
 </body>
 </html>`;
@@ -837,6 +917,49 @@ const BASE_CSS = `
   footer a { color: var(--gold-dark); text-decoration: none; }
   footer a:hover { text-decoration: underline; }
 
+  /* ── スタンドアロンPWAモード ── */
+  @media (display-mode: standalone) {
+    header { padding-top: calc(12px + env(safe-area-inset-top, 0px)); }
+    .line-cta-bar { display: none !important; }
+    .nav-brand-toggle { display: none; }
+    .header-brand { font-size: 10px; }
+  }
+  body.standalone-mode header { padding-top: calc(12px + env(safe-area-inset-top, 0px)); }
+  body.standalone-mode .line-cta-bar { display: none !important; }
+  body.standalone-mode .nav-brand-toggle { display: none; }
+  body.standalone-mode .header-brand { font-size: 10px; }
+
+  /* ── スプラッシュ画面（スタンドアロン時のみ） ── */
+  .pwa-splash {
+    position: fixed; inset: 0; z-index: 10000;
+    background: var(--bg-page);
+    display: none; align-items: center; justify-content: center;
+    transition: opacity 0.3s ease;
+  }
+  .pwa-splash.pwa-splash-hide { opacity: 0; pointer-events: none; }
+  .pwa-splash-inner { text-align: center; }
+  .pwa-splash-icon { font-size: 3rem; animation: pulse 1.5s ease infinite; }
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+  .pwa-splash-brand {
+    margin-top: 12px; font-size: 11px; letter-spacing: 4px;
+    color: var(--gold); font-family: 'Noto Serif JP', serif;
+  }
+  @media (display-mode: standalone) {
+    .pwa-splash { display: flex; }
+  }
+
+  /* ── ページ遷移 ── */
+  @view-transition { navigation: auto; }
+  ::view-transition-old(root) { animation: vtFadeOut 0.2s ease both; }
+  ::view-transition-new(root) { animation: vtFadeIn 0.25s ease both; }
+  @keyframes vtFadeOut { from { opacity: 1; } to { opacity: 0; } }
+  @keyframes vtFadeIn  { from { opacity: 0; } to { opacity: 1; } }
+  main { animation: pageIn 0.3s ease both; }
+  @keyframes pageIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
   /* ── アニメーション ── */
   @keyframes fadeUp {
     from { opacity:0; transform: translateY(12px); }
@@ -929,4 +1052,88 @@ const BASE_CSS = `
     transition: color 0.15s;
   }
   .line-cta-close:hover { color: white; }
+
+  /* ── ボトムタブバー ── */
+  .pwa-tab-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    background: rgba(250,247,242,0.96);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border-light);
+    box-shadow: 0 -2px 8px rgba(61,49,39,0.06);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .pwa-tab-bar a {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 8px 4px 6px;
+    color: var(--text-tertiary);
+    text-decoration: none;
+    font-size: 10px;
+    font-family: inherit;
+    letter-spacing: 0.5px;
+    transition: color 0.15s;
+    position: relative;
+  }
+  .pwa-tab-bar a:hover { color: var(--text-secondary); text-decoration: none; }
+  .pwa-tab-icon { font-size: 20px; line-height: 1; }
+  .pwa-tab-bar .pwa-tab-active {
+    color: var(--gold-dark);
+    font-weight: 600;
+  }
+  .pwa-tab-bar .pwa-tab-active .pwa-tab-icon {
+    transform: scale(1.1);
+  }
+  .pwa-tab-bar .pwa-tab-active::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 25%;
+    right: 25%;
+    height: 2px;
+    background: var(--gold);
+    border-radius: 0 0 2px 2px;
+  }
+  /* ── インストールバナー ── */
+  .pwa-install-banner {
+    position: fixed;
+    bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+    left: 0; right: 0; z-index: 999;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    color: white;
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px;
+    box-shadow: 0 -4px 16px rgba(61,49,39,0.15);
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+  }
+  .pwa-install-banner.pwa-banner-show { transform: translateY(0); }
+  .pwa-install-banner-icon { font-size: 24px; flex-shrink: 0; }
+  .pwa-install-banner-text { flex: 1; font-size: 13px; line-height: 1.5; }
+  .pwa-install-banner-text strong { font-weight: 600; }
+  .pwa-install-banner-btn {
+    flex-shrink: 0; background: white; color: var(--gold-dark);
+    border: none; border-radius: 20px; padding: 8px 16px;
+    font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit;
+  }
+  .pwa-install-banner-close {
+    flex-shrink: 0; background: none; border: none;
+    color: rgba(255,255,255,0.7); font-size: 18px; cursor: pointer; padding: 4px;
+  }
+  body:not(.has-tab-bar) .pwa-install-banner {
+    bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* タブバー分のコンテンツ余白 */
+  body.has-tab-bar main { padding-bottom: 80px; }
+  body.has-tab-bar footer { padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px)); }
+  body.has-tab-bar .layout-support { padding-bottom: 0; }
 `;
