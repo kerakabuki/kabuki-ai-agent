@@ -14,7 +14,7 @@
  * @param {boolean} [opts.hideNav] - true ならグロナビを非表示
  * @returns {string} 完全なHTML文字列
  */
-export function pageShell({ title, subtitle, bodyHTML, headExtra = "", activeNav = "", hideNav = false, brand = "kabuki", googleClientId = "", ogDesc = "", ogImage = "" }) {
+export function pageShell({ title, subtitle, bodyHTML, overlayHTML = "", headExtra = "", activeNav = "", hideNav = false, brand = "kabuki", googleClientId = "", ogDesc = "", ogImage = "" }) {
   const navItems = brand === "jikabuki" ? jikabukiNav : kabukiNav;
   function navLink(n) {
     const active = n.key === activeNav;
@@ -53,6 +53,9 @@ export function pageShell({ title, subtitle, bodyHTML, headExtra = "", activeNav
     <div class="nav-auth" id="nav-auth-btn">
       <button type="button" class="nav-login-btn" onclick="openLoginModal()" title="\u30ed\u30b0\u30a4\u30f3">\u30ed\u30b0\u30a4\u30f3<\/button>
     </div>
+  </div>
+  <div class="nav-inner">
+    <div class="nav-links">${hubLinks}</div>
   </div>
 </nav>
 <div class="line-cta-bar" id="line-cta-bar">
@@ -149,11 +152,15 @@ function dismissLineCta(){
 <\/script>`;
 
   // ── ボトムタブバー（トップページ含む全ページで表示） ──
+  const brandSwitchItem = brand === "jikabuki"
+    ? { key: "_switch", href: "/?brand=kabuki", icon: "🎭", label: "KABUKI" }
+    : { key: "_switch", href: "/?brand=jikabuki", icon: "🏯", label: "JIKABUKI" };
+  const tabItems = [brandSwitchItem, ...navItems.slice(1)];
   const tabBarHTML = `
 <div class="pwa-tab-bar" id="pwa-tab-bar">
-  ${navItems.map(n => {
+  ${tabItems.map(n => {
     const active = n.key === activeNav;
-    const cls = active ? "pwa-tab-active" : "";
+    const cls = active ? "pwa-tab-active" : (n.key === "_switch" ? "pwa-tab-switch" : "");
     return `<a href="${n.href}" class="${cls}"><span class="pwa-tab-icon">${n.icon}</span>${n.label}</a>`;
   }).join("\n  ")}
 </div>`;
@@ -216,6 +223,7 @@ ${navHTML}
 <main>
 ${bodyHTML}
 </main>
+${overlayHTML}
 
 <section class="layout-support" aria-label="応援">
   <p class="support-onelink"><a href="/project">このプロジェクトを応援する →</a></p>
@@ -1102,6 +1110,13 @@ const BASE_CSS = `
     background: var(--gold);
     border-radius: 0 0 2px 2px;
   }
+  .pwa-tab-bar .pwa-tab-switch {
+    color: var(--text-tertiary);
+    font-size: 9px;
+    opacity: 0.7;
+    transition: opacity 0.15s;
+  }
+  .pwa-tab-bar .pwa-tab-switch:hover { opacity: 1; }
   /* ── インストールバナー ── */
   .pwa-install-banner {
     position: fixed;
