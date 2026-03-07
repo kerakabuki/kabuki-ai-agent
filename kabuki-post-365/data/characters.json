@@ -1,0 +1,102 @@
+[
+  {
+    "name": "弁慶",
+    "name_reading": "べんけい",
+    "aliases": "武蔵坊弁慶",
+    "related_play": "勧進帳",
+    "description": "源義経の忠臣。安宅の関での弁慶の知恵と忠義の物語は歌舞伎十八番のひとつ。",
+    "personality_tags": "忠義,勇敢,知略",
+    "season_tags": "通年",
+    "related_characters": "義経,富樫"
+  },
+  {
+    "name": "義経",
+    "name_reading": "よしつね",
+    "aliases": "源義経",
+    "related_play": "勧進帳",
+    "description": "源氏の武将。弁慶に守られ安宅の関を通過する悲劇の英雄。",
+    "personality_tags": "気品,悲劇,武勇",
+    "season_tags": "通年",
+    "related_characters": "弁慶,富樫"
+  },
+  {
+    "name": "富樫",
+    "name_reading": "とがし",
+    "aliases": "富樫左衛門",
+    "related_play": "勧進帳",
+    "description": "安宅の関の関守。弁慶の忠義に心を打たれ関を通す。武士の情けを見せる人物。",
+    "personality_tags": "情け深い,武士道",
+    "season_tags": "通年",
+    "related_characters": "弁慶,義経"
+  },
+  {
+    "name": "助六",
+    "name_reading": "すけろく",
+    "aliases": "花川戸助六",
+    "related_play": "助六由縁江戸桜",
+    "description": "江戸の伊達男。実は曽我五郎。吉原で敵の意休を探す粋な男。",
+    "personality_tags": "粋,伊達,男前",
+    "season_tags": "spring",
+    "related_characters": "揚巻,意休"
+  },
+  {
+    "name": "揚巻",
+    "name_reading": "あげまき",
+    "aliases": "",
+    "related_play": "助六由縁江戸桜",
+    "description": "吉原の花魁。助六を愛する美しく気の強い女性。",
+    "personality_tags": "美貌,気丈,恋心",
+    "season_tags": "spring",
+    "related_characters": "助六,意休"
+  },
+  {
+    "name": "暫",
+    "name_reading": "しばらく",
+    "aliases": "鎌倉権五郎",
+    "related_play": "暫",
+    "description": "荒事の代表的な演目。正義の味方が悪人を退治する痛快な物語。",
+    "personality_tags": "正義,豪快,力強い",
+    "season_tags": "通年",
+    "related_characters": ""
+  },
+  {
+    "name": "白浪五人男",
+    "name_reading": "しらなみごにんおとこ",
+    "aliases": "日本駄右衛門,弁天小僧,忠信利平,赤星十三郎,南郷力丸",
+    "related_play": "青砥稿花紅彩画",
+    "description": "五人の盗賊が名乗りを上げる華やかな場面が見どころ。",
+    "personality_tags": "華やか,粋,団結",
+    "season_tags": "通年",
+    "related_characters": ""
+  },
+  {
+    "name": "藤娘",
+    "name_reading": "ふじむすめ",
+    "aliases": "",
+    "related_play": "藤娘",
+    "description": "藤の精が恋心を踊る美しい舞踊。女方舞踊の傑作。",
+    "personality_tags": "美しい,恋,優雅",
+    "season_tags": "spring",
+    "related_characters": ""
+  },
+  {
+    "name": "連獅子",
+    "name_reading": "れんじし",
+    "aliases": "親獅子,子獅子",
+    "related_play": "連獅子",
+    "description": "親子の獅子が石橋で毛振りを見せる迫力の舞踊。",
+    "personality_tags": "迫力,親子愛,力強い",
+    "season_tags": "通年",
+    "related_characters": ""
+  },
+  {
+    "name": "お初",
+    "name_reading": "おはつ",
+    "aliases": "",
+    "related_play": "曽根崎心中",
+    "description": "天満屋の遊女。徳兵衛と心中する純愛の物語。",
+    "personality_tags": "純愛,覚悟,美しい",
+    "season_tags": "autumn",
+    "related_characters": "徳兵衛"
+  }
+]

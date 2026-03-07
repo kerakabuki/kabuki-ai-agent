@@ -731,6 +731,7 @@ a.pick-card:hover {
     activeNav: "info",
     brand: "jikabuki",
     ogDesc: "全国の地歌舞伎・地芝居団体を探す。お気に入り団体の次回公演を追う。地歌舞伎・地芝居の発見と応援の入口。",
+    ogImage: "https://kabukiplus.com/assets/ogp/ogp_info.png",
   });
 }
 

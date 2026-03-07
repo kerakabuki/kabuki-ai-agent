@@ -4,14 +4,178 @@
 // =========================================================
 import { pageShell, escHTML } from "./web_layout.js";
 
+const CAT_ICONS = {
+  "演技・演出": "🎭", "役柄": "🎎", "舞台": "🏯", "音・裏方": "🎵",
+  "家の芸": "📜", "ジャンル": "📚", "鑑賞": "🎫", "衣装・小道具": "👘",
+};
+
+// =========================================================
+// SSR版 用語詳細ページ（SEO対応）
+// =========================================================
+export function glossaryTermSSR({ term, allTerms }) {
+  const e = escHTML;
+  const termName = term.term || "";
+  const reading = term.reading || "";
+  const category = term.category || "";
+  const desc = term.desc || term.description || "";
+  const catIcon = CAT_ICONS[category] || "📖";
+
+  const descPlain = desc.replace(/\n/g, " ").slice(0, 150).trim();
+  const ogDesc = `歌舞伎用語「${termName}」の意味・解説。${descPlain}…`;
+  const pageUrl = `https://kabukiplus.com/kabuki/navi/glossary/term/${encodeURIComponent(termName)}`;
+
+  // JSON-LD
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "DefinedTerm",
+    "name": termName,
+    "description": desc.replace(/\n/g, " ").slice(0, 300),
+    "inDefinedTermSet": {
+      "@type": "DefinedTermSet",
+      "name": "歌舞伎用語辞典",
+      "url": "https://kabukiplus.com/kabuki/navi/glossary",
+    },
+    "url": pageUrl,
+  };
+
+  // 同じカテゴリの他の用語（関連用語）
+  const sameCategory = (allTerms || []).filter(t => t.category === category && t.term !== termName);
+  sameCategory.sort(() => Math.random() - 0.5);
+  const related = sameCategory.slice(0, 6);
+
+  let relatedHTML = "";
+  if (related.length) {
+    relatedHTML = `<section class="glossary-section" id="sec-related">
+      <h2 class="glossary-section-title">${e(catIcon)} ${e(category)}の他の用語</h2>
+      <div class="glossary-related-list">
+        ${related.map(r => `<a href="/kabuki/navi/glossary/term/${encodeURIComponent(r.term)}" class="glossary-related-item">
+          <span class="glossary-related-name">${e(r.term)}</span>
+          ${r.reading ? `<span class="glossary-related-reading">${e(r.reading)}</span>` : ""}
+        </a>`).join("")}
+      </div>
+    </section>`;
+  }
+
+  const bodyHTML = `
+    <div class="breadcrumb">
+      <a href="/">トップ</a><span>›</span><a href="/kabuki/navi">KABUKI NAVI</a><span>›</span><a href="/kabuki/navi/glossary">用語辞典</a><span>›</span><a href="/kabuki/navi/glossary/${encodeURIComponent(category)}">${e(category)}</a><span>›</span><span>${e(termName)}</span>
+    </div>
+
+    <article class="glossary-detail" itemscope itemtype="https://schema.org/DefinedTerm">
+      <div class="glossary-header fade-up">
+        <h1 class="glossary-term-name" itemprop="name">${e(termName)}</h1>
+        ${reading ? `<p class="glossary-reading">${e(reading)}</p>` : ""}
+        <p class="glossary-cat">${e(catIcon)} ${e(category)}</p>
+      </div>
+
+      <section class="glossary-section" id="sec-desc">
+        <h2 class="glossary-section-title">📖 解説</h2>
+        <div class="glossary-desc" itemprop="description">${formatGlossarySSR(desc || "説明がありません")}</div>
+      </section>
+
+      ${relatedHTML}
+
+      <div style="margin-top:1.5rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
+        <a href="/kabuki/navi/glossary/${encodeURIComponent(category)}" class="btn btn-secondary">← ${e(category)}に戻る</a>
+        <a href="/kabuki/navi/glossary" class="btn btn-secondary">カテゴリ一覧</a>
+      </div>
+    </article>
+  `;
+
+  return pageShell({
+    title: `${termName}${reading && !termName.includes(reading) ? `（${reading}）` : ""} — 歌舞伎用語辞典`,
+    subtitle: "歌舞伎用語辞典",
+    bodyHTML,
+    activeNav: "navi",
+    ogDesc,
+    ogUrl: pageUrl,
+    canonicalUrl: pageUrl,
+    headExtra: `
+<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
+<style>
+  .glossary-detail { max-width: 800px; margin: 0 auto; }
+  .glossary-header { margin-bottom: 1.5rem; }
+  .glossary-term-name { font-size: 1.6rem; font-weight: 700; margin: 0; font-family: 'Noto Serif JP', serif; color: var(--kin, #A8873A); }
+  .glossary-reading { font-size: 0.85rem; color: var(--text-tertiary); margin: 0.2rem 0 0; }
+  .glossary-cat { font-size: 0.8rem; color: var(--text-tertiary); margin: 0.3rem 0 0; }
+  .glossary-section { margin-bottom: 2rem; scroll-margin-top: 3.5rem; }
+  .glossary-section-title { font-size: 1.15rem; font-weight: 700; margin: 0 0 0.75rem; padding-bottom: 0.4rem; border-bottom: 2px solid var(--kin, #A8873A); }
+  .glossary-desc { font-size: 0.95rem; line-height: 1.85; color: var(--text-primary); }
+  .glossary-desc p { margin: 0 0 1em; }
+  .glossary-related-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .glossary-related-item { display: inline-flex; flex-direction: column; padding: 0.5rem 0.8rem; background: var(--bg-subtle, #f5f5f5); border: 1px solid var(--border, #e5e5e5); border-radius: 8px; text-decoration: none; color: var(--text-primary); transition: border-color 0.2s; }
+  .glossary-related-item:hover { border-color: var(--kin, #A8873A); text-decoration: none; }
+  .glossary-related-name { font-size: 0.9rem; font-weight: 600; }
+  .glossary-related-reading { font-size: 0.75rem; color: var(--text-tertiary); }
+</style>`,
+  });
+}
+
+// =========================================================
+// SSR版 カテゴリ別用語一覧ページ（SEO対応）
+// =========================================================
+export function glossaryCategorySSR({ category, terms }) {
+  const e = escHTML;
+  const catIcon = CAT_ICONS[category] || "📖";
+  const sorted = [...terms].sort((a, b) => (a.term || "").localeCompare(b.term || "", "ja"));
+
+  const ogDesc = `歌舞伎用語「${category}」カテゴリの用語一覧（${terms.length}語）。${sorted.slice(0, 5).map(t => t.term).join("・")}など。`;
+  const pageUrl = `https://kabukiplus.com/kabuki/navi/glossary/${encodeURIComponent(category)}`;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "DefinedTermSet",
+    "name": `歌舞伎用語辞典 — ${category}`,
+    "description": ogDesc,
+    "url": pageUrl,
+    "hasDefinedTerm": sorted.map(t => ({
+      "@type": "DefinedTerm",
+      "name": t.term,
+      "url": `https://kabukiplus.com/kabuki/navi/glossary/term/${encodeURIComponent(t.term)}`,
+    })),
+  };
+
+  let listHTML = "";
+  for (const t of sorted) {
+    listHTML += `<a href="/kabuki/navi/glossary/term/${encodeURIComponent(t.term)}" class="list-item">
+      <div class="list-item-title">${e(t.term)}</div>
+      ${t.reading ? `<div class="list-item-sub">${e(t.reading)}</div>` : ""}
+    </a>`;
+  }
+
+  const bodyHTML = `
+    <div class="breadcrumb">
+      <a href="/">トップ</a><span>›</span><a href="/kabuki/navi">KABUKI NAVI</a><span>›</span><a href="/kabuki/navi/glossary">用語辞典</a><span>›</span><span>${e(category)}</span>
+    </div>
+    <h2 class="section-title">${e(catIcon)} ${e(category)} <span style="font-size:0.8rem;color:var(--text-tertiary);">${terms.length}語</span></h2>
+    ${listHTML}
+    <div style="margin-top:1rem;"><a href="/kabuki/navi/glossary" class="btn btn-secondary">← カテゴリ一覧へ</a></div>
+  `;
+
+  return pageShell({
+    title: `${category} — 歌舞伎用語辞典`,
+    subtitle: "歌舞伎用語辞典",
+    bodyHTML,
+    activeNav: "navi",
+    ogDesc,
+    ogUrl: pageUrl,
+    canonicalUrl: pageUrl,
+    headExtra: `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>`,
+  });
+}
+
+function formatGlossarySSR(text) {
+  return escHTML(text).replace(/\n\n/g, "</p><p>").replace(/\n/g, "<br>");
+}
+
 export function glossaryPageHTML({ googleClientId = "" } = {}) {
   const bodyHTML = `
-    <div class="breadcrumb" id="breadcrumb">
-      <a href="/">トップ</a><span>›</span><a href="/kabuki/navi">KABUKI NAVI</a><span>›</span><span id="bc-tail">用語辞典</span>
+    <div class="breadcrumb">
+      <a href="/">トップ</a><span>›</span><a href="/kabuki/navi">KABUKI NAVI</a><span>›</span><span>用語辞典</span>
     </div>
 
     <div class="search-bar">
-      <input type="text" id="search-input" placeholder="🔍 用語を検索…" autocomplete="off">
+      <input type="text" id="search-input" placeholder="用語を検索…" autocomplete="off">
     </div>
 
     <div id="app">
@@ -21,7 +185,6 @@ export function glossaryPageHTML({ googleClientId = "" } = {}) {
     <script>
     (function(){
       var app = document.getElementById("app");
-      var bcTail = document.getElementById("bc-tail");
       var searchInput = document.getElementById("search-input");
       var allTerms = null;
 
@@ -36,37 +199,19 @@ export function glossaryPageHTML({ googleClientId = "" } = {}) {
         { key: "衣装・小道具", icon: "👘" }
       ];
 
-      // ── データ読み込み ──
       fetch("/api/glossary")
         .then(function(r){ return r.json(); })
         .then(function(data){
           if (Array.isArray(data)) { allTerms = data; }
           else if (data && Array.isArray(data.terms)) { allTerms = data.terms; }
           else { allTerms = []; }
-          route();
+          showCategories();
         })
         .catch(function(){
           app.innerHTML = '<div class="empty-state">用語データの読み込みに失敗しました。</div>';
         });
 
-      // ── ルーティング ──
-      function route() {
-        if (!allTerms) return;
-        var path = location.pathname;
-        var m;
-        if (path === "/kabuki/navi/glossary") {
-          showCategories();
-        } else if ((m = path.match(/^\\/kabuki\\/navi\\/glossary\\/term\\/(.+)$/))) {
-          showTerm(decodeURIComponent(m[1]));
-        } else if ((m = path.match(/^\\/kabuki\\/navi\\/glossary\\/(.+)$/))) {
-          showCategory(decodeURIComponent(m[1]));
-        }
-      }
-
-      // ── カテゴリ一覧 ──
       function showCategories() {
-        bcTail.innerHTML = "歌舞伎用語いろは";
-        searchInput.style.display = "block";
         var catCounts = {};
         allTerms.forEach(function(t){ catCounts[t.category] = (catCounts[t.category] || 0) + 1; });
 
@@ -74,7 +219,7 @@ export function glossaryPageHTML({ googleClientId = "" } = {}) {
         html += '<div class="card-grid" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr));">';
         CAT_ORDER.forEach(function(c, i) {
           if (!catCounts[c.key]) return;
-          html += '<a href="/kabuki/navi/glossary/' + encodeURIComponent(c.key) + '" class="card fade-up-d' + i + '" onclick="return nav(this)" style="text-align:center;padding:1.2rem;">';
+          html += '<a href="/kabuki/navi/glossary/' + encodeURIComponent(c.key) + '" class="card fade-up-d' + i + '" style="text-align:center;padding:1.2rem;">';
           html += '<div style="font-size:2rem;margin-bottom:0.3rem;">' + c.icon + '</div>';
           html += '<h3 style="font-size:0.95rem;">' + esc(c.key) + '</h3>';
           html += '<p class="card-desc">' + catCounts[c.key] + '語</p>';
@@ -84,63 +229,11 @@ export function glossaryPageHTML({ googleClientId = "" } = {}) {
         app.innerHTML = html;
       }
 
-      // ── カテゴリ内一覧 ──
-      function showCategory(cat) {
-        searchInput.style.display = "block";
-        var catObj = CAT_ORDER.find(function(c){ return c.key === cat; }) || { icon: "📖" };
-        bcTail.innerHTML = '<a href="/kabuki/navi/glossary" onclick="return nav(this)">用語辞典</a><span>›</span>' + esc(cat);
-        var terms = allTerms.filter(function(t){ return t.category === cat; });
-        terms.sort(function(a,b){ return (a.term || "").localeCompare(b.term || "", "ja"); });
-
-        var html = '<h2 class="section-title">' + catObj.icon + ' ' + esc(cat) + ' <span style="font-size:0.8rem;color:var(--text-tertiary);">' + terms.length + '語</span></h2>';
-        terms.forEach(function(t, i) {
-          html += '<a href="/kabuki/navi/glossary/term/' + encodeURIComponent(t.term) + '" class="list-item fade-up" style="animation-delay:' + (i*0.03) + 's" onclick="return nav(this)">';
-          html += '<div class="list-item-title">' + esc(t.term) + '</div>';
-          if (t.reading) html += '<div class="list-item-sub">' + esc(t.reading) + '</div>';
-          html += '</a>';
-        });
-        html += '<div style="margin-top:1rem;"><a href="/kabuki/navi/glossary" class="btn btn-secondary" onclick="return nav(this)">← カテゴリ一覧へ</a></div>';
-        app.innerHTML = html;
-      }
-
-      // ── 用語詳細 ──
-      function showTerm(termName) {
-        searchInput.style.display = "none";
-        var term = allTerms.find(function(t){ return t.term === termName; });
-        if (!term) {
-          app.innerHTML = '<div class="empty-state">用語が見つかりませんでした。<br><a href="/kabuki/navi/glossary" onclick="return nav(this)">一覧に戻る</a></div>';
-          return;
-        }
-        var catObj = CAT_ORDER.find(function(c){ return c.key === term.category; }) || { icon: "📖" };
-        bcTail.innerHTML = '<a href="/kabuki/navi/glossary" onclick="return nav(this)">用語辞典</a><span>›</span>'
-          + '<a href="/kabuki/navi/glossary/' + encodeURIComponent(term.category) + '" onclick="return nav(this)">' + esc(term.category) + '</a>'
-          + '<span>›</span>' + esc(term.term);
-
-        var html = '<div class="term-detail fade-up">';
-        html += '<div class="term-header">';
-        html += '<h2 class="term-name">' + esc(term.term) + '</h2>';
-        if (term.reading) html += '<p class="term-reading">' + esc(term.reading) + '</p>';
-        html += '<p class="term-cat">' + catObj.icon + ' ' + esc(term.category) + '</p>';
-        html += '</div>';
-        html += '<hr style="border:none;border-top:1px solid #333;margin:1rem 0;">';
-        html += '<div class="term-desc">' + formatText(term.desc || term.description || "説明がありません") + '</div>';
-        html += '</div>';
-        html += '<div style="margin-top:1.5rem;display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">';
-        html += '<a href="/kabuki/navi/glossary/' + encodeURIComponent(term.category) + '" class="btn btn-secondary" onclick="return nav(this)">← ' + esc(term.category) + 'に戻る</a>';
-        html += '<a href="/kabuki/navi/glossary" class="btn btn-secondary" onclick="return nav(this)">カテゴリ一覧</a>';
-        html += '<button class="btn btn-secondary" id="clip-btn" onclick="toggleClipTerm(\\'' + esc(term.term).replace(/'/g,"") + '\\')">✅ 理解した！</button>';
-        html += '</div>';
-        app.innerHTML = html;
-        updateClipBtn("term", term.term);
-        recordRecent("term", term.term, term.term);
-      }
-
-      // ── 検索 ──
       var searchTimer;
       searchInput.addEventListener("input", function() {
         clearTimeout(searchTimer);
         var q = searchInput.value.trim().toLowerCase();
-        if (!q) { route(); return; }
+        if (!q) { if (allTerms) showCategories(); return; }
         searchTimer = setTimeout(function(){
           if (!allTerms) return;
           var results = allTerms.filter(function(t){
@@ -148,14 +241,13 @@ export function glossaryPageHTML({ googleClientId = "" } = {}) {
               || (t.reading || "").toLowerCase().indexOf(q) >= 0
               || (t.desc || t.description || "").toLowerCase().indexOf(q) >= 0;
           });
-          bcTail.innerHTML = '<a href="/kabuki/navi/glossary" onclick="return nav(this)">用語辞典</a><span>›</span>検索: ' + esc(q);
           if (results.length === 0) {
             app.innerHTML = '<div class="empty-state">「' + esc(q) + '」に一致する用語はありませんでした。</div>';
             return;
           }
           var html = '<h2 class="section-title">検索結果 <span style="font-size:0.8rem;color:#888;">' + results.length + '件</span></h2>';
-          results.forEach(function(t, i) {
-            html += '<a href="/kabuki/navi/glossary/term/' + encodeURIComponent(t.term) + '" class="list-item" onclick="return nav(this)">';
+          results.forEach(function(t) {
+            html += '<a href="/kabuki/navi/glossary/term/' + encodeURIComponent(t.term) + '" class="list-item">';
             html += '<div class="list-item-title">' + esc(t.term) + '</div>';
             html += '<div class="list-item-sub">' + esc(t.category) + (t.reading ? ' · ' + esc(t.reading) : '') + '</div>';
             html += '</a>';
@@ -164,158 +256,32 @@ export function glossaryPageHTML({ googleClientId = "" } = {}) {
         }, 200);
       });
 
-      // ── ヘルパー ──
       function esc(s) {
         if (!s) return "";
         var el = document.createElement("span");
         el.textContent = s;
         return el.innerHTML;
       }
-      function formatText(s) {
-        return esc(s).replace(/\\n/g, "<br>");
-      }
-
-      // ── マイページ連携（localStorage） ──
-      var LOG_KEY = "keranosuke_log_v1";
-      function getLog() {
-        try { var r = localStorage.getItem(LOG_KEY); return r ? JSON.parse(r) : null; } catch(e){ return null; }
-      }
-      function defaultLog() {
-        return { v:1, updated_at:0, recent:[], clips:{ enmoku:[], person:[], term:[] }, practice:{ serifu:{ last_ts:0, progress:0 } } };
-      }
-      function putLog(log) {
-        log.updated_at = Math.floor(Date.now()/1000);
-        try { localStorage.setItem(LOG_KEY, JSON.stringify(log)); } catch(e){}
-      }
-      function recordRecent(type, id, title) {
-        var log = getLog() || defaultLog();
-        if (!log.recent) log.recent = [];
-        var alreadySeen = log.recent.some(function(r){ return r.type===type && r.id===id; });
-        log.recent = log.recent.filter(function(r){ return !(r.type===type && r.id===id); });
-        log.recent.unshift({ type:type, id:id, title:title, ts:Math.floor(Date.now()/1000) });
-        if (log.recent.length > 30) log.recent = log.recent.slice(0,30);
-        /* XP加算（初回閲覧のみ） */
-        if (!alreadySeen) {
-          if (typeof log.xp !== 'number') log.xp = 0;
-          log.xp += 1;
-          var today = new Date();
-          var todayKey = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
-          if (!log.daily_log) log.daily_log = {};
-          if (!log.daily_log[todayKey]) log.daily_log[todayKey] = { views:0, clips:0, quiz:0, keiko:0, theater:0 };
-          log.daily_log[todayKey].views++;
-        }
-        putLog(log);
-      }
-      function isClipped(type, id) {
-        var log = getLog();
-        if (!log || !log.clips) return false;
-        if (type === "term") return (log.clips.term||[]).indexOf(id) >= 0;
-        return false;
-      }
-      function toggleClip(type, id) {
-        var log = getLog() || defaultLog();
-        if (!log.clips) log.clips = { enmoku:[], person:[], term:[] };
-        var wasClipped = false;
-        if (type === "term") {
-          if (!log.clips.term) log.clips.term = [];
-          var idx = log.clips.term.indexOf(id);
-          if (idx >= 0) { log.clips.term.splice(idx,1); wasClipped = true; }
-          else log.clips.term.push(id);
-        }
-        /* XP加算（保存時のみ） */
-        if (!wasClipped) {
-          if (typeof log.xp !== 'number') log.xp = 0;
-          log.xp += 2;
-          var today = new Date();
-          var todayKey = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
-          if (!log.daily_log) log.daily_log = {};
-          if (!log.daily_log[todayKey]) log.daily_log[todayKey] = { views:0, clips:0, quiz:0, keiko:0, theater:0 };
-          log.daily_log[todayKey].clips++;
-        }
-        putLog(log);
-        return isClipped(type, id);
-      }
-      function updateClipBtn(type, id) {
-        var btn = document.getElementById("clip-btn");
-        if (!btn) return;
-        btn.textContent = isClipped(type, id) ? "✅ 理解した！" : "☐ 理解した！";
-        btn.style.borderColor = isClipped(type, id) ? "var(--kin)" : "";
-      }
-      window.toggleClipTerm = function(term) {
-        toggleClip("term", term);
-        updateClipBtn("term", term);
-      };
-
-      // ── SPA ナビゲーション ──
-      window.nav = function(el) {
-        var href = el.getAttribute("href");
-        if (href && href.startsWith("/kabuki/navi/glossary")) {
-          history.pushState(null, "", href);
-          searchInput.value = "";
-          route();
-          window.scrollTo(0, 0);
-          return false;
-        }
-        return true;
-      };
-      window.addEventListener("popstate", function(){ searchInput.value = ""; route(); });
     })();
     </script>
   `;
 
   return pageShell({
-    title: "歌舞伎用語いろは",
+    title: "歌舞伎用語辞典",
     subtitle: "126の用語をカテゴリ別に解説",
     bodyHTML,
     activeNav: "navi",
     googleClientId,
     headExtra: `<style>
-      .search-bar {
-        margin-bottom: 1rem;
-      }
+      .search-bar { margin-bottom: 1rem; }
       .search-bar input {
-        width: 100%;
-        padding: 0.7rem 1rem;
-        border-radius: 10px;
-        border: 1px solid #444;
-        background: var(--surface);
-        color: var(--shiro);
-        font-size: 0.9rem;
-        font-family: inherit;
-        outline: none;
-        transition: border-color 0.2s;
+        width: 100%; padding: 0.7rem 1rem; border-radius: 10px;
+        border: 1px solid var(--border, #ddd); background: var(--bg-card, #fff);
+        color: var(--text-primary); font-size: 0.9rem; font-family: inherit;
+        outline: none; transition: border-color 0.2s;
       }
-      .search-bar input:focus {
-        border-color: var(--kin);
-      }
-      .search-bar input::placeholder {
-        color: #666;
-      }
-      .term-detail {
-        background: var(--surface);
-        border: 1px solid #333;
-        border-radius: 14px;
-        padding: 1.5rem;
-      }
-      .term-name {
-        font-size: 1.4rem;
-        color: var(--kin);
-      }
-      .term-reading {
-        font-size: 0.85rem;
-        color: #888;
-        margin-top: 0.2rem;
-      }
-      .term-cat {
-        font-size: 0.8rem;
-        color: #666;
-        margin-top: 0.3rem;
-      }
-      .term-desc {
-        font-size: 0.92rem;
-        line-height: 1.8;
-        color: var(--shiro);
-      }
+      .search-bar input:focus { border-color: var(--kin); }
+      .search-bar input::placeholder { color: var(--text-tertiary); }
     </style>`,
   });
 }

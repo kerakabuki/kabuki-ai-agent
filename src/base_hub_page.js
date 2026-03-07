@@ -279,6 +279,7 @@ export function baseHubPageHTML({ googleClientId = "" } = {}) {
           { icon: '🎬', label: '演目選定', href: '/groups/' + eg + '/enmoku-select' },
         ];
         if (canManage) {
+          links.push({ icon: '💰', label: '収支管理', href: '/groups/' + eg + '/accounting' });
           links.push({ icon: '🏯', label: 'GATE編集', href: '/groups/' + eg + '/gate-edit' });
           links.push({ icon: '👥', label: 'メンバー管理', href: '/groups/' + eg + '/members' });
           links.push({ icon: '🏠', label: '芝居小屋管理', href: '/jikabuki/base/theaters' });
@@ -650,6 +651,7 @@ export function baseHubPageHTML({ googleClientId = "" } = {}) {
     brand: "jikabuki",
     googleClientId,
     ogDesc: "地歌舞伎団体の運営をデジタルでサポート。台本管理・稽古メモ・公演記録・GATEページ編集など。",
+    ogImage: "https://kabukiplus.com/assets/ogp/ogp_base.png",
     headExtra: `<style>
       /* ── ヘッダー ── */
       .bd-header {

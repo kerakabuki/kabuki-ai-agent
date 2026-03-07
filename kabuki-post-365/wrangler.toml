@@ -1,0 +1,23 @@
+name = "kabuki-post-365"
+main = "src/index.ts"
+compatibility_date = "2026-02-11"
+
+assets = { directory = "frontend/dist" }
+
+[[d1_databases]]
+binding = "DB"
+database_name = "kabuki-post-365-db"
+database_id = "998c84a4-41c9-491e-9b70-b4c3a7906e18"
+migrations_dir = "migrations"
+
+[[r2_buckets]]
+binding = "R2"
+bucket_name = "kabuki-post-365-images"
+
+[[kv_namespaces]]
+binding = "KV"
+id = "9983894f85534eb598c5d56f0224d9ef"
+
+[triggers]
+crons = ["0 21 * * *"]   # 21:00 UTC = 06:00 JST
+

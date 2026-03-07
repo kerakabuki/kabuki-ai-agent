@@ -5,6 +5,175 @@
 // =========================================================
 import { pageShell, escHTML } from "./web_layout.js";
 
+// =========================================================
+// SSR版 演目詳細ページ（SEO対応）
+// =========================================================
+export function enmokuDetailSSR({ id, data, catalogEntry, relatedColumns = [] }) {
+  const e = escHTML;
+  const title = data.title || data.title_short || id;
+  const titleShort = data.title_short || title;
+  const synopsis = data.synopsis || "";
+  const highlights = data.highlights || "";
+  const info = data.info || {};
+  const cast = Array.isArray(data.cast) ? data.cast : [];
+  const authors = Array.isArray(data.authors) ? data.authors : [];
+
+  // あらすじの先頭120文字をdescriptionに
+  const descText = synopsis.replace(/\n/g, " ").slice(0, 150).trim();
+  const ogDesc = `${title}のあらすじ・見どころ・登場人物を解説。${descText}…`;
+  const pageUrl = `https://kabukiplus.com/kabuki/navi/enmoku/${encodeURIComponent(id)}`;
+
+  // JSON-LD 構造化データ
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": `${title} — あらすじ・見どころ・登場人物｜KABUKI PLUS+`,
+    "description": ogDesc,
+    "url": pageUrl,
+    "publisher": {
+      "@type": "Organization",
+      "name": "KABUKI PLUS+",
+      "url": "https://kabukiplus.com"
+    },
+    "mainEntityOfPage": pageUrl,
+  };
+  if (info["作者"]) jsonLd.author = { "@type": "Person", "name": info["作者"] };
+
+  // 作品情報テーブル
+  const infoKeys = ["作者", "初演", "種別", "上演時間", "別名・通称", "原作"];
+  let infoHTML = "";
+  for (const k of infoKeys) {
+    if (info[k]) {
+      infoHTML += `<tr><th>${e(k)}</th><td>${e(String(info[k]))}</td></tr>`;
+    }
+  }
+
+  // 登場人物
+  let castHTML = "";
+  for (const c of cast) {
+    const nm = (c.name || "").replace(/[（(].*[）)]$/, "").trim();
+    const kana = ((c.name || "").match(/[（(](.*)[）)]/) || [])[1] || "";
+    const hasImg = !!c.image;
+    castHTML += `<div class="cast-card${hasImg ? ' cast-card-has-img' : ''}">
+      ${hasImg ? `<img class="cast-img" src="${e(c.image)}" alt="${e(nm)}" loading="lazy">` : ''}
+      <div class="cast-body">
+        <div class="cast-name">${e(nm)}</div>
+        ${kana ? `<div class="cast-kana">${e(kana)}</div>` : ""}
+        ${c.desc ? `<div class="cast-desc">${formatSSR(c.desc)}</div>` : ""}
+      </div>
+    </div>`;
+  }
+
+  // 執筆者
+  let authorsHTML = "";
+  if (authors.length) {
+    authorsHTML = `<div class="enmoku-authors">
+      <span class="enmoku-authors-label">✍️ 執筆:</span> ${authors.map(a => e(a.displayName || "匿名")).join("、")}
+    </div>`;
+  }
+
+  const bodyHTML = `
+    <div class="breadcrumb">
+      <a href="/">トップ</a><span>›</span><a href="/kabuki/navi">KABUKI NAVI</a><span>›</span><a href="/kabuki/navi/enmoku">演目ガイド</a><span>›</span><span>${e(titleShort)}</span>
+    </div>
+
+    <article class="enmoku-detail" itemscope itemtype="https://schema.org/Article">
+      <div class="detail-header fade-up">
+        <h1 class="detail-title" itemprop="headline">${e(title)}</h1>
+        ${title !== titleShort ? `<p class="detail-sub">${e(title)}</p>` : ""}
+      </div>
+
+      <nav class="enmoku-toc" aria-label="セクション目次">
+        ${infoHTML ? '<a href="#sec-info">📝 作品情報</a>' : ''}
+        <a href="#sec-synopsis">📖 あらすじ</a>
+        ${highlights ? '<a href="#sec-highlights">🌟 みどころ</a>' : ''}
+        ${cast.length ? '<a href="#sec-cast">🎭 登場人物</a>' : ''}
+      </nav>
+
+      ${infoHTML ? `
+      <section class="enmoku-section" id="sec-info">
+        <h2 class="enmoku-section-title">📝 作品情報</h2>
+        <table class="enmoku-info-table">${infoHTML}</table>
+      </section>` : ""}
+
+      <section class="enmoku-section" id="sec-synopsis" itemprop="articleBody">
+        <h2 class="enmoku-section-title">📖 あらすじ</h2>
+        <div class="detail-text">${formatSSR(synopsis || "データがありません")}</div>
+      </section>
+
+      ${highlights ? `
+      <section class="enmoku-section" id="sec-highlights">
+        <h2 class="enmoku-section-title">🌟 みどころ</h2>
+        <div class="detail-text">${formatSSR(highlights)}</div>
+      </section>` : ""}
+
+      ${cast.length ? `
+      <section class="enmoku-section" id="sec-cast">
+        <h2 class="enmoku-section-title">🎭 登場人物</h2>
+        ${castHTML}
+      </section>` : ""}
+
+      ${authorsHTML}
+
+      ${relatedColumns.length ? `
+      <section class="enmoku-section" style="margin-top:2rem;">
+        <h2 class="enmoku-section-title">✍️ 関連コラム</h2>
+        ${relatedColumns.map(col => `<a href="/kabuki/navi/column/${encodeURIComponent(col.id)}" style="display:block;padding:10px 0;border-bottom:1px solid var(--border,#e5e5e5);text-decoration:none;color:inherit;">
+          <div style="font-weight:700;font-size:0.95rem;">${e(col.title)}</div>
+          ${col.subtitle ? `<div style="font-size:0.82rem;color:var(--text-secondary);margin-top:2px;">${e(col.subtitle)}</div>` : ""}
+        </a>`).join("")}
+      </section>` : ""}
+
+      <div style="margin-top:1.5rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
+        <a href="/kabuki/navi/enmoku" class="btn btn-secondary">← 演目一覧に戻る</a>
+      </div>
+    </article>
+  `;
+
+  return pageShell({
+    title: `${title} — あらすじ・見どころ・登場人物`,
+    subtitle: "演目ガイド",
+    bodyHTML,
+    activeNav: "navi",
+    ogDesc,
+    ogUrl: pageUrl,
+    canonicalUrl: pageUrl,
+    headExtra: `
+<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
+<style>
+  .enmoku-detail { max-width: 800px; margin: 0 auto; }
+  .enmoku-toc { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; position: sticky; top: 0; z-index: 10; background: var(--bg-primary, #fff); padding: 0.6rem 0; border-bottom: 1px solid var(--border, #e5e5e5); }
+  .enmoku-toc a { display: inline-block; padding: 0.35rem 0.7rem; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); background: var(--bg-subtle, #f5f5f5); border-radius: 999px; text-decoration: none; white-space: nowrap; }
+  .enmoku-toc a:active { background: var(--kin, #A8873A); color: #fff; }
+  .enmoku-section { scroll-margin-top: 3.5rem; }
+  .enmoku-section { margin-bottom: 2rem; }
+  .enmoku-section-title { font-size: 1.15rem; font-weight: 700; margin: 0 0 0.75rem; padding-bottom: 0.4rem; border-bottom: 2px solid var(--kin, #A8873A); }
+  .enmoku-info-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin-bottom: 0.5rem; }
+  .enmoku-info-table th { text-align: left; padding: 0.4rem 0.8rem 0.4rem 0; color: var(--text-secondary); white-space: nowrap; width: 7em; vertical-align: top; }
+  .enmoku-info-table td { padding: 0.4rem 0; }
+  .enmoku-info-table tr + tr { border-top: 1px solid var(--border, #e5e5e5); }
+  .detail-header { margin-bottom: 1.5rem; }
+  .detail-title { font-size: 1.6rem; font-weight: 700; margin: 0; font-family: 'Noto Serif JP', serif; }
+  .detail-sub { font-size: 0.9rem; color: var(--text-secondary); margin: 0.3rem 0 0; }
+  .detail-text { font-size: 0.95rem; line-height: 1.85; color: var(--text-primary); }
+  .detail-text p { margin: 0 0 1em; }
+  .cast-card { padding: 0.75rem 0; border-bottom: 1px solid var(--border, #e5e5e5); }
+  .cast-card-has-img { display: flex; gap: 0.8rem; align-items: flex-start; }
+  .cast-img { width: 72px; height: 72px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
+  .cast-card:last-child { border-bottom: none; }
+  .cast-name { font-weight: 700; font-size: 1rem; }
+  .cast-kana { font-size: 0.8rem; color: var(--text-tertiary); margin-top: 0.15rem; }
+  .cast-desc { font-size: 0.9rem; line-height: 1.7; color: var(--text-secondary); margin-top: 0.4rem; }
+  .enmoku-authors { margin-top: 1.5rem; padding: 0.6rem 0.8rem; font-size: 13px; color: var(--text-secondary); background: var(--bg-subtle); border-radius: var(--radius-sm); }
+  .enmoku-authors-label { font-weight: 600; color: var(--text-tertiary); }
+</style>`,
+  });
+}
+
+function formatSSR(text) {
+  return escHTML(text).replace(/\n\n/g, "</p><p>").replace(/\n/g, "<br>");
+}
+
 export function enmokuPageHTML({ googleClientId = "" } = {}) {
   const bodyHTML = `
     <div class="breadcrumb" id="breadcrumb">
@@ -17,381 +186,59 @@ export function enmokuPageHTML({ googleClientId = "" } = {}) {
     <script>
     (function(){
       var app = document.getElementById("app");
-      var bcTail = document.getElementById("bc-tail");
-      var catalogCache = null;
-      var detailCache = {};
-      var videoMap = null;
 
-      // ── ルーティング ──
-      function route() {
-        var path = location.pathname;
-        var m;
-        if (path === "/kabuki/navi/enmoku") {
-          showCatalog();
-        } else if ((m = path.match(/^\\/kabuki\\/navi\\/enmoku\\/(.+)$/))) {
-          var id = decodeURIComponent(m[1]);
-          showDetail(id);
-        }
-      }
-
-      // ── 演目一覧 ──
-      function showCatalog() {
-        bcTail.innerHTML = "演目ガイド";
-        if (catalogCache) { renderCatalog(catalogCache); return; }
-        app.innerHTML = '<div class="loading">演目データを読み込み中…</div>';
-        fetch("/api/enmoku/catalog")
-          .then(function(r){ return r.json(); })
-          .then(function(data){
-            if (Array.isArray(data)) { catalogCache = data; renderCatalog(data); }
-            else { app.innerHTML = '<div class="empty-state">演目データがまだ登録されていません。</div>'; }
-          })
-          .catch(function(){ app.innerHTML = '<div class="empty-state">演目データの読み込みに失敗しました。</div>'; });
-      }
-
-      function renderCatalog(catalog) {
-        if (catalog.length === 0) {
-          app.innerHTML = '<div class="empty-state">演目データがまだ登録されていません。</div>';
-          return;
-        }
-        // グループ分け
-        var groups = [];
-        var gmap = {};
-        catalog.forEach(function(e) {
-          if (e.group) {
-            if (!(e.group in gmap)) {
-              gmap[e.group] = groups.length;
-              groups.push({ label: e.group, items: [] });
+      // ── 演目一覧表示 ──
+      app.innerHTML = '<div class="loading">演目データを読み込み中…</div>';
+      fetch("/api/enmoku/catalog")
+        .then(function(r){ return r.json(); })
+        .then(function(data){
+          if (!Array.isArray(data) || data.length === 0) {
+            app.innerHTML = '<div class="empty-state">演目データがまだ登録されていません。</div>';
+            return;
+          }
+          var groups = [];
+          var gmap = {};
+          data.forEach(function(e) {
+            if (e.group) {
+              if (!(e.group in gmap)) {
+                gmap[e.group] = groups.length;
+                groups.push({ label: e.group, items: [] });
+              }
+              groups[gmap[e.group]].items.push(e);
+            } else {
+              groups.push({ label: null, items: [e] });
             }
-            groups[gmap[e.group]].items.push(e);
-          } else {
-            groups.push({ label: null, items: [e] });
-          }
-        });
+          });
 
-        var html = '<h2 class="section-title">演目ガイド <span style="font-size:0.8rem;color:var(--text-tertiary);">全' + catalog.length + '演目</span></h2>';
-        groups.forEach(function(g) {
-          if (g.label) {
-            html += '<div class="enmoku-group fade-up">';
-            html += '<h3 class="enmoku-group-title">📁 ' + esc(g.label) + ' <span class="enmoku-group-count">' + g.items.length + '演目</span></h3>';
-            g.items.forEach(function(e){ html += enmokuCard(e); });
-            html += '</div>';
-          } else {
-            g.items.forEach(function(e){ html += enmokuCard(e); });
-          }
-        });
-        app.innerHTML = html;
-      }
+          var html = '<h2 class="section-title">演目ガイド <span style="font-size:0.8rem;color:var(--text-tertiary);">全' + data.length + '演目</span></h2>'
+            + '<p style="font-size:0.85rem;color:var(--text-secondary);margin:0 0 1rem;">現在 <b>' + data.length + '</b> 演目を収録中。今後も順次追加していきます 🌱</p>';
+          groups.forEach(function(g) {
+            if (g.label) {
+              html += '<div class="enmoku-group fade-up">';
+              html += '<h3 class="enmoku-group-title">📁 ' + esc(g.label) + ' <span class="enmoku-group-count">' + g.items.length + '演目</span></h3>';
+              g.items.forEach(function(e){ html += enmokuCard(e); });
+              html += '</div>';
+            } else {
+              g.items.forEach(function(e){ html += enmokuCard(e); });
+            }
+          });
+          app.innerHTML = html;
+        })
+        .catch(function(){ app.innerHTML = '<div class="empty-state">演目データの読み込みに失敗しました。</div>'; });
 
       function enmokuCard(e) {
-        return '<a href="/kabuki/navi/enmoku/' + encodeURIComponent(e.id) + '" class="list-item" onclick="return nav(this)">'
+        return '<a href="/kabuki/navi/enmoku/' + encodeURIComponent(e.id) + '" class="list-item">'
           + '<div class="list-item-title">' + esc(e.short) + '</div>'
           + (e.full && e.full !== e.short ? '<div class="list-item-sub">' + esc(e.full) + '</div>' : '')
           + '</a>';
       }
 
-      // ── 動画データ読み込み ──
-      function ensureVideos(cb) {
-        if (videoMap !== null) { cb(); return; }
-        fetch("/api/recommend")
-          .then(function(r){ return r.json(); })
-          .then(function(d){ videoMap = d && d.videos || {}; cb(); })
-          .catch(function(){ videoMap = {}; cb(); });
-      }
-
-      // ── 演目詳細 ──
-      function showDetail(id) {
-        bcTail.innerHTML = '<a href="/kabuki/navi/enmoku" onclick="return nav(this)">\u6F14\u76EE\u30AC\u30A4\u30C9</a><span>\u203A</span><span id="bc-title">\u8AAD\u307F\u8FBC\u307F\u4E2D\u2026</span>';
-        if (detailCache[id]) {
-          ensureVideos(function(){ renderDetail(id, detailCache[id]); });
-          return;
-        }
-        app.innerHTML = '<div class="loading">\u6F14\u76EE\u30C7\u30FC\u30BF\u3092\u8AAD\u307F\u8FBC\u307F\u4E2D\u2026</div>';
-        fetch("/api/enmoku/" + encodeURIComponent(id))
-          .then(function(r){ if (!r.ok) throw new Error(r.status); return r.json(); })
-          .then(function(data){ detailCache[id] = data; ensureVideos(function(){ renderDetail(id, data); }); })
-          .catch(function(){ app.innerHTML = '<div class="empty-state">\u6F14\u76EE\u30C7\u30FC\u30BF\u304C\u898B\u3064\u304B\u308A\u307E\u305B\u3093\u3067\u3057\u305F\u3002<br><a href="/kabuki/navi/enmoku" onclick="return nav(this)">\u4E00\u89A7\u306B\u623B\u308B</a></div>'; });
-      }
-
-      function findVideos(id) {
-        if (!videoMap) return [];
-        var vids = [];
-        if (videoMap[id]) vids.push(videoMap[id]);
-        var aliasReverse = { hamamatsuya:"hamamamatsuya", moritunajinya:"moritsuna", adachigaharasandanme:"sodehagi", gionichiriki:"chushingura07", yamashinakankyo:"chushingura09", kirareyosa:"kirare", ashikagayakata:"chushingura03", yamazakikaido:"chushingura05", kanpeiharakiri:"chushingura06" };
-        var altKey = aliasReverse[id];
-        if (altKey && videoMap[altKey] && vids.length === 0) vids.push(videoMap[altKey]);
-        for (var k in videoMap) {
-          if (k === id || k === altKey) continue;
-          var v = videoMap[k];
-          if (v && v.title && v.title.indexOf(id) >= 0) vids.push(v);
-        }
-        return vids;
-      }
-
-      function renderDetail(id, data) {
-        var title = data.title || data.title_short || id;
-        var titleEl = document.getElementById("bc-title");
-        if (titleEl) titleEl.textContent = title;
-
-        var videos = findVideos(id);
-
-        var sections = [
-          { key: "synopsis", icon: "\uD83D\uDCD6", label: "\u3042\u3089\u3059\u3058" },
-          { key: "highlights", icon: "\uD83C\uDF1F", label: "\u307F\u3069\u3053\u308D" },
-          { key: "cast", icon: "\uD83C\uDFAD", label: "\u767B\u5834\u4EBA\u7269" },
-          { key: "info", icon: "\uD83D\uDCDD", label: "\u4F5C\u54C1\u60C5\u5831" },
-        ];
-        if (videos.length > 0) {
-          sections.push({ key: "video", icon: "\uD83C\uDFAC", label: "\u52D5\u753B" });
-        }
-
-        var html = '<div class="detail-header fade-up">';
-        html += '<h2 class="detail-title">' + esc(title) + '</h2>';
-        if (data.title && data.title_short && data.title !== data.title_short) {
-          html += '<p class="detail-sub">' + esc(data.title) + '</p>';
-        }
-        html += '</div>';
-
-        // タブバー
-        html += '<div class="tab-bar" id="tab-bar">';
-        sections.forEach(function(s, i) {
-          html += '<button class="tab-item' + (i === 0 ? ' tab-active' : '') + '" data-tab="' + s.key + '">' + s.icon + ' ' + s.label + '</button>';
-        });
-        html += '</div>';
-
-        // タブコンテンツ
-        sections.forEach(function(s, i) {
-          html += '<div class="tab-content' + (i === 0 ? ' tab-visible' : '') + '" data-panel="' + s.key + '">';
-          if (s.key === "cast") {
-            html += renderCast(data);
-          } else if (s.key === "info") {
-            html += renderInfo(data);
-          } else if (s.key === "video") {
-            html += renderVideo(videos, title);
-          } else {
-            var text = data[s.key] || data.sections && data.sections[s.key] || "";
-            if (typeof text === "object") text = JSON.stringify(text, null, 2);
-            html += '<div class="detail-text">' + formatText(String(text || "\u30C7\u30FC\u30BF\u304C\u3042\u308A\u307E\u305B\u3093")) + '</div>';
-          }
-          html += '</div>';
-        });
-
-        // 執筆者クレジット
-        if (data.authors && data.authors.length) {
-          html += '<div class="enmoku-authors">';
-          html += '<span class="enmoku-authors-label">\u270D\uFE0F \u57F7\u7B46:</span> ';
-          html += data.authors.map(function(a) { return esc(a.displayName || '\u533F\u540D'); }).join('\u3001');
-          html += '</div>';
-        }
-
-        html += '<div style="margin-top:1.5rem;display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">';
-        html += '<a href="/kabuki/navi/enmoku" class="btn btn-secondary" onclick="return nav(this)">← 演目一覧に戻る</a>';
-        html += '<button class="btn btn-secondary" id="clip-btn" onclick="toggleClipEnmoku(\\'' + id + '\\',\\'' + esc(title).replace(/'/g,"") + '\\')">✅ 理解した！</button>';
-        html += '</div>';
-
-        app.innerHTML = html;
-        initTabs();
-        updateClipBtn("enmoku", id);
-        recordRecent("enmoku", id, title);
-
-        /* ハッシュ付きリンクからの遷移: #cast-xxx → 登場人物タブ + スクロール */
-        var hash = location.hash;
-        if (hash && hash.indexOf("#cast-") === 0) {
-          var castBtn = document.querySelector('.tab-item[data-tab="cast"]');
-          if (castBtn) castBtn.click();
-          setTimeout(function() {
-            var target = document.getElementById(hash.slice(1));
-            if (target) {
-              target.scrollIntoView({ behavior: "smooth", block: "center" });
-              target.style.outline = "2px solid var(--kin)";
-              target.style.outlineOffset = "4px";
-              target.style.borderRadius = "10px";
-              setTimeout(function(){ target.style.outline = "none"; }, 3000);
-            }
-          }, 100);
-        }
-      }
-
-      function renderCast(data) {
-        var cast = data.cast || (data.sections && data.sections.cast) || [];
-        if (!Array.isArray(cast) || cast.length === 0) return '<p class="detail-text">登場人物データがありません。</p>';
-
-        var html = '';
-        cast.forEach(function(c) {
-          var nm = splitNameKana(c.name || "");
-          var anchorId = c.id ? 'cast-' + esc(c.id) : '';
-          html += '<div class="cast-card"' + (anchorId ? ' id="' + anchorId + '"' : '') + '>';
-          html += '<div class="cast-name">' + esc(nm.name) + '</div>';
-          if (nm.kana) html += '<div class="cast-kana">' + esc(nm.kana) + '</div>';
-          if (c.desc) html += '<div class="cast-desc">' + formatText(c.desc) + '</div>';
-          html += '</div>';
-        });
-        return html;
-      }
-
-      function renderInfo(data) {
-        var info = data.info || (data.sections && data.sections.info) || "";
-        if (typeof info === "string") return '<div class="detail-text">' + formatText(info || "作品情報がありません") + '</div>';
-        // object の場合はキー値ペアで表示
-        var html = '<dl class="info-list">';
-        for (var k in info) {
-          html += '<dt class="info-dt">' + esc(k) + '</dt>';
-          html += '<dd class="info-dd">' + esc(String(info[k])) + '</dd>';
-        }
-        html += '</dl>';
-        return html;
-      }
-
-      function renderVideo(videos, title) {
-        var html = '<div class="video-section">';
-        html += '<p class="video-intro">\u300C' + esc(title) + '\u300D\u306E\u516C\u6F14\u52D5\u753B\u3092YouTube\u3067\u3054\u89A7\u3044\u305F\u3060\u3051\u307E\u3059\u3002</p>';
-        videos.forEach(function(v) {
-          var ytId = "";
-          if (v.url) {
-            var m2 = v.url.match(/youtu\\.be\\/([\\w-]+)/) || v.url.match(/[?&]v=([\\w-]+)/);
-            if (m2) ytId = m2[1];
-          }
-          html += '<div class="video-card">';
-          if (ytId) {
-            html += '<div class="video-thumb-wrap"><a href="' + esc(v.url) + '" target="_blank" rel="noopener"><img class="video-thumb" src="https://img.youtube.com/vi/' + esc(ytId) + '/mqdefault.jpg" alt="' + esc(v.title || "") + '" loading="lazy"></a></div>';
-          }
-          html += '<a href="' + esc(v.url) + '" target="_blank" rel="noopener" class="video-link">\u25B6 ' + esc(v.title || "\u52D5\u753B\u3092\u898B\u308B") + '</a>';
-          html += '</div>';
-        });
-        html += '<p class="video-channel"><a href="https://www.youtube.com/@kerakabuki" target="_blank" rel="noopener">\uD83D\uDCFA \u6C17\u826F\u6B4C\u821E\u4F0E YouTube\u30C1\u30E3\u30F3\u30CD\u30EB</a></p>';
-        html += '</div>';
-        return html;
-      }
-
-      function splitNameKana(s) {
-        var m = (s || "").match(/^(.*?)[（(](.*)[）)]$/);
-        return m ? { name: m[1].trim(), kana: m[2].trim() } : { name: s, kana: "" };
-      }
-
-      // ── タブ切替 ──
-      function initTabs() {
-        var bar = document.getElementById("tab-bar");
-        if (!bar) return;
-        bar.addEventListener("click", function(e) {
-          var btn = e.target.closest(".tab-item");
-          if (!btn) return;
-          var key = btn.dataset.tab;
-          bar.querySelectorAll(".tab-item").forEach(function(b){ b.classList.remove("tab-active"); });
-          btn.classList.add("tab-active");
-          document.querySelectorAll(".tab-content").forEach(function(p){
-            p.classList.toggle("tab-visible", p.dataset.panel === key);
-          });
-        });
-      }
-
-      // ── ヘルパー ──
       function esc(s) {
         if (!s) return "";
         var el = document.createElement("span");
         el.textContent = s;
         return el.innerHTML;
       }
-      function formatText(s) {
-        return esc(s).replace(/\\n/g, "<br>");
-      }
-
-      // ── マイページ連携（localStorage） ──
-      var LOG_KEY = "keranosuke_log_v1";
-      function getLog() {
-        try { var r = localStorage.getItem(LOG_KEY); return r ? JSON.parse(r) : null; } catch(e){ return null; }
-      }
-      function defaultLog() {
-        return { v:1, updated_at:0, recent:[], clips:{ enmoku:[], person:[], term:[] }, practice:{ serifu:{ last_ts:0, progress:0 } } };
-      }
-      function putLog(log) {
-        log.updated_at = Math.floor(Date.now()/1000);
-        try { localStorage.setItem(LOG_KEY, JSON.stringify(log)); } catch(e){}
-      }
-      function recordRecent(type, id, title, parent) {
-        var log = getLog() || defaultLog();
-        if (!log.recent) log.recent = [];
-        var alreadySeen = log.recent.some(function(r){ return r.type===type && r.id===id; });
-        log.recent = log.recent.filter(function(r){ return !(r.type===type && r.id===id); });
-        log.recent.unshift({ type:type, id:id, title:title, parent:parent||undefined, ts:Math.floor(Date.now()/1000) });
-        if (log.recent.length > 30) log.recent = log.recent.slice(0,30);
-        /* XP加算（初回閲覧のみ） */
-        if (!alreadySeen && type === 'enmoku') {
-          if (typeof log.xp !== 'number') log.xp = 0;
-          log.xp += 1;
-          var today = new Date();
-          var todayKey = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
-          if (!log.daily_log) log.daily_log = {};
-          if (!log.daily_log[todayKey]) log.daily_log[todayKey] = { views:0, clips:0, quiz:0, keiko:0, theater:0 };
-          log.daily_log[todayKey].views++;
-        }
-        putLog(log);
-      }
-      function isClipped(type, id) {
-        var log = getLog();
-        if (!log || !log.clips) return false;
-        if (type === "enmoku") return (log.clips.enmoku||[]).indexOf(id) >= 0;
-        if (type === "person") return (log.clips.person||[]).some(function(p){ return (typeof p==="string"?p:p.id)===id; });
-        if (type === "term") return (log.clips.term||[]).indexOf(id) >= 0;
-        return false;
-      }
-      function toggleClip(type, id, meta) {
-        var log = getLog() || defaultLog();
-        if (!log.clips) log.clips = { enmoku:[], person:[], term:[] };
-        var wasClipped = false;
-        if (type === "enmoku") {
-          if (!log.clips.enmoku) log.clips.enmoku = [];
-          var idx = log.clips.enmoku.indexOf(id);
-          if (idx >= 0) { log.clips.enmoku.splice(idx,1); wasClipped = true; }
-          else log.clips.enmoku.push(id);
-        } else if (type === "person") {
-          if (!log.clips.person) log.clips.person = [];
-          var pi = log.clips.person.findIndex(function(p){ return (typeof p==="string"?p:p.id)===id; });
-          if (pi >= 0) { log.clips.person.splice(pi,1); wasClipped = true; }
-          else log.clips.person.push({ id:id, parent:meta&&meta.parent||"", title:meta&&meta.title||"" });
-        } else if (type === "term") {
-          if (!log.clips.term) log.clips.term = [];
-          var ti = log.clips.term.indexOf(id);
-          if (ti >= 0) { log.clips.term.splice(ti,1); wasClipped = true; }
-          else log.clips.term.push(id);
-        }
-        /* XP加算（保存時のみ、削除時は加算しない） */
-        if (!wasClipped) {
-          if (typeof log.xp !== 'number') log.xp = 0;
-          log.xp += 2;
-          var today = new Date();
-          var todayKey = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
-          if (!log.daily_log) log.daily_log = {};
-          if (!log.daily_log[todayKey]) log.daily_log[todayKey] = { views:0, clips:0, quiz:0, keiko:0, theater:0 };
-          log.daily_log[todayKey].clips++;
-        }
-        putLog(log);
-        return isClipped(type, id);
-      }
-      function updateClipBtn(type, id) {
-        var btn = document.getElementById("clip-btn");
-        if (!btn) return;
-        btn.textContent = isClipped(type, id) ? "✅ 理解した！" : "☐ 理解した！";
-        btn.style.borderColor = isClipped(type, id) ? "var(--kin)" : "";
-      }
-      window.toggleClipEnmoku = function(id, title) {
-        toggleClip("enmoku", id);
-        updateClipBtn("enmoku", id);
-      };
-
-      // ── SPA ナビゲーション ──
-      window.nav = function(el) {
-        var href = el.getAttribute("href");
-        if (href && href.startsWith("/kabuki/navi/enmoku")) {
-          history.pushState(null, "", href);
-          route();
-          window.scrollTo(0, 0);
-          return false;
-        }
-        return true;
-      };
-      window.addEventListener("popstate", route);
-
-      // 初期表示
-      route();
     })();
     </script>
   `;
@@ -445,6 +292,19 @@ export function enmokuPageHTML({ googleClientId = "" } = {}) {
         padding: 0.8rem 1rem;
         margin-bottom: 0.5rem;
       }
+      .cast-card-has-img {
+        display: flex;
+        gap: 0.8rem;
+        align-items: flex-start;
+      }
+      .cast-img {
+        width: 72px;
+        height: 72px;
+        object-fit: cover;
+        border-radius: 8px;
+        flex-shrink: 0;
+      }
+      .cast-body { flex: 1; min-width: 0; }
       .cast-name {
         font-weight: bold;
         font-size: 0.95rem;

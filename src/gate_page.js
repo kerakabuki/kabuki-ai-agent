@@ -1366,6 +1366,7 @@ export function gateTopPageHTML(gateGroups = [], defaultGroups = {}, { googleCli
     googleClientId,
     ogTitle: "GATE | JIKABUKI PLUS+",
     ogDesc: "GATE登録団体の公式ページ一覧。公演情報・ニュース・SNS・アクセス情報をまとめてご覧いただけます。",
+    ogImage: "https://kabukiplus.com/assets/ogp/ogp_gate.png",
     headExtra: `<style>${GATE_CSS}</style>`,
   });
 }

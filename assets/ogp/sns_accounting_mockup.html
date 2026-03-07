@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1200">
+<title>JIKABUKI PLUS+ 収支管理 SNS画像</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1200px;
+    height: 630px;
+    font-family: 'Segoe UI', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+    background: linear-gradient(135deg, #1a0a2e 0%, #2d1b4e 40%, #4a2c6e 100%);
+    display: flex;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* 和柄パターン（背景装飾） */
+  body::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(circle at 10% 90%, rgba(212, 175, 55, 0.08) 0%, transparent 40%),
+      radial-gradient(circle at 90% 10%, rgba(212, 175, 55, 0.06) 0%, transparent 40%);
+    pointer-events: none;
+  }
+
+  /* ── 左：キャッチコピー ── */
+  .left-panel {
+    width: 520px;
+    padding: 48px 40px 48px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .brand-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(212, 175, 55, 0.15);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    border-radius: 20px;
+    padding: 6px 16px;
+    margin-bottom: 24px;
+    width: fit-content;
+  }
+  .brand-badge span {
+    font-size: 13px;
+    font-weight: 700;
+    color: #d4af37;
+    letter-spacing: 0.5px;
+  }
+
+  .catch-main {
+    font-size: 36px;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.45;
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+  }
+  .catch-main .gold {
+    color: #d4af37;
+  }
+
+  .catch-sub {
+    font-size: 15px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.7;
+    margin-bottom: 32px;
+  }
+
+  .feature-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .feature-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    color: rgba(255,255,255,0.9);
+    font-weight: 500;
+  }
+  .feature-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(212, 175, 55, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .cta-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .cta-badge {
+    background: linear-gradient(135deg, #d4af37, #f0d060);
+    color: #1a0a2e;
+    font-size: 14px;
+    font-weight: 800;
+    padding: 10px 24px;
+    border-radius: 24px;
+    letter-spacing: 0.5px;
+  }
+  .cta-free {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+  }
+
+  /* ── 右：スマホモック ── */
+  .right-panel {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .phone-frame {
+    width: 320px;
+    height: 560px;
+    background: #fff;
+    border-radius: 32px;
+    box-shadow:
+      0 20px 60px rgba(0,0,0,0.4),
+      0 0 0 2px rgba(255,255,255,0.1);
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ステータスバー */
+  .status-bar {
+    height: 28px;
+    background: #5b2d8e;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.9);
+    font-weight: 600;
+  }
+
+  /* アプリヘッダー */
+  .app-header {
+    background: linear-gradient(135deg, #5b2d8e, #7b3fa0);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .app-header-back {
+    color: rgba(255,255,255,0.8);
+    font-size: 16px;
+  }
+  .app-header-title {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .app-header-sub {
+    color: rgba(255,255,255,0.6);
+    font-size: 11px;
+    margin-left: auto;
+  }
+
+  /* アプリ本体 */
+  .app-body {
+    background: #f5f0fa;
+    padding: 12px;
+    height: calc(100% - 28px - 48px - 50px);
+    overflow: hidden;
+  }
+
+  /* 年度ナビ */
+  .fy-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #333;
+  }
+  .fy-btn {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: #e8dff0;
+    border: none;
+    font-size: 12px;
+    color: #5b2d8e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* サマリーカード */
+  .summary-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .summary-card {
+    flex: 1;
+    background: #fff;
+    border-radius: 10px;
+    padding: 8px 6px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .summary-label {
+    font-size: 10px;
+    color: #888;
+    margin-bottom: 2px;
+  }
+  .summary-val {
+    font-size: 14px;
+    font-weight: 800;
+  }
+  .val-income { color: #2e7d32; }
+  .val-expense { color: #c62828; }
+  .val-balance { color: #1565c0; }
+
+  /* CTAボタン */
+  .cta-buttons {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .cta-scan {
+    flex: 1;
+    background: linear-gradient(135deg, #5b2d8e, #7b3fa0);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 0;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  .cta-add {
+    background: #fff;
+    border: 1.5px solid #ddd;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 11px;
+    color: #555;
+    font-weight: 600;
+  }
+
+  /* 経費カード */
+  .expense-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .expense-card.income-card {
+    border-left: 3px solid #2e7d32;
+  }
+  .ec-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3px;
+  }
+  .ec-left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .ec-date {
+    font-size: 11px;
+    color: #999;
+  }
+  .ec-vendor {
+    font-size: 13px;
+    font-weight: 700;
+    color: #333;
+  }
+  .ec-badge {
+    font-size: 9px;
+    background: #e8f5e9;
+    color: #2e7d32;
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-weight: 700;
+  }
+  .ec-amount {
+    font-size: 15px;
+    font-weight: 800;
+    color: #c62828;
+  }
+  .ec-amount.income { color: #2e7d32; }
+  .ec-cat {
+    font-size: 10px;
+    color: #888;
+    background: #f5f5f5;
+    padding: 2px 8px;
+    border-radius: 6px;
+    display: inline-block;
+  }
+
+  /* ボトムバー */
+  .bottom-bar {
+    height: 50px;
+    background: #fff;
+    border-top: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+  .bottom-item {
+    text-align: center;
+    font-size: 9px;
+    color: #999;
+    line-height: 1.3;
+  }
+  .bottom-item.active { color: #5b2d8e; font-weight: 700; }
+  .bottom-icon { font-size: 16px; }
+
+  /* ── 装飾：浮遊レシート ── */
+  .float-receipt {
+    position: absolute;
+    width: 100px;
+    background: #fff;
+    border-radius: 8px;
+    padding: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    transform: rotate(-8deg);
+    z-index: 2;
+    top: 60px;
+    right: 40px;
+    font-size: 9px;
+    color: #666;
+    line-height: 1.6;
+  }
+  .float-receipt::before {
+    content: '🧾';
+    font-size: 18px;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .float-pdf {
+    position: absolute;
+    width: 90px;
+    background: #fff;
+    border-radius: 8px;
+    padding: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    transform: rotate(6deg);
+    z-index: 2;
+    bottom: 50px;
+    right: 30px;
+    font-size: 9px;
+    color: #666;
+    text-align: center;
+  }
+  .float-pdf::before {
+    content: '📊';
+    font-size: 18px;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  /* 矢印アニメ風 */
+  .arrow-scan {
+    position: absolute;
+    top: 110px;
+    right: 145px;
+    color: #d4af37;
+    font-size: 22px;
+    z-index: 3;
+    transform: rotate(15deg);
+  }
+</style>
+</head>
+<body>
+
+  <!-- 左パネル -->
+  <div class="left-panel">
+    <div class="brand-badge">
+      <span>🎭 JIKABUKI PLUS+</span>
+    </div>
+
+    <div class="catch-main">
+      地歌舞伎の<br><span class="gold">会計管理</span>を、<br>スマホひとつで。
+    </div>
+
+    <div class="catch-sub">
+      レシートを撮るだけでAIが自動入力。<br>
+      年度管理からPDF決算書まで、これひとつ。
+    </div>
+
+    <ul class="feature-list">
+      <li><span class="feature-icon">📷</span>AIレシートスキャンで自動入力</li>
+      <li><span class="feature-icon">💰</span>収入・支出13カテゴリで分類</li>
+      <li><span class="feature-icon">📊</span>残高推移＆PDF決算書を出力</li>
+      <li><span class="feature-icon">🗓️</span>年度管理＆前年度繰越に対応</li>
+    </ul>
+
+    <div class="cta-bar">
+      <div class="cta-badge">モニター団体 募集中</div>
+      <div class="cta-free">無料でご利用いただけます</div>
+    </div>
+  </div>
+
+  <!-- 右パネル：スマホモック -->
+  <div class="right-panel">
+    <!-- 浮遊装飾 -->
+    <div class="float-receipt">
+      衣装レンタル<br>
+      ¥45,000<br>
+      2026/2/15<br>
+      <span style="color:#5b2d8e;font-weight:700;font-size:8px">→ AI読み取り</span>
+    </div>
+    <div class="arrow-scan">➜</div>
+    <div class="float-pdf">
+      収支決算書<br>
+      <span style="font-weight:700;color:#333">2025年度</span><br>
+      <span style="font-size:8px;color:#5b2d8e">PDF出力</span>
+    </div>
+
+    <div class="phone-frame">
+      <!-- ステータスバー -->
+      <div class="status-bar">
+        <span>14:32</span>
+        <span>⚡ 📶</span>
+      </div>
+
+      <!-- ヘッダー -->
+      <div class="app-header">
+        <span class="app-header-back">◀</span>
+        <span class="app-header-title">💰 収支管理</span>
+        <span class="app-header-sub">気良歌舞伎</span>
+      </div>
+
+      <!-- 本体 -->
+      <div class="app-body">
+        <!-- 年度ナビ -->
+        <div class="fy-nav">
+          <div class="fy-btn">◀</div>
+          <span>📅 2025年度（R7）</span>
+          <div class="fy-btn">▶</div>
+        </div>
+
+        <!-- サマリー -->
+        <div class="summary-row">
+          <div class="summary-card">
+            <div class="summary-label">収入</div>
+            <div class="summary-val val-income">¥832,000</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">支出</div>
+            <div class="summary-val val-expense">¥614,500</div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-label">残高</div>
+            <div class="summary-val val-balance">¥417,500</div>
+          </div>
+        </div>
+
+        <!-- CTAボタン -->
+        <div class="cta-buttons">
+          <button class="cta-scan">📷 写真で読み取り</button>
+          <button class="cta-add">✏️ 支出</button>
+          <button class="cta-add">💰 収入</button>
+        </div>
+
+        <!-- 経費カード -->
+        <div class="expense-card income-card">
+          <div class="ec-top">
+            <div class="ec-left">
+              <span class="ec-date">2/28</span>
+              <span class="ec-vendor">市補助金</span>
+              <span class="ec-badge">収入</span>
+            </div>
+            <span class="ec-amount income">+¥300,000</span>
+          </div>
+          <span class="ec-cat">補助金・助成金</span>
+        </div>
+
+        <div class="expense-card">
+          <div class="ec-top">
+            <div class="ec-left">
+              <span class="ec-date">2/25</span>
+              <span class="ec-vendor">衣装レンタル店</span>
+            </div>
+            <span class="ec-amount">¥45,000</span>
+          </div>
+          <span class="ec-cat">衣装・かつら</span>
+        </div>
+
+        <div class="expense-card">
+          <div class="ec-top">
+            <div class="ec-left">
+              <span class="ec-date">2/20</span>
+              <span class="ec-vendor">公民館利用料</span>
+            </div>
+            <span class="ec-amount">¥8,500</span>
+          </div>
+          <span class="ec-cat">会場費</span>
+        </div>
+      </div>
+
+      <!-- ボトムバー -->
+      <div class="bottom-bar">
+        <div class="bottom-item"><div class="bottom-icon">🏠</div>TOP</div>
+        <div class="bottom-item"><div class="bottom-icon">📋</div>GATE</div>
+        <div class="bottom-item active"><div class="bottom-icon">⚙️</div>BASE</div>
+        <div class="bottom-item"><div class="bottom-icon">🔍</div>INFO</div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

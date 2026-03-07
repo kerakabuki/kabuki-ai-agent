@@ -1,0 +1,87 @@
+[
+  {
+    "question": "歌舞伎十八番の「勧進帳」で、弁慶が安宅の関を通るために読み上げたものは何？",
+    "options": ["白紙の巻物", "本物の勧進帳", "源氏物語", "般若心経"],
+    "correct_answer": 0,
+    "explanation": "弁慶は白紙の巻物を勧進帳に見立てて読み上げ、富樫を欺きました。",
+    "difficulty": "beginner",
+    "category": "演目"
+  },
+  {
+    "question": "「助六由縁江戸桜」の舞台となる場所はどこ？",
+    "options": ["京都祇園", "吉原", "日本橋", "浅草"],
+    "correct_answer": 1,
+    "explanation": "助六の物語は江戸の吉原遊郭を舞台に繰り広げられます。",
+    "difficulty": "beginner",
+    "category": "演目"
+  },
+  {
+    "question": "歌舞伎の「見得」とは何？",
+    "options": ["台詞を大声で言うこと", "役者が決めポーズをとること", "花道を歩くこと", "黒子が登場すること"],
+    "correct_answer": 1,
+    "explanation": "見得は歌舞伎独特の演技技法で、感情の高まりを強調するポーズです。",
+    "difficulty": "beginner",
+    "category": "豆知識"
+  },
+  {
+    "question": "歌舞伎の舞台で、客席を貫く通路を何と呼ぶ？",
+    "options": ["花道", "本道", "舞道", "通路"],
+    "correct_answer": 0,
+    "explanation": "花道は歌舞伎独自の演出空間で、役者の登退場に使われます。",
+    "difficulty": "beginner",
+    "category": "豆知識"
+  },
+  {
+    "question": "歌舞伎の女形（おんながた）とは？",
+    "options": ["女性の観客", "女性の脚本家", "女性役を演じる男性俳優", "女性の演奏家"],
+    "correct_answer": 2,
+    "explanation": "歌舞伎では全ての役を男性が演じ、女性役専門の俳優を女形と呼びます。",
+    "difficulty": "beginner",
+    "category": "豆知識"
+  },
+  {
+    "question": "歌舞伎の「隈取」で、赤い隈取は何を表す？",
+    "options": ["悪役", "正義の味方", "超自然的な存在", "女性"],
+    "correct_answer": 1,
+    "explanation": "赤い隈取（紅隈）は正義・勇気・力を象徴し、荒事の主人公に使われます。",
+    "difficulty": "intermediate",
+    "category": "豆知識"
+  },
+  {
+    "question": "歌舞伎の「荒事」と「和事」の違いは？",
+    "options": [
+      "荒事は豪快な演技、和事は柔らかい演技",
+      "荒事は関西、和事は関東",
+      "荒事は時代物、和事は世話物",
+      "荒事は踊り、和事は芝居"
+    ],
+    "correct_answer": 0,
+    "explanation": "荒事は初代市川團十郎が確立した豪快な演技様式、和事は坂田藤十郎が確立した柔らかい演技様式です。",
+    "difficulty": "intermediate",
+    "category": "豆知識"
+  },
+  {
+    "question": "「義経千本桜」に登場する狐忠信の正体は？",
+    "options": ["人間の忠臣", "天狗", "狐の化身", "龍の化身"],
+    "correct_answer": 2,
+    "explanation": "狐忠信は、親の皮で作られた鼓を慕う子狐が佐藤忠信に化けた姿です。",
+    "difficulty": "intermediate",
+    "category": "演目"
+  },
+  {
+    "question": "歌舞伎座が現在建っている場所は東京のどこ？",
+    "options": ["銀座", "浅草", "新宿", "上野"],
+    "correct_answer": 0,
+    "explanation": "歌舞伎座は東京都中央区銀座4丁目にあります。",
+    "difficulty": "beginner",
+    "category": "歴史"
+  },
+  {
+    "question": "歌舞伎の創始者とされる人物は？",
+    "options": ["世阿弥", "出雲阿国", "近松門左衛門", "初代市川團十郎"],
+    "correct_answer": 1,
+    "explanation": "出雲阿国が1603年頃に京都で始めた「かぶき踊り」が歌舞伎の起源とされています。",
+    "difficulty": "intermediate",
+    "category": "歴史"
+  }
+]

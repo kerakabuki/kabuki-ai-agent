@@ -361,13 +361,37 @@ window.addEventListener('scroll', function() {
 </script>
   `;
 
+  const pageUrl = "https://kabukiplus.com/kabuki/navi/theater";
+  const ogDesc = "はじめての歌舞伎座を6ステップでガイド。チケットの買い方、座席の選び方、イヤホンガイド、幕間の過ごし方まで丸わかり。";
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "はじめての歌舞伎座ガイド",
+    "description": ogDesc,
+    "url": pageUrl,
+    "step": [
+      { "@type": "HowToStep", "name": "チケットを手に入れる", "position": 1 },
+      { "@type": "HowToStep", "name": "劇場へ向かう", "position": 2 },
+      { "@type": "HowToStep", "name": "劇場に入ったら", "position": 3 },
+      { "@type": "HowToStep", "name": "いよいよ開演", "position": 4 },
+      { "@type": "HowToStep", "name": "幕間を楽しむ", "position": 5 },
+      { "@type": "HowToStep", "name": "終演後の楽しみ方", "position": 6 },
+    ],
+    "publisher": { "@type": "Organization", "name": "KABUKI PLUS+", "url": "https://kabukiplus.com" },
+  };
+
   return pageShell({
-    title: "観劇ナビ",
+    title: "観劇ナビ — はじめての歌舞伎座ガイド",
     subtitle: "はじめての歌舞伎座ガイド",
     bodyHTML,
     activeNav: "navi",
     googleClientId,
-    headExtra: `<style>
+    ogDesc,
+    ogUrl: pageUrl,
+    canonicalUrl: pageUrl,
+    headExtra: `
+<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
+<style>
   /* ── 観劇ナビ固有スタイル ── */
   .kn-intro-card {
     background: var(--bg-card);

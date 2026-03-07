@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OGP Composer — 機能紹介画像生成</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', 'Hiragino Sans', sans-serif; background: #1a1a1a; color: #e8e0d4; min-height: 100vh; }
+.header { padding: 24px 32px; border-bottom: 1px solid #3a3530; }
+.header h1 { font-size: 20px; color: #c4a46c; }
+.header p { font-size: 13px; color: #888; margin-top: 4px; }
+.controls { padding: 16px 32px; display: flex; gap: 12px; align-items: center; border-bottom: 1px solid #2a2520; }
+.controls label { font-size: 13px; color: #aaa; }
+.controls select { background: #2a2520; color: #e8e0d4; border: 1px solid #3a3530; padding: 6px 12px; border-radius: 6px; font-size: 13px; }
+.controls button { background: #c4a46c; color: #1a1a1a; border: none; padding: 8px 20px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.controls button:hover { background: #d4b47c; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(520px, 1fr)); gap: 24px; padding: 24px 32px; }
+.card { background: #242018; border: 1px solid #3a3530; border-radius: 12px; overflow: hidden; }
+.card-header { padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a2520; }
+.card-header h3 { font-size: 14px; color: #c4a46c; }
+.card-header .brand { font-size: 11px; color: #888; background: #2a2520; padding: 2px 8px; border-radius: 4px; }
+.card-body { padding: 16px 20px; }
+.drop-zone { border: 2px dashed #3a3530; border-radius: 8px; padding: 32px; text-align: center; cursor: pointer; transition: border-color 0.2s; position: relative; }
+.drop-zone:hover, .drop-zone.dragover { border-color: #c4a46c; }
+.drop-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.drop-zone p { color: #666; font-size: 13px; }
+.drop-zone.has-image { padding: 8px; border-style: solid; border-color: #3a3530; }
+.drop-zone.has-image img { max-width: 100%; max-height: 200px; border-radius: 4px; }
+.preview-wrap { margin-top: 12px; background: #1a1a1a; border-radius: 8px; padding: 8px; text-align: center; }
+.preview-wrap canvas { max-width: 100%; border-radius: 4px; }
+.card-actions { padding: 12px 20px; border-top: 1px solid #2a2520; display: flex; gap: 8px; }
+.card-actions button { flex: 1; padding: 8px; border: 1px solid #3a3530; background: transparent; color: #c4a46c; border-radius: 6px; font-size: 12px; cursor: pointer; }
+.card-actions button:hover { background: #2a2520; }
+.card-actions button.primary { background: #c4a46c; color: #1a1a1a; border-color: #c4a46c; font-weight: 600; }
+.card-actions button.primary:hover { background: #d4b47c; }
+.card-actions button:disabled { opacity: 0.3; cursor: default; }
+.status { font-size: 11px; color: #666; margin-top: 8px; text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>OGP Composer — 機能紹介画像生成ツール</h1>
+  <p>各機能のスクリーンショットをドロップ → OGPデザインに合成 → ダウンロード</p>
+</div>
+
+<div class="controls">
+  <label>出力サイズ:</label>
+  <select id="sizeSelect">
+    <option value="1080x1080">1080 × 1080（Instagram正方形）</option>
+    <option value="1200x630">1200 × 630（OGP / X / Facebook）</option>
+  </select>
+  <button onclick="downloadAll()">全てダウンロード</button>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<script>
+const FEATURES = [
+  { name: 'KABUKI NAVI（演目ガイド）', nameJa: '歌舞伎羅針盤', nameEn: 'KABUKI NAVI', brand: 'KABUKI+', tagline: '知れば知るほど、面白い。', sub: '演目のあらすじ・人物・用語 —— AIが歌舞伎をガイド', file: 'ogp_navi.png' },
+  { name: 'KABUKI NAVI（用語辞典）', nameJa: '歌舞伎羅針盤', nameEn: 'KABUKI NAVI', brand: 'KABUKI+', tagline: '126語の歌舞伎用語辞典', sub: '8カテゴリ・読みがな・わかりやすい解説付き', file: 'ogp_navi.png' },
+  { name: 'KABUKI NAVI（観劇ナビ）', nameJa: '歌舞伎羅針盤', nameEn: 'KABUKI NAVI', brand: 'KABUKI+', tagline: '初めての歌舞伎を、ナビ。', sub: 'チケット購入からマナーまで6ステップ', file: 'ogp_navi.png' },
+  { name: 'KABUKI LIVE（公演情報）', nameJa: '歌舞伎瓦版', nameEn: 'KABUKI LIVE', brand: 'KABUKI+', tagline: '歌舞伎の今を、知る。', sub: '歌舞伎ニュース・全国公演スケジュール', file: 'ogp_live.png' },
+  { name: 'KABUKI RECO（観劇記録）', nameJa: '歌舞伎帖', nameEn: 'KABUKI RECO', brand: 'KABUKI+', tagline: 'あなたの感動を、記録に。', sub: '観劇ログ・推し俳優・歌舞伎ライフを可視化', file: 'ogp_reco.png' },
+  { name: 'KABUKI DOJO（歌舞伎クイズ）', nameJa: '歌舞伎道場', nameEn: 'KABUKI DOJO', brand: 'KABUKI+', tagline: '知識で、もっと楽しく。', sub: '3段階の難易度で歌舞伎の知識をテスト', file: 'ogp_dojo.png' },
+  { name: 'KABUKI DOJO（大向う道場）', nameJa: '歌舞伎道場', nameEn: 'KABUKI DOJO', brand: 'KABUKI+', tagline: '掛け声の練習、始めよう。', sub: '動画連動で掛け声＆拍手タイミングを練習', file: 'ogp_dojo.png' },
+  { name: 'けらのすけ（AIチャット）', nameJa: 'けらのすけ', nameEn: 'AI CHAT', brand: 'KABUKI+', tagline: '歌舞伎のこと、何でも聞いて。', sub: 'AIアシスタントが演目・用語・公演情報を回答', file: 'ogp_kabukiplus_top.png' },
+  { name: 'JIKABUKI GATE（団体公式ページ）', nameJa: '地歌舞伎門', nameEn: 'JIKABUKI GATE', brand: 'JIKABUKI+', tagline: '団体の顔を、簡単に。', sub: '地歌舞伎団体の公式ページを作成・運営', file: 'ogp_gate.png' },
+  { name: 'JIKABUKI INFO（地歌舞伎情報）', nameJa: '地歌舞伎情報', nameEn: 'JIKABUKI INFO', brand: 'JIKABUKI+', tagline: '全国の地歌舞伎を、ここに。', sub: '団体検索・芝居小屋データベース・イベント情報', file: 'ogp_info.png' },
+  { name: 'JIKABUKI BASE（団体運営ツール）', nameJa: '地歌舞伎基地', nameEn: 'JIKABUKI BASE', brand: 'JIKABUKI+', tagline: '団体運営を、もっとスムーズに。', sub: '稽古カレンダー・出欠・台本・収支管理', file: 'ogp_base.png' },
+  { name: 'JIKABUKI LABO（コンテンツ管理）', nameJa: '地歌舞伎工房', nameEn: 'JIKABUKI LABO', brand: 'JIKABUKI+', tagline: 'みんなで育てる、歌舞伎データ。', sub: '演目・用語・クイズのコンテンツエディター', file: 'ogp_labo.png' },
+  { name: 'YouTube：気良歌舞伎チャンネル', nameJa: '気良歌舞伎', nameEn: 'YouTube', brand: 'YouTube', tagline: '舞台の裏側、お見せします。', sub: '練習風景・本番映像・歌舞伎入門動画', file: 'ogp_jikabukiplus_top.png' },
+];
+
+const screenshots = new Array(FEATURES.length).fill(null);
+
+function getSize() {
+  const v = document.getElementById('sizeSelect').value;
+  const [w, h] = v.split('x').map(Number);
+  return { w, h };
+}
+
+function buildGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  FEATURES.forEach((f, i) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div class="card-header">
+        <h3>${f.name}</h3>
+        <span class="brand">${f.brand}</span>
+      </div>
+      <div class="card-body">
+        <div class="drop-zone" id="drop-${i}">
+          <input type="file" accept="image/*" onchange="handleFile(event, ${i})">
+          <p>スクリーンショットをドロップ<br>またはクリックして選択</p>
+        </div>
+        <div class="preview-wrap">
+          <canvas id="canvas-${i}" width="540" height="540"></canvas>
+        </div>
+        <div class="status" id="status-${i}">スクショ未設定 — OGPテキストのみで生成</div>
+      </div>
+      <div class="card-actions">
+        <button onclick="clearScreenshot(${i})">クリア</button>
+        <button class="primary" onclick="download(${i})">ダウンロード</button>
+      </div>
+    `;
+    grid.appendChild(card);
+
+    // Drag events
+    const dz = card.querySelector('.drop-zone');
+    dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
+    dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+    dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('dragover'); loadImage(e.dataTransfer.files[0], i); });
+
+    // Draw initial (no screenshot)
+    renderComposite(i);
+  });
+}
+
+function handleFile(e, idx) {
+  if (e.target.files[0]) loadImage(e.target.files[0], idx);
+}
+
+function loadImage(file, idx) {
+  if (!file || !file.type.startsWith('image/')) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const img = new Image();
+    img.onload = () => {
+      screenshots[idx] = img;
+      const dz = document.getElementById(`drop-${idx}`);
+      dz.classList.add('has-image');
+      dz.innerHTML = `<input type="file" accept="image/*" onchange="handleFile(event, ${idx})"><img src="${img.src}">`;
+      document.getElementById(`status-${idx}`).textContent = `${img.naturalWidth}×${img.naturalHeight} — 合成済み`;
+      renderComposite(idx);
+    };
+    img.src = reader.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearScreenshot(idx) {
+  screenshots[idx] = null;
+  const dz = document.getElementById(`drop-${idx}`);
+  dz.classList.remove('has-image');
+  dz.innerHTML = `<input type="file" accept="image/*" onchange="handleFile(event, ${idx})"><p>スクリーンショットをドロップ<br>またはクリックして選択</p>`;
+  document.getElementById(`status-${idx}`).textContent = 'スクショ未設定 — OGPテキストのみで生成';
+  renderComposite(idx);
+}
+
+function renderComposite(idx) {
+  const f = FEATURES[idx];
+  const { w, h } = getSize();
+  const canvas = document.getElementById(`canvas-${idx}`);
+  // Preview at half size
+  const scale = Math.min(540 / w, 540 / h);
+  canvas.width = Math.round(w * scale);
+  canvas.height = Math.round(h * scale);
+  const ctx = canvas.getContext('2d');
+
+  // We draw at full resolution on an offscreen canvas, then scale down for preview
+  drawComposite(idx, (fullCanvas) => {
+    ctx.drawImage(fullCanvas, 0, 0, canvas.width, canvas.height);
+  });
+}
+
+function drawComposite(idx, callback) {
+  const f = FEATURES[idx];
+  const { w, h } = getSize();
+  const isSquare = w === h;
+  const c = document.createElement('canvas');
+  c.width = w;
+  c.height = h;
+  const ctx = c.getContext('2d');
+
+  // --- Background ---
+  const grad = ctx.createLinearGradient(0, 0, w, h);
+  grad.addColorStop(0, '#2a2320');
+  grad.addColorStop(0.5, '#1e1a16');
+  grad.addColorStop(1, '#2a2320');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, w, h);
+
+  // --- Gold corner accents ---
+  ctx.strokeStyle = '#c4a46c';
+  ctx.lineWidth = 2;
+  const m = 40; // margin
+  const cl = 80; // corner length
+  // Top-left
+  ctx.beginPath(); ctx.moveTo(m, m + cl); ctx.lineTo(m, m); ctx.lineTo(m + cl, m); ctx.stroke();
+  // Top-left circle
+  ctx.beginPath(); ctx.arc(m, m + cl + 12, 4, 0, Math.PI * 2); ctx.stroke();
+  // Bottom-left
+  ctx.beginPath(); ctx.moveTo(m, h - m - cl); ctx.lineTo(m, h - m); ctx.lineTo(m + cl, h - m); ctx.stroke();
+  ctx.beginPath(); ctx.arc(m, h - m - cl - 12, 4, 0, Math.PI * 2); ctx.stroke();
+
+  // Right side subtle vertical line
+  ctx.strokeStyle = 'rgba(196,164,108,0.15)';
+  ctx.lineWidth = 1;
+  const rx = isSquare ? w - 80 : w * 0.58;
+  ctx.beginPath(); ctx.moveTo(rx, m + 20); ctx.lineTo(rx, h - m - 20); ctx.stroke();
+
+  // --- Text area (left side) ---
+  const textX = isSquare ? 80 : 80;
+  const textMaxW = isSquare ? w * 0.5 : w * 0.48;
+
+  // Brand label
+  ctx.fillStyle = '#c4a46c';
+  ctx.font = `500 ${isSquare ? 18 : 16}px 'Segoe UI', sans-serif`;
+  ctx.textAlign = 'center';
+  const brandCenterX = textX + textMaxW / 2;
+  const brandY = isSquare ? 180 : 130;
+  ctx.fillText(`── ${f.brand} ──`, brandCenterX, brandY);
+
+  // Feature name (Japanese, large)
+  ctx.fillStyle = '#e8e0d4';
+  ctx.font = `bold ${isSquare ? 64 : 54}px 'Hiragino Mincho ProN', 'Yu Mincho', serif`;
+  ctx.textAlign = 'center';
+
+  // Letter-spacing simulation
+  const nameChars = f.nameJa.split('');
+  const nameY = brandY + (isSquare ? 80 : 70);
+  const spacing = isSquare ? 14 : 12;
+  const totalNameW = nameChars.reduce((acc, ch) => acc + ctx.measureText(ch).width + spacing, -spacing);
+  let nx = brandCenterX - totalNameW / 2;
+  for (const ch of nameChars) {
+    const cw = ctx.measureText(ch).width;
+    ctx.fillText(ch, nx + cw / 2, nameY);
+    nx += cw + spacing;
+  }
+
+  // English name
+  ctx.fillStyle = '#888';
+  ctx.font = `400 ${isSquare ? 16 : 14}px 'Segoe UI', sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.fillText(f.nameEn, brandCenterX, nameY + (isSquare ? 40 : 36));
+
+  // Separator line
+  ctx.strokeStyle = '#c4a46c';
+  ctx.lineWidth = 2;
+  const sepY = nameY + (isSquare ? 60 : 54);
+  ctx.beginPath(); ctx.moveTo(brandCenterX - 20, sepY); ctx.lineTo(brandCenterX + 20, sepY); ctx.stroke();
+
+  // Tagline
+  ctx.fillStyle = '#e8e0d4';
+  ctx.font = `bold ${isSquare ? 30 : 26}px 'Hiragino Sans', 'Yu Gothic', sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.fillText(f.tagline, brandCenterX, sepY + (isSquare ? 50 : 42));
+
+  // Sub description
+  ctx.fillStyle = '#999';
+  ctx.font = `400 ${isSquare ? 15 : 13}px 'Hiragino Sans', 'Yu Gothic', sans-serif`;
+  ctx.fillText(f.sub, brandCenterX, sepY + (isSquare ? 80 : 66));
+
+  // Vertical nameJa (right side faint)
+  ctx.save();
+  ctx.fillStyle = 'rgba(196,164,108,0.08)';
+  ctx.font = `bold ${isSquare ? 36 : 30}px 'Hiragino Mincho ProN', 'Yu Mincho', serif`;
+  ctx.textAlign = 'center';
+  const vx = isSquare ? w - 50 : w * 0.62;
+  const vyStart = isSquare ? 160 : 100;
+  for (let ci = 0; ci < f.nameJa.length; ci++) {
+    ctx.fillText(f.nameJa[ci], vx, vyStart + ci * (isSquare ? 44 : 38));
+  }
+  ctx.restore();
+
+  // URL
+  ctx.fillStyle = '#888';
+  ctx.font = `400 ${isSquare ? 14 : 13}px 'Segoe UI', sans-serif`;
+  ctx.textAlign = 'right';
+  ctx.fillText('kabukiplus.com', w - m - 10, h - m - 10);
+
+  // --- Phone mockup with screenshot ---
+  const screenshot = screenshots[idx];
+  if (screenshot) {
+    drawPhoneMockup(ctx, screenshot, w, h, isSquare);
+  }
+
+  callback(c);
+}
+
+function drawPhoneMockup(ctx, img, w, h, isSquare) {
+  // Phone dimensions and position
+  const phoneW = isSquare ? 240 : 220;
+  const phoneH = isSquare ? 480 : 420;
+  const phoneX = isSquare ? w - phoneW - 100 : w - phoneW - 80;
+  const phoneY = isSquare ? (h - phoneH) / 2 + 20 : (h - phoneH) / 2;
+  const radius = 24;
+  const bezel = 8;
+
+  // Phone shadow
+  ctx.save();
+  ctx.shadowColor = 'rgba(0,0,0,0.5)';
+  ctx.shadowBlur = 30;
+  ctx.shadowOffsetX = 4;
+  ctx.shadowOffsetY = 8;
+
+  // Phone outer frame
+  ctx.fillStyle = '#333';
+  roundRect(ctx, phoneX, phoneY, phoneW, phoneH, radius);
+  ctx.fill();
+  ctx.restore();
+
+  // Phone bezel (darker border)
+  ctx.strokeStyle = '#555';
+  ctx.lineWidth = 1;
+  roundRect(ctx, phoneX, phoneY, phoneW, phoneH, radius);
+  ctx.stroke();
+
+  // Screen area
+  const screenX = phoneX + bezel;
+  const screenY = phoneY + bezel + 20; // extra for notch area
+  const screenW = phoneW - bezel * 2;
+  const screenH = phoneH - bezel * 2 - 30; // notch + bottom
+
+  // Clip to screen area with rounded corners
+  ctx.save();
+  roundRect(ctx, screenX, screenY, screenW, screenH, radius - bezel);
+  ctx.clip();
+
+  // Draw screenshot, covering the screen area
+  const imgAspect = img.naturalWidth / img.naturalHeight;
+  const screenAspect = screenW / screenH;
+  let sx = 0, sy = 0, sw = img.naturalWidth, sh = img.naturalHeight;
+  if (imgAspect > screenAspect) {
+    // Image is wider — crop sides
+    sw = img.naturalHeight * screenAspect;
+    sx = (img.naturalWidth - sw) / 2;
+  } else {
+    // Image is taller — show from top, crop bottom
+    sh = img.naturalWidth / screenAspect;
+  }
+  ctx.drawImage(img, sx, sy, sw, sh, screenX, screenY, screenW, screenH);
+  ctx.restore();
+
+  // Notch area
+  ctx.fillStyle = '#222';
+  ctx.fillRect(phoneX + bezel, phoneY + bezel, screenW, 20);
+  // Notch
+  const notchW = 60;
+  ctx.fillStyle = '#1a1a1a';
+  roundRect(ctx, phoneX + phoneW / 2 - notchW / 2, phoneY + bezel, notchW, 14, 7);
+  ctx.fill();
+
+  // Status bar dots (time, signal etc.)
+  ctx.fillStyle = '#888';
+  ctx.font = '10px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('9:41', phoneX + bezel + 6, phoneY + bezel + 13);
+
+  // Bottom home indicator
+  ctx.fillStyle = '#555';
+  roundRect(ctx, phoneX + phoneW / 2 - 30, phoneY + phoneH - bezel - 10, 60, 4, 2);
+  ctx.fill();
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function download(idx) {
+  const f = FEATURES[idx];
+  const { w, h } = getSize();
+  drawComposite(idx, (canvas) => {
+    const link = document.createElement('a');
+    const safeName = f.file.replace('.png', '') + '_composite.png';
+    link.download = safeName;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  });
+}
+
+function downloadAll() {
+  FEATURES.forEach((_, i) => {
+    setTimeout(() => download(i), i * 300);
+  });
+}
+
+// Re-render all on size change
+document.getElementById('sizeSelect').addEventListener('change', () => {
+  FEATURES.forEach((_, i) => renderComposite(i));
+});
+
+buildGrid();
+</script>
+</body>
+</html>

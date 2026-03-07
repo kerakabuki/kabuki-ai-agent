@@ -100,11 +100,48 @@ export function mypagePageHTML(opts) {
       .mp-btn:hover { border-color: var(--kl-gold); color: var(--kl-gold-dark); background: var(--kl-gold-soft); text-decoration: none; }
       .mp-btn-primary {
         background: linear-gradient(135deg, var(--kl-gold), var(--kl-gold-dark));
-        border-color: var(--kl-gold); color: #fff;
+        color: #fff; border-color: var(--kl-gold);
       }
-      .mp-btn-primary:hover { box-shadow: var(--kl-shadow-md); }
+      .mp-btn-primary:hover { opacity: 0.9; color: #fff; }
+      .mp-btn-lg { padding: 0.7rem 1.2rem; font-size: 0.95rem; min-height: 48px; }
       .mp-btn-danger { background: transparent; border-color: var(--kl-border2); color: var(--kl-text3); }
       .mp-btn-danger:hover { border-color: var(--kl-red); color: var(--kl-red); }
+
+      /* ── トースト通知 ── */
+      .kl-toast {
+        position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+        background: rgba(0,0,0,0.85); color: #fff; padding: 10px 20px;
+        border-radius: 20px; font-size: 13px; z-index: 9999;
+        opacity: 0; transition: opacity 0.3s; pointer-events: none;
+        max-width: 90%; text-align: center;
+      }
+      .kl-toast.kl-toast-show { opacity: 1; }
+
+      /* ── スケルトンローダー ── */
+      .kl-skeleton {
+        background: linear-gradient(90deg, var(--kl-subtle) 25%, var(--kl-border) 50%, var(--kl-subtle) 75%);
+        background-size: 200% 100%;
+        animation: kl-shimmer 1.5s infinite;
+        border-radius: var(--kl-radius);
+      }
+      @keyframes kl-shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+      .kl-skeleton-text { height: 14px; margin-bottom: 8px; width: 80%; }
+      .kl-skeleton-card { height: 80px; margin-bottom: 12px; }
+
+      /* ── フォーム進捗バー ── */
+      .tl-form-progress {
+        display: flex; align-items: center; gap: 4px;
+        margin-bottom: 12px; padding: 0 4px;
+      }
+      .tl-form-progress-step {
+        flex: 1; height: 4px; border-radius: 2px;
+        background: var(--kl-border); transition: background 0.3s;
+      }
+      .tl-form-progress-step.active { background: var(--kl-gold); }
+      .tl-form-progress-label {
+        font-size: 11px; color: var(--kl-text3); text-align: center;
+        margin-bottom: 4px;
+      }
 
       .mp-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--kl-border); margin-bottom: 1rem; }
       .mp-tab {
@@ -123,10 +160,11 @@ export function mypagePageHTML(opts) {
       }
       .kl-tab-btn {
         flex: 1; display: flex; align-items: center; justify-content: center;
-        gap: 6px; padding: 12px 4px 10px; border: none; background: none;
+        gap: 6px; padding: 8px 12px; border: none; background: none;
         color: var(--kl-text3); font-size: 13px; font-family: inherit;
         cursor: pointer; transition: color 0.15s; letter-spacing: 0.5px;
         border-bottom: 2px solid transparent; margin-bottom: -2px;
+        min-height: 44px;
       }
       .kl-tab-btn:hover { color: var(--kl-text2); }
       .kl-tab-icon { font-size: 16px; line-height: 1; }
@@ -151,8 +189,10 @@ export function mypagePageHTML(opts) {
         position: relative; display: inline-block;
       }
       .tl-entry-more-btn {
-        background: none; border: none; color: #ccc; font-size: 16px;
-        cursor: pointer; padding: 2px 8px; border-radius: 6px;
+        background: none; border: none; color: var(--kl-text3);
+        font-size: 18px; cursor: pointer; padding: 8px; border-radius: 6px;
+        min-width: 36px; min-height: 36px;
+        display: flex; align-items: center; justify-content: center;
         font-family: inherit; transition: all 0.15s; letter-spacing: 2px;
       }
       .tl-entry-more-btn:hover { color: var(--kl-text2); background: rgba(0,0,0,0.04); }
@@ -1279,33 +1319,7 @@ export function mypagePageHTML(opts) {
       .tl-play-check-actors { font-size: 0.7rem; color: var(--kl-text3); letter-spacing: 0.02em; }
       .tl-perf-card-plays { font-size: 0.68rem; color: var(--kl-green); margin-top: 2px; }
 
-      /* ── 月次アクティビティカレンダー ── */
-      .kl-month-cal {
-        display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px;
-        margin-top: 6px;
-      }
-      .kl-cal-header-cell {
-        text-align: center; font-size: 10px; color: var(--kl-text3);
-        padding: 2px 0; font-weight: 500;
-      }
-      .kl-cal-header-cell:first-child { color: var(--kl-red); }
-      .kl-cal-header-cell:last-child  { color: var(--kl-blue); }
-      .kl-cal-cell {
-        aspect-ratio: 1; border-radius: 4px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 11px; color: var(--kl-text3);
-      }
-      .kl-cal-empty {}
-      .kl-cal-theater { background: var(--kl-red-soft); color: var(--kl-red); font-weight: 600; }
-      .kl-cal-media   { background: var(--kl-blue-bg); color: var(--kl-blue-text); font-weight: 600; }
-      .kl-cal-activity { background: var(--kl-accent-soft); color: var(--kl-gold-dark); }
-      .kl-cal-today {
-        background: var(--kl-gold-soft); color: var(--kl-gold-dark);
-        font-weight: 700; border: 1px solid var(--kl-gold-light);
-      }
-      .kl-cal-theater.kl-cal-today, .kl-cal-media.kl-cal-today {
-        border-color: var(--kl-red);
-      }
+      /* ── アクティビティカレンダー ── */
       .kl-cal-legend {
         display: flex; gap: 10px; flex-wrap: wrap;
         margin-top: 8px; padding-top: 8px;
@@ -1329,6 +1343,15 @@ export function mypagePageHTML(opts) {
       ===================================================== */
       var authState = { loggedIn: false, user: null, checked: false, serverData: null };
 
+      function clearLocalUserData() {
+        try {
+          localStorage.removeItem('theater_log_v1');
+          localStorage.removeItem('favorite_actors_v1');
+          localStorage.removeItem('keranosuke_log_v1');
+          localStorage.removeItem('keranosuke_quiz_state');
+        } catch(e) {}
+      }
+
       function checkAuth(callback) {
         fetch('/api/auth/me', { credentials: 'same-origin' })
           .then(function(r) { return r.json(); })
@@ -1337,8 +1360,15 @@ export function mypagePageHTML(opts) {
             authState.loggedIn = !!data.loggedIn;
             authState.user = data.user || null;
             if (authState.loggedIn) {
+              /* ログイン中フラグを立てる */
+              try { localStorage.setItem('reco_was_logged_in', '1'); } catch(e) {}
               loadServerData(callback);
             } else {
+              /* 以前ログインしていた → ログアウト済み → ローカルデータを消す */
+              if (localStorage.getItem('reco_was_logged_in')) {
+                clearLocalUserData();
+                localStorage.removeItem('reco_was_logged_in');
+              }
               if (callback) callback();
             }
           })
@@ -1376,6 +1406,22 @@ export function mypagePageHTML(opts) {
         }
       }
 
+      /* ── トースト通知 ── */
+      function showToast(msg, duration) {
+        duration = duration || 2000;
+        var existing = document.querySelector('.kl-toast');
+        if (existing) existing.remove();
+        var el = document.createElement('div');
+        el.className = 'kl-toast';
+        el.textContent = msg;
+        document.body.appendChild(el);
+        setTimeout(function() { el.classList.add('kl-toast-show'); }, 10);
+        setTimeout(function() {
+          el.classList.remove('kl-toast-show');
+          setTimeout(function() { el.remove(); }, 300);
+        }, duration);
+      }
+
       function saveToServer() {
         if (!authState.loggedIn) return;
         var payload = {
@@ -1394,7 +1440,14 @@ export function mypagePageHTML(opts) {
           credentials: 'same-origin',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
-        }).catch(function(e) { console.error('Server sync error:', e); });
+        })
+        .then(function(r) {
+          if (!r.ok) showToast('保存に失敗しました', 3000);
+        })
+        .catch(function(e) {
+          console.error('Server sync error:', e);
+          showToast('通信エラー：データを保存できませんでした', 3000);
+        });
       }
 
       function doMigration() {
@@ -2111,23 +2164,137 @@ export function mypagePageHTML(opts) {
       /* =====================================================
          画面管理
       ===================================================== */
-      var currentView = "home";   /* home | log | oshi */
+      var currentView = "home";   /* home | log | oshi | community */
+      var communityFeedData = null;
+      var communityFeedLoading = false;
+      var calYear = new Date().getFullYear();
       var logFilter = "all";      /* all | theater | media */
       var oshiLogFilter = "all";  /* all | actorName */
       var clipTab = "enmoku";
       var subView = null;         /* null | "recent" | "clips" | "review" */
       var migrationDone = false;
 
+      var nameRegDismissed = false;
+
+      function needsNameRegistration() {
+        if (nameRegDismissed) return false;
+        if (!authState.loggedIn || !authState.serverData) return false;
+        var profile = authState.serverData.profile || {};
+        return !profile.display_name;
+      }
+
       function render() {
+        /* 初回ログイン時：表示名未設定なら登録画面を挟む */
+        if (needsNameRegistration()) {
+          renderNameRegistration();
+          return;
+        }
+        if (subView === "profile-edit") { renderProfileEdit(); return; }
         if (subView === "recent") { renderRecent(); return; }
         if (subView === "clips") { renderClips(); return; }
         if (subView === "review") { renderReview(); return; }
         if (currentView === "home") renderHome();
         else if (currentView === "log") renderLogTab();
         else if (currentView === "oshi") renderOshiTab();
+        else if (currentView === "community") renderCommunityTab();
         else renderHome();
         /* Google ボタンの再描画 */
         setTimeout(function() { if (window.__initGoogleSignIn) window.__initGoogleSignIn(); }, 100);
+      }
+
+      function renderNameRegistration() {
+        var googleName = (authState.user && authState.user.displayName) || "";
+        var h = '';
+        h += '<div style="max-width:400px;margin:2rem auto;padding:0 1rem;">';
+        h += '<div class="kl-section-card" style="text-align:center;padding:2rem 1.5rem;">';
+        h += '<div style="font-size:2rem;margin-bottom:12px;">🎭</div>';
+        h += '<div style="font-size:1.1rem;font-weight:700;color:var(--kl-text);margin-bottom:4px;">ようこそ KABUKI RECO へ！</div>';
+        h += '<div style="font-size:0.82rem;color:var(--kl-text2);margin-bottom:1.5rem;line-height:1.6;">観劇記録で使う表示名を設定してください。<br>公開プロフィールやコミュニティで表示されます。</div>';
+        h += '<input type="text" id="reg-display-name" value="' + esc(googleName) + '" placeholder="表示名を入力" maxlength="20" style="width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid var(--kl-border2);border-radius:8px;font-size:15px;font-family:inherit;background:var(--kl-card);color:var(--kl-text);text-align:center;margin-bottom:1rem;">';
+        h += '<button class="mp-btn mp-btn-primary" onclick="MP.submitNameReg()" style="width:100%;padding:10px;font-size:0.95rem;font-weight:600;">はじめる</button>';
+        h += '<div style="margin-top:12px;">';
+        h += '<button onclick="MP.skipNameReg()" style="background:none;border:none;color:var(--kl-text3);font-size:0.75rem;cursor:pointer;font-family:inherit;">あとで設定する</button>';
+        h += '</div>';
+        h += '</div>';
+        h += '</div>';
+        app.innerHTML = h;
+        setTimeout(function() {
+          var input = document.getElementById('reg-display-name');
+          if (input) { input.focus(); input.select(); }
+        }, 100);
+      }
+
+      function renderProfileEdit() {
+        if (!authState.loggedIn || !authState.user) { subView = null; render(); return; }
+        var profileData = (authState.serverData && authState.serverData.profile) || { is_public: false, display_name: "" };
+        var isPublic = !!profileData.is_public;
+        var displayName = profileData.display_name || authState.user.displayName || "";
+        var avatarUrl = profileData.avatar_url || "";
+
+        var h = '';
+        h += '<div style="margin-bottom:12px;">';
+        h += '<button class="mp-btn" onclick="MP.switchTab(\\'home\\')" style="font-size:12px;">← ホームに戻る</button>';
+        h += '</div>';
+
+        h += '<div class="kl-section-card">';
+        h += '<div class="kl-section-header">⚙ プロフィール設定</div>';
+
+        /* アバター */
+        h += '<div style="text-align:center;margin-bottom:16px;">';
+        h += '<div id="avatar-preview" style="width:80px;height:80px;border-radius:50%;margin:0 auto 8px;overflow:hidden;border:2px solid var(--kl-border2);display:flex;align-items:center;justify-content:center;background:var(--kl-gold-soft);font-size:36px;cursor:pointer;" onclick="document.getElementById(\\'avatar-file-input\\').click()">';
+        if (avatarUrl) {
+          h += '<img src="' + esc(avatarUrl) + '" alt="アバター" style="width:100%;height:100%;object-fit:cover;">';
+        } else {
+          h += '🎭';
+        }
+        h += '</div>';
+        h += '<input type="file" id="avatar-file-input" accept="image/jpeg,image/png,image/webp" style="display:none;" onchange="MP.uploadAvatar(this)">';
+        h += '<div id="avatar-upload-status" style="font-size:11px;color:var(--kl-text3);"></div>';
+        h += '<button class="mp-btn" onclick="document.getElementById(\\'avatar-file-input\\').click()" style="font-size:12px;padding:4px 12px;margin-top:4px;">📷 写真を変更</button>';
+        if (avatarUrl) {
+          h += ' <button class="mp-btn" onclick="MP.removeAvatar()" style="font-size:12px;padding:4px 12px;margin-top:4px;color:var(--kl-red);">削除</button>';
+        }
+        h += '</div>';
+
+        /* 表示名 */
+        h += '<div style="margin-bottom:16px;">';
+        h += '<label style="font-size:12px;font-weight:600;color:var(--kl-text2);display:block;margin-bottom:4px;">表示名</label>';
+        h += '<div style="display:flex;gap:8px;align-items:center;">';
+        h += '<input type="text" id="profile-display-name" value="' + esc(displayName) + '" placeholder="名前を入力" maxlength="20" style="flex:1;padding:8px 10px;border:1px solid var(--kl-border2);border-radius:8px;font-size:14px;font-family:inherit;background:var(--kl-card);color:var(--kl-text);">';
+        h += '<button class="mp-btn" onclick="MP.saveDisplayName()" style="white-space:nowrap;">保存</button>';
+        h += '</div>';
+        h += '</div>';
+
+        /* 公開トグル */
+        h += '<div class="profile-toggle-row">';
+        h += '<div>';
+        h += '<div class="profile-toggle-label">観劇帖を公開する</div>';
+        h += '<div class="profile-toggle-sub">ONにすると観劇記録が公開されます</div>';
+        h += '</div>';
+        h += '<button class="profile-toggle-switch' + (isPublic ? " active" : "") + '" onclick="MP.toggleProfilePublic()"></button>';
+        h += '</div>';
+
+        /* 公開中の場合：URL・シェア・プレビュー */
+        if (isPublic) {
+          var profileUrl = "https://kabukiplus.com/reco/" + encodeURIComponent(authState.user.userId);
+          h += '<div class="profile-url-box">';
+          h += '<span style="flex:1;word-break:break-all;">' + esc(profileUrl) + '</span>';
+          h += '<button class="profile-url-copy" onclick="MP.copyProfileUrl()">コピー</button>';
+          h += '</div>';
+          h += '<div style="display:flex;gap:8px;margin-top:8px;">';
+          h += '<button class="mp-btn" onclick="MP.shareProfile()" style="flex:1;">📤 シェア</button>';
+          h += '<a href="/reco/' + encodeURIComponent(authState.user.userId) + '" target="_blank" class="mp-btn" style="flex:1;text-align:center;">👀 プレビュー</a>';
+          h += '</div>';
+        }
+
+        h += '</div>'; /* kl-section-card */
+
+        /* ログアウト */
+        h += '<div style="margin-top:16px;text-align:center;">';
+        h += '<button class="mp-btn" onclick="MP.logout()" style="color:var(--kl-red);border-color:var(--kl-red);">ログアウト</button>';
+        h += '</div>';
+
+        app.innerHTML = h;
       }
 
       function renderInlineTabs() {
@@ -2138,6 +2305,8 @@ export function mypagePageHTML(opts) {
         t += '<span class="kl-tab-icon">📝</span>ログ</button>';
         t += '<button class="kl-tab-btn' + (currentView === "oshi" && !subView ? " kl-tab-active" : "") + '" onclick="MP.switchTab(\\'oshi\\')">';
         t += '<span class="kl-tab-icon">⭐</span>推し</button>';
+        t += '<button class="kl-tab-btn' + (currentView === "community" && !subView ? " kl-tab-active" : "") + '" onclick="MP.switchTab(\\'community\\')">';
+        t += '<span class="kl-tab-icon">👥</span>みんな</button>';
         t += '</div>';
         return t;
       }
@@ -2175,10 +2344,47 @@ export function mypagePageHTML(opts) {
 
         var h = renderInlineTabs();
 
-        /* ── 紹介テキスト ── */
-        h += '<div class="kl-intro">';
-        h += '幕が降りたら、ここに一筆。<br>観劇の記録と推し俳優を積み上げよう。';
-        h += '</div>';
+        /* ── プロフィールカード（ヘッダー） ── */
+        if (authState.loggedIn && authState.user) {
+          var profileData = (authState.serverData && authState.serverData.profile) || { is_public: false, display_name: "" };
+          var isPublic = !!profileData.is_public;
+          var displayName = profileData.display_name || authState.user.displayName || "";
+
+          var headerAvatarUrl = profileData.avatar_url || "";
+
+          h += '<div class="kl-section-card" style="padding:14px 16px;margin-bottom:12px;">';
+          h += '<div style="display:flex;align-items:center;gap:12px;">';
+          /* アバター */
+          h += '<div style="width:42px;height:42px;border-radius:50%;background:var(--kl-gold-soft);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;overflow:hidden;">';
+          if (headerAvatarUrl) {
+            h += '<img src="' + esc(headerAvatarUrl) + '" alt="" style="width:100%;height:100%;object-fit:cover;">';
+          } else {
+            h += '🎭';
+          }
+          h += '</div>';
+          /* 名前・公開状態 */
+          h += '<div style="flex:1;min-width:0;">';
+          h += '<div style="font-size:15px;font-weight:700;color:var(--kl-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + esc(displayName || '名前未設定') + '</div>';
+          h += '<div style="font-size:11px;color:var(--kl-text3);margin-top:2px;">';
+          h += isPublic ? '🌐 公開中' : '🔒 非公開';
+          h += ' ・ ' + tlog.entries.length + '件の記録';
+          h += '</div>';
+          h += '</div>';
+          /* 設定ボタン */
+          h += '<button class="mp-btn" onclick="MP.goSub(\\'profile-edit\\')" style="padding:4px 10px;font-size:12px;white-space:nowrap;">⚙ 設定</button>';
+          h += '</div>';
+          h += '</div>';
+        } else {
+          h += '<div class="kl-section-card" style="text-align:center;padding:1.5rem;">';
+          h += '<div style="font-size:2rem;margin-bottom:8px;">🎭</div>';
+          h += '<div style="font-size:1rem;font-weight:700;color:var(--kl-text);margin-bottom:6px;">KABUKI RECO</div>';
+          h += '<div style="font-size:0.82rem;color:var(--kl-text2);line-height:1.7;margin-bottom:16px;">';
+          h += '観劇の記録を残して、歌舞伎ライフを振り返ろう。<br>';
+          h += '推し俳優の登録・みんなの観劇ログも楽しめます。';
+          h += '</div>';
+          h += '<div id="google-signin-btn" style="display:inline-block;"></div>';
+          h += '</div>';
+        }
 
         /* ── クイック記録ボタン / フォーム ── */
         if (!formOpen) {
@@ -2199,15 +2405,10 @@ export function mypagePageHTML(opts) {
             else monthMedia++;
           }
         }
-        var monthLearn = 0;
-        var weekAgo = Math.floor(Date.now()/1000) - 7*86400;
-        for (var li = 0; li < log.recent.length; li++) {
-          if (log.recent[li].ts >= weekAgo) monthLearn++;
-        }
         h += '<div class="kl-summary-row">';
-        h += '<div class="kl-summary-chip">🏛️ <span class="kl-summary-num">' + monthTheater + '</span> 劇場</div>';
-        h += '<div class="kl-summary-chip">📺 <span class="kl-summary-num">' + monthMedia + '</span> 映像</div>';
-        h += '<div class="kl-summary-chip">📚 <span class="kl-summary-num">' + monthLearn + '</span> 学び</div>';
+        h += '<div class="kl-summary-chip">🎭 <span class="kl-summary-num">' + tlog.entries.length + '</span> 総観劇数</div>';
+        h += '<div class="kl-summary-chip">🏛️ <span class="kl-summary-num">' + theaterEntries.length + '</span> 劇場</div>';
+        h += '<div class="kl-summary-chip">📺 <span class="kl-summary-num">' + mediaEntries.length + '</span> 映像</div>';
         h += '</div>';
 
         /* ── 推し俳優バナー ── */
@@ -2278,7 +2479,11 @@ export function mypagePageHTML(opts) {
             h += '<div class="mp-actions"><button class="mp-btn" onclick="MP.switchTab(\\'log\\')">ログタブで全件を見る →</button></div>';
           }
         } else {
-          h += '<div class="mp-empty">まだ記録がありません 🎭<br>上のボタンから記録してみよう！</div>';
+          h += '<div class="mp-empty">';
+          h += '<div style="font-size:1.5rem;margin-bottom:6px;">🎭</div>';
+          h += 'まだ記録がありません<br>';
+          h += '<span style="font-size:12px;color:var(--kl-text3);">上のボタンから最初の観劇を記録しよう</span>';
+          h += '</div>';
         }
         h += '</div>';
 
@@ -2316,44 +2521,6 @@ export function mypagePageHTML(opts) {
 
         /* ── 今月のアクティビティカレンダー ── */
         h += renderActivityCalendar(tlog, log);
-
-        /* ── KABUKI DOJO への誘導 ── */
-        h += '<a href="/kabuki/dojo" class="kl-section-card" style="display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--kl-text);cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;">';
-        h += '<span style="font-size:24px;">🥋</span>';
-        h += '<div style="flex:1;">';
-        h += '<div class="kl-section-header" style="margin:0;">KABUKI DOJO</div>';
-        h += '<div style="font-size:12px;color:var(--kl-text2);">クイズ・台詞稽古・大向う道場・学習進捗</div>';
-        h += '</div>';
-        h += '<span style="color:var(--kl-text3);font-size:18px;">→</span>';
-        h += '</a>';
-
-        /* ── 公開プロフィール設定 ── */
-        if (authState.loggedIn && authState.user) {
-          var profileData = (authState.serverData && authState.serverData.profile) || { is_public: false, display_name: "" };
-          var isPublic = !!profileData.is_public;
-          var displayName = profileData.display_name || authState.user.displayName || "";
-          h += '<div class="kl-section-card">';
-          h += '<div class="kl-section-header">🌐 公開プロフィール</div>';
-          h += '<div class="profile-toggle-row">';
-          h += '<div>';
-          h += '<div class="profile-toggle-label">観劇帖を公開する</div>';
-          h += '<div class="profile-toggle-sub">ONにすると観劇記録が公開されます（メモは非公開）</div>';
-          h += '</div>';
-          h += '<button class="profile-toggle-switch' + (isPublic ? " active" : "") + '" onclick="MP.toggleProfilePublic()"></button>';
-          h += '</div>';
-          if (isPublic) {
-            var profileUrl = "https://kabukiplus.com/reco/" + encodeURIComponent(authState.user.userId);
-            h += '<div class="profile-url-box">';
-            h += '<span style="flex:1;">' + esc(profileUrl) + '</span>';
-            h += '<button class="profile-url-copy" onclick="MP.copyProfileUrl()">コピー</button>';
-            h += '</div>';
-            h += '<div style="display:flex;gap:8px;margin-top:8px;">';
-            h += '<button class="mp-btn" onclick="MP.shareProfile()" style="flex:1;">📤 シェア</button>';
-            h += '<a href="/reco/' + encodeURIComponent(authState.user.userId) + '" target="_blank" class="mp-btn" style="flex:1;text-align:center;">👀 プレビュー</a>';
-            h += '</div>';
-          }
-          h += '</div>';
-        }
 
         /* ── データ管理 ── */
         h += '<div class="kl-section-card">';
@@ -2432,7 +2599,11 @@ export function mypagePageHTML(opts) {
 
         /* ── エントリ一覧（折りたたみ） ── */
         if (displayEntries.length === 0) {
-          h += '<div class="mp-empty">記録がありません</div>';
+          h += '<div class="mp-empty">';
+          h += '<div style="font-size:2rem;margin-bottom:8px;">📝</div>';
+          h += 'まだ観劇記録がありません<br>';
+          h += '<span style="font-size:12px;color:var(--kl-text3);">上の「🎭 観たものを記録する」から最初の一件を記録しよう！</span>';
+          h += '</div>';
         }
         for (var i = 0; i < displayEntries.length; i++) {
           var e = displayEntries[i];
@@ -2564,6 +2735,133 @@ export function mypagePageHTML(opts) {
       }
 
       /* =====================================================
+         みんなタブ（コミュニティフィード）
+      ===================================================== */
+      function renderCommunityTab() {
+        var h = renderInlineTabs();
+
+        h += '<div class="mp-section">';
+        h += '<div class="mp-section-title">👥 みんなの観劇ログ</div>';
+
+        /* 更新ボタン */
+        h += '<div style="text-align:right;margin-bottom:12px;">';
+        h += '<button class="mp-btn" onclick="MP.refreshCommunityFeed()" style="font-size:12px;padding:4px 12px;">🔄 最新に更新</button>';
+        h += '</div>';
+
+        if (communityFeedLoading) {
+          h += '<div class="mp-empty">読み込み中…</div>';
+        } else if (!communityFeedData || communityFeedData.entries.length === 0) {
+          h += '<div class="mp-empty">';
+          h += 'まだ公開されている観劇記録がありません。<br><br>';
+          if (authState.loggedIn) {
+            var sd = authState.serverData || {};
+            var prof = sd.profile || {};
+            if (!prof.is_public) {
+              h += '<button class="mp-btn mp-btn-primary" onclick="MP.switchTab(\\'home\\')">ホームタブで「観劇帖を公開する」をONにしよう</button>';
+            } else {
+              h += '他のユーザーが公開するのを待ちましょう！';
+            }
+          } else {
+            h += 'ログインして観劇帖を公開してみよう！';
+          }
+          h += '</div>';
+        } else {
+          var entries = communityFeedData.entries;
+          for (var i = 0; i < entries.length; i++) {
+            var e = entries[i];
+            var dp = dateParts(e.date);
+            var isMedia = (e.viewing_type || "theater") !== "theater";
+
+            h += '<a href="/reco/' + encodeURIComponent(e.userId) + '" class="community-feed-link" style="text-decoration:none;color:inherit;display:block;">';
+            h += '<div class="tl-entry" style="cursor:pointer;transition:border-color 0.2s;">';
+
+            /* ユーザー名ヘッダー */
+            h += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--kl-border);">';
+            h += '<div style="display:flex;align-items:center;gap:8px;">';
+            h += '<div style="width:28px;height:28px;border-radius:50%;background:var(--kl-gold-soft);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;overflow:hidden;">';
+            if (e.avatar_url) {
+              h += '<img src="' + esc(e.avatar_url) + '" alt="" style="width:100%;height:100%;object-fit:cover;">';
+            } else {
+              h += '👤';
+            }
+            h += '</div>';
+            h += '<span style="font-size:13px;font-weight:600;color:var(--kl-text);">' + esc(e.display_name || '名無し') + '</span>';
+            h += '</div>';
+            h += '<span style="font-size:11px;color:var(--kl-text3);">プロフィール →</span>';
+            h += '</div>';
+
+            h += '<div class="tl-entry-header">';
+            h += '<div class="tl-entry-date-col">';
+            h += '<div class="tl-entry-month">' + dp.month + '月</div>';
+            h += '<div class="tl-entry-day">' + dp.day + '</div>';
+            h += '<div class="tl-entry-dow">' + dp.dow + '</div>';
+            h += '</div>';
+            h += '<div class="tl-entry-body">';
+
+            if (isMedia) {
+              h += '<span class="tl-entry-venue-tag media-type-tag">📺 映像</span>';
+              h += '<div class="tl-entry-perf">' + esc(e.media_title || '') + '</div>';
+            } else {
+              if (e.performance_title) {
+                h += '<span class="tl-entry-venue-tag">' + esc(e.performance_title) + '</span>';
+              }
+              h += '<div class="tl-entry-perf">' + esc(e.venue_name || '') + '</div>';
+            }
+
+            if (e.play_titles && e.play_titles.length > 0) {
+              h += '<div class="tl-entry-plays">🎭 ' + e.play_titles.map(function(pt) { return esc(pt); }).join(' / ') + '</div>';
+            }
+
+            h += '</div>'; /* tl-entry-body */
+            h += '</div>'; /* tl-entry-header */
+
+            if (e.memo) {
+              h += '<div class="tl-entry-memo">💬 ' + esc(e.memo) + '</div>';
+            }
+
+            h += '</div>'; /* tl-entry */
+            h += '</a>';
+          }
+        }
+        h += '</div>'; /* mp-section */
+
+        document.getElementById("app").innerHTML = h;
+
+        /* 初回読み込み */
+        if (!communityFeedData && !communityFeedLoading) {
+          loadCommunityFeed();
+        }
+      }
+
+      function loadCommunityFeed(forceRefresh) {
+        communityFeedLoading = true;
+        if (currentView === "community") {
+          var appEl = document.getElementById("app");
+          if (appEl) {
+            var loadingHtml = renderInlineTabs();
+            loadingHtml += '<div class="mp-section"><div class="mp-section-title">👥 みんなの観劇ログ</div>';
+            loadingHtml += '<div class="mp-empty">読み込み中…</div></div>';
+            appEl.innerHTML = loadingHtml;
+          }
+        }
+        var url = '/api/community/feed';
+        if (forceRefresh) url += '?t=' + Date.now();
+        fetch(url)
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            communityFeedData = data;
+            communityFeedLoading = false;
+            if (currentView === "community") renderCommunityTab();
+          })
+          .catch(function(e) {
+            console.error('Community feed error:', e);
+            communityFeedLoading = false;
+            communityFeedData = { v: 1, entries: [], updated_at: "" };
+            if (currentView === "community") renderCommunityTab();
+          });
+      }
+
+      /* =====================================================
          推しタブ
       ===================================================== */
       function renderOshiTab() {
@@ -2574,7 +2872,7 @@ export function mypagePageHTML(opts) {
 
         /* ── 登録済み俳優 ── */
         h += '<div class="mp-section">';
-        h += '<div class="mp-section-title">⭐ 登録済み（<span id="fav-count">' + favList.length + '</span>人）</div>';
+        h += '<div class="mp-section-title">⭐ 推し俳優（' + favList.length + ' / ' + MAX_FAVORITES + '人）</div>';
         h += '<div id="oshi-registered-area">';
         if (favList.length === 0) {
           h += '<div class="mp-empty" style="padding:1rem;">まだ推し俳優が登録されていません<br>下の検索から追加しましょう</div>';
@@ -3114,74 +3412,78 @@ export function mypagePageHTML(opts) {
       ===================================================== */
       function renderActivityCalendar(tlog, log) {
         var now = new Date();
-        var year = now.getFullYear();
-        var month = now.getMonth();
-        var today = now.getDate();
-        var DOW_LABELS = ['日','月','火','水','木','金','土'];
+        var year = calYear;
+        var isCurrentYear = (year === now.getFullYear());
 
-        /* 劇場・映像・学習の日付マップ */
-        var theaterDays = {}, mediaDays = {}, learnDays = {};
+        /* 月別集計 */
+        var theaterByMonth = {};
+        var mediaByMonth = {};
         for (var i = 0; i < tlog.entries.length; i++) {
           var e = tlog.entries[i];
           if (!e.date) continue;
           var d = new Date(e.date + 'T00:00:00');
-          if (d.getFullYear() !== year || d.getMonth() !== month) continue;
-          var day = d.getDate();
-          if ((e.viewing_type || 'theater') === 'theater') theaterDays[day] = true;
-          else mediaDays[day] = true;
-        }
-        /* daily_log からの学習アクティビティ */
-        for (var di = 1; di <= 31; di++) {
-          var key = year + '-' + String(month+1).padStart(2,'0') + '-' + String(di).padStart(2,'0');
-          var dl = log.daily_log && log.daily_log[key];
-          if (dl && (dl.views || dl.clips || dl.quiz || dl.keiko)) learnDays[di] = true;
+          if (d.getFullYear() !== year) continue;
+          var m = d.getMonth(); /* 0-based */
+          if ((e.viewing_type || 'theater') === 'theater') {
+            theaterByMonth[m] = (theaterByMonth[m] || 0) + 1;
+          } else {
+            mediaByMonth[m] = (mediaByMonth[m] || 0) + 1;
+          }
         }
 
-        var firstDow = new Date(year, month, 1).getDay();
-        var lastDay  = new Date(year, month + 1, 0).getDate();
-        var monthName = (month + 1) + '月';
-        var theaterCount = Object.keys(theaterDays).length;
-        var mediaCount   = Object.keys(mediaDays).length;
+        var totalTheater = 0, totalMedia = 0;
+        for (var k in theaterByMonth) totalTheater += theaterByMonth[k];
+        for (var k in mediaByMonth) totalMedia += mediaByMonth[k];
 
         var h = '<div class="kl-section-card">';
-        h += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">';
-        h += '<div style="font-size:13px;font-weight:600;color:var(--kl-text);letter-spacing:0.04em;">📅 ' + year + '年' + monthName + 'のアクティビティ</div>';
-        var badges = '';
-        if (theaterCount > 0) badges += '<span style="font-size:11px;color:var(--kl-red);font-weight:600;margin-left:6px;">🏛️' + theaterCount + '</span>';
-        if (mediaCount  > 0) badges += '<span style="font-size:11px;color:var(--kl-blue-text);font-weight:600;margin-left:6px;">📺' + mediaCount + '</span>';
-        if (badges) h += '<div>' + badges + '</div>';
+
+        /* ── 年ナビゲーション ── */
+        h += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">';
+        h += '<button class="mp-btn" onclick="MP.calPrev()" style="padding:2px 10px;font-size:16px;line-height:1;">◀</button>';
+        h += '<div style="font-size:13px;font-weight:600;color:var(--kl-text);letter-spacing:0.04em;">📅 ' + year + '年';
+        if (totalTheater > 0 || totalMedia > 0) {
+          h += '<span style="font-size:11px;font-weight:normal;color:var(--kl-text2);margin-left:8px;">';
+          if (totalTheater > 0) h += '🏛️' + totalTheater;
+          if (totalMedia > 0) h += ' 📺' + totalMedia;
+          h += '</span>';
+        }
+        h += '</div>';
+        if (isCurrentYear) {
+          h += '<span style="width:36px;"></span>';
+        } else {
+          h += '<button class="mp-btn" onclick="MP.calNext()" style="padding:2px 10px;font-size:16px;line-height:1;">▶</button>';
+        }
         h += '</div>';
 
-        /* 曜日ヘッダー */
-        h += '<div class="kl-month-cal">';
-        for (var dh = 0; dh < 7; dh++) {
-          h += '<div class="kl-cal-header-cell">' + DOW_LABELS[dh] + '</div>';
+        /* ── 12ヶ月グリッド (4列×3行) ── */
+        h += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;">';
+        for (var m = 0; m < 12; m++) {
+          var tc = theaterByMonth[m] || 0;
+          var mc = mediaByMonth[m] || 0;
+          var hasActivity = tc > 0 || mc > 0;
+          var isCurrent = isCurrentYear && m === now.getMonth();
+
+          h += '<div style="';
+          h += 'background:' + (hasActivity ? 'var(--kl-accent-soft)' : 'var(--kl-subtle)') + ';';
+          h += 'border:1px solid ' + (isCurrent ? 'var(--kl-gold)' : 'var(--kl-border)') + ';';
+          h += 'border-radius:8px;padding:8px 6px;text-align:center;min-height:56px;';
+          h += 'display:flex;flex-direction:column;justify-content:center;gap:2px;';
+          h += '">';
+          h += '<div style="font-size:12px;font-weight:600;color:' + (isCurrent ? 'var(--kl-gold-dark)' : 'var(--kl-text)') + ';">' + (m + 1) + '月</div>';
+          if (hasActivity) {
+            if (tc > 0) h += '<div style="font-size:11px;color:var(--kl-red);font-weight:500;">🏛️' + tc + '</div>';
+            if (mc > 0) h += '<div style="font-size:11px;color:var(--kl-blue-text);font-weight:500;">📺' + mc + '</div>';
+          } else {
+            h += '<div style="font-size:11px;color:var(--kl-text3);">-</div>';
+          }
+          h += '</div>';
         }
-        /* 先頭の空白 */
-        for (var pad = 0; pad < firstDow; pad++) {
-          h += '<div class="kl-cal-cell kl-cal-empty"></div>';
-        }
-        /* 日付セル */
-        for (var day = 1; day <= lastDay; day++) {
-          var isToday    = (day === today);
-          var isTheater  = !!theaterDays[day];
-          var isMedia    = !!mediaDays[day];
-          var isLearn    = !!learnDays[day];
-          var cls = 'kl-cal-cell';
-          if (isTheater)     cls += ' kl-cal-theater';
-          else if (isMedia)  cls += ' kl-cal-media';
-          else if (isLearn)  cls += ' kl-cal-activity';
-          if (isToday) cls += ' kl-cal-today';
-          h += '<div class="' + cls + '">' + day + '</div>';
-        }
-        h += '</div>'; /* kl-month-cal */
+        h += '</div>';
 
         /* 凡例 */
-        h += '<div class="kl-cal-legend">';
-        h += '<div class="kl-cal-leg"><div class="kl-cal-dot" style="background:var(--kl-red-soft);border:1px solid var(--kl-red);"></div>劇場</div>';
-        h += '<div class="kl-cal-leg"><div class="kl-cal-dot" style="background:var(--kl-blue-bg);border:1px solid var(--kl-blue-text);"></div>映像</div>';
-        h += '<div class="kl-cal-leg"><div class="kl-cal-dot" style="background:var(--kl-accent-soft);"></div>学習</div>';
-        h += '<div class="kl-cal-leg"><div class="kl-cal-dot" style="background:var(--kl-gold-soft);border:1px solid var(--kl-gold-light);"></div>今日</div>';
+        h += '<div class="kl-cal-legend" style="margin-top:8px;">';
+        h += '<div class="kl-cal-leg"><span style="font-size:11px;">🏛️</span> 劇場観劇</div>';
+        h += '<div class="kl-cal-leg"><span style="font-size:11px;">📺</span> 映像視聴</div>';
         h += '</div>';
 
         h += '</div>'; /* kl-section-card */
@@ -3515,9 +3817,37 @@ export function mypagePageHTML(opts) {
         var formTitle = editingEntryId ? '記録を編集' : '🎭 観劇を記録';
         h += '<div class="tl-form-title"><span>' + formTitle + '</span><button class="tl-form-close" onclick="MP.closeForm()">✕</button></div>';
 
-        /* Step 0: 視聴方法 */
+        /* フォーム進捗バー */
+        var formSteps;
+        if (formState.viewing_type === 'theater') {
+          formSteps = ['日付','会場','公演','演目','配役','メモ'];
+        } else {
+          formSteps = ['日付','タイプ','タイトル','演目','メモ'];
+        }
+        var filledCount = 0;
+        if (formState.date) filledCount++;
+        if (formState.viewing_type === 'theater') {
+          if (formState.venue_id || formState.venue_name) filledCount++;
+          if (formState.performance_title) filledCount++;
+          if (formState.play_titles && formState.play_titles.length > 0) filledCount++;
+          if (formState.actors && formState.actors.length > 0) filledCount++;
+          if (formState.memo) filledCount++;
+        } else {
+          if (formState.viewing_type) filledCount++;
+          if (formState.media_title) filledCount++;
+          if (formState.play_titles && formState.play_titles.length > 0) filledCount++;
+          if (formState.memo) filledCount++;
+        }
+        h += '<div class="tl-form-progress-label">' + filledCount + '/' + formSteps.length + ' 入力済み</div>';
+        h += '<div class="tl-form-progress">';
+        for (var pi = 0; pi < formSteps.length; pi++) {
+          h += '<div class="tl-form-progress-step' + (pi < filledCount ? ' active' : '') + '"></div>';
+        }
+        h += '</div>';
+
+        /* Step 0: 観劇種類 */
         h += '<div class="tl-step">';
-        h += '<div class="tl-step-label">視聴方法';
+        h += '<div class="tl-step-label">観劇種類';
         if (formState.viewing_type) h += '<span class="tl-step-check">✓</span>';
         h += '</div>';
         h += '<div class="tl-chips">';
@@ -3544,6 +3874,7 @@ export function mypagePageHTML(opts) {
         h += '<div class="tl-step-label"><span class="tl-step-num">1</span>日付';
         if (formState.date) h += '<span class="tl-step-check">✓</span>';
         h += '</div>';
+        h += '<label style="font-size:12px;font-weight:500;color:var(--kl-text2);display:block;margin-bottom:4px;">観劇日 <span style="color:var(--kl-red);font-size:11px;">*必須</span></label>';
         h += '<input type="date" class="tl-date-input" id="tl-f-date" value="' + (formState.date || todayStr()) + '">';
         h += '</div>';
 
@@ -3696,6 +4027,7 @@ export function mypagePageHTML(opts) {
           h += '<div class="tl-step-label">写真（任意）</div>';
           h += '<input type="file" id="tl-f-image-file" accept="image/jpeg,image/png,image/webp" style="display:none;" onchange="MP.uploadImage(this)">';
           h += '<button class="tl-chip" onclick="document.getElementById(\\'tl-f-image-file\\').click()" style="margin-bottom:8px;">📷 写真を追加</button>';
+          h += '<div style="font-size:10px;color:var(--kl-text3);margin-top:4px;">JPG/PNG/WebP・最大3MB・自動圧縮されます</div>';
           h += '<span class="tl-upload-status" id="tl-upload-status"></span>';
           if (formState.image_url) {
             h += '<div class="tl-image-preview" id="tl-image-preview">';
@@ -3729,6 +4061,7 @@ export function mypagePageHTML(opts) {
         h += '<div class="tl-step-label"><span class="tl-step-num">1</span>日付';
         if (formState.date) h += '<span class="tl-step-check">✓</span>';
         h += '</div>';
+        h += '<label style="font-size:12px;font-weight:500;color:var(--kl-text2);display:block;margin-bottom:4px;">視聴日 <span style="color:var(--kl-red);font-size:11px;">*必須</span></label>';
         h += '<input type="date" class="tl-date-input" id="tl-f-date" value="' + (formState.date || todayStr()) + '">';
         h += '</div>';
 
@@ -3775,6 +4108,7 @@ export function mypagePageHTML(opts) {
         h += '<div class="tl-step-label">写真（任意）</div>';
         h += '<input type="file" id="tl-f-image-file" accept="image/jpeg,image/png,image/webp" style="display:none;" onchange="MP.uploadImage(this)">';
         h += '<button class="tl-chip" onclick="document.getElementById(\\'tl-f-image-file\\').click()" style="margin-bottom:8px;">📷 写真を追加</button>';
+        h += '<div style="font-size:10px;color:var(--kl-text3);margin-top:4px;">JPG/PNG/WebP・最大3MB・自動圧縮されます</div>';
         h += '<span class="tl-upload-status" id="tl-upload-status"></span>';
         if (formState.image_url) {
           h += '<div class="tl-image-preview" id="tl-image-preview">';
@@ -4549,13 +4883,16 @@ export function mypagePageHTML(opts) {
       window.MP = {
         logout: function() {
           if (!confirm('ログアウトしますか？')) return;
+          /* ローカルデータを先にクリア */
+          try {
+            localStorage.removeItem('theater_log_v1');
+            localStorage.removeItem('favorite_actors_v1');
+            localStorage.removeItem('keranosuke_log_v1');
+            localStorage.removeItem('keranosuke_quiz_state');
+          } catch(e) {}
           fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' })
-            .then(function() {
-              authState.loggedIn = false;
-              authState.user = null;
-              authState.serverData = null;
-              render();
-            });
+            .then(function() { location.reload(); })
+            .catch(function() { location.reload(); });
         },
         switchTab: function(tab) { currentView = tab; subView = null; formOpen = false; render(); window.scrollTo(0,0); },
         go: function(view) { subView = view; formOpen = false; render(); window.scrollTo(0,0); },
@@ -4959,7 +5296,39 @@ export function mypagePageHTML(opts) {
         },
         deleteEntry: function(id) {
           if (!confirm("この記録を削除しますか？")) return;
+          /* 一時保存して削除（Undo用） */
+          var tlog = loadTlog();
+          var deletedEntry = null;
+          var deletedIndex = -1;
+          for (var di = 0; di < tlog.entries.length; di++) {
+            if (tlog.entries[di].id === id) { deletedEntry = tlog.entries[di]; deletedIndex = di; break; }
+          }
           removeEntry(id);
+          render();
+          if (deletedEntry) {
+            var toastEl = document.createElement('div');
+            toastEl.className = 'kl-toast kl-toast-show';
+            toastEl.innerHTML = '記録を削除しました <button onclick="MP._undoDelete()" style="background:none;border:1px solid #fff;color:#fff;padding:2px 10px;border-radius:12px;margin-left:8px;cursor:pointer;font-family:inherit;font-size:12px;">元に戻す</button>';
+            toastEl.style.pointerEvents = 'auto';
+            document.body.appendChild(toastEl);
+            window.__deletedEntry = { entry: deletedEntry, index: deletedIndex };
+            setTimeout(function() {
+              toastEl.classList.remove('kl-toast-show');
+              setTimeout(function() { toastEl.remove(); }, 300);
+              window.__deletedEntry = null;
+            }, 5000);
+          }
+        },
+        _undoDelete: function() {
+          if (!window.__deletedEntry) return;
+          var tlog = loadTlog();
+          var idx = Math.min(window.__deletedEntry.index, tlog.entries.length);
+          tlog.entries.splice(idx, 0, window.__deletedEntry.entry);
+          saveTlog(tlog);
+          window.__deletedEntry = null;
+          var toast = document.querySelector('.kl-toast');
+          if (toast) toast.remove();
+          showToast('✓ 記録を復元しました');
           render();
         },
         shareEntry: function(id) {
@@ -4969,6 +5338,104 @@ export function mypagePageHTML(opts) {
             if (tlog.entries[i].id === id) { entry = tlog.entries[i]; break; }
           }
           if (entry) showShareDialog(entry);
+        },
+        submitNameReg: function() {
+          var input = document.getElementById('reg-display-name');
+          if (!input) return;
+          var name = input.value.trim();
+          if (!name) { alert('表示名を入力してください'); input.focus(); return; }
+          var sd = authState.serverData || {};
+          var profile = sd.profile || { is_public: false, display_name: "" };
+          profile.display_name = name;
+          profile.updated_at = new Date().toISOString();
+          sd.profile = profile;
+          authState.serverData = sd;
+          saveToServer();
+          render();
+        },
+        skipNameReg: function() {
+          nameRegDismissed = true;
+          render();
+        },
+        uploadAvatar: function(fileInput) {
+          var file = fileInput.files && fileInput.files[0];
+          if (!file) return;
+          var statusEl = document.getElementById('avatar-upload-status');
+          if (statusEl) { statusEl.textContent = '圧縮中…'; statusEl.style.color = 'var(--kl-text3)'; }
+          var MAX_W = 400, MAX_H = 400, QUALITY = 0.85;
+          var reader = new FileReader();
+          reader.onload = function(ev) {
+            var img = new Image();
+            img.onload = function() {
+              var w = img.width, hh = img.height;
+              /* 正方形にクロップ */
+              var size = Math.min(w, hh);
+              var sx = (w - size) / 2, sy = (hh - size) / 2;
+              var outSize = Math.min(size, MAX_W);
+              var canvas = document.createElement('canvas');
+              canvas.width = outSize; canvas.height = outSize;
+              canvas.getContext('2d').drawImage(img, sx, sy, size, size, 0, 0, outSize, outSize);
+              canvas.toBlob(function(blob) {
+                if (statusEl) { statusEl.textContent = 'アップロード中…'; }
+                var fd = new FormData();
+                fd.append('file', blob, 'avatar.jpg');
+                fd.append('user_id', 'avatar_' + (authState.user ? authState.user.userId.replace(/[^a-zA-Z0-9]/g,'_').slice(0,32) : Date.now().toString(36)));
+                fetch('/api/user/images', { method: 'POST', body: fd })
+                  .then(function(r) { return r.json(); })
+                  .then(function(data) {
+                    if (data.url) {
+                      var sd = authState.serverData || {};
+                      var profile = sd.profile || { is_public: false, display_name: "" };
+                      profile.avatar_url = data.url;
+                      profile.updated_at = new Date().toISOString();
+                      sd.profile = profile;
+                      authState.serverData = sd;
+                      saveToServer();
+                      if (statusEl) { statusEl.textContent = ''; }
+                      showToast('✓ アバターを更新しました');
+                      render();
+                    } else {
+                      if (statusEl) { statusEl.textContent = ''; }
+                      showToast('エラー: ' + (data.error || '失敗'), 3000);
+                    }
+                    fileInput.value = '';
+                  })
+                  .catch(function() {
+                    if (statusEl) { statusEl.textContent = ''; }
+                    showToast('通信エラー', 3000);
+                    fileInput.value = '';
+                  });
+              }, 'image/jpeg', QUALITY);
+            };
+            img.src = ev.target.result;
+          };
+          reader.readAsDataURL(file);
+        },
+        removeAvatar: function() {
+          var sd = authState.serverData || {};
+          var profile = sd.profile || {};
+          profile.avatar_url = "";
+          profile.updated_at = new Date().toISOString();
+          sd.profile = profile;
+          authState.serverData = sd;
+          saveToServer();
+          showToast('✓ アバターを削除しました');
+          render();
+        },
+        saveDisplayName: function() {
+          if (!authState.loggedIn) return;
+          var input = document.getElementById('profile-display-name');
+          if (!input) return;
+          var name = input.value.trim();
+          if (!name) { alert('表示名を入力してください'); return; }
+          var sd = authState.serverData || {};
+          var profile = sd.profile || { is_public: false, display_name: "" };
+          profile.display_name = name;
+          profile.updated_at = new Date().toISOString();
+          sd.profile = profile;
+          authState.serverData = sd;
+          saveToServer();
+          showToast('✓ 表示名を保存しました');
         },
         toggleProfilePublic: function() {
           if (!authState.loggedIn) return;
@@ -4983,6 +5450,7 @@ export function mypagePageHTML(opts) {
           authState.serverData = sd;
           /* サーバーに保存 */
           saveToServer();
+          showToast(profile.is_public ? '✓ プロフィールを公開しました' : '✓ 非公開にしました');
           render();
         },
         shareProfile: function() {
@@ -5004,6 +5472,19 @@ export function mypagePageHTML(opts) {
               if (btn) { btn.textContent = '✓'; setTimeout(function(){ btn.textContent = 'コピー'; }, 2000); }
             }).catch(function() {});
           }
+        },
+        refreshCommunityFeed: function() {
+          communityFeedData = null;
+          loadCommunityFeed(true);
+        },
+        calPrev: function() {
+          calYear--;
+          render();
+        },
+        calNext: function() {
+          if (calYear >= new Date().getFullYear()) return;
+          calYear++;
+          render();
         }
       };
 
@@ -5034,6 +5515,7 @@ export function mypagePageHTML(opts) {
     bodyHTML,
     activeNav: "reco",
     googleClientId,
+    ogImage: "https://kabukiplus.com/assets/ogp/ogp_reco.png",
     headExtra: `<style>
       /* ── RECO固有のCSS変数（内部コンポーネント用） ── */
       body::before { display: none; }
@@ -5131,7 +5613,11 @@ export function recoProfilePageHTML(profileData) {
     <div style="max-width:600px;margin:0 auto;padding:0 8px;">
       <!-- ヘッダー -->
       <div style="text-align:center;padding:24px 16px 16px;">
-        <div style="font-size:36px;margin-bottom:8px;">🎭</div>
+        <div style="width:72px;height:72px;border-radius:50%;margin:0 auto 8px;overflow:hidden;background:var(--bg-accent-soft,#f5f0e6);display:flex;align-items:center;justify-content:center;border:2px solid var(--border-light,#eee);">
+          ${d.avatar_url
+            ? `<img src="${e(d.avatar_url)}" alt="" style="width:100%;height:100%;object-fit:cover;">`
+            : `<span style="font-size:36px;">🎭</span>`}
+        </div>
         <h1 style="font-size:1.2rem;font-weight:700;color:var(--text-primary);margin:0 0 4px;">${displayName} の歌舞伎帖</h1>
         <div style="font-size:0.82rem;color:var(--text-secondary);">${badgeLabel} ― ${totalCount}回の観劇</div>
       </div>

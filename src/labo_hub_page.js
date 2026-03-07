@@ -74,6 +74,15 @@ export function laboHubPageHTML({ googleClientId = "" } = {}) {
           <div class="labo-hub-card-arrow">›</div>
         </a>
 
+        <a href="https://kabuki-post-365.kerakabuki.workers.dev" target="_blank" class="labo-hub-card accent-3">
+          <div class="labo-hub-card-icon">📅</div>
+          <div class="labo-hub-card-body">
+            <div class="labo-hub-card-title">POST 365</div>
+            <div class="labo-hub-card-desc">SNS自動投稿の管理・テキスト生成</div>
+          </div>
+          <div class="labo-hub-card-arrow">↗</div>
+        </a>
+
       </div>
     </section>
 
@@ -558,6 +567,7 @@ export function laboHubPageHTML({ googleClientId = "" } = {}) {
     activeNav: "labo",
     brand: "jikabuki",
     googleClientId,
+    ogImage: "https://kabukiplus.com/assets/ogp/ogp_labo.png",
     headExtra: `<style>
       /* ウェルカムバー */
       .labo-hub-welcome {

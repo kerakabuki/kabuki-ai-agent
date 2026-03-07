@@ -1,0 +1,674 @@
+[
+  {
+    "file": "八幡.png",
+    "id": 1,
+    "metadata": {
+      "play_name": "寿曽我対面",
+      "scene_type": "ポートレート",
+      "visual_features": "白塗り,青い隈取り,刀,和装,黄色の背景,文字情報",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "刀を持つ歌舞伎役者の姿",
+      "navi_caption": "寿曽我対面 - 八幡"
+    }
+  },
+  {
+    "file": "化粧坂.png",
+    "id": 2,
+    "metadata": {
+      "play_name": "寿曽我対面",
+      "scene_type": "ポートレート",
+      "visual_features": "白塗り,女形,豪華な着物,鬘,簪",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "化粧坂少将の女形ポートレート",
+      "navi_caption": "寿曽我対面 - 化粧坂"
+    }
+  },
+  {
+    "file": "大磯虎御前.png",
+    "id": 3,
+    "metadata": {
+      "play_name": "寿曽我対面",
+      "scene_type": "ポートレート, 衣裳",
+      "visual_features": "白塗り,女形,豪華な衣装,金色の刺繍,鯉の模様,日本髪,簪,赤い唇,赤い眉,黄色の背景,幾何学模様,文字",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "大磯虎御前の女形姿",
+      "navi_caption": "寿曽我対面 - 大磯虎御前"
+    }
+  },
+  {
+    "file": "小林朝比奈.png",
+    "id": 4,
+    "metadata": {
+      "play_name": "寿曽我対面",
+      "scene_type": "ポートレート",
+      "visual_features": "隈取り,黒い衣裳,烏帽子,家紋,幾何学模様の背景,文字",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "小林朝比奈の荒事姿",
+      "navi_caption": "寿曽我対面 - 小林朝比奈"
+    }
+  },
+  {
+    "file": "工藤祐経.png",
+    "id": 5,
+    "metadata": {
+      "play_name": "寿曽我対面",
+      "scene_type": "ポートレート",
+      "visual_features": "白塗り,黒い着物,刀,縦縞の幕,工藤祐経の文字,気良の文字",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "工藤祐経の歌舞伎役者",
+      "navi_caption": "寿曽我対面 - 工藤祐経"
+    }
+  },
+  {
+    "file": "工藤祐経２.png",
+    "id": 6,
+    "metadata": {
+      "play_name": "寿曽我対面",
+      "scene_type": "ポートレート",
+      "visual_features": "隈取り,白塗り,黒い衣裳,刀,家紋,和柄の背景,文字要素",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "工藤祐経の歌舞伎役者",
+      "navi_caption": "寿曽我対面 - 工藤祐経２"
+    }
+  },
+  {
+    "file": "曽我五郎.png",
+    "id": 7,
+    "metadata": {
+      "play_name": "寿曽我対面",
+      "scene_type": "見得",
+      "visual_features": "隈取り,水色の衣裳,赤い衣裳,蝶の模様,麻の葉文様",
+      "season_tag": "通年",
+      "character_match": "暫",
+      "character_id": 6,
+      "description": "暫の鎌倉権五郎が見得を切る姿",
+      "navi_caption": "寿曽我対面 - 曽我五郎"
+    }
+  },
+  {
+    "file": "曽我兄弟.png",
+    "id": 8,
+    "metadata": {
+      "play_name": "寿曽我対面",
+      "scene_type": "見得",
+      "visual_features": "隈取り,赤い衣裳,水色の衣裳,豪華な衣装,背景の縦縞,文字要素",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "曽我兄弟の歌舞伎役者2人の見得",
+      "navi_caption": "寿曽我対面 - 曽我兄弟"
+    }
+  },
+  {
+    "file": "曽我十郎.png",
+    "id": 9,
+    "metadata": {
+      "play_name": "寿曽我対面",
+      "scene_type": "ポートレート",
+      "visual_features": "白塗り,赤い衣裳,水色の衣裳,鳥の刺繍,家紋,文字,幾何学模様の背景",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "曽我十郎の歌舞伎役者",
+      "navi_caption": "寿曽我対面 - 曽我十郎"
+    }
+  },
+  {
+    "file": "近江.png",
+    "id": 10,
+    "metadata": {
+      "play_name": "寿曽我対面",
+      "scene_type": "ポートレート",
+      "visual_features": "隈取り,刀,和装,黄色の背景,文字",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "刀を構えた歌舞伎役者のポートレート",
+      "navi_caption": "寿曽我対面 - 近江"
+    }
+  },
+  {
+    "file": "2025_ブロマイド封印切_0001.jpg",
+    "id": 11,
+    "metadata": {
+      "play_name": "封印切",
+      "scene_type": "ポートレート",
+      "visual_features": "白塗り化粧,まげ,縦縞の着物",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "歌舞伎役者のポートレート",
+      "navi_caption": "歌舞伎役者のポートレート"
+    }
+  },
+  {
+    "file": "2025_ブロマイド封印切_0002.jpg",
+    "id": 12,
+    "metadata": {
+      "play_name": "封印切",
+      "scene_type": "ポートレート",
+      "visual_features": "歌舞伎化粧,髷,縞模様の着物,組紐飾り,ポーチ",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "歌舞伎役者の扮装ポートレート",
+      "navi_caption": "歌舞伎役者の扮装ポートレート"
+    }
+  },
+  {
+    "file": "2025_ブロマイド封印切_0003.jpg",
+    "id": 13,
+    "metadata": {
+      "play_name": "封印切",
+      "scene_type": "ポートレート",
+      "visual_features": "白塗り,歌舞伎化粧,縞模様の着物,男性役者,筆",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "歌舞伎役者の白塗り姿",
+      "navi_caption": "歌舞伎役者の白塗り姿"
+    }
+  },
+  {
+    "file": "2025_ブロマイド封印切_0004.jpg",
+    "id": 14,
+    "metadata": {
+      "play_name": "封印切",
+      "scene_type": "ポートレート",
+      "visual_features": "歌舞伎化粧,かつら,縞模様の着物,小道具",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "歌舞伎役者が小道具を持つ",
+      "navi_caption": "歌舞伎役者が小道具を持つ"
+    }
+  },
+  {
+    "file": "2025_ブロマイド封印切_0005.jpg",
+    "id": 15,
+    "metadata": {
+      "play_name": "封印切",
+      "scene_type": "ポートレート",
+      "visual_features": "隈取り,歌舞伎メイク,和装,商品",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "歌舞伎メイクの男性が商品を手に微笑む",
+      "navi_caption": "歌舞伎メイクの男性が商品を手に微笑む"
+    }
+  },
+  {
+    "file": "2025_ブロマイド封印切_0006.jpg",
+    "id": 16,
+    "metadata": {
+      "play_name": "封印切",
+      "scene_type": "ポートレート",
+      "visual_features": "白塗り化粧,赤い目元化粧,赤い口紅,髷,額の水色,紫の着物,幾何学模様,青白縞模様",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "歌舞伎役者のポートレート",
+      "navi_caption": "歌舞伎役者のポートレート"
+    }
+  },
+  {
+    "file": "2025_ブロマイド封印切_0007.jpg",
+    "id": 17,
+    "metadata": {
+      "play_name": "封印切",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド封印切_0008.jpg",
+    "id": 18,
+    "metadata": {
+      "play_name": "封印切",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド封印切_0009.jpg",
+    "id": 19,
+    "metadata": {
+      "play_name": "封印切",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド封印切_0010.jpg",
+    "id": 20,
+    "metadata": {
+      "play_name": "封印切",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド封印切_0011.jpg",
+    "id": 21,
+    "metadata": {
+      "play_name": "封印切",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド封印切_0012.jpg",
+    "id": 22,
+    "metadata": {
+      "play_name": "封印切",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド封印切_0013.jpg",
+    "id": 23,
+    "metadata": {
+      "play_name": "封印切",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド封印切_0014.jpg",
+    "id": 24,
+    "metadata": {
+      "play_name": "封印切",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド封印切_0015.jpg",
+    "id": 25,
+    "metadata": {
+      "play_name": "封印切",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド封印切_0016.jpg",
+    "id": 26,
+    "metadata": {
+      "play_name": "封印切",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド封印切_0017.jpg",
+    "id": 27,
+    "metadata": {
+      "play_name": "封印切",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド封印切_0018.jpg",
+    "id": 28,
+    "metadata": {
+      "play_name": "封印切",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド封印切_0019.jpg",
+    "id": 29,
+    "metadata": {
+      "play_name": "封印切",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド白浪五人男_0001.jpg",
+    "id": 30,
+    "metadata": {
+      "play_name": "白浪五人男",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド白浪五人男_0002.jpg",
+    "id": 31,
+    "metadata": {
+      "play_name": "白浪五人男",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド白浪五人男_0003.jpg",
+    "id": 32,
+    "metadata": {
+      "play_name": "白浪五人男",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド白浪五人男_0004.jpg",
+    "id": 33,
+    "metadata": {
+      "play_name": "白浪五人男",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド白浪五人男_0005.jpg",
+    "id": 34,
+    "metadata": {
+      "play_name": "白浪五人男",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド白浪五人男_0006.jpg",
+    "id": 35,
+    "metadata": {
+      "play_name": "白浪五人男",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド白浪五人男_0007.jpg",
+    "id": 36,
+    "metadata": {
+      "play_name": "白浪五人男",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド白浪五人男_0008.jpg",
+    "id": 37,
+    "metadata": {
+      "play_name": "白浪五人男",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド白浪五人男_0009.jpg",
+    "id": 38,
+    "metadata": {
+      "play_name": "白浪五人男",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド白浪五人男_0010.jpg",
+    "id": 39,
+    "metadata": {
+      "play_name": "白浪五人男",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド白浪五人男_0011.jpg",
+    "id": 40,
+    "metadata": {
+      "play_name": "白浪五人男",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド白浪五人男_0012.jpg",
+    "id": 41,
+    "metadata": {
+      "play_name": "白浪五人男",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド白浪五人男_0013.jpg",
+    "id": 42,
+    "metadata": {
+      "play_name": "白浪五人男",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド白浪五人男_0014.jpg",
+    "id": 43,
+    "metadata": {
+      "play_name": "白浪五人男",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド白浪五人男_0015.jpg",
+    "id": 44,
+    "metadata": {
+      "play_name": "白浪五人男",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド白浪五人男_0016.jpg",
+    "id": 45,
+    "metadata": {
+      "play_name": "白浪五人男",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド白浪五人男_0017.jpg",
+    "id": 46,
+    "metadata": {
+      "play_name": "白浪五人男",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド白浪五人男_0018.jpg",
+    "id": 47,
+    "metadata": {
+      "play_name": "白浪五人男",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  },
+  {
+    "file": "2025_ブロマイド白浪五人男_0019.jpg",
+    "id": 48,
+    "metadata": {
+      "play_name": "白浪五人男",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": ""
+    }
+  }
+]

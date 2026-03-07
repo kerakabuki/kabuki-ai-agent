@@ -758,7 +758,7 @@ async function getUserData(request, env) {
   }
 }
 
-async function putUserData(request, env) {
+async function putUserData(request, env, ctx) {
   const session = await getSession(request, env);
   if (!session) return jsonResponse({ error: "Not logged in" }, 401);
 
@@ -772,7 +772,65 @@ async function putUserData(request, env) {
   }
 
   await env.CHAT_HISTORY.put(kvKey, JSON.stringify(body));
+
+  // バックグラウンドでコミュニティフィードインデックスを更新
+  if (ctx && ctx.waitUntil) {
+    ctx.waitUntil(updateCommunityFeedIndex(env, session.userId, body));
+  }
+
   return jsonResponse({ ok: true });
+}
+
+// ─── コミュニティフィード インデックス更新 ───
+async function updateCommunityFeedIndex(env, userId, userData) {
+  try {
+    const KV_KEY = "community_feed_index";
+    const MAX_PER_USER = 5;
+    const MAX_TOTAL = 100;
+
+    // 現在のインデックスを取得
+    const raw = await env.CHAT_HISTORY.get(KV_KEY);
+    const index = raw ? JSON.parse(raw) : { v: 1, entries: [], updated_at: "" };
+
+    // このユーザーのエントリをすべて除去
+    index.entries = index.entries.filter(e => e.userId !== userId);
+
+    // 公開ユーザーの場合のみエントリを追加
+    const profile = userData.profile || {};
+    if (profile.is_public) {
+      const entries = (userData.theater_log && userData.theater_log.entries) || [];
+      // 日付降順でソートし、最大5件取得
+      const sorted = entries.slice().sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+      const top = sorted.slice(0, MAX_PER_USER);
+
+      for (const e of top) {
+        index.entries.push({
+          userId,
+          display_name: profile.display_name || "",
+          avatar_url: profile.avatar_url || "",
+          date: e.date || "",
+          viewing_type: e.viewing_type || "theater",
+          venue_name: e.venue_name || "",
+          performance_title: e.performance_title || "",
+          play_titles: (e.play_titles || []).slice(0, 5),
+          media_title: e.media_title || "",
+          memo: e.memo || "",
+          image_url: e.image_url || "",
+          entry_id: e.id || "",
+          added_at: new Date().toISOString(),
+        });
+      }
+    }
+
+    // 日付降順ソート、最大100件
+    index.entries.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+    index.entries = index.entries.slice(0, MAX_TOTAL);
+    index.updated_at = new Date().toISOString();
+
+    await env.CHAT_HISTORY.put(KV_KEY, JSON.stringify(index));
+  } catch (e) {
+    console.error("updateCommunityFeedIndex error:", e);
+  }
 }
 
 // ─── ヘルパー ───
@@ -803,6 +861,7 @@ async function cleanupGroup(env, groupId) {
     `group_members:${groupId}`,
     `group_notes:${groupId}`,
     `group_scripts:${groupId}`,
+    `group_expenses:${groupId}`,
   ];
   for (const key of directKeys) {
     try { await env.CHAT_HISTORY.delete(key); } catch (e) {

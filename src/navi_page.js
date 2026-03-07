@@ -13,6 +13,7 @@ const NAVI_SUB = [
   { icon: "📜", title: "演目・人物ガイド", desc: "観る前に読んでおくと舞台がぐっと面白くなる。有名演目のあらすじ・みどころ・登場人物を詳しく解説", href: "/kabuki/navi/enmoku",   delay: 2 },
   { icon: "🏮", title: "おすすめ演目",    desc: "「何を観ればいい？」に答えます。初心者向け・ジャンル別のおすすめ演目を厳選してご紹介",           href: "/kabuki/navi/recommend", delay: 3 },
   { icon: "📖", title: "歌舞伎用語いろは", desc: "「見得を切る」「花道」「黒御簾」…舞台で気になった言葉を126語、カテゴリ別にわかりやすく解説",   href: "/kabuki/navi/glossary",  delay: 4 },
+  { icon: "✍️", title: "コラム",          desc: "名台詞の超訳・演目の魅力を深掘り。観劇がもっと楽しくなる読み物をお届けします",                href: "/kabuki/navi/column",   delay: 5 },
 ];
 
 export function naviPageHTML({ googleClientId = "" } = {}) {
@@ -56,6 +57,15 @@ export function naviPageHTML({ googleClientId = "" } = {}) {
       ${subCards}
     </div>
 
+    <a href="/kabuki/chat" target="_blank" rel="noopener" class="card navi-chat-card fade-up-d5" style="display:flex;align-items:center;gap:16px;padding:20px;margin-top:14px;">
+      <img src="https://kabukiplus.com/assets/keranosukelogo.png" alt="けらのすけ" class="navi-chat-avatar">
+      <div style="flex:1;min-width:0;">
+        <h3>けらのすけに聞く <span class="navi-badge" style="background:var(--accent-2-soft);color:var(--accent-2);border-color:#c5d6e6;">AI</span></h3>
+        <p class="card-desc">歌舞伎のことなら何でも聞いてみよう。演目・用語・公演情報をAIがわかりやすく回答します</p>
+      </div>
+      <span style="color:var(--text-tertiary);font-size:18px;flex-shrink:0;transition:transform 0.15s;" class="nc-arrow">→</span>
+    </a>
+
     <div class="navi-footer fade-up-d4">
       <p>
         気になる演目を観たら <a href="/kabuki/reco">KABUKI RECO</a> で記録を。<br>
@@ -70,6 +80,7 @@ export function naviPageHTML({ googleClientId = "" } = {}) {
     bodyHTML,
     activeNav: "navi",
     googleClientId,
+    ogImage: "https://kabukiplus.com/assets/ogp/ogp_navi.png",
     headExtra: `<style>
       .navi-intro {
         text-align: center;
@@ -132,6 +143,16 @@ export function naviPageHTML({ googleClientId = "" } = {}) {
         margin-left: 6px;
         position: relative;
         top: -1px;
+      }
+
+      .navi-chat-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--gold-light);
+        box-shadow: 0 2px 6px rgba(107,143,173,0.2);
+        flex-shrink: 0;
       }
 
       .navi-footer {

@@ -10,8 +10,8 @@ export function sharedScriptsPageHTML(sharedScripts) {
 
   const cardsHTML = list.length ? list.map(s => {
     const t = s.type || "json";
-    const badge = t === "pdf" ? "PDF" : t === "text" ? "TEXT" : "JSON";
-    const badgeClass = t === "pdf" ? "ss-type-pdf" : t === "text" ? "ss-type-text" : "ss-type-json";
+    const badge = t === "pdf" ? "PDF" : t === "docx" ? "DOCX" : t === "text" ? "TEXT" : "JSON";
+    const badgeClass = t === "pdf" ? "ss-type-pdf" : t === "docx" ? "ss-type-docx" : t === "text" ? "ss-type-text" : "ss-type-json";
     return `
     <a href="/groups/${escHTML(s.group_id || "")}/scripts/${escHTML(s.id || "")}" class="ss-card fade-up">
       <div class="ss-card-icon">${t === "pdf" ? "📄" : "📖"}</div>
@@ -101,6 +101,7 @@ export function sharedScriptsPageHTML(sharedScripts) {
       .ss-type-json { background: #e3f2fd; color: #1565c0; }
       .ss-type-text { background: #e8f5e9; color: #2e7d32; }
       .ss-type-pdf  { background: #fce4ec; color: #c62828; }
+      .ss-type-docx { background: #e8eaf6; color: #283593; }
       .ss-contribute { margin-top: 2rem; }
       .ss-contribute-card {
         text-align: center; padding: 24px;

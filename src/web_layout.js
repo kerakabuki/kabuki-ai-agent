@@ -14,7 +14,7 @@
  * @param {boolean} [opts.hideNav] - true ならグロナビを非表示
  * @returns {string} 完全なHTML文字列
  */
-export function pageShell({ title, subtitle, bodyHTML, overlayHTML = "", headExtra = "", activeNav = "", hideNav = false, brand = "kabuki", googleClientId = "", ogDesc = "", ogImage = "" }) {
+export function pageShell({ title, subtitle, bodyHTML, overlayHTML = "", headExtra = "", activeNav = "", hideNav = false, brand = "kabuki", googleClientId = "", ogDesc = "", ogImage = "", ogUrl = "", canonicalUrl = "" }) {
   const navItems = brand === "jikabuki" ? jikabukiNav : kabukiNav;
   function navLink(n) {
     const active = n.key === activeNav;
@@ -29,11 +29,11 @@ export function pageShell({ title, subtitle, bodyHTML, overlayHTML = "", headExt
     ? "演じる人の、デジタル楽屋。"
     : "歌舞伎を、もっと面白く。";
 
-  const brandToggleHTML = `
+  const brandToggleHTML = activeNav === "home" ? `
     <div class="nav-brand-toggle" aria-label="プラットフォーム切替">
       <a href="/?brand=kabuki" class="nav-toggle-btn ${brand === "kabuki" ? "active" : ""}">KABUKI</a>
       <a href="/?brand=jikabuki" class="nav-toggle-btn ${brand === "jikabuki" ? "active" : ""}">JIKABUKI</a>
-    </div>`;
+    </div>` : "";
   const loginModalHTML = `
 <div id="nlm-backdrop" class="nlm-backdrop" style="display:none" onclick="if(event.target===this)closeLoginModal()">
   <div class="nlm-box" role="dialog" aria-modal="true" aria-label="\u30ed\u30b0\u30a4\u30f3">
@@ -60,7 +60,7 @@ export function pageShell({ title, subtitle, bodyHTML, overlayHTML = "", headExt
 </nav>
 <div class="line-cta-bar" id="line-cta-bar">
   <span class="line-cta-text">💬 LINE で「けらのすけ」と話す</span>
-  <a href="/auth/line" class="line-cta-btn">友達追加 →</a>
+  <a href="https://line.me/R/oaMessage/@117oizby/" target="_blank" rel="noopener" class="line-cta-btn">友達追加 →</a>
   <button class="line-cta-close" onclick="dismissLineCta()" aria-label="閉じる">&times;</button>
 </div>
 ${loginModalHTML}
@@ -152,10 +152,7 @@ function dismissLineCta(){
 <\/script>`;
 
   // ── ボトムタブバー（トップページ含む全ページで表示） ──
-  const brandSwitchItem = brand === "jikabuki"
-    ? { key: "_switch", href: "/?brand=kabuki", icon: "🎭", label: "KABUKI" }
-    : { key: "_switch", href: "/?brand=jikabuki", icon: "🏯", label: "JIKABUKI" };
-  const tabItems = [brandSwitchItem, ...navItems.slice(1)];
+  const tabItems = navItems;
   const tabBarHTML = `
 <div class="pwa-tab-bar" id="pwa-tab-bar">
   ${tabItems.map(n => {
@@ -168,7 +165,7 @@ function dismissLineCta(){
   const metaDesc = ogDesc || (brand === "jikabuki"
     ? "地歌舞伎の演者・運営者のためのデジタル楽屋。台本管理・稽古支援・団体運営をサポート。"
     : "歌舞伎をもっと面白く。演目ガイド・公演情報・観劇記録・クイズで歌舞伎の世界を楽しもう。");
-  const metaImage = ogImage || "https://kabukiplus.com/assets/ogp.png";
+  const metaImage = ogImage || "https://kabukiplus.com/assets/ogp/ogp_kabukiplus_top.png";
   const fullTitle = `${escHTML(title)} | ${brandName}`;
 
   return `<!DOCTYPE html>
@@ -187,8 +184,10 @@ function dismissLineCta(){
 <meta name="twitter:title" content="${fullTitle}">
 <meta name="twitter:description" content="${escHTML(metaDesc)}">
 <meta name="twitter:image" content="${metaImage}">
-<link rel="icon" href="/assets/favicon.ico" sizes="any">
-<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta property="og:url" content="${ogUrl || 'https://kabukiplus.com/'}">
+<meta property="og:locale" content="ja_JP">
+<link rel="canonical" href="${canonicalUrl || ogUrl || 'https://kabukiplus.com/'}">
+<link rel="icon" href="/assets/apple-touch-icon.png" type="image/png">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#A8873A">
@@ -197,6 +196,25 @@ function dismissLineCta(){
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "${brandName}",
+  "url": "https://kabukiplus.com",
+  "description": "${escHTML(metaDesc).replace(/"/g, '\\"')}",
+  "applicationCategory": "EntertainmentApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "ja",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
+  "publisher": {
+    "@type": "Organization",
+    "name": "KABUKI PLUS+",
+    "url": "https://kabukiplus.com",
+    "logo": "https://kabukiplus.com/assets/ogp/ogp_kabukiplus_top.png"
+  }
+}
+</script>
 ${headExtra}
 <style>
 ${BASE_CSS}

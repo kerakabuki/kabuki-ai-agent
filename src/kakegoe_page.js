@@ -132,8 +132,8 @@ export function kakegoePageHTML() {
   .pre-btn{font-size:0.8rem;color:var(--text-secondary);margin-bottom:0.3rem;}
 
   /* ── 動画エリア ── */
-  #stage{max-width:720px;margin:0 auto;position:relative;display:none;}
-  #player-wrap{position:relative;width:100%;padding-top:56.25%;background:#000;}
+  #stage{max-width:720px;margin:0 auto;position:relative;display:none;padding:0.5rem 0.5rem 0;}
+  #player-wrap{position:relative;width:100%;padding-top:56.25%;background:#000;border-radius:10px;overflow:hidden;}
   #player-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;}
 
   /* ── 掛け声オーバーレイ ── */
@@ -350,6 +350,9 @@ export function kakegoePageHTML() {
 
 <!-- ===== プレイ画面 ===== -->
 <div id="stage">
+  <div style="padding:0 0.5rem 0.3rem;">
+    <a href="/kabuki/dojo" style="color:var(--gold);text-decoration:none;font-size:0.85rem;">← KABUKI DOJO</a>
+  </div>
   <div id="player-wrap">
     <div id="player"></div>
     <div id="kakegoe-overlay">
@@ -492,6 +495,7 @@ function startScene() {
   // UI切替
   document.getElementById("intro").style.display = "none";
   document.getElementById("stage").style.display = "block";
+  window.scrollTo({ top: 0, behavior: 'instant' });
   document.getElementById("tap-zone").style.display = "block";
   document.getElementById("next-hint").style.display = "block";
   document.getElementById("timeline").style.display = "block";

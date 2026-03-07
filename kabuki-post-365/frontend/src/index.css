@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+:root {
+  --color-kabuki: #8B0000;
+  --color-kabuki-light: #A52A2A;
+  --color-kabuki-dark: #5C0000;
+  --color-gold: #D4A017;
+}
+
+body {
+  margin: 0;
+  font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}

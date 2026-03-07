@@ -847,6 +847,7 @@ export async function livePageHTML(env) {
     bodyHTML,
     activeNav: "live",
     googleClientId: env?.GOOGLE_CLIENT_ID || "",
+    ogImage: "https://kabukiplus.com/assets/ogp/ogp_live.png",
     headExtra: `<style>
       .live-intro {
         text-align: center;

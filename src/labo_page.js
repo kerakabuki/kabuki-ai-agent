@@ -57,7 +57,6 @@ export function laboEnmokuPageHTML({ googleClientId = "" } = {}) {
       <div class="labo-editor-header">
         <h3 class="labo-section-title" id="editor-title">新規演目ガイド</h3>
         <div class="labo-editor-actions">
-          <button class="labo-btn labo-btn-secondary" onclick="LaboEditor.preview()">プレビュー</button>
           <button class="labo-btn labo-btn-primary" onclick="LaboEditor.save()">💾 保存</button>
         </div>
       </div>
@@ -144,21 +143,36 @@ export function laboEnmokuPageHTML({ googleClientId = "" } = {}) {
         <button class="labo-btn-small" onclick="LaboEditor.addCastRow()">＋ 人物を追加</button>
       </div>
 
+      <!-- 執筆者 -->
+      <div class="labo-field">
+        <label class="labo-label">✍️ 執筆者</label>
+        <div id="f-author-fields" class="labo-author-fields"></div>
+        <button class="labo-btn-small" onclick="LaboEditor.addAuthorRow()">＋ 執筆者を追加</button>
+      </div>
+
       <!-- 保存ボタン（下部） -->
       <div class="labo-editor-footer">
-        <button class="labo-btn labo-btn-secondary" id="btn-preview-bottom" onclick="LaboEditor.preview()">プレビュー</button>
         <button class="labo-btn labo-btn-primary" id="btn-save-bottom" onclick="LaboEditor.save()">💾 保存</button>
       </div>
     </section>
 
-    <!-- プレビューモーダル -->
-    <div id="labo-preview-overlay" class="labo-preview-overlay" style="display:none" onclick="if(event.target===this)LaboEditor.closePreview()">
-      <div class="labo-preview-panel">
-        <div class="labo-preview-header">
-          <span>プレビュー</span>
-          <button class="labo-preview-close" onclick="LaboEditor.closePreview()">✕</button>
+    <!-- クロップモーダル -->
+    <div id="crop-overlay" class="crop-overlay" style="display:none">
+      <div class="crop-dialog">
+        <h3 class="crop-title">トリミング</h3>
+        <div class="crop-container" id="crop-container">
+          <img id="crop-source" class="crop-source">
+          <div id="crop-box" class="crop-box">
+            <div class="crop-handle crop-handle-tl" data-handle="tl"></div>
+            <div class="crop-handle crop-handle-tr" data-handle="tr"></div>
+            <div class="crop-handle crop-handle-bl" data-handle="bl"></div>
+            <div class="crop-handle crop-handle-br" data-handle="br"></div>
+          </div>
         </div>
-        <div id="labo-preview-body" class="labo-preview-body"></div>
+        <div class="crop-actions">
+          <button class="labo-btn labo-btn-secondary" onclick="LaboEditor.cropCancel()">キャンセル</button>
+          <button class="labo-btn labo-btn-primary" onclick="LaboEditor.cropConfirm()">決定</button>
+        </div>
       </div>
     </div>
 
@@ -215,10 +229,8 @@ export function laboEnmokuPageHTML({ googleClientId = "" } = {}) {
         infoEl.innerHTML = buildInfoTemplate(null);
         // cast: 空にする
         document.getElementById('f-cast-fields').innerHTML = '';
-        // authors: リセット
-        window._existingAuthors = [];
-        var historyEl = document.querySelector('.labo-author-history');
-        if (historyEl) historyEl.remove();
+        // authors: 空にする
+        document.getElementById('f-author-fields').innerHTML = '';
         hideSaveStatus();
       }
 
@@ -255,14 +267,32 @@ export function laboEnmokuPageHTML({ googleClientId = "" } = {}) {
         return rows.join('');
       }
 
-      function castRow(id, name, desc) {
+      function castRow(id, name, desc, reading, imageUrl) {
+        var imgVal = imageUrl || '';
         return '<div class="labo-cast-row">'
+          + '<input type="hidden" class="labo-cast-id" value="' + esc(id) + '">'
           + '<div class="labo-cast-top">'
-          + '<input type="text" class="labo-input labo-cast-id" placeholder="ID（例: benkei）" value="' + esc(id) + '">'
-          + '<input type="text" class="labo-input labo-cast-name" placeholder="名前（例: 武蔵坊弁慶）" value="' + esc(name) + '">'
+          + '<label class="labo-cast-label">人物名<\\/label>'
+          + '<input type="text" class="labo-input labo-cast-name" placeholder="例: 武蔵坊弁慶" value="' + esc(name) + '">'
           + '<button class="labo-row-del" onclick="this.closest(\\'.labo-cast-row\\').remove()" title="削除">✕<\\/button>'
           + '<\\/div>'
+          + '<div class="labo-cast-reading-row">'
+          + '<label class="labo-cast-label">読みがな<\\/label>'
+          + '<input type="text" class="labo-input labo-cast-reading" placeholder="例: むさしぼうべんけい" value="' + esc(reading || '') + '">'
+          + '<\\/div>'
+          + '<label class="labo-cast-label labo-cast-desc-label">人物説明<\\/label>'
           + '<textarea class="labo-textarea labo-cast-desc" rows="3" placeholder="人物の説明…">' + esc(desc) + '<\\/textarea>'
+          + '<div class="labo-cast-image-area">'
+          + '<input type="hidden" class="labo-cast-image" value="' + esc(imgVal) + '">'
+          + '<div class="labo-cast-image-thumb' + (imgVal ? '' : ' hidden') + '">'
+          + '<img class="labo-cast-image-preview" src="' + esc(imgVal) + '">'
+          + '<button type="button" class="labo-cast-image-del" onclick="LaboEditor.removeCastImage(this)" title="画像を削除">✕<\\/button>'
+          + '<\\/div>'
+          + '<label class="labo-btn-small labo-cast-image-btn">画像を選択'
+          + '<input type="file" accept="image/jpeg,image/png,image/webp,image/gif" style="display:none" onchange="LaboEditor.uploadCastImage(this)">'
+          + '<\\/label>'
+          + '<span class="labo-cast-image-status"><\\/span>'
+          + '<\\/div>'
           + '<\\/div>';
       }
 
@@ -273,7 +303,270 @@ export function laboEnmokuPageHTML({ googleClientId = "" } = {}) {
 
       function addCastRow() {
         var el = document.getElementById('f-cast-fields');
-        el.insertAdjacentHTML('beforeend', castRow('','',''));
+        el.insertAdjacentHTML('beforeend', castRow('','','','',''));
+      }
+
+      function authorRow(displayName, userId, provider, addedAt, updatedAt) {
+        return '<div class="labo-author-row">'
+          + '<input type="hidden" class="labo-author-uid" value="' + esc(userId || '') + '">'
+          + '<input type="hidden" class="labo-author-provider" value="' + esc(provider || '') + '">'
+          + '<input type="hidden" class="labo-author-added" value="' + esc(addedAt || '') + '">'
+          + '<input type="hidden" class="labo-author-updated" value="' + esc(updatedAt || '') + '">'
+          + '<input type="text" class="labo-input labo-author-dname" placeholder="表示名" value="' + esc(displayName || '') + '">'
+          + '<button class="labo-row-del" onclick="this.closest(\\'.labo-author-row\\').remove()" title="削除">✕<\\/button>'
+          + '<\\/div>';
+      }
+
+      function addAuthorRow() {
+        var el = document.getElementById('f-author-fields');
+        el.insertAdjacentHTML('beforeend', authorRow('','','','',''));
+      }
+
+      /* ── クロップUI状態 ── */
+      var cropState = {
+        file: null,
+        fileInput: null,
+        img: null,           // 元画像 Image オブジェクト
+        dragging: false,
+        resizing: false,
+        handle: null,
+        startX: 0, startY: 0,
+        boxStartX: 0, boxStartY: 0, boxStartSize: 0
+      };
+
+      function uploadCastImage(fileInput) {
+        var file = fileInput.files && fileInput.files[0];
+        if (!file) return;
+        openCropModal(file, fileInput);
+      }
+
+      function openCropModal(file, fileInput) {
+        cropState.file = file;
+        cropState.fileInput = fileInput;
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var img = new Image();
+          img.onload = function() {
+            cropState.img = img;
+            var srcEl = document.getElementById('crop-source');
+            srcEl.src = e.target.result;
+            // 画像表示後にクロップボックスを初期化
+            srcEl.onload = function() {
+              initCropBox();
+            };
+            document.getElementById('crop-overlay').style.display = 'flex';
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function initCropBox() {
+        var container = document.getElementById('crop-container');
+        var srcEl = document.getElementById('crop-source');
+        var box = document.getElementById('crop-box');
+        var cw = srcEl.clientWidth;
+        var ch = srcEl.clientHeight;
+        // 初期クロップサイズ: 短辺の80%
+        var initSize = Math.min(cw, ch) * 0.8;
+        var bx = (cw - initSize) / 2;
+        var by = (ch - initSize) / 2;
+        box.style.left = bx + 'px';
+        box.style.top = by + 'px';
+        box.style.width = initSize + 'px';
+        box.style.height = initSize + 'px';
+        // イベント登録
+        setupCropEvents();
+      }
+
+      function setupCropEvents() {
+        var box = document.getElementById('crop-box');
+        var container = document.getElementById('crop-container');
+
+        // クリーンアップ用
+        if (cropState._cleanup) cropState._cleanup();
+
+        function getPos(e) {
+          var t = e.touches ? e.touches[0] : e;
+          var rect = container.getBoundingClientRect();
+          return { x: t.clientX - rect.left, y: t.clientY - rect.top };
+        }
+
+        function onStart(e) {
+          e.preventDefault();
+          var pos = getPos(e);
+          var handle = e.target.dataset && e.target.dataset.handle;
+          if (handle) {
+            cropState.resizing = true;
+            cropState.handle = handle;
+          } else {
+            cropState.dragging = true;
+          }
+          cropState.startX = pos.x;
+          cropState.startY = pos.y;
+          cropState.boxStartX = parseFloat(box.style.left);
+          cropState.boxStartY = parseFloat(box.style.top);
+          cropState.boxStartSize = parseFloat(box.style.width);
+        }
+
+        function onMove(e) {
+          if (!cropState.dragging && !cropState.resizing) return;
+          e.preventDefault();
+          var pos = getPos(e);
+          var srcEl = document.getElementById('crop-source');
+          var maxW = srcEl.clientWidth;
+          var maxH = srcEl.clientHeight;
+
+          if (cropState.dragging) {
+            var dx = pos.x - cropState.startX;
+            var dy = pos.y - cropState.startY;
+            var newX = cropState.boxStartX + dx;
+            var newY = cropState.boxStartY + dy;
+            var size = cropState.boxStartSize;
+            // 画像範囲内に制限
+            newX = Math.max(0, Math.min(newX, maxW - size));
+            newY = Math.max(0, Math.min(newY, maxH - size));
+            box.style.left = newX + 'px';
+            box.style.top = newY + 'px';
+          } else if (cropState.resizing) {
+            var dx = pos.x - cropState.startX;
+            var dy = pos.y - cropState.startY;
+            var h = cropState.handle;
+            var delta;
+            // ハンドル方向に応じて拡縮
+            if (h === 'br') {
+              delta = Math.max(dx, dy);
+            } else if (h === 'bl') {
+              delta = Math.max(-dx, dy);
+            } else if (h === 'tr') {
+              delta = Math.max(dx, -dy);
+            } else { // tl
+              delta = Math.max(-dx, -dy);
+            }
+            var newSize = Math.max(40, cropState.boxStartSize + delta);
+            var bx = cropState.boxStartX;
+            var by = cropState.boxStartY;
+            // tl/bl → 左辺を動かす、tl/tr → 上辺を動かす
+            if (h === 'tl' || h === 'bl') {
+              bx = cropState.boxStartX - (newSize - cropState.boxStartSize);
+            }
+            if (h === 'tl' || h === 'tr') {
+              by = cropState.boxStartY - (newSize - cropState.boxStartSize);
+            }
+            // 画像範囲内に収まるようサイズ制限
+            if (bx < 0) { newSize += bx; bx = 0; }
+            if (by < 0) { newSize += by; by = 0; }
+            if (bx + newSize > maxW) { newSize = maxW - bx; }
+            if (by + newSize > maxH) { newSize = maxH - by; }
+            newSize = Math.max(40, newSize);
+            box.style.left = bx + 'px';
+            box.style.top = by + 'px';
+            box.style.width = newSize + 'px';
+            box.style.height = newSize + 'px';
+          }
+        }
+
+        function onEnd() {
+          cropState.dragging = false;
+          cropState.resizing = false;
+          cropState.handle = null;
+        }
+
+        box.addEventListener('mousedown', onStart);
+        box.addEventListener('touchstart', onStart, { passive: false });
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('touchmove', onMove, { passive: false });
+        document.addEventListener('mouseup', onEnd);
+        document.addEventListener('touchend', onEnd);
+
+        cropState._cleanup = function() {
+          box.removeEventListener('mousedown', onStart);
+          box.removeEventListener('touchstart', onStart);
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('touchmove', onMove);
+          document.removeEventListener('mouseup', onEnd);
+          document.removeEventListener('touchend', onEnd);
+        };
+      }
+
+      function cropConfirm() {
+        var box = document.getElementById('crop-box');
+        var srcEl = document.getElementById('crop-source');
+        var img = cropState.img;
+        if (!img) return;
+        // 表示座標→元画像座標の変換比率
+        var scaleX = img.naturalWidth / srcEl.clientWidth;
+        var scaleY = img.naturalHeight / srcEl.clientHeight;
+        var sx = parseFloat(box.style.left) * scaleX;
+        var sy = parseFloat(box.style.top) * scaleY;
+        var sw = parseFloat(box.style.width) * scaleX;
+        var sh = parseFloat(box.style.height) * scaleY;
+
+        var canvas = document.createElement('canvas');
+        canvas.width = 400;
+        canvas.height = 400;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, sx, sy, sw, sh, 0, 0, 400, 400);
+        // WebP優先、非対応ならJPEG
+        var type = canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0 ? 'image/webp' : 'image/jpeg';
+        canvas.toBlob(function(blob) {
+          doUploadCastImage(blob, type);
+        }, type, 0.82);
+      }
+
+      function doUploadCastImage(blob, type) {
+        var fileInput = cropState.fileInput;
+        var area = fileInput.closest('.labo-cast-image-area');
+        var statusEl = area.querySelector('.labo-cast-image-status');
+        closeCropModal();
+        if (statusEl) { statusEl.textContent = 'アップロード中…'; statusEl.className = 'labo-cast-image-status uploading'; }
+
+        var ext = type === 'image/webp' ? 'webp' : 'jpg';
+        var formData = new FormData();
+        formData.append('file', blob, 'cast.' + ext);
+        fetch('/api/enmoku/images', {
+          method: 'POST',
+          credentials: 'same-origin',
+          body: formData,
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (data.url) {
+            area.querySelector('.labo-cast-image').value = data.url;
+            var thumb = area.querySelector('.labo-cast-image-thumb');
+            thumb.querySelector('.labo-cast-image-preview').src = data.url;
+            thumb.classList.remove('hidden');
+            if (statusEl) { statusEl.textContent = 'アップロード完了'; statusEl.className = 'labo-cast-image-status ok'; setTimeout(function() { statusEl.textContent = ''; statusEl.className = 'labo-cast-image-status'; }, 3000); }
+          } else {
+            if (statusEl) { statusEl.textContent = 'エラー: ' + (data.error || '失敗'); statusEl.className = 'labo-cast-image-status err'; }
+          }
+          fileInput.value = '';
+        })
+        .catch(function(err) {
+          if (statusEl) { statusEl.textContent = '通信エラー: ' + err; statusEl.className = 'labo-cast-image-status err'; }
+          fileInput.value = '';
+        });
+      }
+
+      function cropCancel() {
+        closeCropModal();
+        if (cropState.fileInput) cropState.fileInput.value = '';
+      }
+
+      function closeCropModal() {
+        document.getElementById('crop-overlay').style.display = 'none';
+        document.getElementById('crop-source').src = '';
+        if (cropState._cleanup) { cropState._cleanup(); cropState._cleanup = null; }
+        cropState.img = null;
+        cropState.file = null;
+      }
+
+      function removeCastImage(btn) {
+        var area = btn.closest('.labo-cast-image-area');
+        area.querySelector('.labo-cast-image').value = '';
+        var thumb = area.querySelector('.labo-cast-image-thumb');
+        thumb.classList.add('hidden');
+        thumb.querySelector('.labo-cast-image-preview').src = '';
       }
 
       /* ── カタログ読み込み ── */
@@ -373,32 +666,12 @@ export function laboEnmokuPageHTML({ googleClientId = "" } = {}) {
         document.getElementById('f-group').value = data._catalog_group || '';
         document.getElementById('f-sort-key').value = data._catalog_sort_key || '';
 
-        // 既存の執筆者情報を保持
-        if (data.authors && data.authors.length) {
-          window._existingAuthors = data.authors;
-          var bar = document.getElementById('labo-author-bar');
-          if (bar) {
-            var history = '<div class="labo-author-history">';
-            history += '<span class="labo-author-history-label">執筆履歴:</span>';
-            data.authors.forEach(function(a) {
-              var d = a.updatedAt ? new Date(a.updatedAt) : null;
-              var ds = d ? (d.getMonth()+1) + '/' + d.getDate() : '';
-              history += '<span class="labo-author-chip">' + esc(a.displayName || '匿名') + (ds ? ' <small>' + ds + '<\\/small>' : '') + '<\\/span>';
-            });
-            history += '<\\/div>';
-            var existing = bar.querySelector('.labo-author-history');
-            if (existing) existing.remove();
-            bar.insertAdjacentHTML('beforeend', history);
-          }
-          // 自分の既存ニックネームをニックネーム欄に反映
-          if (currentUser) {
-            var myEntry = data.authors.find(function(a) { return a.userId === currentUser.userId; });
-            var nickEl = document.getElementById('f-author-nickname');
-            if (myEntry && nickEl) nickEl.value = myEntry.displayName || currentUser.displayName || '';
-          }
-        } else {
-          window._existingAuthors = [];
-        }
+        // 執筆者
+        var authorEl = document.getElementById('f-author-fields');
+        var authorsData = data.authors || [];
+        authorEl.innerHTML = authorsData.map(function(a) {
+          return authorRow(a.displayName || '', a.userId || '', a.provider || '', a.addedAt || '', a.updatedAt || '');
+        }).join('');
         document.getElementById('f-synopsis').value = data.synopsis || (data.sections && data.sections.synopsis) || '';
         document.getElementById('f-highlights').value = data.highlights || (data.sections && data.sections.highlights) || '';
 
@@ -425,7 +698,14 @@ export function laboEnmokuPageHTML({ googleClientId = "" } = {}) {
         var castEl = document.getElementById('f-cast-fields');
         var castData = data.cast || (data.sections && data.sections.cast) || [];
         castEl.innerHTML = castData.map(function(c) {
-          return castRow(c.id || '', c.name || '', c.desc || '');
+          var cname = c.name || '';
+          var creading = '';
+          var parenIdx = cname.indexOf('（');
+          if (parenIdx >= 0) {
+            creading = cname.slice(parenIdx + 1).replace(/）$/, '');
+            cname = cname.slice(0, parenIdx);
+          }
+          return castRow(c.id || '', cname, c.desc || '', creading, c.image || '');
         }).join('');
       }
 
@@ -466,9 +746,14 @@ export function laboEnmokuPageHTML({ googleClientId = "" } = {}) {
         castRows.forEach(function(row) {
           var cid = row.querySelector('.labo-cast-id').value.trim();
           var cname = row.querySelector('.labo-cast-name').value.trim();
+          var creading = row.querySelector('.labo-cast-reading').value.trim();
           var cdesc = row.querySelector('.labo-cast-desc').value.trim();
+          var cimage = (row.querySelector('.labo-cast-image') || {}).value || '';
+          var fullName = creading ? cname + '（' + creading + '）' : cname;
           if (cname) {
-            cast.push({ id: cid || cname.replace(/[\\s（()）]/g,'').toLowerCase(), name: cname, desc: cdesc });
+            var entry = { id: cid || cname.replace(/[\\s（()）]/g,'').toLowerCase(), name: fullName, desc: cdesc };
+            if (cimage) entry.image = cimage;
+            cast.push(entry);
           }
         });
         if (cast.length) obj.cast = cast;
@@ -477,26 +762,26 @@ export function laboEnmokuPageHTML({ googleClientId = "" } = {}) {
         obj._catalog_group = group || null;
         obj._catalog_sort_key = sortKey || null;
 
-        // 執筆者情報（既存の authors を引き継ぎ）
-        obj.authors = (window._existingAuthors || []).slice();
-        if (currentUser) {
-          var nickname = (document.getElementById('f-author-nickname').value || '').trim();
-          var authorName = nickname || currentUser.displayName || '';
-          var now = new Date().toISOString();
-          var existingAuthor = obj.authors.find(function(a) { return a.userId === currentUser.userId; });
-          if (existingAuthor) {
-            existingAuthor.updatedAt = now;
-            existingAuthor.displayName = authorName;
-          } else {
-            obj.authors.push({
-              userId: currentUser.userId,
-              displayName: authorName,
-              provider: currentUser.provider || '',
-              addedAt: now,
-              updatedAt: now
-            });
-          }
-        }
+        // 執筆者情報（フォームの行から収集）
+        var authorRows = document.querySelectorAll('#f-author-fields .labo-author-row');
+        var authors = [];
+        var now = new Date().toISOString();
+        authorRows.forEach(function(row) {
+          var dname = row.querySelector('.labo-author-dname').value.trim();
+          if (!dname) return;
+          var uid = row.querySelector('.labo-author-uid').value.trim();
+          var prov = row.querySelector('.labo-author-provider').value.trim();
+          var added = row.querySelector('.labo-author-added').value.trim();
+          var updated = row.querySelector('.labo-author-updated').value.trim();
+          authors.push({
+            userId: uid,
+            displayName: dname,
+            provider: prov,
+            addedAt: added || now,
+            updatedAt: now
+          });
+        });
+        if (authors.length) obj.authors = authors;
 
         return { id: id, data: obj };
       }
@@ -531,61 +816,7 @@ export function laboEnmokuPageHTML({ googleClientId = "" } = {}) {
         .catch(function(e) { showSaveStatus('❌ 通信エラー: ' + e, 'error'); });
       }
 
-      /* ── プレビュー ── */
-      function preview() {
-        var result = buildJSON();
-        if (!result) return;
-        var d = result.data;
-        var h = '<div class="preview-content">';
-        h += '<h2>' + esc(d.title) + '<\\/h2>';
-        if (d.title_short && d.title_short !== d.title) h += '<p class="preview-sub">' + esc(d.title_short) + '<\\/p>';
 
-        if (d.synopsis) {
-          h += '<h3>📖 あらすじ<\\/h3>';
-          h += '<p>' + esc(d.synopsis).replace(/\\n/g, '<br>') + '<\\/p>';
-        }
-        if (d.highlights) {
-          h += '<h3>🌟 みどころ<\\/h3>';
-          h += '<p>' + esc(d.highlights).replace(/\\n/g, '<br>') + '<\\/p>';
-        }
-        if (d.info) {
-          h += '<h3>📝 作品情報<\\/h3>';
-          if (typeof d.info === 'object') {
-            h += '<table class="preview-info">';
-            Object.keys(d.info).forEach(function(k) {
-              h += '<tr><th>' + esc(k) + '<\\/th><td>' + esc(d.info[k]) + '<\\/td><\\/tr>';
-            });
-            h += '<\\/table>';
-          } else {
-            h += '<p>' + esc(d.info) + '<\\/p>';
-          }
-        }
-        if (d.cast && d.cast.length) {
-          h += '<h3>🎭 登場人物（' + d.cast.length + '人）<\\/h3>';
-          d.cast.forEach(function(c) {
-            h += '<div class="preview-cast">';
-            h += '<strong>' + esc(c.name) + '<\\/strong>';
-            if (c.desc) h += '<p>' + esc(c.desc).replace(/\\n/g, '<br>') + '<\\/p>';
-            h += '<\\/div>';
-          });
-        }
-        if (d.authors && d.authors.length) {
-          h += '<div class="preview-authors">';
-          h += '<span class="preview-authors-label">✍️ 執筆:<\\/span> ';
-          h += d.authors.map(function(a) { return esc(a.displayName || '匿名'); }).join('、');
-          h += '<\\/div>';
-        }
-        h += '<\\/div>';
-
-        document.getElementById('labo-preview-body').innerHTML = h;
-        document.getElementById('labo-preview-overlay').style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-      }
-
-      function closePreview() {
-        document.getElementById('labo-preview-overlay').style.display = 'none';
-        document.body.style.overflow = '';
-      }
 
       /* ── ステータス（固定トースト + インライン） ── */
       var _toastTimer = null;
@@ -701,17 +932,18 @@ export function laboEnmokuPageHTML({ googleClientId = "" } = {}) {
         newFromMissed: newFromMissed,
         addInfoRow: addInfoRow,
         addCastRow: addCastRow,
+        uploadCastImage: uploadCastImage,
+        removeCastImage: removeCastImage,
+        cropCancel: cropCancel,
+        cropConfirm: cropConfirm,
+        addAuthorRow: addAuthorRow,
         save: save,
-        preview: preview,
-        closePreview: closePreview,
         requestAccess: requestAccess
       };
 
       // 下部ボタン用フォールバック（onclick が効かない環境対策）
       var btnSaveBottom = document.getElementById('btn-save-bottom');
       if (btnSaveBottom) btnSaveBottom.addEventListener('click', function(e) { e.preventDefault(); save(); });
-      var btnPreviewBottom = document.getElementById('btn-preview-bottom');
-      if (btnPreviewBottom) btnPreviewBottom.addEventListener('click', function(e) { e.preventDefault(); preview(); });
     })();
     </script>
   `;
@@ -1045,6 +1277,16 @@ export function laboEnmokuPageHTML({ googleClientId = "" } = {}) {
       }
       .labo-row-del:hover { color: var(--accent-1); background: rgba(192,57,43,.08); }
 
+      /* 執筆者行 */
+      .labo-author-fields { margin-bottom: 8px; }
+      .labo-author-row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 6px;
+      }
+      .labo-author-dname { flex: 1; }
+
       /* cast行 */
       .labo-cast-row {
         background: var(--bg-subtle);
@@ -1059,9 +1301,61 @@ export function laboEnmokuPageHTML({ googleClientId = "" } = {}) {
         margin-bottom: 6px;
         align-items: center;
       }
-      .labo-cast-id { width: 30%; }
       .labo-cast-name { flex: 1; }
+      .labo-cast-label { font-size: 12px; color: var(--text-dim); white-space: nowrap; min-width: 56px; }
+      .labo-cast-desc-label { display: block; margin-bottom: 2px; }
+      .labo-cast-reading-row { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; }
+      .labo-cast-reading { flex: 1; font-size: 13px; }
       .labo-cast-desc { font-size: 13px; }
+
+      /* cast画像 */
+      .labo-cast-image-area {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 8px;
+      }
+      .labo-cast-image-thumb {
+        position: relative;
+        display: inline-block;
+      }
+      .labo-cast-image-thumb.hidden { display: none; }
+      .labo-cast-image-preview {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border-light);
+        display: block;
+      }
+      .labo-cast-image-del {
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: none;
+        background: rgba(0,0,0,.6);
+        color: #fff;
+        font-size: 12px;
+        line-height: 20px;
+        text-align: center;
+        cursor: pointer;
+        padding: 0;
+      }
+      .labo-cast-image-del:hover { background: var(--accent-1); }
+      .labo-cast-image-btn {
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+      }
+      .labo-cast-image-status {
+        font-size: 12px;
+      }
+      .labo-cast-image-status.uploading { color: var(--text-dim); }
+      .labo-cast-image-status.ok { color: #27ae60; }
+      .labo-cast-image-status.err { color: var(--accent-1); }
 
       /* ボタン */
       .labo-btn {
@@ -1138,102 +1432,76 @@ export function laboEnmokuPageHTML({ googleClientId = "" } = {}) {
       .labo-toast-success { background: #1a7a2a; color: #fff; }
       .labo-toast-error { background: #b51a1a; color: #fff; }
 
-      /* プレビュー */
-      .labo-preview-overlay {
+      /* クロップモーダル */
+      .crop-overlay {
         position: fixed;
-        inset: 0;
-        z-index: 2000;
-        background: rgba(0,0,0,.5);
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.7);
+        z-index: 10000;
         display: flex;
         align-items: center;
         justify-content: center;
       }
-      .labo-preview-panel {
-        background: var(--bg-page);
-        width: 90%;
-        max-width: 600px;
-        max-height: 85vh;
-        border-radius: 12px;
-        overflow: hidden;
+      .crop-dialog {
+        background: var(--bg-card, #fff);
+        border-radius: var(--radius-md, 12px);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        padding: 20px;
+        max-width: 90vw;
+        max-height: 90vh;
         display: flex;
         flex-direction: column;
+        overflow: hidden;
       }
-      .labo-preview-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 14px 20px;
-        border-bottom: 1px solid var(--border-light);
-        font-weight: 700;
-        font-size: 15px;
-      }
-      .labo-preview-close {
-        background: none;
-        border: none;
-        font-size: 18px;
-        color: var(--text-tertiary);
-        cursor: pointer;
-        padding: 4px 8px;
-        border-radius: 6px;
-      }
-      .labo-preview-close:hover { background: var(--bg-subtle); }
-      .labo-preview-body {
-        overflow-y: auto;
-        padding: 20px;
-        -webkit-overflow-scrolling: touch;
-      }
-      .preview-content h2 {
+      .crop-title {
         font-family: 'Noto Serif JP', serif;
-        font-size: 20px;
-        margin: 0 0 8px;
-      }
-      .preview-content h3 {
-        font-size: 15px;
-        margin: 20px 0 8px;
-        padding-bottom: 4px;
-        border-bottom: 1px solid var(--border-light);
-      }
-      .preview-content p {
-        font-size: 14px;
-        line-height: 1.8;
-        margin: 0 0 8px;
-      }
-      .preview-sub { color: var(--text-tertiary); font-size: 13px; }
-      .preview-info {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 13px;
-      }
-      .preview-info th {
-        text-align: left;
-        padding: 6px 12px 6px 0;
-        color: var(--text-secondary);
-        white-space: nowrap;
-        vertical-align: top;
-        width: 30%;
-      }
-      .preview-info td {
-        padding: 6px 0;
+        font-size: 16px;
+        font-weight: 700;
         color: var(--text-primary);
+        margin: 0 0 12px;
+        text-align: center;
       }
-      .preview-cast {
-        background: var(--bg-subtle);
-        border-radius: var(--radius-sm);
-        padding: 10px 14px;
-        margin-bottom: 8px;
+      .crop-container {
+        position: relative;
+        display: inline-block;
+        line-height: 0;
+        overflow: hidden;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: none;
+        max-height: 60vh;
       }
-      .preview-cast strong { font-size: 14px; }
-      .preview-cast p { font-size: 13px; margin: 4px 0 0; }
-      .preview-authors {
-        margin-top: 20px;
-        padding-top: 12px;
-        border-top: 1px solid var(--border-light);
-        font-size: 13px;
-        color: var(--text-secondary);
+      .crop-source {
+        display: block;
+        max-width: 80vw;
+        max-height: 60vh;
+        object-fit: contain;
       }
-      .preview-authors-label {
-        font-weight: 600;
-        color: var(--text-tertiary);
+      .crop-box {
+        position: absolute;
+        border: 2px solid #fff;
+        box-shadow: 0 0 0 9999px rgba(0,0,0,0.5);
+        cursor: move;
+        box-sizing: border-box;
+      }
+      .crop-handle {
+        position: absolute;
+        width: 24px;
+        height: 24px;
+        background: #fff;
+        border: 2px solid var(--gold, #c5a255);
+        border-radius: 50%;
+        z-index: 1;
+      }
+      .crop-handle-tl { top: -12px; left: -12px; cursor: nwse-resize; }
+      .crop-handle-tr { top: -12px; right: -12px; cursor: nesw-resize; }
+      .crop-handle-bl { bottom: -12px; left: -12px; cursor: nesw-resize; }
+      .crop-handle-br { bottom: -12px; right: -12px; cursor: nwse-resize; }
+      .crop-actions {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 16px;
       }
 
       @media (max-width: 600px) {
@@ -1244,7 +1512,13 @@ export function laboEnmokuPageHTML({ googleClientId = "" } = {}) {
         .labo-info-key { width: 100%; }
         .labo-info-key-fixed { width: 100%; }
         .labo-cast-top { flex-direction: column; }
-        .labo-cast-id { width: 100%; }
+        .crop-dialog { padding: 14px; }
+        .crop-source { max-width: 85vw; max-height: 55vh; }
+        .crop-handle { width: 28px; height: 28px; }
+        .crop-handle-tl { top: -14px; left: -14px; }
+        .crop-handle-tr { top: -14px; right: -14px; }
+        .crop-handle-bl { bottom: -14px; left: -14px; }
+        .crop-handle-br { bottom: -14px; right: -14px; }
       }
     </style>`
   });

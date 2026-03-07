@@ -232,7 +232,7 @@ export async function enmokuListFlex(env) {
           size: "lg",
           color: KABUKI.gold
         },
-        { type: "text", text: `全${catalog.length}演目🙂`, size: "xs", color: KABUKI.dim },
+        { type: "text", text: `全${catalog.length}演目 🌱 順次追加中`, size: "xs", color: KABUKI.dim },
         ...pageRows,
         {
           type: "button",

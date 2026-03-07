@@ -200,6 +200,7 @@ export function dojoPageHTML({ googleClientId = "" } = {}) {
     bodyHTML,
     activeNav: "dojo",
     googleClientId,
+    ogImage: "https://kabukiplus.com/assets/ogp/ogp_dojo.png",
     headExtra: `<style>
       .dojo-intro {
         text-align: center;

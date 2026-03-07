@@ -1,7 +1,7 @@
 // src/architecture_page.js
 // =========================================================
 // サービス構成図 — /architecture
-// KABUKI PLUS+ / JIKABUKI PLUS+ ツインブランド構想 v2.0
+// KABUKI PLUS+ / JIKABUKI PLUS+ ツインブランド構想 v3.1
 // =========================================================
 
 export function architecturePageHTML() {
@@ -10,7 +10,7 @@ export function architecturePageHTML() {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KABUKI PLUS+ / JIKABUKI PLUS+ 構成図</title>
+<title>サービス構成図 | KABUKI PLUS+</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎭</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -34,8 +34,10 @@ export function architecturePageHTML() {
     --border-light: #EDE7DD;
     --shadow-sm: 0 1px 3px rgba(61,49,39,0.06);
     --shadow-md: 0 4px 12px rgba(61,49,39,0.08);
+    --shadow-lg: 0 8px 24px rgba(61,49,39,0.10);
     --radius-md: 12px;
     --radius-sm: 8px;
+    --radius-lg: 16px;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -86,6 +88,8 @@ export function architecturePageHTML() {
   .feat .feat-icon { width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; background: white; box-shadow: var(--shadow-sm); }
   .feat .feat-name { font-size: 13px; font-weight: 600; }
   .feat .feat-desc { font-size: 10px; color: var(--text-tertiary); margin-top: 1px; }
+  .feat.feat-new { position: relative; }
+  .feat.feat-new::after { content: 'NEW'; position: absolute; top: -5px; right: 8px; font-size: 9px; font-weight: 700; color: white; background: var(--accent-green); padding: 1px 6px; border-radius: 4px; letter-spacing: 0.5px; }
   .feat.feat-expand { background: var(--accent-red-soft); border: 1px dashed var(--accent-red); position: relative; }
   .feat.feat-expand::after { content: '横展開'; position: absolute; top: -6px; right: 8px; font-size: 9px; font-weight: 600; color: white; background: var(--accent-red); padding: 1px 6px; border-radius: 4px; letter-spacing: 0.5px; }
   .sublabel { font-size: 12px; font-weight: 600; padding: 4px 0 2px; letter-spacing: 0.5px; display: flex; align-items: baseline; gap: 6px; }
@@ -93,8 +97,6 @@ export function architecturePageHTML() {
   .sublabel-public { color: var(--accent-red); }
   .sublabel-internal { color: var(--text-secondary); }
   .sublabel-kabuki { color: #3D3127; }
-  .navi-breakdown { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 24px; }
-  .channel-roles { display: flex; gap: 10px; }
   .shared-base-connector { display: flex; justify-content: center; height: 28px; position: relative; }
   .shared-base-connector::before { content: ''; position: absolute; bottom: 0; left: calc(25% + 4px); right: calc(25% + 4px); height: 2px; background: var(--gold-light); }
   .shared-base-connector .leg-l, .shared-base-connector .leg-r { position: absolute; top: 0; width: 2px; height: 100%; background: var(--gold-light); }
@@ -117,11 +119,27 @@ export function architecturePageHTML() {
   .comparison-table td { padding: 10px 14px; border-bottom: 1px solid var(--border-light); vertical-align: top; }
   .comparison-table td:first-child { font-weight: 500; color: var(--text-tertiary); font-size: 12px; background: rgba(243,237,228,0.4); }
   .comparison-table tr:last-child td { border-bottom: none; }
-  .tab-preview { margin-top: 24px; }
-  .tab-preview-label { font-size: 12px; font-weight: 500; color: var(--text-tertiary); margin-bottom: 8px; letter-spacing: 0.5px; }
-  .arch-note { margin-top: 20px; padding: 16px; background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-md); font-size: 13px; color: var(--text-secondary); line-height: 1.8; box-shadow: var(--shadow-sm); }
+
+  /* AI Pipeline */
+  .ai-pipeline { background: linear-gradient(135deg, #3D3127, #5A4E42); color: #F3EDE4; border-radius: var(--radius-lg); padding: 24px 20px; box-shadow: var(--shadow-lg); margin-bottom: 16px; }
+  .ai-pipeline .aip-title { font-family: 'Noto Serif JP', serif; font-size: 15px; font-weight: 700; color: var(--gold-light); text-align: center; margin-bottom: 16px; letter-spacing: 1px; }
+  .ai-step { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: rgba(255,255,255,0.08); border-radius: var(--radius-sm); margin-bottom: 6px; }
+  .ai-step .step-num { width: 24px; height: 24px; border-radius: 50%; background: var(--gold); color: #3D3127; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .ai-step .step-name { font-size: 12px; font-weight: 600; color: var(--gold-light); }
+  .ai-step .step-desc { font-size: 10px; color: #C0B8A8; margin-top: 1px; }
+  .ai-arrow { text-align: center; color: var(--gold); font-size: 12px; padding: 2px 0; }
+
+  /* Stats bar */
+  .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 16px 0; }
+  .sbar-item { text-align: center; padding: 12px 8px; background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); }
+  .sbar-item .sbar-num { font-family: 'Noto Serif JP', serif; font-size: 20px; font-weight: 700; color: var(--gold-dark); }
+  .sbar-item .sbar-label { font-size: 10px; color: var(--text-tertiary); margin-top: 2px; }
+
+  .channel-roles { display: flex; gap: 10px; }
+  .arch-note { margin-top: 20px; padding: 20px; background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-md); font-size: 13px; color: var(--text-secondary); line-height: 1.8; box-shadow: var(--shadow-sm); }
   .arch-note strong { color: var(--text-primary); }
   .footer { text-align: center; padding: 32px 0; font-size: 11px; color: var(--text-tertiary); letter-spacing: 1px; }
+
   @media (max-width: 560px) {
     .page { padding: 12px 12px 40px; }
     .page-title { padding: 20px 0 16px; }
@@ -148,19 +166,18 @@ export function architecturePageHTML() {
     .sublabel-desc { font-size: 9px; }
     .top-concept { padding: 14px; }
     .top-concept h2 { font-size: 15px; }
-    .top-concept .tc-sub { font-size: 11px; }
     .note-title { font-size: 13px; }
     .arch-note { font-size: 12px; padding: 14px; line-height: 1.7; }
-    .navi-breakdown { grid-template-columns: 1fr; }
-    .note-section div[style*="display:flex; margin:8px 20px"] { margin-left: 12px !important; margin-right: 12px !important; }
     .channel-roles { flex-direction: column; }
+    .stats-bar { grid-template-columns: repeat(2, 1fr); }
+    .ai-pipeline { padding: 18px 14px; }
   }
 </style>
 </head>
 <body>
 <div class="page">
   <div class="page-title">
-    <div class="label">🎭 ARCHITECTURE</div>
+    <div class="label">ARCHITECTURE v3.1</div>
     <h1>サービス構成図</h1>
     <div class="sub">KABUKI PLUS+ / JIKABUKI PLUS+ ツインブランド構想</div>
     <div class="deco-line"><span class="diamond"></span></div>
@@ -170,6 +187,17 @@ export function architecturePageHTML() {
     <div class="tc-label">JIKABUKI × AI PROJECT</div>
     <h2>守るために、変わる。</h2>
     <div class="tc-sub">地歌舞伎を、テクノロジーの力でもっと身近に、もっと面白く。</div>
+  </div>
+
+  <!-- Stats bar -->
+  <div style="margin: 16px 0 0;">
+    <div class="stats-bar" style="margin:0;">
+      <div class="sbar-item"><div class="sbar-num">56,300+</div><div class="sbar-label">行のコード</div></div>
+      <div class="sbar-item"><div class="sbar-num">72</div><div class="sbar-label">モジュール</div></div>
+      <div class="sbar-item"><div class="sbar-num">95+</div><div class="sbar-label">ルート</div></div>
+      <div class="sbar-item"><div class="sbar-num">60+</div><div class="sbar-label">API</div></div>
+    </div>
+    <div style="text-align:right; font-size:10px; color:var(--text-tertiary); margin-top:4px; letter-spacing:0.5px;">R8.3.7 現在</div>
   </div>
 
   <div class="connector"><div class="connector-legs"></div></div>
@@ -184,30 +212,34 @@ export function architecturePageHTML() {
         <div class="bh-target">歌舞伎ファン・初心者向け</div>
       </div>
       <div class="feature-list">
-        <div class="sublabel sublabel-kabuki">🧭 KABUKI NAVI<span class="sublabel-desc">── 読んで学ぶ（蓄積型・R2）</span></div>
-        <div class="feat"><div class="feat-icon">🎭</div><div><div class="feat-name">演目ガイド</div><div class="feat-desc">あらすじ・見どころ・配役</div></div></div>
-        <div class="feat"><div class="feat-icon">👤</div><div><div class="feat-name">人物事典</div><div class="feat-desc">俳優・歴史上の人物</div></div></div>
-        <div class="feat"><div class="feat-icon">📘</div><div><div class="feat-name">用語いろは</div><div class="feat-desc">歌舞伎用語をわかりやすく</div></div></div>
-        <div class="feat"><div class="feat-icon">⭐</div><div><div class="feat-name">おすすめ演目</div><div class="feat-desc">好みに合った演目を提案</div></div></div>
-        <div class="feat"><div class="feat-icon">📊</div><div><div class="feat-name">学習ログ</div><div class="feat-desc">用語クリップ・学習進捗</div></div></div>
+        <div class="sublabel sublabel-kabuki">🧭 KABUKI NAVI<span class="sublabel-desc">── 読んで学ぶ（23+演目 / 126語 / コラム21本）</span></div>
+        <div class="feat"><div class="feat-icon">🎭</div><div><div class="feat-name">演目ガイド</div><div class="feat-desc">あらすじ・見どころ・配役（23+演目）</div></div></div>
+        <div class="feat"><div class="feat-icon">📘</div><div><div class="feat-name">用語辞典</div><div class="feat-desc">126語・8カテゴリ</div></div></div>
+        <div class="feat"><div class="feat-icon">⭐</div><div><div class="feat-name">おすすめ演目</div><div class="feat-desc">パーソナライズレコメンド</div></div></div>
+        <div class="feat"><div class="feat-icon">🎫</div><div><div class="feat-name">観劇ナビ</div><div class="feat-desc">初心者向け6ステップガイド</div></div></div>
+        <div class="feat feat-new"><div class="feat-icon">📝</div><div><div class="feat-name">コラム記事</div><div class="feat-desc">台詞解説・研究紀行ほか（21本）</div></div></div>
       </div>
       <div style="margin:0 14px; border-top:1px dashed var(--border-light);"></div>
       <div class="feature-list">
-        <div class="sublabel sublabel-kabuki">📡 KABUKI LIVE<span class="sublabel-desc">── 今を見る（自動取得・Dify）</span></div>
-        <div class="feat"><div class="feat-icon">📰</div><div><div class="feat-name">歌舞伎ニュース</div><div class="feat-desc">毎日自動取得・大歌舞伎</div></div></div>
-        <div class="feat"><div class="feat-icon">🎫</div><div><div class="feat-name">公演スケジュール</div><div class="feat-desc">歌舞伎座ほか公演情報・チケット</div></div></div>
+        <div class="sublabel sublabel-kabuki">📡 KABUKI LIVE<span class="sublabel-desc">── 今を見る（自動取得・6劇場）</span></div>
+        <div class="feat"><div class="feat-icon">📰</div><div><div class="feat-name">歌舞伎ニュース</div><div class="feat-desc">毎日自動取得（Google News RSS）</div></div></div>
+        <div class="feat"><div class="feat-icon">🎫</div><div><div class="feat-name">公演スケジュール</div><div class="feat-desc">6大劇場・kabuki-bito.jp連携</div></div></div>
+        <div class="feat"><div class="feat-icon">⭐</div><div><div class="feat-name">注目演目</div><div class="feat-desc">ピックアップ・開幕カウントダウン</div></div></div>
+        <div class="feat"><div class="feat-icon">💕</div><div><div class="feat-name">推し俳優ニュース</div><div class="feat-desc">お気に入り俳優の最新情報</div></div></div>
       </div>
       <div style="margin:0 14px; border-top:1px dashed var(--border-light);"></div>
       <div class="feature-list">
-        <div class="sublabel sublabel-kabuki">📝 KABUKI RECO<span class="sublabel-desc">── 記録する</span></div>
-        <div class="feat"><div class="feat-icon">📝</div><div><div class="feat-name">観劇記録</div><div class="feat-desc">観た演目・感想・推し俳優の記録</div></div></div>
+        <div class="sublabel sublabel-kabuki">📝 KABUKI RECO<span class="sublabel-desc">── 記録する（KV / R2）</span></div>
+        <div class="feat"><div class="feat-icon">📝</div><div><div class="feat-name">観劇記録</div><div class="feat-desc">500件/人・写真・編集対応</div></div></div>
+        <div class="feat feat-new"><div class="feat-icon">📤</div><div><div class="feat-name">SNSシェア</div><div class="feat-desc">X / Facebook / LINE・公開プロフィール</div></div></div>
+        <div class="feat feat-new"><div class="feat-icon">🏅</div><div><div class="feat-name">バッジ・ランク</div><div class="feat-desc">11段階称号・祝福演出</div></div></div>
       </div>
       <div style="margin:0 14px; border-top:1px dashed var(--border-light);"></div>
       <div class="feature-list">
-        <div class="sublabel sublabel-kabuki">🥋 KABUKI DOJO<span class="sublabel-desc">── やってみる</span></div>
-        <div class="feat"><div class="feat-icon">❓</div><div><div class="feat-name">歌舞伎クイズ</div><div class="feat-desc">知識の腕試し</div></div></div>
-        <div class="feat"><div class="feat-icon">🗣️</div><div><div class="feat-name">台詞稽古チャレンジ</div><div class="feat-desc">名台詞をカラオケ感覚で体験</div></div></div>
-        <div class="feat"><div class="feat-icon">📢</div><div><div class="feat-name">大向う道場</div><div class="feat-desc">掛け声タイミングを音ゲー風に</div></div></div>
+        <div class="sublabel sublabel-kabuki">🥋 KABUKI DOJO<span class="sublabel-desc">── やってみる（体験型）</span></div>
+        <div class="feat feat-new"><div class="feat-icon">❓</div><div><div class="feat-name">歌舞伎クイズ</div><div class="feat-desc">3段階難易度（初級/中級/上級）</div></div></div>
+        <div class="feat"><div class="feat-icon">🗣️</div><div><div class="feat-name">台詞稽古チャレンジ</div><div class="feat-desc">カラオケ風・YouTube字幕同期</div></div></div>
+        <div class="feat"><div class="feat-icon">📢</div><div><div class="feat-name">大向う道場</div><div class="feat-desc">掛け声タイミング・おひねり演出</div></div></div>
       </div>
     </div>
 
@@ -222,42 +254,42 @@ export function architecturePageHTML() {
 
       <!-- GATE -->
       <div class="feature-list">
-        <div class="sublabel sublabel-public">🌐 JIKABUKI GATE<span class="sublabel-desc">── ぶたい：団体を知ってもらう</span></div>
-        <div class="feat"><div class="feat-icon">🏠</div><div><div class="feat-name">団体公式サイト</div><div class="feat-desc">テンプレートで自動生成。気良歌舞伎がお手本</div></div></div>
-        <div class="feat"><div class="feat-icon">🤖</div><div><div class="feat-name">団体チャットボット</div><div class="feat-desc">質問に答えるだけでFAQ＋ボットが完成</div></div></div>
-        <div class="feat"><div class="feat-icon">📅</div><div><div class="feat-name">公演情報ページ</div><div class="feat-desc">次回公演・過去公演を自動掲載</div></div></div>
+        <div class="sublabel sublabel-public">🏯 JIKABUKI GATE<span class="sublabel-desc">── 表玄関（8テーマ）</span></div>
+        <div class="feat"><div class="feat-icon">🏠</div><div><div class="feat-name">団体公式サイト</div><div class="feat-desc">8テーマから選択・自動生成</div></div></div>
+        <div class="feat feat-new"><div class="feat-icon">🤖</div><div><div class="feat-name">カスタムFAQボット</div><div class="feat-desc">質問に答えるだけで完成（19テンプレート）</div></div></div>
+        <div class="feat"><div class="feat-icon">📅</div><div><div class="feat-name">公演情報ページ</div><div class="feat-desc">SNSリンク・アクセス情報</div></div></div>
+        <div class="feat feat-new"><div class="feat-icon">🏛️</div><div><div class="feat-name">気良歌舞伎公式LP</div><div class="feat-desc">公式サイト・アーカイブ・ガイド・お知らせ</div></div></div>
       </div>
       <div style="margin:0 14px; border-top:1px dashed var(--border-light);"></div>
 
       <!-- INFO -->
       <div class="feature-list">
         <div class="sublabel sublabel-public">📡 JIKABUKI INFO<span class="sublabel-desc">── お知らせ・カレンダー</span></div>
-        <div class="feat"><div class="feat-icon">📰</div><div><div class="feat-name">地歌舞伎ニュース</div><div class="feat-desc">地歌舞伎に関するニュースを自動取得</div></div></div>
-        <div class="feat"><div class="feat-icon">🗓️</div><div><div class="feat-name">イベントカレンダー</div><div class="feat-desc">全国の地歌舞伎公演・イベント一覧</div></div></div>
+        <div class="feat"><div class="feat-icon">📰</div><div><div class="feat-name">地歌舞伎ニュース</div><div class="feat-desc">団体名バッチ検索・Google News</div></div></div>
+        <div class="feat"><div class="feat-icon">🏛️</div><div><div class="feat-name">団体・劇場ディレクトリ</div><div class="feat-desc">都道府県検索・お気に入り</div></div></div>
+        <div class="feat"><div class="feat-icon">🗓️</div><div><div class="feat-name">イベントカレンダー</div><div class="feat-desc">全国の公演・イベント一覧</div></div></div>
       </div>
       <div style="margin:0 14px; border-top:1px dashed var(--border-light);"></div>
 
       <!-- BASE -->
       <div class="feature-list">
-        <div class="sublabel sublabel-internal">🔒 JIKABUKI BASE<span class="sublabel-desc">── 楽屋：運営＋業界共有DB</span></div>
-        <div class="feat"><div class="feat-icon">📋</div><div><div class="feat-name">公演記録・出演記録</div><div class="feat-desc">演目・配役・日程のアーカイブ</div></div></div>
-        <div class="feat"><div class="feat-icon">📖</div><div><div class="feat-name">デジタル台本</div><div class="feat-desc">スマホ・タブレットで稽古に使える</div></div></div>
-        <div class="feat feat-expand"><div class="feat-icon">🤝</div><div><div class="feat-name">台本共有</div><div class="feat-desc">団体間で台本を共有し事務局負担を軽減</div></div></div>
-
-        <div class="sublabel sublabel-internal" style="margin-top:8px;">🗄️ 業界共有データベース<span class="sublabel-desc">── みんなで登録・みんなで使う</span></div>
-        <div class="feat"><div class="feat-icon">🏛️</div><div><div class="feat-name">芝居小屋DB</div><div class="feat-desc">全国の芝居小屋・上演可能施設</div></div></div>
-        <div class="feat"><div class="feat-icon">👘</div><div><div class="feat-name">貸衣装屋DB</div><div class="feat-desc">衣装の取り扱い・対応演目</div></div></div>
-        <div class="feat"><div class="feat-icon">💇</div><div><div class="feat-name">かつら師・化粧師DB</div><div class="feat-desc">依頼先・対応地域</div></div></div>
-        <div class="feat"><div class="feat-icon">🪵</div><div><div class="feat-name">大道具セット所有状況</div><div class="feat-desc">どの団体がどの演目の道具を持つか</div></div></div>
+        <div class="sublabel sublabel-internal">🔧 JIKABUKI BASE<span class="sublabel-desc">── 楽屋（団体運営ツール）</span></div>
+        <div class="feat"><div class="feat-icon">👥</div><div><div class="feat-name">メンバー管理</div><div class="feat-desc">参加申請・役割制御（マネージャー/メンバー）</div></div></div>
+        <div class="feat"><div class="feat-icon">📅</div><div><div class="feat-name">稽古スケジュール</div><div class="feat-desc">月次カレンダー・出欠管理（○△×）</div></div></div>
+        <div class="feat"><div class="feat-icon">📋</div><div><div class="feat-name">公演記録</div><div class="feat-desc">演目・配役・写真アーカイブ</div></div></div>
+        <div class="feat"><div class="feat-icon">📖</div><div><div class="feat-name">デジタル台本</div><div class="feat-desc">テキスト/JSON/PDF・バージョン管理</div></div></div>
+        <div class="feat feat-new"><div class="feat-icon">💰</div><div><div class="feat-name">収支管理</div><div class="feat-desc">複式管理・年度切替・CSV/PDF出力</div></div></div>
+        <div class="feat feat-expand"><div class="feat-icon">🤝</div><div><div class="feat-name">台本共有</div><div class="feat-desc">団体間で共有し事務局負担を軽減</div></div></div>
       </div>
       <div style="margin:0 14px; border-top:1px dashed var(--border-light);"></div>
 
       <!-- LABO -->
       <div class="feature-list">
-        <div class="sublabel sublabel-internal">🧪 JIKABUKI LABO<span class="sublabel-desc">── 試す・作る</span></div>
-        <div class="feat"><div class="feat-icon">🎤</div><div><div class="feat-name">稽古モード【実践版】</div><div class="feat-desc">自分の役の台詞稽古・台本/動画連動</div></div></div>
-        <div class="feat"><div class="feat-icon">🎙️</div><div><div class="feat-name">台詞稽古チャレンジ</div><div class="feat-desc">カラオケ風の台詞練習ツール</div></div></div>
-        <div class="feat"><div class="feat-icon">🔬</div><div><div class="feat-name">ベータテスト</div><div class="feat-desc">開発中の新機能を試す場所</div></div></div>
+        <div class="sublabel sublabel-internal">🧪 JIKABUKI LABO<span class="sublabel-desc">── コンテンツ管理</span></div>
+        <div class="feat"><div class="feat-icon">🎭</div><div><div class="feat-name">演目エディタ</div><div class="feat-desc">新規/編集/未整備候補の3モード</div></div></div>
+        <div class="feat"><div class="feat-icon">📘</div><div><div class="feat-name">用語・クイズエディタ</div><div class="feat-desc">一括JSONインポート対応</div></div></div>
+        <div class="feat"><div class="feat-icon">🏯</div><div><div class="feat-name">GATEエディタ</div><div class="feat-desc">テーマ・FAQ・コンテンツ編集</div></div></div>
+        <div class="feat"><div class="feat-icon">✅</div><div><div class="feat-name">承認ワークフロー</div><div class="feat-desc">エディター申請 → マスター承認</div></div></div>
       </div>
     </div>
   </div>
@@ -267,52 +299,48 @@ export function architecturePageHTML() {
   </div>
 
   <div class="shared-base">
-    <div class="sb-title">🔧 共有基盤</div>
+    <div class="sb-title">共有基盤</div>
     <div class="shared-items">
-      <div class="shared-item"><span class="si-icon">🤖</span>けらのすけ（歌舞伎の友達AI）</div>
+      <div class="shared-item"><span class="si-icon">🤖</span>けらのすけ AI（Gemini 2.5 Flash）</div>
+      <div class="shared-item"><span class="si-icon">🔄</span>Workers AI（Llama 3.1 8B フォールバック）</div>
+      <div class="shared-item"><span class="si-icon">☁️</span>Cloudflare Workers / R2 / KV</div>
       <div class="shared-item"><span class="si-icon">🎬</span>稽古エンジン（YouTube区間再生/cue）</div>
-      <div class="shared-item"><span class="si-icon">☁️</span>Cloudflare Workers / R2</div>
-      <div class="shared-item"><span class="si-icon">🧠</span>Dify（LLM / RAG）</div>
+      <div class="shared-item"><span class="si-icon">💬</span>Webチャット（けらのすけに聞く）</div>
+      <div class="shared-item"><span class="si-icon">🔐</span>認証（LINE OAuth / Google Sign-In）</div>
+      <div class="shared-item"><span class="si-icon">📱</span>PWA（Service Worker / ボトムタブ）</div>
+      <div class="shared-item"><span class="si-icon">📊</span>OGP / JSON-LD（全ページSEO対応）</div>
     </div>
     <div style="margin-top:14px; border-top:1px dashed var(--border-light); padding-top:14px;">
-      <div style="font-size:11px; font-weight:600; color:var(--gold-dark); margin-bottom:8px; letter-spacing:0.5px;">📡 チャネル役割</div>
+      <div style="font-size:11px; font-weight:600; color:var(--gold-dark); margin-bottom:8px; letter-spacing:0.5px;">チャネル役割</div>
       <div class="channel-roles">
         <div style="flex:1; padding:10px 12px; background:var(--accent-green-soft); border-radius:8px;">
-          <div style="font-size:12px; font-weight:600; color:#06C755; margin-bottom:2px;">💬 LINE</div>
-          <div style="font-size:10px; color:var(--text-secondary); line-height:1.5;">けらのすけとの会話に特化。歌舞伎の「友達」として相談に乗り、必要に応じてWebへ案内する。</div>
+          <div style="font-size:12px; font-weight:600; color:#06C755; margin-bottom:2px;">💬 LINE Bot</div>
+          <div style="font-size:10px; color:var(--text-secondary); line-height:1.5;">けらのすけとの会話に特化。6モード（kera/performance/general/recommend/quiz/news）。Flex Message。</div>
         </div>
         <div style="flex:1; padding:10px 12px; background:var(--accent-blue-soft); border-radius:8px;">
-          <div style="font-size:12px; font-weight:600; color:var(--accent-blue); margin-bottom:2px;">🌐 Web</div>
-          <div style="font-size:10px; color:var(--text-secondary); line-height:1.5;">情報を見る・記録する・使う。KABUKI PLUS+ と JIKABUKI PLUS+ の全機能を提供。</div>
+          <div style="font-size:12px; font-weight:600; color:var(--accent-blue); margin-bottom:2px;">🌐 Web PWA</div>
+          <div style="font-size:10px; color:var(--text-secondary); line-height:1.5;">全機能提供。72モジュール・95+ルート。オフライン対応。インストール可能。OGP対応。</div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- KABUKI PLUS+ の4つの柱 -->
+  <!-- AI Pipeline -->
   <div class="note-section">
-    <div class="note-title">KABUKI PLUS+ の4つの柱</div>
-    <div class="navi-breakdown">
-      <div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:14px; box-shadow:var(--shadow-sm);">
-        <div style="font-size:11px; color:var(--text-tertiary); letter-spacing:1px; margin-bottom:8px;">🧭 NAVI ── 読んで学ぶ</div>
-        <div style="font-size:12px; color:var(--text-secondary); line-height:1.9;">演目・人物ガイド<br>用語いろは<br>おすすめ演目<br>学習ログ</div>
-        <div style="font-size:10px; color:var(--text-tertiary); margin-top:6px;">蓄積型・R2</div>
-      </div>
-      <div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:14px; box-shadow:var(--shadow-sm);">
-        <div style="font-size:11px; color:var(--text-tertiary); letter-spacing:1px; margin-bottom:8px;">📡 LIVE ── 今を見る</div>
-        <div style="font-size:12px; color:var(--text-secondary); line-height:1.9;">歌舞伎ニュース<br>公演スケジュール</div>
-        <div style="font-size:10px; color:var(--accent-red); margin-top:6px;">自動取得・Dify</div>
-      </div>
-      <div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:14px; box-shadow:var(--shadow-sm);">
-        <div style="font-size:11px; color:var(--text-tertiary); letter-spacing:1px; margin-bottom:8px;">📝 RECO ── 記録する</div>
-        <div style="font-size:12px; color:var(--text-secondary); line-height:1.9;">観劇記録<br>推し俳優の記録</div>
-        <div style="font-size:10px; color:var(--text-tertiary); margin-top:6px;">ユーザーデータ</div>
-      </div>
-      <div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius-md); padding:14px; box-shadow:var(--shadow-sm);">
-        <div style="font-size:11px; color:var(--text-tertiary); letter-spacing:1px; margin-bottom:8px;">🥋 DOJO ── やってみる</div>
-        <div style="font-size:12px; color:var(--text-secondary); line-height:1.9;">歌舞伎クイズ<br>台詞稽古チャレンジ<br>大向う道場</div>
-        <div style="font-size:10px; color:var(--text-tertiary); margin-top:6px;">体験型・エンタメ</div>
-      </div>
+    <div class="note-title">AI パイプライン（keraAIv2）</div>
+    <div class="ai-pipeline">
+      <div class="aip-title">けらのすけ ── 歌舞伎の「友達」</div>
+      <div class="ai-step"><div class="step-num">1</div><div><div class="step-name">キャッシュ確認</div><div class="step-desc">正規化クエリで応答キャッシュを検索（TTL 6h）</div></div></div>
+      <div class="ai-arrow">↓</div>
+      <div class="ai-step"><div class="step-num">2</div><div><div class="step-name">レート制限チェック</div><div class="step-desc">14 RPM 上限 → 超過時は Workers AI へフォールバック</div></div></div>
+      <div class="ai-arrow">↓</div>
+      <div class="ai-step"><div class="step-num">3</div><div><div class="step-name">RAG コンテキスト構築</div><div class="step-desc">演目・用語・FAQ・公演の4ソースから 8,000字以内で構築（3-gram類義語検索）</div></div></div>
+      <div class="ai-arrow">↓</div>
+      <div class="ai-step"><div class="step-num">4</div><div><div class="step-name">Gemini 2.5 Flash 呼び出し</div><div class="step-desc">temperature 0.1 / topP 0.9 / 1,500トークン / 20秒タイムアウト</div></div></div>
+      <div class="ai-arrow">↓</div>
+      <div class="ai-step"><div class="step-num">5</div><div><div class="step-name">Function Calling（5ツール）</div><div class="step-desc">公演検索 / ニュース / 用語 / 演目 / 団体情報</div></div></div>
+      <div class="ai-arrow">↓</div>
+      <div class="ai-step"><div class="step-num">6</div><div><div class="step-name">応答 + 保存</div><div class="step-desc">会話履歴（20メッセージ、1h TTL）+ 応答キャッシュ保存</div></div></div>
     </div>
   </div>
 
@@ -324,99 +352,46 @@ export function architecturePageHTML() {
       <tbody>
         <tr><td>テーマ</td><td>歌舞伎全般を楽しむ</td><td>地歌舞伎を発信・運営する</td></tr>
         <tr><td>ターゲット</td><td>歌舞伎ファン・初心者</td><td>地歌舞伎の演者・事務局</td></tr>
-        <tr><td>価値</td><td>知る・観る・学ぶ</td><td>発信する・記録する・稽古する</td></tr>
-        <tr><td>公開面</td><td>NAVI、LIVE、RECO、DOJO</td><td>GATE（団体公式サイト・チャットボット・公演情報）</td></tr>
-        <tr><td>内部面</td><td>─</td><td>BASE（公演/出演記録・台本・稽古メモ・稽古【実践版】）</td></tr>
-        <tr><td>導入体験</td><td>─</td><td>チャットで質問に答えるだけで公式サイト＋ボット完成</td></tr>
-        <tr><td>スケール</td><td>歌舞伎全体（大歌舞伎含む）</td><td>気良歌舞伎 → 全国の地歌舞伎団体へ横展開</td></tr>
+        <tr><td>価値</td><td>知る・観る・学ぶ・やってみる</td><td>発信する・記録する・稽古する・共有する</td></tr>
+        <tr><td>公開面</td><td>NAVI / LIVE / RECO / DOJO</td><td>GATE（8テーマ・FAQボット）/ INFO</td></tr>
+        <tr><td>内部面</td><td>─</td><td>BASE（メンバー管理・稽古・台本・収支）/ LABO</td></tr>
+        <tr><td>導入体験</td><td>─</td><td>チャットで質問に答えるだけで公式サイト完成</td></tr>
+        <tr><td>スケール</td><td>歌舞伎全体（6大劇場）</td><td>気良歌舞伎 → 全国200団体へ横展開</td></tr>
       </tbody>
     </table>
   </div>
 
-  <!-- トップページ構成イメージ -->
+  <!-- 認証・権限 -->
   <div class="note-section">
-    <div class="note-title">トップページ構成イメージ</div>
-    <div class="tab-preview-label">ヘッダー：ブランド切替トグル</div>
-    <div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius-md); overflow:hidden; box-shadow:var(--shadow-sm); margin-bottom:20px;">
-      <div style="text-align:center; padding:16px 16px 10px;">
-        <div style="font-size:10px; letter-spacing:3px; color:var(--gold);">🎭</div>
-        <div style="font-family:'Noto Serif JP',serif; font-size:16px; font-weight:700; margin:2px 0;">歌舞伎を、もっと面白く。</div>
-        <div style="font-size:11px; color:var(--text-tertiary);">観る、学ぶ、演じる。</div>
-      </div>
-      <div style="display:flex; margin:8px 20px 14px; border-radius:8px; overflow:hidden; border:1px solid var(--border-light);">
-        <div style="flex:1; text-align:center; padding:8px; background:#3D3127; color:white; font-size:12px; font-weight:600; letter-spacing:1px;">KABUKI PLUS+</div>
-        <div style="flex:1; text-align:center; padding:8px; background:var(--bg-subtle); color:var(--text-tertiary); font-size:12px; font-weight:500; letter-spacing:1px;">JIKABUKI PLUS+</div>
-      </div>
-      <div style="padding:0 16px 14px;">
-        <div style="font-size:11px; color:var(--text-tertiary); margin-bottom:8px; letter-spacing:0.5px;">コンテンツ</div>
-        <div style="display:flex; flex-direction:column; gap:6px;">
-          <div style="display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--bg-subtle); border-radius:8px;"><span style="font-size:16px;">🧭</span><div><div style="font-size:13px; font-weight:600;">KABUKI NAVI</div><div style="font-size:10px; color:var(--text-tertiary);">演目・用語・人物・おすすめ</div></div></div>
-          <div style="display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--bg-subtle); border-radius:8px;"><span style="font-size:16px;">📡</span><div><div style="font-size:13px; font-weight:600;">KABUKI LIVE</div><div style="font-size:10px; color:var(--text-tertiary);">ニュース・公演スケジュール</div></div></div>
-          <div style="display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--bg-subtle); border-radius:8px;"><span style="font-size:16px;">📖</span><div><div style="font-size:13px; font-weight:600;">KABUKI RECO</div><div style="font-size:10px; color:var(--text-tertiary);">観劇ログ・推し俳優の記録</div></div></div>
-          <div style="display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--bg-subtle); border-radius:8px;"><span style="font-size:16px;">🥋</span><div><div style="font-size:13px; font-weight:600;">KABUKI DOJO</div><div style="font-size:10px; color:var(--text-tertiary);">クイズ・台詞稽古・大向う道場</div></div></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="tab-preview-label">JIKABUKI PLUS+ に切り替えた場合</div>
-    <div style="background:var(--bg-card); border:1px solid var(--border-light); border-radius:var(--radius-md); overflow:hidden; box-shadow:var(--shadow-sm); margin-bottom:20px;">
-      <div style="text-align:center; padding:16px 16px 10px;">
-        <div style="font-size:10px; letter-spacing:3px; color:var(--accent-red);">🏯</div>
-        <div style="font-family:'Noto Serif JP',serif; font-size:16px; font-weight:700; margin:2px 0;">演じる人の、デジタル楽屋。</div>
-        <div style="font-size:11px; color:var(--text-tertiary);">記録する、稽古する、共有する。</div>
-      </div>
-      <div style="display:flex; margin:8px 20px 14px; border-radius:8px; overflow:hidden; border:1px solid var(--border-light);">
-        <div style="flex:1; text-align:center; padding:8px; background:var(--bg-subtle); color:var(--text-tertiary); font-size:12px; font-weight:500; letter-spacing:1px;">KABUKI PLUS+</div>
-        <div style="flex:1; text-align:center; padding:8px; background:var(--accent-red); color:white; font-size:12px; font-weight:600; letter-spacing:1px;">JIKABUKI PLUS+</div>
-      </div>
-      <div style="padding:0 16px 14px;">
-        <div style="font-size:11px; color:var(--accent-red); font-weight:600; margin-bottom:8px; letter-spacing:0.5px;">🌐 JIKABUKI GATE ── ぶたい</div>
-        <div style="display:flex; flex-direction:column; gap:6px;">
-          <div style="display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--bg-subtle); border-radius:8px;"><span style="font-size:16px;">🏠</span><div><div style="font-size:13px; font-weight:600;">団体公式サイト</div><div style="font-size:10px; color:var(--text-tertiary);">テンプレで自動生成・チャットボット付き</div></div></div>
-        </div>
-
-        <div style="margin:10px 0; border-top:1px dashed var(--border-light);"></div>
-
-        <div style="font-size:11px; color:var(--accent-red); font-weight:600; margin-bottom:8px; letter-spacing:0.5px;">📡 JIKABUKI INFO ── お知らせ</div>
-        <div style="display:flex; flex-direction:column; gap:6px;">
-          <div style="display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--bg-subtle); border-radius:8px;"><span style="font-size:16px;">📰</span><div><div style="font-size:13px; font-weight:600;">地歌舞伎ニュース</div><div style="font-size:10px; color:var(--text-tertiary);">ニュース＋イベントカレンダー</div></div></div>
-        </div>
-
-        <div style="margin:10px 0; border-top:1px dashed var(--border-light);"></div>
-
-        <div style="font-size:11px; color:var(--text-secondary); font-weight:600; margin-bottom:8px; letter-spacing:0.5px;">🔒 JIKABUKI BASE ── 楽屋</div>
-        <div style="display:flex; flex-direction:column; gap:6px;">
-          <div style="display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--bg-subtle); border-radius:8px;"><span style="font-size:16px;">📋</span><div><div style="font-size:13px; font-weight:600;">公演記録・台本共有</div><div style="font-size:10px; color:var(--text-tertiary);">運営ツール＋業界共有DB</div></div></div>
-        </div>
-
-        <div style="margin:10px 0; border-top:1px dashed var(--border-light);"></div>
-
-        <div style="font-size:11px; color:var(--text-secondary); font-weight:600; margin-bottom:8px; letter-spacing:0.5px;">🧪 JIKABUKI LABO ── 試す・作る</div>
-        <div style="display:flex; flex-direction:column; gap:6px;">
-          <div style="display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--bg-subtle); border-radius:8px;"><span style="font-size:16px;">🎤</span><div><div style="font-size:13px; font-weight:600;">稽古モード・台詞チャレンジ</div><div style="font-size:10px; color:var(--text-tertiary);">稽古ツール＋ベータテスト</div></div></div>
-        </div>
-      </div>
-    </div>
+    <div class="note-title">認証・権限マトリクス</div>
+    <table class="comparison-table">
+      <thead><tr><th>ロール</th><th class="col-kabuki">スコープ</th><th class="col-jikabuki">できること</th></tr></thead>
+      <tbody>
+        <tr><td>マスター</td><td>グローバル</td><td>全操作・エディター承認・団体承認・システム管理</td></tr>
+        <tr><td>エディター</td><td>グローバル</td><td>演目 / 用語 / クイズの作成・編集（承認制）</td></tr>
+        <tr><td>マネージャー</td><td>団体単位</td><td>メンバー承認・役割変更・団体プロフィール管理</td></tr>
+        <tr><td>メンバー</td><td>団体単位</td><td>台本閲覧・ノート投稿・出欠登録</td></tr>
+        <tr><td>ゲスト</td><td>─</td><td>NAVI / LIVE / DOJO / GATE の閲覧</td></tr>
+      </tbody>
+    </table>
   </div>
 
   <!-- メモ -->
   <div class="arch-note">
     <strong>💡 この構成のポイント</strong><br><br>
-    <strong>けらのすけ = 歌舞伎の「友達」</strong> ── 教科書ではなく友達。会話で相談に乗り（①）、必要ならWebに案内し（②）、GATEでは団体のサイトを一緒に作り（③）、詳しい解説はNAVIに任せる（④）。LINEでは会話のテンポを大事にする存在。<br><br>
-    <strong>明快な棲み分け</strong> ── KABUKI PLUS+ は「観る人」、JIKABUKI PLUS+ は「演じる人・運営する人」。ターゲットが完全に分かれる。<br><br>
-    <strong>JIKABUKI PLUS+ の4モジュール</strong> ── 「GATE」（ぶたい）・「INFO」（たより）・「BASE」（がくや）・「LABO」（こうぼう）。KABUKI PLUS+ の4モジュール（NAVI/LIVE/RECO/DOJO）と完全対称。全8モジュールの頭文字がすべて異なる。<br><br>
-    <strong>チャットで導入完了</strong> ── 新しい団体は、けらのすけ（AI）の質問に答えていくだけで、FAQ・公式サイト・チャットボットが自動生成。ITに不慣れな事務局でも参入障壁ゼロ。気良歌舞伎のサイトがそのままテンプレートに。<br><br>
-    <strong>台本共有で横展開</strong> ── 約200の地歌舞伎団体にとって、台本の調達・管理は大きな負担。共有できれば「使いたい」の強い動機に。<br><br>
-    <strong>共有基盤</strong> ── けらのすけ（AI）、稽古エンジン、LINE Bot、Cloudflareインフラは両ブランド共通。<br><br>
+    <strong>けらのすけ = 歌舞伎の「友達」</strong> ── 教科書ではなく友達。Gemini 2.5 Flash + RAG（8,000字の文脈構築）+ Function Calling 5ツールで、演目・用語・公演・ニュース・団体情報を横断的に検索して答える。Workers AI（Llama 3.1 8B）がフォールバックとして常時待機し、応答を保証。<br><br>
+    <strong>ランニングコストほぼ無料</strong> ── Cloudflare Workers / KV / R2 の無料枠 + Gemini 無料枠。地歌舞伎団体の財務負担にならない持続可能な設計。<br><br>
+    <strong>3層キャッシュ戦略</strong> ── Service Worker（ブラウザ内）+ HTTP Cache-Control + KVキャッシュ（サーバーサイド）。静的アセットは永続キャッシュ、HTMLはNetwork-first、GATEページはno-cache（常に最新）。<br><br>
+    <strong>チャットで導入完了</strong> ── 新しい団体は、けらのすけの質問に答えていくだけで、FAQ・公式サイト・チャットボットが自動生成。8テーマから選ぶだけでデザインも完成。ITに不慣れな事務局でも参入障壁ゼロ。<br><br>
     <strong>段階的に</strong> ── まず気良歌舞伎で全機能を使い込み、磨いてから他団体へ。気良歌舞伎が「最高のテンプレート」になる。
   </div>
 
   <div style="text-align: center; margin-top: 24px;">
-    <a href="/project" style="display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; font-size: 14px; color: var(--gold-dark); font-weight: 600; text-decoration: none;">← プロジェクト解説へ戻る</a>
+    <a href="/project" style="display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; font-size: 14px; color: var(--gold-dark); font-weight: 600; text-decoration: none;">← プロジェクト紹介へ</a>
   </div>
 
   <div class="footer">
-    🎭 JIKABUKI × AI — Architecture v2.0
+    JIKABUKI × AI — Architecture v3.1
   </div>
 </div>
 </body>

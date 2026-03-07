@@ -250,6 +250,52 @@ export function projectPageHTML() {
   .dot-arts { background: rgba(140, 135, 128, 0.72); }
   .dot-digital { background: rgba(192, 74, 53, 0.72); }
 
+  /* ── 開発者の想い ── */
+  .dev-message {
+    background: linear-gradient(135deg, #3D3127 0%, #5A4E42 100%);
+    color: #F3EDE4;
+    border-radius: var(--radius-lg);
+    padding: 32px 28px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
+  }
+  .dev-message::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(197,162,85,0.08);
+  }
+  .dev-message .dm-quote {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gold-light);
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+    line-height: 1.6;
+  }
+  .dev-message .dm-body {
+    font-size: 13px;
+    line-height: 2.0;
+    color: #D8D0C4;
+  }
+  .dev-message .dm-body p {
+    color: inherit;
+    margin-bottom: 14px;
+  }
+  .dev-message .dm-body p:last-child { margin-bottom: 0; }
+  .dev-message .dm-sign {
+    margin-top: 20px;
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 1px;
+    text-align: right;
+  }
+
   /* ── ビジョンカード ── */
   .vision-grid {
     display: flex; flex-direction: column; gap: 12px;
@@ -280,6 +326,40 @@ export function projectPageHTML() {
     font-size: 12px; color: var(--text-secondary); line-height: 1.6;
   }
 
+  /* ── 数字で見る ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .stat-card {
+    text-align: center;
+    padding: 20px 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+  }
+  .stat-card .stat-num {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--gold-dark);
+    line-height: 1.2;
+  }
+  .stat-card .stat-unit {
+    font-size: 13px;
+    color: var(--gold-dark);
+    font-weight: 600;
+  }
+  .stat-card .stat-label {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
   /* ── 機能一覧 ── */
   .feature-row {
     display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
@@ -298,6 +378,49 @@ export function projectPageHTML() {
     font-family: 'Noto Serif JP', serif; font-size: 13px; font-weight: 600; margin-bottom: 3px;
   }
   .feature-card .f-desc { font-size: 11px; color: var(--text-tertiary); line-height: 1.5; }
+
+  /* ── AI紹介カード ── */
+  .ai-card {
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: white;
+    border-radius: var(--radius-lg);
+    padding: 28px 24px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-md);
+    text-align: center;
+  }
+  .ai-card .ai-name {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+  .ai-card .ai-role {
+    font-size: 13px;
+    opacity: 0.9;
+    margin-bottom: 16px;
+  }
+  .ai-card .ai-features {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    text-align: left;
+  }
+  .ai-card .ai-feat {
+    padding: 10px 12px;
+    background: rgba(255,255,255,0.15);
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .ai-card .ai-feat strong {
+    display: block;
+    font-size: 11px;
+    opacity: 0.8;
+    margin-bottom: 2px;
+    letter-spacing: 0.5px;
+  }
 
   /* ── チャネルリンク集 ── */
   .channel-grid {
@@ -509,6 +632,8 @@ export function projectPageHTML() {
   .delay-6 { animation-delay: 0.30s; }
   .delay-7 { animation-delay: 0.35s; }
   .delay-8 { animation-delay: 0.40s; }
+  .delay-9 { animation-delay: 0.45s; }
+  .delay-10 { animation-delay: 0.50s; }
 
   @media (max-width: 480px) {
     .hero .project-name { font-size: 24px; }
@@ -518,6 +643,12 @@ export function projectPageHTML() {
     .share-bar { flex-direction: column; align-items: center; }
     .venn-container { width: 240px; height: 210px; }
     .venn-circle { width: 130px; height: 130px; font-size: 10px; }
+    .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .stat-card { padding: 14px 8px; }
+    .stat-card .stat-num { font-size: 22px; }
+    .ai-card .ai-features { grid-template-columns: 1fr; }
+    .dev-message { padding: 24px 20px; }
+    .dev-message .dm-quote { font-size: 16px; }
   }
 </style>
 </head>
@@ -534,7 +665,7 @@ export function projectPageHTML() {
 
 <!-- ═══ ヒーロー ═══ -->
 <header class="hero animate-in">
-  <div class="brand">🎭 KABUKI PLUS+</div>
+  <div class="brand">KABUKI PLUS+</div>
   <div class="project-name">JIKABUKI × <span class="ai">AI</span></div>
   <div class="deco-line"><span class="diamond"></span></div>
   <div class="catchphrase">守るために、変わる。</div>
@@ -560,19 +691,41 @@ export function projectPageHTML() {
     <div class="card">
       <p class="lead">「地歌舞伎」を知っていますか？</p>
       <p>
-        江戸時代から続く地域の歌舞伎文化──農家や会社員など、地域の人々が自ら演じる「地歌舞伎」。岐阜県郡上市の気良歌舞伎もその一つです。
+        江戸時代から続く地域の歌舞伎文化──農家や会社員など、地域の人々が自ら演じる「地歌舞伎」。岐阜県郡上市の気良歌舞伎もその一つ。2024年に完成した常設舞台「気良座」を拠点に活動しています。
       </p>
       <p>
-        KABUKI PLUS+ は、AIの力で歌舞伎の「知る・観る・演じる」体験をもっと豊かにするプラットフォームです。初めての歌舞伎ファンから、実際に舞台に立つ演者まで、それぞれに必要なツールをひとつの場所に。
+        JIKABUKI×AI は、AIの力で歌舞伎の「知る・観る・演じる」体験をもっと豊かにするプラットフォームです。初めての歌舞伎ファンから、実際に舞台に立つ演者まで、それぞれに必要なツールをひとつの場所に。
       </p>
       <p>
-        歌舞伎AIガイド「けらのすけ」を中心に、ファン向けの <strong>KABUKI PLUS+</strong>（NAVI / LIVE / RECO / DOJO）と、地歌舞伎団体の運営を支える <strong>JIKABUKI PLUS+</strong>（GATE / INFO / BASE / LABO）の 2ブランド・8モジュールで構成されています。
+        歌舞伎AIガイド「けらのすけ」を中心に、ファン向けの <strong>KABUKI PLUS+</strong> と、地歌舞伎団体の運営を支える <strong>JIKABUKI PLUS+</strong> の 2ブランド・8モジュールで構成。LINE Bot と Web PWA の2面展開で、サーバーレス基盤により<strong>ランニングコストほぼ無料</strong>で運用しています。
       </p>
     </div>
   </section>
 
+  <!-- ═══ 開発者の想い ═══ -->
+  <section class="section animate-in delay-2">
+    <div class="section-heading">
+      <span class="bar"></span>
+      <h2>開発者の想い</h2>
+    </div>
+
+    <div class="dev-message">
+      <div class="dm-quote">
+        「伝統を守る」って、<br>
+        古いものをそのまま置いておくことじゃない。
+      </div>
+      <div class="dm-body">
+        <p>気良歌舞伎の事務局を務めるなかで、いつも感じていたことがあります。台本を探すのに何日もかかる。稽古のスケジュール調整はLINEグループで埋もれる。団体の魅力を伝えたくても、ウェブサイトを作る余裕がない。</p>
+        <p>全国に約200ある地歌舞伎の団体が、きっと同じ課題を抱えている。ならば、テクノロジーの力で「演じる人の楽屋」を作れないか。ファンの人たちが歌舞伎をもっと気軽に楽しめる場所を作れないか。</p>
+        <p>AIに歌舞伎のことを教え込み、演目ガイドや用語辞典を整え、公演情報を自動で集め、団体の公式サイトを質問に答えるだけで生成できるようにする──。ひとつひとつ、手作りで積み上げてきました。</p>
+        <p>56,000行を超えるコードのすべてに、「地歌舞伎を次の世代に届けたい」という想いが込められています。</p>
+      </div>
+      <div class="dm-sign">── 気良歌舞伎事務局</div>
+    </div>
+  </section>
+
   <!-- ═══ 3つの柱（ベン図） ═══ -->
-  <section class="section venn-section animate-in delay-2">
+  <section class="section venn-section animate-in delay-3">
     <div class="section-heading">
       <span class="bar"></span>
       <h2>コンセプト ── 3つの柱</h2>
@@ -602,8 +755,76 @@ export function projectPageHTML() {
     </div>
   </section>
 
+  <!-- ═══ 数字で見る ═══ -->
+  <section class="section animate-in delay-4">
+    <div class="section-heading">
+      <span class="bar"></span>
+      <h2>数字で見るプロジェクト<span style="font-size:11px; font-weight:400; color:var(--text-tertiary); margin-left:8px;">R8.3.7 現在</span></h2>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num">56,300<span class="stat-unit">+</span></div>
+        <div class="stat-label">行のコード</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">72</div>
+        <div class="stat-label">モジュール</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">8</div>
+        <div class="stat-label">機能モジュール</div>
+      </div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num">23<span class="stat-unit">+</span></div>
+        <div class="stat-label">演目ガイド</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">126</div>
+        <div class="stat-label">用語辞典</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">6</div>
+        <div class="stat-label">対応劇場</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ けらのすけ ═══ -->
+  <section class="section animate-in delay-5">
+    <div class="section-heading">
+      <span class="bar"></span>
+      <h2>AI「けらのすけ」</h2>
+    </div>
+
+    <div class="ai-card">
+      <div class="ai-name">けらのすけ</div>
+      <div class="ai-role">歌舞伎の「友達」── 教科書ではなく、会話で寄り添う存在</div>
+      <div class="ai-features">
+        <div class="ai-feat">
+          <strong>メインAI</strong>
+          Gemini 2.5 Flash<br>+ RAG検索拡張生成
+        </div>
+        <div class="ai-feat">
+          <strong>Function Calling</strong>
+          公演 / ニュース / 用語<br>演目 / 団体情報
+        </div>
+        <div class="ai-feat">
+          <strong>フォールバック</strong>
+          Workers AI で<br>常時応答を保証
+        </div>
+        <div class="ai-feat">
+          <strong>チャネル</strong>
+          LINE Bot +<br>Web チャット
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ═══ ビジョン ═══ -->
-  <section class="section animate-in delay-3">
+  <section class="section animate-in delay-5">
     <div class="section-heading">
       <span class="bar"></span>
       <h2>めざしていること</h2>
@@ -614,63 +835,61 @@ export function projectPageHTML() {
         <div class="v-icon">🧭</div>
         <div>
           <div class="v-title">知るをもっと手軽に</div>
-          <div class="v-desc">演目のあらすじ、用語の意味、俳優の情報──AIガイド「けらのすけ」に聞くだけで、歌舞伎の予備知識がすぐ手に入る世界。</div>
+          <div class="v-desc">演目のあらすじ、用語の意味、俳優の情報──AIガイド「けらのすけ」に聞くだけで、歌舞伎の予備知識がすぐ手に入る世界。23+の演目ガイドと126語の用語辞典を搭載。</div>
         </div>
       </div>
       <div class="vision-item">
         <div class="v-icon">📡</div>
         <div>
           <div class="v-title">地歌舞伎情報を全国に届ける</div>
-          <div class="v-desc">地域に分散していた地歌舞伎のニュース・団体情報・公演カレンダーを集約。全国200以上の地歌舞伎団体をつなぐ情報ハブへ。</div>
+          <div class="v-desc">6大劇場の公演スケジュールを自動取得。ニュースは毎日2回自動更新。分散していた地歌舞伎の情報を集約し、全国200以上の団体をつなぐ情報ハブへ。</div>
         </div>
       </div>
       <div class="vision-item">
         <div class="v-icon">🔧</div>
         <div>
           <div class="v-title">演じる人の楽屋をつくる</div>
-          <div class="v-desc">稽古スケジュール、配役管理、台本共有、公演記録──地歌舞伎団体の運営に必要なツールをひとつのプラットフォームに。</div>
+          <div class="v-desc">稽古スケジュール、出欠管理、配役管理、台本共有、公演記録、収支管理──地歌舞伎団体の運営に必要なツールをひとつのプラットフォームに。</div>
         </div>
       </div>
       <div class="vision-item">
         <div class="v-icon">🏯</div>
         <div>
           <div class="v-title">地歌舞伎を次の世代へ</div>
-          <div class="v-desc">気良歌舞伎から始まり、全国の地歌舞伎団体へ。演目ガイド・用語辞典・チャットボットが「使いながら育つ」共有ナレッジに。</div>
+          <div class="v-desc">気良歌舞伎から始まり、全国の地歌舞伎団体へ。質問に答えるだけで公式サイト・FAQボット・チャットボットが完成。ITに不慣れな事務局でも参入障壁ゼロ。</div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- ═══ 主な機能 ═══ -->
-  <section class="section animate-in delay-4">
+  <section class="section animate-in delay-6">
     <div class="section-heading">
       <span class="bar"></span>
       <h2>つくっているもの</h2>
     </div>
-
-    <p style="font-size:12px; color:var(--text-tertiary); margin-bottom:14px; letter-spacing:0.5px;">🤖 けらのすけ AI ── LINE・Web 共通の歌舞伎ガイド＆運営サポート</p>
 
     <p style="font-size:13px; font-weight:600; color:var(--text-secondary); margin:0 0 8px; letter-spacing:1px;">KABUKI PLUS+（ファン向け）</p>
     <div class="feature-row" style="margin-bottom:20px;">
       <div class="feature-card">
         <div class="f-icon">🧭</div>
         <div class="f-title">KABUKI NAVI</div>
-        <div class="f-desc">演目・用語・人物<br>歌舞伎羅針盤</div>
+        <div class="f-desc">演目ガイド・用語辞典<br>おすすめ・観劇マナー</div>
       </div>
       <div class="feature-card">
         <div class="f-icon">📡</div>
         <div class="f-title">KABUKI LIVE</div>
-        <div class="f-desc">ニュース自動取得<br>公演スケジュール</div>
+        <div class="f-desc">ニュース自動取得<br>6劇場 公演スケジュール</div>
       </div>
       <div class="feature-card">
         <div class="f-icon">📝</div>
         <div class="f-title">KABUKI RECO</div>
-        <div class="f-desc">観劇記録・推し管理<br>マイページ</div>
+        <div class="f-desc">観劇記録・推し管理<br>SNSシェア・公開プロフィール</div>
       </div>
       <div class="feature-card">
         <div class="f-icon">🥋</div>
         <div class="f-title">KABUKI DOJO</div>
-        <div class="f-desc">クイズ・台詞稽古<br>大向う道場</div>
+        <div class="f-desc">3段階クイズ・台詞稽古<br>大向う道場・おひねり</div>
       </div>
     </div>
 
@@ -679,47 +898,45 @@ export function projectPageHTML() {
       <div class="feature-card">
         <div class="f-icon">🏯</div>
         <div class="f-title">GATE</div>
-        <div class="f-desc">団体公式サイト<br>チャットボット</div>
+        <div class="f-desc">団体公式サイト<br>8テーマ・FAQボット</div>
       </div>
       <div class="feature-card">
         <div class="f-icon">📡</div>
         <div class="f-title">INFO</div>
-        <div class="f-desc">たより<br>団体ディレクトリ</div>
+        <div class="f-desc">地歌舞伎ニュース<br>団体・劇場ディレクトリ</div>
       </div>
       <div class="feature-card">
         <div class="f-icon">🔧</div>
         <div class="f-title">BASE</div>
-        <div class="f-desc">稽古・配役管理<br>台本共有・記録</div>
+        <div class="f-desc">稽古・配役・台本・収支<br>スケジュール・出欠管理</div>
       </div>
       <div class="feature-card">
         <div class="f-icon">🧪</div>
         <div class="f-title">LABO</div>
-        <div class="f-desc">演目ガイド制作<br>コンテンツ共有</div>
+        <div class="f-desc">演目ガイド制作<br>用語・クイズ編集</div>
       </div>
     </div>
   </section>
 
   <!-- ═══ プロジェクトの要点 ═══ -->
-  <section class="section animate-in delay-5">
+  <section class="section animate-in delay-7">
     <div class="section-heading">
       <span class="bar"></span>
       <h2>プロジェクトの要点</h2>
     </div>
 
     <div class="card points-card">
-      <div class="point-item"><strong>けらのすけ = 歌舞伎の「友達」</strong> ── 教科書ではなく友達。会話で相談に乗り、必要ならWebへ案内。GATEでは団体サイトを一緒に作り、詳しい解説はNAVIに。</div>
-      <div class="point-item"><strong>明快な棲み分け</strong> ── KABUKI PLUS+ は「観る人」、JIKABUKI PLUS+ は「演じる人・運営する人」。ターゲットがはっきり分かれる。</div>
-      <div class="point-item"><strong>4モジュール対称</strong> ── JIKABUKI は GATE・INFO・BASE・LABO。KABUKI は NAVI・LIVE・RECO・DOJO。8モジュールで役割が対称。</div>
-      <div class="point-item"><strong>チャットで導入完了</strong> ── 新規団体はけらのすけの質問に答えるだけで、FAQ・公式サイト・チャットボットが自動生成。気良がテンプレート。</div>
-      <div class="point-item"><strong>台本共有で横展開</strong> ── 約200の地歌舞伎団体の台本調達・管理負担を、共有で軽減。「使いたい」の動機になる。</div>
-      <div class="point-item"><strong>共有基盤</strong> ── けらのすけ、稽古エンジン、LINE Bot、Cloudflare は両ブランド共通。</div>
-      <div class="point-item"><strong>段階的に</strong> ── まず気良で全機能を使い込み、磨いてから他団体へ。気良が「最高のテンプレート」に。</div>
+      <div class="point-item"><strong>けらのすけ = 歌舞伎の「友達」</strong> ── 教科書ではなく友達。会話で相談に乗り、必要ならWebへ案内。Gemini 2.5 Flash + RAG + Function Calling 5ツールで、演目・用語・公演・ニュース・団体情報を横断検索。</div>
+      <div class="point-item"><strong>ランニングコストほぼ無料</strong> ── Cloudflare Workers / KV / R2の無料枠 + Gemini無料枠で運用。地歌舞伎団体の負担にならないサステナブルな設計。</div>
+      <div class="point-item"><strong>LINE + Web の2面展開</strong> ── 日本のユーザーリーチに最適。LINEは会話特化、Webは全機能。PWA対応でスマホにインストール可能。</div>
+      <div class="point-item"><strong>チャットで導入完了</strong> ── 新規団体はけらのすけの質問に答えるだけで、FAQ・公式サイト・チャットボットが自動生成。8テーマから選ぶだけでデザインも完成。</div>
+      <div class="point-item"><strong>段階的に</strong> ── まず気良歌舞伎で全機能を使い込み、磨いてから他団体へ。気良が「最高のテンプレート」に。</div>
       <p style="margin-top:1rem; font-size:13px;"><a href="/architecture" style="color:var(--gold-dark); font-weight:600;">サービス構成図で詳しく見る →</a></p>
     </div>
   </section>
 
   <!-- ═══ チャネルリンク集 ═══ -->
-  <section class="section animate-in delay-6">
+  <section class="section animate-in delay-8">
     <div class="section-heading">
       <span class="bar"></span>
       <h2>気良歌舞伎チャネル</h2>
@@ -786,7 +1003,7 @@ export function projectPageHTML() {
   </section>
 
   <!-- ═══ プロジェクト情報 ═══ -->
-  <section class="section animate-in delay-7">
+  <section class="section animate-in delay-9">
     <div class="section-heading">
       <span class="bar"></span>
       <h2>プロジェクト情報</h2>
@@ -795,17 +1012,18 @@ export function projectPageHTML() {
     <div class="card">
       <table class="info-table">
         <tr><td>運営</td><td>気良歌舞伎（けらかぶき）</td></tr>
-        <tr><td>開発者</td><td>けらのすけ（気良歌舞伎）</td></tr>
+        <tr><td>開発者</td><td>けらのすけ（気良歌舞伎事務局）</td></tr>
         <tr><td>開発協力</td><td>岐阜大学 日本語・日本文化教育センター<br>株式会社杉インターフェース</td></tr>
-        <tr><td>技術構成</td><td>Cloudflare Workers / R2 / KV / AI<br>LINE API</td></tr>
+        <tr><td>技術構成</td><td>Cloudflare Workers / R2 / KV<br>Gemini 2.5 Flash + Workers AI<br>LINE Messaging API</td></tr>
+        <tr><td>規模</td><td>51,500+ 行 / 68 モジュール / 90+ ルート</td></tr>
         <tr><td>開始</td><td>2025年〜</td></tr>
-        <tr><td>ステータス</td><td>開発中（β版公開中）</td></tr>
+        <tr><td>ステータス</td><td>公開運用中</td></tr>
       </table>
     </div>
   </section>
 
   <!-- ═══ 応援セクション ═══ -->
-  <section class="support-section animate-in delay-8">
+  <section class="support-section animate-in delay-10">
     <div class="support-message">応援してくれませんか？</div>
     <div class="support-sub">
       気良歌舞伎が開発しているプロジェクトです。<br>
@@ -813,7 +1031,7 @@ export function projectPageHTML() {
     </div>
 
     <div class="support-cards">
-      <a href="https://buy.stripe.com/dRm7sLedq10h9u515TBiI00" target="_blank" rel="noopener" class="support-card">
+      <a href="https://congrant.com/project/kerakabuki/21600" target="_blank" rel="noopener" class="support-card">
         <div class="s-icon">💛</div>
         <div class="s-text">
           <div class="s-title">サポートする</div>
@@ -853,7 +1071,7 @@ export function projectPageHTML() {
   </section>
 
   <div style="text-align: center;">
-    <a href="/" class="back-to-top animate-in delay-8">← トップに戻る</a>
+    <a href="/" class="back-to-top animate-in delay-10">← トップに戻る</a>
   </div>
 
 </div>
@@ -863,6 +1081,7 @@ export function projectPageHTML() {
     <a href="/">トップ</a>
     <a href="/?brand=jikabuki">JIKABUKI PLUS+</a>
     <a href="/jikabuki/gate/kera">気良歌舞伎</a>
+    <a href="/architecture">構成図</a>
   </div>
   <div class="site-footer-copy">KABUKI PLUS+ &copy; 2026</div>
 </footer>

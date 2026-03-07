@@ -1,7 +1,6 @@
 // src/top_page.js
 // =========================================================
-// トップページ — / （ブランド切替トグル付きポータル）
-// サイト紹介ページ：初めて訪れた人が全体像を把握できるように
+// トップページ — / （3層構造：けらのすけ → 注目コンテンツ → モジュール一覧）
 // =========================================================
 import { pageShell } from "./web_layout.js";
 
@@ -20,23 +19,46 @@ export function topPageHTML() {
     </div>
 
     <!-- ═══ KABUKI PLUS+ コンテンツ ═══ -->
-    <div id="content-kabuki">
+    <div id="content-kabuki" style="display:none;">
 
-      <!-- キャッチコピー -->
-      <section class="catch-section fade-up">
-        <p class="catch-lead">
-          歌舞伎は、四百年の物語。<br>
-          知れば知るほど、面白くなる。
-        </p>
-        <p class="catch-sub">
-          はじめての歌舞伎でも大丈夫。<br>
-          演目ガイド、用語解説、クイズ、稽古体験──<br>
-          あなたの「ちょっと気になる」を、一緒に楽しもう。
-        </p>
+      <!-- ━━ Layer 1: けらのすけ ━━ -->
+      <section class="kera-hero fade-up">
+        <div class="kera-hero-inner">
+          <img src="https://kabukiplus.com/assets/keranosukelogo.png" alt="けらのすけ" class="kera-hero-avatar">
+          <div class="kera-hero-body">
+            <div class="kera-hero-name">けらのすけ</div>
+            <div class="kera-hero-role">歌舞伎の友達AI</div>
+            <p class="kera-hero-msg">
+              やあ！歌舞伎のことなら何でも聞いてね。<br>
+              「歌舞伎座に初めて行く」「義経千本桜ってどんな話？」<br>
+              なんて気軽にどうぞ！
+            </p>
+          </div>
+        </div>
+        <div class="kera-hero-cta-row">
+          <a href="https://line.me/R/oaMessage/@117oizby/" target="_blank" rel="noopener" class="kera-hero-cta">
+            <span class="kera-hero-cta-icon">💬</span>
+            LINE で話す
+          </a>
+          <a href="/kabuki/chat" target="_blank" rel="noopener" class="kera-hero-cta kera-hero-cta-web">
+            <span class="kera-hero-cta-icon">🌐</span>
+            Web で聞く
+          </a>
+        </div>
+        <div class="kera-hero-sub">演目ガイド・公演情報・クイズ・用語解説──何でも聞ける歌舞伎AIアシスタント</div>
       </section>
 
-      <!-- 4つのハブカード -->
-      <section class="tp-section fade-up-d1">
+      <!-- ━━ Layer 2: 注目演目 ━━ -->
+      <section class="tp-section fade-up-d1" id="tp-featured" style="display:none;">
+        <h2 class="tp-section-title">注目の演目</h2>
+        <div id="tp-featured-items" class="featured-grid"></div>
+        <div class="featured-more">
+          <a href="/kabuki/live">公演スケジュールを見る &rarr;</a>
+        </div>
+      </section>
+
+      <!-- ━━ Layer 3: モジュール一覧 ━━ -->
+      <section class="tp-section fade-up-d2">
         <h2 class="tp-section-title">コンテンツ</h2>
         <div class="hub-grid hub-grid-4">
           <a href="/kabuki/navi" class="hub-card hub-navi">
@@ -78,62 +100,48 @@ export function topPageHTML() {
         </div>
       </section>
 
-      <!-- プロジェクト概要＋今すぐ試す -->
-      <section class="tp-section fade-up-d2">
+      <section class="tp-section fade-up-d3">
         <p class="tp-mission">
           気良歌舞伎（岐阜県）から、全国の地歌舞伎へ。<br>
           伝統をテクノロジーで守るプロジェクトです。
         </p>
-        <p class="tp-mission-link"><a href="/project">プロジェクト概要を読む →</a></p>
+        <p class="tp-mission-link"><a href="/project">プロジェクト概要を読む &rarr;</a></p>
       </section>
+
+      <div class="brand-cross-link">
+        <span>🏯</span> 地歌舞伎の団体運営・稽古には
+        <a href="/?brand=jikabuki">JIKABUKI PLUS+</a>
+      </div>
 
     </div>
 
     <!-- ═══ JIKABUKI PLUS+ コンテンツ ═══ -->
     <div id="content-jikabuki" style="display:none;">
 
-      <!-- キャッチコピー -->
-      <section class="catch-section fade-up">
-        <p class="catch-lead">
-          守るために、変わる。<br>
-          地歌舞伎を、テクノロジーの力で。
-        </p>
-        <p class="catch-sub">
-          公式サイトの立ち上げ、台本の共有、稽古の記録──<br>
-          団体の運営に必要なものを、ひとつのプラットフォームに。<br>
-          気良歌舞伎（岐阜県郡上市）から、全国の仲間へ。
-        </p>
-      </section>
-
-      <!-- JIKABUKIでできること -->
-      <section class="tp-section fade-up-d1">
-        <h2 class="tp-section-title">JIKABUKIでできること</h2>
-        <div class="jk-val-grid">
-          <div class="jk-val-card">
-            <div class="jk-val-icon">💬</div>
-            <div class="jk-val-title">チャットで導入完了</div>
-            <div class="jk-val-desc">LINE感覚のチャットで団体情報を入力するだけ。AIが公式ページを自動生成します。</div>
-          </div>
-          <div class="jk-val-card">
-            <div class="jk-val-icon">📖</div>
-            <div class="jk-val-title">台本共有 &amp; 配役管理</div>
-            <div class="jk-val-desc">台本をアップロードして団体内で共有。公演ごとの配役も一元管理できます。</div>
-          </div>
-          <div class="jk-val-card">
-            <div class="jk-val-icon">📅</div>
-            <div class="jk-val-title">稽古スケジュール</div>
-            <div class="jk-val-desc">稽古日程の登録・出欠確認・LINEへの共有がワンストップ。公演目標に向けた進捗も見える化。</div>
-          </div>
-          <div class="jk-val-card">
-            <div class="jk-val-icon">🗂️</div>
-            <div class="jk-val-title">業界データベース</div>
-            <div class="jk-val-desc">演目ガイド・用語辞典・団体情報を横断的にデータベース化。ナレッジを次世代へ。</div>
+      <!-- ━━ Layer 1: けらのすけ ━━ -->
+      <section class="kera-hero kera-hero-jk fade-up">
+        <div class="kera-hero-inner">
+          <img src="https://kabukiplus.com/assets/keranosukelogo.png" alt="けらのすけ" class="kera-hero-avatar">
+          <div class="kera-hero-body">
+            <div class="kera-hero-name">けらのすけ</div>
+            <div class="kera-hero-role">地歌舞伎の案内AI</div>
+            <p class="kera-hero-msg">
+              団体の公式サイト立ち上げ、台本共有、稽古管理──<br>
+              チャットで質問に答えるだけで、全部まとめてスタートできるよ。
+            </p>
           </div>
         </div>
+        <div class="kera-hero-cta-row">
+          <a href="/jikabuki/base/onboarding" class="kera-hero-cta kera-hero-cta-jk">
+            <span class="kera-hero-cta-icon">🏯</span>
+            新規団体登録
+          </a>
+        </div>
+        <div class="kera-hero-sub">登録するだけで公式サイト・FAQ・チャットボットが自動で揃います</div>
       </section>
 
-      <!-- 4モジュール詳細 -->
-      <section class="tp-section fade-up-d2">
+      <!-- ━━ Layer 2: 4つのモジュール ━━ -->
+      <section class="tp-section fade-up-d1">
         <h2 class="tp-section-title">4つのモジュール</h2>
         <div class="jk-mod-grid">
           <a href="/jikabuki/gate" class="jk-mod-card jk-mod-accent-1">
@@ -175,49 +183,67 @@ export function topPageHTML() {
         </div>
       </section>
 
-      <!-- 地歌舞伎ニュース -->
-      <section class="tp-section jk-news-section fade-up-d3" id="tp-jk-news" style="display:none;">
-        <h2 class="tp-section-title">地歌舞伎ニュース</h2>
-        <div id="tp-jk-news-items" class="jk-news-list"></div>
-        <div class="jk-news-more">
-          <a href="/jikabuki/info/news" class="jk-news-link">ニュース一覧 &rarr;</a>
-        </div>
-      </section>
-      <script>
-      (function(){
-        fetch("/api/news").then(function(r){ return r.json(); }).then(function(data){
-          var articles = data && data.articles || [];
-          if (!articles.length) return;
-          var jika = articles.filter(function(a){ return a.feedKey === "jikabuki"; }).slice(0, 5);
-          if (!jika.length) return;
-          var el = document.getElementById("tp-jk-news-items");
-          if (!el) return;
-          el.innerHTML = jika.map(function(a){
-            var d = a.pubTs ? new Date(a.pubTs) : null;
-            var ds = d ? (d.getMonth()+1) + "/" + d.getDate() : "";
-            return '<a href="' + a.link + '" target="_blank" rel="noopener" class="jk-news-item">'
-              + '<span class="jk-news-date">' + ds + '</span>'
-              + '<span class="jk-news-title">' + (a.title||"").replace(/</g,"&lt;") + '</span>'
-              + '</a>';
-          }).join("");
-          document.getElementById("tp-jk-news").style.display = "";
-        }).catch(function(){});
-      })();
-      </script>
-
-      <!-- プロジェクトリンク -->
       <div class="tp-section fade-up-d4" style="text-align:center;">
         <p class="tp-mission">
           気良歌舞伎（岐阜県）から、全国の地歌舞伎へ。<br>
           伝統をテクノロジーで守るプロジェクトです。
         </p>
-        <p class="tp-mission-link"><a href="/project">プロジェクト概要を読む →</a></p>
+        <p class="tp-mission-link"><a href="/project">プロジェクト概要を読む &rarr;</a></p>
+      </div>
+
+      <div class="brand-cross-link">
+        <span>🎭</span> 歌舞伎の観劇・学習には
+        <a href="/?brand=kabuki">KABUKI PLUS+</a>
       </div>
 
     </div>
 
+    <!-- ── データ取得スクリプト ── -->
+    <script>
+    /* 注目演目（KABUKI） */
+    (function(){
+      fetch("/api/featured").then(function(r){ return r.json(); }).then(function(data){
+        var items = data && data.featured || [];
+        if (!items.length) return;
+        var shown = items.slice(0, 3);
+        var el = document.getElementById("tp-featured-items");
+        if (!el) return;
+        el.innerHTML = shown.map(function(f){
+          var theater = f.theater || "";
+          var title = f.title || "";
+          var period = f.period_text || "";
+          var naviLink = f.naviId ? '/kabuki/navi/enmoku/' + encodeURIComponent(f.naviId) : '';
+          var tag = naviLink ? '<a href="' + naviLink + '" class="featured-guide-link">演目ガイド</a>' : '';
+          return '<div class="featured-card">'
+            + '<div class="featured-theater">' + theater.replace(/</g,"&lt;") + '</div>'
+            + '<div class="featured-title">' + title.replace(/</g,"&lt;") + '</div>'
+            + '<div class="featured-period">' + period.replace(/</g,"&lt;") + '</div>'
+            + tag
+            + '</div>';
+        }).join("");
+        document.getElementById("tp-featured").style.display = "";
+      }).catch(function(){});
+    })();
+    </script>
+
     <!-- ── ブランド切替スクリプト ── -->
     <script>
+    var __tabNav = {
+      kabuki: [
+        { href: "/", icon: "\u{1F3E0}", label: "\u30C8\u30C3\u30D7", key: "home" },
+        { href: "/kabuki/navi", icon: "\u{1F9ED}", label: "NAVI", key: "navi" },
+        { href: "/kabuki/live", icon: "\u{1F4E1}", label: "LIVE", key: "live" },
+        { href: "/kabuki/reco", icon: "\u{1F4DD}", label: "RECO", key: "reco" },
+        { href: "/kabuki/dojo", icon: "\u{1F94B}", label: "DOJO", key: "dojo" }
+      ],
+      jikabuki: [
+        { href: "/", icon: "\u{1F3E0}", label: "\u30C8\u30C3\u30D7", key: "home" },
+        { href: "/jikabuki/gate", icon: "\u{1F3EF}", label: "GATE", key: "gate" },
+        { href: "/jikabuki/info", icon: "\u{1F4E1}", label: "INFO", key: "info" },
+        { href: "/jikabuki/base", icon: "\u{1F527}", label: "BASE", key: "base" },
+        { href: "/jikabuki/labo", icon: "\u{1F9EA}", label: "LABO", key: "labo" }
+      ]
+    };
     function switchBrand(brand) {
       document.getElementById('content-kabuki').style.display = brand === 'kabuki' ? '' : 'none';
       document.getElementById('content-jikabuki').style.display = brand === 'jikabuki' ? '' : 'none';
@@ -225,11 +251,19 @@ export function topPageHTML() {
       for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
       document.querySelector('.bt-' + brand).classList.add('active');
       var hb = document.querySelector('.header-brand');
-      if (hb) hb.textContent = brand === 'jikabuki' ? '🏯 JIKABUKI PLUS+' : '🎭 KABUKI PLUS+';
+      if (hb) hb.textContent = brand === 'jikabuki' ? '\u{1F3EF} JIKABUKI PLUS+' : '\u{1F3AD} KABUKI PLUS+';
       var h1 = document.querySelector('header h1');
-      if (h1) h1.textContent = brand === 'jikabuki' ? '演じる人の、デジタル楽屋。' : '歌舞伎を、もっと面白く。';
+      if (h1) h1.textContent = brand === 'jikabuki' ? '\u6F14\u3058\u308B\u4EBA\u306E\u3001\u30C7\u30B8\u30BF\u30EB\u697D\u5C4B\u3002' : '\u6B4C\u821E\u4F0E\u3092\u3001\u3082\u3063\u3068\u9762\u767D\u304F\u3002';
       var sub = document.querySelector('.header-sub');
-      if (sub) sub.textContent = brand === 'jikabuki' ? '記録する、稽古する、共有する。' : '観る、学ぶ、演じる。';
+      if (sub) sub.textContent = brand === 'jikabuki' ? '\u8A18\u9332\u3059\u308B\u3001\u7A3D\u53E4\u3059\u308B\u3001\u5171\u6709\u3059\u308B\u3002' : '\u89B3\u308B\u3001\u5B66\u3076\u3001\u6F14\u3058\u308B\u3002';
+      var tb = document.getElementById('pwa-tab-bar');
+      if (tb) {
+        var items = __tabNav[brand] || __tabNav.kabuki;
+        tb.innerHTML = items.map(function(n) {
+          var cls = n.key === 'home' ? 'pwa-tab-active' : '';
+          return '<a href="' + n.href + '" class="' + cls + '"><span class="pwa-tab-icon">' + n.icon + '</span>' + n.label + '</a>';
+        }).join('');
+      }
       try { localStorage.setItem('kabuki_plus_brand', brand); } catch(e) {}
     }
     (function() {
@@ -241,9 +275,9 @@ export function topPageHTML() {
           if (history.replaceState) history.replaceState(null, '', '/');
         } else {
           var saved = localStorage.getItem('kabuki_plus_brand');
-          if (saved === 'jikabuki') switchBrand('jikabuki');
+          switchBrand(saved === 'jikabuki' ? 'jikabuki' : 'kabuki');
         }
-      } catch(e) {}
+      } catch(e) { switchBrand('kabuki'); }
     })();
     </script>
 
@@ -255,6 +289,7 @@ export function topPageHTML() {
     bodyHTML,
     activeNav: "home",
     hideNav: true,
+    ogImage: "https://kabukiplus.com/assets/ogp/ogp_kabukiplus_top.png",
     headExtra: `<style>
       /* ── ブランド切替トグル ── */
       .brand-toggle-wrap { text-align: center; margin-bottom: 1.5rem; }
@@ -299,7 +334,163 @@ export function topPageHTML() {
         text-align: center;
       }
 
-      /* ── セクション ── */
+      /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+         Layer 1: けらのすけヒーロー
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+      .kera-hero {
+        text-align: center;
+        padding: 24px 20px 28px;
+        margin-bottom: 2rem;
+        background: linear-gradient(180deg, var(--gold-soft) 0%, var(--bg-page) 100%);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--gold-light);
+      }
+      .kera-hero-jk {
+        background: linear-gradient(180deg, var(--accent-1-soft) 0%, var(--bg-page) 100%);
+        border-color: #e8c8c0;
+      }
+      .kera-hero-inner {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        text-align: left;
+        margin-bottom: 16px;
+      }
+      .kera-hero-avatar {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid white;
+        box-shadow: var(--shadow-md);
+        flex-shrink: 0;
+      }
+      .kera-hero-body { flex: 1; min-width: 0; }
+      .kera-hero-name {
+        font-family: 'Noto Serif JP', serif;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-primary);
+        letter-spacing: 2px;
+      }
+      .kera-hero-role {
+        font-size: 11px;
+        color: var(--gold-dark);
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        margin-top: 2px;
+      }
+      .kera-hero-jk .kera-hero-role {
+        color: var(--accent-1);
+      }
+      .kera-hero-msg {
+        margin-top: 8px;
+        font-size: 13px;
+        color: var(--text-secondary);
+        line-height: 1.8;
+      }
+      .kera-hero-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 28px;
+        background: #06C755;
+        color: white;
+        border-radius: 28px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        box-shadow: 0 4px 12px rgba(6,199,85,0.3);
+        transition: all 0.2s;
+        letter-spacing: 0.5px;
+      }
+      .kera-hero-cta:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(6,199,85,0.4);
+        text-decoration: none;
+        color: white;
+      }
+      .kera-hero-cta-icon { font-size: 16px; }
+      .kera-hero-cta-row {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .kera-hero-cta-web {
+        background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+        box-shadow: 0 4px 12px rgba(197,162,85,0.3);
+      }
+      .kera-hero-cta-web:hover {
+        box-shadow: 0 6px 16px rgba(197,162,85,0.4);
+      }
+      .kera-hero-sub {
+        margin-top: 12px;
+        font-size: 11px;
+        color: var(--text-tertiary);
+        letter-spacing: 0.3px;
+      }
+
+      /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+         Layer 2: 注目演目
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+      .featured-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .featured-card {
+        padding: 14px 16px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-light);
+        border-left: 3px solid var(--gold);
+        border-radius: var(--radius-sm);
+        box-shadow: var(--shadow-sm);
+      }
+      .featured-theater {
+        font-size: 11px;
+        color: var(--gold-dark);
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        margin-bottom: 2px;
+      }
+      .featured-title {
+        font-family: 'Noto Serif JP', serif;
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--text-primary);
+        letter-spacing: 1px;
+      }
+      .featured-period {
+        font-size: 12px;
+        color: var(--text-secondary);
+        margin-top: 2px;
+      }
+      .featured-guide-link {
+        display: inline-block;
+        margin-top: 6px;
+        font-size: 11px;
+        color: var(--gold-dark);
+        border: 1px solid var(--gold-light);
+        border-radius: 12px;
+        padding: 2px 10px;
+        text-decoration: none;
+        transition: all 0.15s;
+      }
+      .featured-guide-link:hover {
+        background: var(--gold-soft);
+        text-decoration: none;
+      }
+      .featured-more {
+        text-align: right;
+        margin-top: 10px;
+        font-size: 13px;
+      }
+      .featured-more a { color: var(--gold-dark); }
+
+      /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+         Layer 3 共通
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
       .tp-section { margin-bottom: 2rem; }
       .tp-section-title {
         display: flex;
@@ -320,50 +511,8 @@ export function topPageHTML() {
         border-radius: 2px;
         flex-shrink: 0;
       }
-      .tp-link {
-        font-size: 13px;
-        color: var(--text-secondary);
-        text-decoration: none;
-        padding: 8px 20px;
-        border: 1px solid var(--border-medium);
-        border-radius: var(--radius-sm);
-        transition: all 0.15s;
-        display: inline-block;
-      }
-      .tp-link:hover {
-        border-color: var(--gold);
-        color: var(--gold-dark);
-        background: var(--gold-soft);
-        text-decoration: none;
-      }
-
-      /* ── キャッチコピー ── */
-      .catch-section {
-        text-align: center;
-        padding: 0.5rem 0 1.8rem;
-      }
-      .catch-lead {
-        font-family: 'Noto Serif JP', serif;
-        font-size: 16px;
-        font-weight: 600;
-        color: var(--text-primary);
-        letter-spacing: 2px;
-        line-height: 2.2;
-      }
-      .catch-sub {
-        margin-top: 8px;
-        font-size: 13px;
-        color: var(--text-secondary);
-        line-height: 2;
-        letter-spacing: 0.05em;
-      }
 
       /* ── ハブカード ── */
-      .hub-grid {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-      }
       .hub-grid-4 {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -393,14 +542,10 @@ export function topPageHTML() {
         text-decoration: none;
       }
       .hub-icon {
-        width: 44px;
-        height: 44px;
+        width: 44px; height: 44px;
         border-radius: var(--radius-sm);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 20px;
-        flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 20px; flex-shrink: 0;
       }
       .hub-navi .hub-icon { background: var(--accent-1-soft); }
       .hub-live .hub-icon { background: var(--accent-2-soft); }
@@ -408,91 +553,37 @@ export function topPageHTML() {
       .hub-dojo .hub-icon { background: var(--accent-3-soft); }
       .hub-body h3 {
         font-family: 'Noto Serif JP', serif;
-        font-size: 15px;
-        font-weight: 600;
-        color: var(--text-primary);
-        letter-spacing: 1px;
-        margin-bottom: 2px;
+        font-size: 15px; font-weight: 600;
+        color: var(--text-primary); letter-spacing: 1px; margin-bottom: 2px;
       }
       .hub-body .hub-subtitle {
-        display: block;
-        font-size: 11px;
-        color: var(--text-tertiary);
-        letter-spacing: 0.5px;
-        margin-bottom: 4px;
+        display: block; font-size: 11px;
+        color: var(--text-tertiary); letter-spacing: 0.5px; margin-bottom: 4px;
       }
-      .hub-body p {
-        font-size: 12px;
-        color: var(--text-secondary);
-      }
+      .hub-body p { font-size: 12px; color: var(--text-secondary); }
       .hub-arrow {
-        color: var(--text-tertiary);
-        font-size: 16px;
-        margin-left: auto;
-        transition: transform 0.15s;
-        flex-shrink: 0;
+        color: var(--text-tertiary); font-size: 16px;
+        margin-left: auto; transition: transform 0.15s; flex-shrink: 0;
       }
-      .hub-card:hover .hub-arrow {
-        transform: translateX(3px);
-        color: var(--gold);
-      }
+      .hub-card:hover .hub-arrow { transform: translateX(3px); color: var(--gold); }
 
-      /* ── プロジェクト概要＋今すぐ試す ── */
+      /* ── プロジェクト ── */
       .tp-mission {
-        font-size: 14px;
-        color: var(--text-secondary);
-        line-height: 1.8;
-        text-align: center;
-        margin: 0 0 8px;
+        font-size: 14px; color: var(--text-secondary);
+        line-height: 1.8; text-align: center; margin: 0 0 8px;
       }
-      .tp-mission-link {
-        text-align: center;
-        margin: 0 0 1.25rem;
-        font-size: 13px;
-      }
-      .tp-mission-link a {
-        color: var(--gold);
-        text-decoration: none;
-      }
+      .tp-mission-link { text-align: center; margin: 0 0 1.25rem; font-size: 13px; }
+      .tp-mission-link a { color: var(--gold); text-decoration: none; }
       .tp-mission-link a:hover { text-decoration: underline; }
-      /* ── JIKABUKI バリューカード ── */
-      .jk-val-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-        margin-bottom: 0;
-      }
-      .jk-val-card {
-        padding: 16px;
-        background: var(--bg-card);
-        border: 1px solid var(--border-light);
-        border-radius: var(--radius-md);
-        box-shadow: var(--shadow-sm);
-      }
-      .jk-val-icon { font-size: 22px; margin-bottom: 6px; }
-      .jk-val-title { font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
-      .jk-val-desc { font-size: 11px; color: var(--text-secondary); line-height: 1.7; }
 
       /* ── JIKABUKI モジュールカード ── */
-      .jk-mod-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-      }
+      .jk-mod-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
       .jk-mod-card {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        padding: 18px 16px;
-        background: var(--bg-card);
-        border: 1px solid var(--border-light);
-        border-radius: var(--radius-lg);
-        text-decoration: none;
-        color: var(--text-primary);
-        transition: all 0.18s;
-        box-shadow: var(--shadow-sm);
-        position: relative;
-        border-top: 3px solid transparent;
+        display: flex; flex-direction: column; gap: 8px; padding: 18px 16px;
+        background: var(--bg-card); border: 1px solid var(--border-light);
+        border-radius: var(--radius-lg); text-decoration: none; color: var(--text-primary);
+        transition: all 0.18s; box-shadow: var(--shadow-sm);
+        position: relative; border-top: 3px solid transparent;
       }
       .jk-mod-accent-1 { border-top-color: var(--accent-1); }
       .jk-mod-accent-2 { border-top-color: var(--accent-2); }
@@ -507,33 +598,23 @@ export function topPageHTML() {
       .jk-mod-arrow { position: absolute; top: 16px; right: 14px; font-size: 16px; color: var(--text-tertiary); transition: transform 0.15s; }
       .jk-mod-card:hover .jk-mod-arrow { transform: translateX(3px); color: var(--gold); }
 
-      /* ── JIKABUKI ニュース ── */
-      .jk-news-section {
-        padding: 20px;
-        background: var(--bg-card);
-        border: 1px solid var(--border-light);
-        border-radius: var(--radius-md);
-        box-shadow: var(--shadow-sm);
+      /* ── ブランド相互リンク ── */
+      .brand-cross-link {
+        text-align: center; font-size: 12px; color: var(--text-tertiary);
+        margin: 2rem 0 0.5rem; padding: 12px 0; border-top: 1px solid var(--border-light);
       }
-      .jk-news-list { display: flex; flex-direction: column; }
-      .jk-news-item {
-        display: flex; align-items: baseline; gap: 10px; padding: 8px 4px;
-        text-decoration: none; color: var(--text-primary); border-bottom: 1px solid var(--bg-subtle);
-        transition: background 0.12s;
-      }
-      .jk-news-item:last-child { border-bottom: none; }
-      .jk-news-item:hover { background: var(--gold-soft); text-decoration: none; }
-      .jk-news-date { font-size: 11px; color: var(--text-tertiary); flex-shrink: 0; min-width: 3em; }
-      .jk-news-title { font-size: 13px; line-height: 1.6; }
-      .jk-news-more { text-align: right; margin-top: 8px; }
-      .jk-news-link { font-size: 13px; color: var(--gold-dark); }
+      .brand-cross-link span { margin-right: 2px; }
+      .brand-cross-link a { color: var(--gold-dark); font-weight: 500; }
 
       /* ── レスポンシブ ── */
       @media (max-width: 600px) {
         .hub-grid-4 { grid-template-columns: 1fr; }
         .jk-val-grid { grid-template-columns: 1fr; }
         .jk-mod-grid { grid-template-columns: 1fr; }
-        .catch-lead { font-size: 14px; letter-spacing: 1px; }
+        .kera-hero-inner { flex-direction: column; text-align: center; gap: 12px; }
+        .kera-hero-avatar { width: 64px; height: 64px; }
+        .kera-hero-msg { font-size: 12px; text-align: center; }
+        .kera-hero-msg br { display: none; }
       }
     </style>`,
   });

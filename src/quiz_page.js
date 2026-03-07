@@ -2,7 +2,7 @@
 // =========================================================
 // クイズページ — /quiz
 // localStorage でスコア管理、API からクイズデータ取得
-// 難易度モード（段階解放式）: 初級→中級→上級
+// 10ステージ固定制 + 1日10問制限（グローバル）
 // =========================================================
 import { pageShell } from "./web_layout.js";
 
@@ -21,10 +21,12 @@ export function quizPageHTML() {
       var quizList = [];
       var quizMap = {};
 
-      // ── レベル定義 ──
-      var LEVELS = ["beginner", "intermediate", "advanced"];
-      var LEVEL_LABELS = { beginner: "初級", intermediate: "中級", advanced: "上級" };
-      var LEVEL_ICONS = { beginner: "🟢", intermediate: "🟡", advanced: "🔴" };
+      // ── 定数 ──
+      var STAGE_COUNT = 10;
+      var DAILY_LIMIT = 10;
+      var STAGE_NAMES = ["第一幕","第二幕","第三幕","第四幕","第五幕","第六幕","第七幕","第八幕","第九幕","第十幕"];
+      var TITLE_RANKS = ["見習い","名題下","三枚目","二枚目","花形","看板役者","千両役者","座頭","名人","人間国宝","世界遺産"];
+      var LEVEL_ORDER = { beginner: 0, intermediate: 1, advanced: 2 };
 
       // ── ローカルステート ──
       var STATE_KEY = "keranosuke_quiz_state";
@@ -38,14 +40,15 @@ export function quizPageHTML() {
         return defaultState();
       }
       function defaultState() {
+        var stages = {};
+        for (var i = 0; i < STAGE_COUNT; i++) {
+          stages[i] = { answered: {}, wrong_ids: [] };
+        }
         return {
-          version: 2,
-          levels: {
-            beginner:     { answered: {}, wrong_ids: [] },
-            intermediate: { answered: {}, wrong_ids: [] },
-            advanced:     { answered: {}, wrong_ids: [] }
-          },
-          current_level: null,
+          version: 3,
+          stages: stages,
+          daily: { date: "", count: 0 },
+          current_stage: null,
           current_id: null,
           mode: "normal",
           phase: "idle"
@@ -55,84 +58,176 @@ export function quizPageHTML() {
         try { localStorage.setItem(STATE_KEY, JSON.stringify(state)); } catch(e){}
       }
 
-      // ── V1→V2 マイグレーション ──
-      function migrateV1toV2(old) {
+      // ── V1/V2 → V3 マイグレーション ──
+      function migrateToV3(old) {
         var ns = defaultState();
-        if (!old || !old.answered) return ns;
-        var keys = Object.keys(old.answered);
-        for (var i = 0; i < keys.length; i++) {
-          var qid = keys[i];
-          var q = quizMap[qid];
-          var lvl = (q && q.level) ? q.level : "beginner";
-          if (!ns.levels[lvl]) lvl = "beginner";
-          ns.levels[lvl].answered[qid] = old.answered[qid];
+        if (!old) return ns;
+
+        // V1: flat answered/wrong_ids
+        // V2: levels.beginner/intermediate/advanced { answered, wrong_ids }
+        var allAnswered = {};
+        var allWrong = [];
+
+        if (old.version === 2 && old.levels) {
+          var lvls = ["beginner", "intermediate", "advanced"];
+          for (var li = 0; li < lvls.length; li++) {
+            var ld = old.levels[lvls[li]];
+            if (!ld) continue;
+            if (ld.answered) {
+              var akeys = Object.keys(ld.answered);
+              for (var a = 0; a < akeys.length; a++) {
+                allAnswered[akeys[a]] = ld.answered[akeys[a]];
+              }
+            }
+            if (ld.wrong_ids) {
+              for (var w = 0; w < ld.wrong_ids.length; w++) {
+                if (allWrong.indexOf(ld.wrong_ids[w]) < 0) {
+                  allWrong.push(ld.wrong_ids[w]);
+                }
+              }
+            }
+          }
+        } else if (old.answered) {
+          // V1
+          allAnswered = old.answered;
+          allWrong = old.wrong_ids || [];
         }
-        var oldWrong = old.wrong_ids || [];
-        for (var j = 0; j < oldWrong.length; j++) {
-          var wid = String(oldWrong[j]);
-          var wq = quizMap[wid];
-          var wlvl = (wq && wq.level) ? wq.level : "beginner";
-          if (!ns.levels[wlvl]) wlvl = "beginner";
-          if (ns.levels[wlvl].wrong_ids.indexOf(oldWrong[j]) < 0) {
-            ns.levels[wlvl].wrong_ids.push(oldWrong[j]);
+
+        // quiz_id → ステージに振り分け
+        var answeredKeys = Object.keys(allAnswered);
+        for (var i = 0; i < answeredKeys.length; i++) {
+          var qid = answeredKeys[i];
+          var stageIdx = getQuizStageIndex(qid);
+          if (stageIdx < 0) continue;
+          ns.stages[stageIdx].answered[qid] = allAnswered[qid];
+        }
+        for (var j = 0; j < allWrong.length; j++) {
+          var wid = String(allWrong[j]);
+          var wStage = getQuizStageIndex(wid);
+          if (wStage < 0) continue;
+          if (ns.stages[wStage].wrong_ids.indexOf(allWrong[j]) < 0) {
+            ns.stages[wStage].wrong_ids.push(allWrong[j]);
           }
         }
+
+        // daily: V2 per-level counts → V3 global count
+        if (old.daily && old.daily.date) {
+          var totalCount = 0;
+          if (old.daily.counts) {
+            var ckeys = Object.keys(old.daily.counts);
+            for (var c = 0; c < ckeys.length; c++) {
+              totalCount += old.daily.counts[ckeys[c]] || 0;
+            }
+          } else if (typeof old.daily.count === "number") {
+            totalCount = old.daily.count;
+          }
+          ns.daily = { date: old.daily.date, count: totalCount };
+        }
+
         return ns;
       }
 
-      // ── ヘルパー関数 ──
-      function getLevelStats(level) {
-        var ld = state.levels[level] || { answered: {}, wrong_ids: [] };
-        var answered = ld.answered || {};
-        var keys = Object.keys(answered);
-        var answered_total = keys.length;
-        var correct_total = 0;
-        for (var i = 0; i < keys.length; i++) {
-          if (answered[keys[i]] === true) correct_total++;
+      // ── クイズ分配ヘルパー ──
+      // 全クイズを level優先(beginner→intermediate→advanced) + quiz_id昇順 でソート
+      var _sortedQuizzes = null;
+      function getAllQuizzesSorted() {
+        if (_sortedQuizzes) return _sortedQuizzes;
+        _sortedQuizzes = quizList.slice().sort(function(a, b) {
+          var la = LEVEL_ORDER[a.level] || 0;
+          var lb = LEVEL_ORDER[b.level] || 0;
+          if (la !== lb) return la - lb;
+          return Number(a.quiz_id) - Number(b.quiz_id);
+        });
+        return _sortedQuizzes;
+      }
+
+      // ステージ idx のクイズ配列を返す（均等分配）
+      function getStageQuizzes(idx) {
+        var all = getAllQuizzesSorted();
+        var total = all.length;
+        var base = Math.floor(total / STAGE_COUNT);
+        var extra = total % STAGE_COUNT;
+        // stages 0..extra-1 get base+1, stages extra..9 get base
+        var start = 0;
+        for (var i = 0; i < idx; i++) {
+          start += (i < extra) ? base + 1 : base;
         }
-        var total = quizList.filter(function(q){ return q.level === level; }).length;
-        var remaining = total - answered_total;
-        var rate = answered_total > 0 ? correct_total / answered_total : 0;
-        var cleared = remaining <= 0 && answered_total > 0 && rate >= 0.7;
+        var size = (idx < extra) ? base + 1 : base;
+        return all.slice(start, start + size);
+      }
+
+      // quiz_id → ステージ番号
+      function getQuizStageIndex(quizId) {
+        var all = getAllQuizzesSorted();
+        var qidStr = String(quizId);
+        var pos = -1;
+        for (var i = 0; i < all.length; i++) {
+          if (String(all[i].quiz_id) === qidStr) { pos = i; break; }
+        }
+        if (pos < 0) return -1;
+        var total = all.length;
+        var base = Math.floor(total / STAGE_COUNT);
+        var extra = total % STAGE_COUNT;
+        var cumul = 0;
+        for (var s = 0; s < STAGE_COUNT; s++) {
+          var size = (s < extra) ? base + 1 : base;
+          if (pos < cumul + size) return s;
+          cumul += size;
+        }
+        return STAGE_COUNT - 1;
+      }
+
+      // ステージ統計
+      function getStageStats(idx) {
+        var quizzes = getStageQuizzes(idx);
+        var sd = state.stages[idx] || { answered: {}, wrong_ids: [] };
+        var answeredCount = 0, correctCount = 0;
+        for (var i = 0; i < quizzes.length; i++) {
+          var qid = String(quizzes[i].quiz_id);
+          if (sd.answered[qid] !== undefined) {
+            answeredCount++;
+            if (sd.answered[qid] === true) correctCount++;
+          }
+        }
+        var total = quizzes.length;
+        var remaining = total - answeredCount;
+        var rate = answeredCount > 0 ? correctCount / answeredCount : 0;
+        var cleared = remaining <= 0 && answeredCount > 0 && rate >= 0.7;
         return {
-          answered_total: answered_total,
-          correct_total: correct_total,
+          answered: answeredCount,
+          correct: correctCount,
           total: total,
           remaining: remaining < 0 ? 0 : remaining,
           rate: rate,
           cleared: cleared,
-          wrong_count: (ld.wrong_ids || []).length
+          wrong_count: (sd.wrong_ids || []).length
         };
       }
 
-      function isLevelUnlocked(level) {
-        if (level === "beginner") return true;
-        if (level === "intermediate") return getLevelStats("beginner").cleared;
-        if (level === "advanced") return getLevelStats("intermediate").cleared;
-        return false;
+      function isStageUnlocked(idx) {
+        if (idx === 0) return true;
+        return getStageStats(idx - 1).cleared;
       }
 
-      function getOverallTitle() {
-        var adv = getLevelStats("advanced");
-        var mid = getLevelStats("intermediate");
-        var beg = getLevelStats("beginner");
-
-        if (adv.cleared && adv.rate >= 0.9) return "国宝";
-        if (adv.cleared) return "名人";
-        if (adv.answered_total > 0) return "千両役者";
-        if (mid.cleared) return "看板役者";
-        if (mid.answered_total > 0) return "二枚目";
-        if (beg.cleared) return "三枚目";
-        if (beg.answered_total > 0) return "名題下";
-        return "見習い";
-      }
-
-      function getTotalCorrect() {
-        var total = 0;
-        for (var i = 0; i < LEVELS.length; i++) {
-          total += getLevelStats(LEVELS[i]).correct_total;
+      // 最初の未クリアステージ
+      function getCurrentStage() {
+        for (var i = 0; i < STAGE_COUNT; i++) {
+          if (!getStageStats(i).cleared) return i;
         }
-        return total;
+        return STAGE_COUNT; // 全クリア
+      }
+
+      // クリア済みステージ数（先頭から連続）
+      function getClearedCount() {
+        for (var i = 0; i < STAGE_COUNT; i++) {
+          if (!getStageStats(i).cleared) return i;
+        }
+        return STAGE_COUNT;
+      }
+
+      // 称号
+      function getTitle() {
+        return TITLE_RANKS[getClearedCount()];
       }
 
       /* XP加算ヘルパー */
@@ -153,6 +248,27 @@ export function quizPageHTML() {
         } catch(e){}
       }
 
+      // ── 日次制限（グローバル）──
+      function ensureDailyReset() {
+        var today = new Date();
+        var todayStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
+        if (!state.daily || state.daily.date !== todayStr) {
+          state.daily = { date: todayStr, count: 0 };
+          saveState();
+        }
+      }
+
+      function getDailyRemaining() {
+        ensureDailyReset();
+        return DAILY_LIMIT - (state.daily.count || 0);
+      }
+
+      function incrementDaily() {
+        ensureDailyReset();
+        state.daily.count = (state.daily.count || 0) + 1;
+        saveState();
+      }
+
       // ── データ読み込み ──
       fetch("/api/quiz")
         .then(function(r){ return r.json(); })
@@ -165,83 +281,128 @@ export function quizPageHTML() {
             if (q && q.quiz_id != null) quizMap[String(q.quiz_id)] = q;
             if (!q.level) q.level = "beginner";
           });
-          // V1→V2 マイグレーション
-          if (!state.version || state.version < 2) {
-            state = migrateV1toV2(state);
+          // ソートキャッシュ初期化
+          _sortedQuizzes = null;
+          getAllQuizzesSorted();
+          // V1/V2 → V3 マイグレーション
+          if (!state.version || state.version < 3) {
+            state = migrateToV3(state);
             saveState();
           }
-          showLevelSelect();
+          ensureDailyReset();
+          showStageSelect();
         })
         .catch(function(){
           app.innerHTML = '<div class="empty-state">クイズデータの読み込みに失敗しました。</div>';
         });
 
-      // ── レベル選択画面 ──
-      function showLevelSelect() {
-        var title = getOverallTitle();
+      // ── ステージ選択画面 ──
+      function showStageSelect() {
+        var title = getTitle();
+        var cleared = getClearedCount();
+        var dailyRem = getDailyRemaining();
+        var currentStage = getCurrentStage();
+
         var html = '<div class="quiz-menu fade-up">';
+
+        // ヒーロー
         html += '<div class="quiz-hero">';
         html += '<div class="quiz-hero-icon">👺</div>';
         html += '<h2 class="quiz-hero-title">歌舞伎クイズ</h2>';
-        html += '<p class="quiz-hero-sub">段階をクリアして称号を上げよう</p>';
+        html += '<p class="quiz-hero-sub">10ステージをクリアして昇進しよう</p>';
         html += '</div>';
 
-        // 総合称号
+        // 称号 + 全体進捗バー
         html += '<div class="quiz-overall-title">';
         html += '<span class="quiz-overall-label">称号</span>';
         html += '<span class="quiz-overall-name">' + esc(title) + '</span>';
         html += '</div>';
 
-        // レベルカード
-        html += '<div class="quiz-level-cards">';
-        for (var li = 0; li < LEVELS.length; li++) {
-          var lvl = LEVELS[li];
-          var st = getLevelStats(lvl);
-          var unlocked = isLevelUnlocked(lvl);
-          var label = LEVEL_LABELS[lvl];
-          var icon = LEVEL_ICONS[lvl];
+        var overallPct = Math.round((cleared / STAGE_COUNT) * 100);
+        html += '<div class="quiz-overall-progress">';
+        html += '<div class="quiz-progress-bar"><div class="quiz-progress-fill' + (cleared === STAGE_COUNT ? ' fill-cleared' : '') + '" style="width:' + overallPct + '%"></div></div>';
+        html += '<span class="quiz-progress-text">' + cleared + '/' + STAGE_COUNT + ' ステージクリア</span>';
+        html += '</div>';
 
-          html += '<div class="quiz-level-card' + (unlocked ? '' : ' locked') + (st.cleared ? ' cleared' : '') + '">';
-          html += '<div class="quiz-level-header">';
-          html += '<span class="quiz-level-icon">' + icon + '</span>';
-          html += '<span class="quiz-level-name">' + label + '</span>';
-          if (st.cleared) {
-            html += '<span class="quiz-level-badge cleared-badge">CLEAR</span>';
+        // 日次残り
+        if (dailyRem <= 0) {
+          html += '<div class="quiz-daily-done" style="text-align:center;margin-bottom:1rem;">今日の10問は終了！明日また挑戦しよう</div>';
+        } else {
+          html += '<div class="quiz-daily-info" style="text-align:center;margin-bottom:1rem;">今日あと ' + dailyRem + ' 問</div>';
+        }
+
+        // ステージリスト
+        html += '<div class="quiz-stage-list">';
+        for (var si = 0; si < STAGE_COUNT; si++) {
+          var sst = getStageStats(si);
+          var unlocked = isStageUnlocked(si);
+          var isCleared = sst.cleared;
+          var isCurrent = (si === currentStage && !isCleared);
+
+          var itemClass = 'quiz-stage-item';
+          if (isCleared) itemClass += ' cleared';
+          else if (isCurrent) itemClass += ' current';
+          else if (!unlocked) itemClass += ' locked';
+
+          html += '<div class="' + itemClass + '">';
+
+          // ヘッダー
+          html += '<div class="quiz-stage-header" onclick="toggleStage(' + si + ')">';
+          html += '<span class="quiz-stage-num">' + (si + 1) + '</span>';
+          html += '<span class="quiz-stage-name">' + STAGE_NAMES[si] + '</span>';
+          if (isCleared) {
+            html += '<span class="quiz-stage-badge cleared-badge">CLEAR</span>';
           } else if (!unlocked) {
-            html += '<span class="quiz-level-badge locked-badge">🔒</span>';
+            html += '<span class="quiz-stage-badge locked-badge">🔒</span>';
+          } else {
+            html += '<span class="quiz-stage-badge current-badge">' + sst.answered + '/' + sst.total + '</span>';
           }
           html += '</div>';
 
-          if (unlocked) {
-            // 進捗バー
-            var pct = st.total > 0 ? Math.round((st.answered_total / st.total) * 100) : 0;
+          // ボディ（展開エリア）
+          if (isCurrent && unlocked) {
+            // 現在ステージ: 常に展開
+            html += '<div class="quiz-stage-body">';
+            var stagePct = sst.total > 0 ? Math.round((sst.answered / sst.total) * 100) : 0;
             html += '<div class="quiz-level-progress">';
-            html += '<div class="quiz-progress-bar"><div class="quiz-progress-fill' + (st.cleared ? ' fill-cleared' : '') + '" style="width:' + pct + '%"></div></div>';
-            html += '<span class="quiz-progress-text">' + st.answered_total + '/' + st.total + '</span>';
+            html += '<div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:' + stagePct + '%"></div></div>';
+            html += '<span class="quiz-progress-text">' + sst.answered + '/' + sst.total + '</span>';
             html += '</div>';
-            // 正答率
-            if (st.answered_total > 0) {
-              var ratePct = Math.round(st.rate * 100);
-              html += '<div class="quiz-level-detail">正答 ' + st.correct_total + '問（' + ratePct + '%）';
-              if (st.wrong_count > 0) html += '　復習 ' + st.wrong_count + '問';
+            if (sst.answered > 0) {
+              var sratePct = Math.round(sst.rate * 100);
+              html += '<div class="quiz-level-detail">正答率 ' + sratePct + '%（' + sst.correct + '/' + sst.answered + '正解）';
+              if (sst.wrong_count > 0) html += '　復習 ' + sst.wrong_count + '問';
               html += '</div>';
             }
-            // ボタン
+
             html += '<div class="quiz-level-actions">';
-            if (st.remaining > 0) {
-              html += '<button class="btn btn-primary quiz-level-btn" onclick="startLevel(\\'' + lvl + '\\',\\'normal\\')">挑戦する</button>';
-            } else {
-              html += '<button class="btn btn-primary quiz-level-btn" disabled>全問回答済み</button>';
+            if (sst.remaining > 0 && dailyRem > 0) {
+              html += '<button class="btn btn-primary quiz-level-btn" onclick="startStage(' + si + ',\\'normal\\')">挑戦する</button>';
+            } else if (sst.remaining > 0 && dailyRem <= 0) {
+              html += '<button class="btn btn-primary quiz-level-btn" disabled>今日の分は終了</button>';
+            } else if (sst.remaining === 0 && !isCleared) {
+              html += '<button class="btn btn-primary quiz-level-btn" disabled>正答率不足（復習しよう）</button>';
             }
-            if (st.wrong_count > 0) {
-              html += '<button class="btn btn-secondary quiz-level-btn" onclick="startLevel(\\'' + lvl + '\\',\\'review\\')">復習（' + st.wrong_count + '問）</button>';
+            if (sst.wrong_count > 0) {
+              html += '<button class="btn btn-secondary quiz-level-btn" onclick="startStage(' + si + ',\\'review\\')">復習（' + sst.wrong_count + '問）</button>';
             }
             html += '</div>';
-          } else {
-            // 未解放
-            var prev = lvl === "intermediate" ? "初級" : "中級";
-            html += '<div class="quiz-level-locked-msg">' + prev + 'をクリア（正答率70%以上）で解放</div>';
+            html += '</div>';
+          } else if (isCleared) {
+            // クリア済み: 折りたたみ、復習ボタンあり
+            html += '<div class="quiz-stage-body collapsed" id="stage-body-' + si + '">';
+            var cRatePct = Math.round(sst.rate * 100);
+            html += '<div class="quiz-level-detail">正答率 ' + cRatePct + '%（' + sst.correct + '/' + sst.total + '正解）';
+            if (sst.wrong_count > 0) html += '　復習 ' + sst.wrong_count + '問';
+            html += '</div>';
+            html += '<div class="quiz-level-actions">';
+            if (sst.wrong_count > 0) {
+              html += '<button class="btn btn-secondary quiz-level-btn" onclick="startStage(' + si + ',\\'review\\')">復習（' + sst.wrong_count + '問）</button>';
+            }
+            html += '</div>';
+            html += '</div>';
           }
+          // ロック: ボディなし
 
           html += '</div>';
         }
@@ -249,8 +410,11 @@ export function quizPageHTML() {
 
         // フッター
         html += '<div class="quiz-menu-footer">';
-        var anyAnswered = getLevelStats("beginner").answered_total + getLevelStats("intermediate").answered_total + getLevelStats("advanced").answered_total;
-        if (anyAnswered > 0) {
+        var anyAnswered = false;
+        for (var fi = 0; fi < STAGE_COUNT; fi++) {
+          if (getStageStats(fi).answered > 0) { anyAnswered = true; break; }
+        }
+        if (anyAnswered) {
           html += '<button class="btn btn-secondary quiz-btn" onclick="resetQuiz()">リセット</button>';
         }
         html += '<a href="/kabuki/dojo" class="btn btn-secondary quiz-btn" style="display:inline-block;text-align:center;text-decoration:none;">← KABUKI DOJO</a>';
@@ -260,61 +424,98 @@ export function quizPageHTML() {
         app.innerHTML = html;
       }
 
-      // ── レベル開始 ──
-      window.startLevel = function(level, mode) {
-        state.current_level = level;
+      // ステージ折りたたみ切替
+      window.toggleStage = function(idx) {
+        var body = document.getElementById("stage-body-" + idx);
+        if (body) {
+          body.classList.toggle("collapsed");
+        }
+      };
+
+      // ── ステージ開始 ──
+      window.startStage = function(stageIdx, mode) {
+        state.current_stage = stageIdx;
         state.mode = mode;
+        state.current_id = null;
         state.phase = "question";
         saveState();
         nextQuestion();
       };
 
       function nextQuestion() {
-        var lvl = state.current_level;
-        var ld = state.levels[lvl];
-        var qid;
+        var idx = state.current_stage;
+        var sd = state.stages[idx];
 
         if (state.mode === "review") {
-          if (ld.wrong_ids.length === 0) {
+          if (sd.wrong_ids.length === 0) {
             state.phase = "idle";
             saveState();
-            showComplete(lvl, "復習完了！間違いをすべて復習したよ");
+            showComplete("復習完了！間違いをすべて復習したよ");
             return;
           }
-          qid = ld.wrong_ids[0];
-        } else {
-          var levelQuizzes = quizList.filter(function(q){ return q.level === lvl; });
-          var unanswered = levelQuizzes.filter(function(q){ return !ld.answered[String(q.quiz_id)]; });
-          if (unanswered.length === 0) {
-            state.phase = "idle";
-            saveState();
-            showComplete(lvl, LEVEL_LABELS[lvl] + " 全問回答完了！");
-            return;
-          }
-          var pick = unanswered[Math.floor(Math.random() * unanswered.length)];
-          qid = pick.quiz_id;
+          var qid = sd.wrong_ids[0];
+          state.current_id = qid;
+          saveState();
+          showQuestion(quizMap[String(qid)]);
+          return;
         }
-        state.current_id = qid;
+
+        // ステージ完了チェック（前回の問題のステージが全問回答済みか）
+        if (state.current_id != null) {
+          var sst = getStageStats(idx);
+          if (sst.remaining === 0) {
+            state.current_id = null;
+            state.phase = "idle";
+            saveState();
+            showStageComplete(idx);
+            return;
+          }
+        }
+
+        // 日次上限チェック（グローバル）
+        ensureDailyReset();
+        if (getDailyRemaining() <= 0) {
+          state.phase = "idle";
+          saveState();
+          showDailyComplete();
+          return;
+        }
+
+        // 未回答をランダム出題
+        var stageQuizzes = getStageQuizzes(idx);
+        var unanswered = stageQuizzes.filter(function(q){
+          return sd.answered[String(q.quiz_id)] === undefined;
+        });
+        if (unanswered.length === 0) {
+          state.phase = "idle";
+          saveState();
+          showStageComplete(idx);
+          return;
+        }
+        var pick = unanswered[Math.floor(Math.random() * unanswered.length)];
+        state.current_id = pick.quiz_id;
         saveState();
-        showQuestion(quizMap[String(qid)]);
+        showQuestion(quizMap[String(pick.quiz_id)]);
       }
 
       // ── 問題表示 ──
       function showQuestion(q) {
-        if (!q) { showLevelSelect(); return; }
-        var lvl = state.current_level;
-        var ld = state.levels[lvl];
-        var st = getLevelStats(lvl);
-        var levelLabel = LEVEL_LABELS[lvl];
-        var modeLabel = state.mode === "review" ? "【復習】" : "";
-        var numLabel = state.mode === "review"
-          ? "（残り" + ld.wrong_ids.length + "問）"
-          : "第" + (st.answered_total + 1) + "問 / " + st.total + "問";
+        if (!q) { showStageSelect(); return; }
+        var idx = state.current_stage;
+        var sd = state.stages[idx];
+        var sst = getStageStats(idx);
+        var stageName = STAGE_NAMES[idx];
+
+        var numLabel;
+        if (state.mode === "review") {
+          numLabel = "【復習】" + stageName + "（残り" + sd.wrong_ids.length + "問）";
+        } else {
+          numLabel = "【" + stageName + "】" + (sst.answered + 1) + "/" + sst.total + "問目";
+        }
 
         var html = '<div class="quiz-question fade-up">';
         html += '<div class="quiz-q-header">';
-        html += '<span class="quiz-q-level-tag level-' + lvl + '">【' + levelLabel + '】</span>';
-        html += '<span class="quiz-q-mode">' + modeLabel + numLabel + '</span>';
+        html += '<span class="quiz-q-mode">' + numLabel + '</span>';
         html += '</div>';
         html += '<h2 class="quiz-q-text">' + esc(q.question) + '</h2>';
         html += '<div class="quiz-choices">';
@@ -340,25 +541,26 @@ export function quizPageHTML() {
         if (!q) return;
         var correct = q.answer_index != null ? q.answer_index : (q.correct != null ? q.correct : q.answer);
         var isCorrect = (Number(choice) === Number(correct));
-        var lvl = state.current_level;
-        var ld = state.levels[lvl];
+        var idx = state.current_stage;
+        var sd = state.stages[idx];
 
         if (state.mode !== "review") {
-          ld.answered[String(qid)] = isCorrect;
+          sd.answered[String(qid)] = isCorrect;
+          incrementDaily();
           if (isCorrect) {
             addQuizXP();
           }
-          if (!isCorrect && ld.wrong_ids.indexOf(qid) < 0) {
-            ld.wrong_ids.push(qid);
+          if (!isCorrect && sd.wrong_ids.indexOf(qid) < 0) {
+            sd.wrong_ids.push(qid);
           }
           if (isCorrect) {
-            ld.wrong_ids = ld.wrong_ids.filter(function(id){ return id !== qid; });
+            sd.wrong_ids = sd.wrong_ids.filter(function(id){ return id !== qid; });
           }
         } else {
           // 復習モード: 正解なら wrong_ids から除去し answered を更新
           if (isCorrect) {
-            ld.wrong_ids = ld.wrong_ids.filter(function(id){ return id !== qid; });
-            ld.answered[String(qid)] = true;
+            sd.wrong_ids = sd.wrong_ids.filter(function(id){ return id !== qid; });
+            sd.answered[String(qid)] = true;
             addQuizXP();
           }
         }
@@ -368,10 +570,24 @@ export function quizPageHTML() {
 
       // ── 結果表示 ──
       function showResult(q, choice, isCorrect) {
-        var lvl = state.current_level;
-        var st = getLevelStats(lvl);
+        var idx = state.current_stage;
+        var sst = getStageStats(idx);
+        var stageName = STAGE_NAMES[idx];
         var correctIdx = q.answer_index != null ? q.answer_index : ((q.correct || q.answer) - 1);
+
+        var headerLabel;
+        if (state.mode === "review") {
+          headerLabel = "";
+        } else {
+          headerLabel = stageName + " " + sst.answered + "/" + sst.total + "問目";
+        }
+
         var html = '<div class="quiz-result fade-up">';
+
+        if (headerLabel) {
+          html += '<div class="quiz-batch-info" style="text-align:center;margin-bottom:0.5rem;">' + headerLabel + '</div>';
+        }
+
         html += isCorrect
           ? '<div class="quiz-result-icon correct">⭕</div><h2 class="quiz-result-text correct-text">正解！</h2>'
           : '<div class="quiz-result-icon wrong">❌</div><h2 class="quiz-result-text wrong-text">不正解…</h2>';
@@ -392,51 +608,138 @@ export function quizPageHTML() {
           html += '<div class="quiz-explanation">' + esc(q.explanation) + '</div>';
         }
 
-        // レベル内スコア
-        var ratePct = st.answered_total > 0 ? Math.round(st.rate * 100) : 0;
+        // ステージ内スコア
+        var ratePct = sst.answered > 0 ? Math.round(sst.rate * 100) : 0;
         html += '<div class="quiz-mini-score">';
-        html += LEVEL_LABELS[lvl] + '：' + st.correct_total + '/' + st.answered_total + '正解（' + ratePct + '%）';
-        html += '　称号：' + esc(getOverallTitle());
+        html += stageName + '：' + sst.correct + '/' + sst.answered + '正解（' + ratePct + '%）';
+        html += '　称号：' + esc(getTitle());
         html += '</div>';
 
         html += '</div>';
 
+        // ボタン
         html += '<div class="quiz-result-actions">';
-        html += '<button class="btn btn-primary" onclick="nextQuestion()">次の問題 →</button>';
+        if (state.mode === "review") {
+          html += '<button class="btn btn-primary" onclick="nextQuestion()">次の問題 →</button>';
+        } else {
+          var dailyRem = getDailyRemaining();
+          if (sst.remaining <= 0) {
+            html += '<button class="btn btn-primary" onclick="nextQuestion()">結果を見る →</button>';
+          } else if (dailyRem <= 0) {
+            html += '<button class="btn btn-primary" onclick="nextQuestion()">今日の分は終了</button>';
+          } else {
+            html += '<button class="btn btn-primary" onclick="nextQuestion()">次の問題 →</button>';
+          }
+        }
         html += '<button class="btn btn-secondary" onclick="backToMenu()">メニューに戻る</button>';
         html += '</div>';
         app.innerHTML = html;
       }
 
-      // ── 完了画面 ──
-      function showComplete(level, msg) {
-        var st = getLevelStats(level);
-        var ratePct = st.answered_total > 0 ? Math.round(st.rate * 100) : 0;
-        var title = getOverallTitle();
-        var nextLevel = level === "beginner" ? "intermediate" : (level === "intermediate" ? "advanced" : null);
+      // ── ステージ完了画面 ──
+      function showStageComplete(stageIdx) {
+        var sst = getStageStats(stageIdx);
+        var ratePct = Math.round(sst.rate * 100);
+        var title = getTitle();
+        var cleared = sst.cleared;
+        var stageName = STAGE_NAMES[stageIdx];
+        var dailyRem = getDailyRemaining();
+        var isLast = stageIdx >= STAGE_COUNT - 1;
+        var allCleared = getClearedCount() === STAGE_COUNT;
 
         var html = '<div class="quiz-complete fade-up">';
 
-        if (st.cleared && nextLevel) {
-          // レベルクリア + 次レベル解放
+        if (cleared) {
           html += '<div class="quiz-hero-icon">🎊</div>';
-          html += '<h2 class="quiz-complete-msg">' + esc(msg) + '</h2>';
-          html += '<div class="quiz-unlock-msg">' + LEVEL_LABELS[nextLevel] + ' が解放されました！</div>';
-        } else if (st.remaining <= 0 && !st.cleared) {
-          // 全問回答済みだが正答率不足
-          html += '<div class="quiz-hero-icon">📝</div>';
-          html += '<h2 class="quiz-complete-msg">' + esc(msg) + '</h2>';
-          html += '<div class="quiz-retry-msg">正答率70%以上で次のレベルが解放されます（現在 ' + ratePct + '%）<br>復習で正答率を上げよう！</div>';
+          html += '<h2 class="quiz-complete-msg">' + stageName + ' クリア！</h2>';
+
+          if (allCleared) {
+            html += '<div class="quiz-unlock-msg">全ステージ制覇！おめでとう！<br>あなたは「' + esc(title) + '」です！</div>';
+          } else {
+            var newTitle = getTitle();
+            var prevTitle = TITLE_RANKS[getClearedCount() - 1];
+            if (prevTitle !== newTitle) {
+              html += '<div class="quiz-unlock-msg">昇進！「' + esc(prevTitle) + '」→「' + esc(newTitle) + '」</div>';
+            }
+            html += '<div class="quiz-unlock-msg" style="background:rgba(33,150,243,0.1);color:#1976D2;">' + STAGE_NAMES[stageIdx + 1] + ' が解放されました！</div>';
+          }
+
+          html += '<div class="quiz-mini-score">正答率 ' + ratePct + '%（' + sst.correct + '/' + sst.answered + '正解）　称号：' + esc(title) + '</div>';
+
+          html += '<div class="quiz-complete-actions">';
+          if (!allCleared && dailyRem > 0) {
+            html += '<button class="btn btn-primary" onclick="startStage(' + (stageIdx + 1) + ',\\'normal\\')">次のステージへ →</button>';
+          } else if (!allCleared && dailyRem <= 0) {
+            html += '<div class="quiz-daily-done">今日の分は終了！明日から次のステージに挑戦しよう</div>';
+          }
         } else {
-          html += '<div class="quiz-hero-icon">🎊</div>';
-          html += '<h2 class="quiz-complete-msg">' + esc(msg) + '</h2>';
+          html += '<div class="quiz-hero-icon">📝</div>';
+          html += '<h2 class="quiz-complete-msg">' + stageName + ' 終了</h2>';
+          html += '<div class="quiz-retry-msg">正答率70%以上で次へ進めます（現在 ' + ratePct + '%）<br>復習で正答率を上げよう！</div>';
+          html += '<div class="quiz-mini-score">' + sst.correct + '/' + sst.answered + '正解（' + ratePct + '%）　称号：' + esc(title) + '</div>';
+          html += '<div class="quiz-complete-actions">';
         }
 
-        html += '<div class="quiz-mini-score">' + st.correct_total + '/' + st.answered_total + '正解（' + ratePct + '%）　称号：' + esc(title) + '</div>';
+        if (sst.wrong_count > 0) {
+          html += '<button class="btn btn-primary" onclick="startStage(' + stageIdx + ',\\'review\\')">復習する（' + sst.wrong_count + '問）</button>';
+        }
+        html += '<button class="btn btn-secondary" onclick="backToMenu()">メニューに戻る</button>';
+        html += '<a href="/kabuki/dojo" class="btn btn-secondary" style="display:inline-block;text-align:center;text-decoration:none;">← KABUKI DOJO</a>';
+        html += '</div>';
+        html += '</div>';
+        app.innerHTML = html;
+      }
+
+      // ── 日次上限到達画面 ──
+      function showDailyComplete() {
+        var title = getTitle();
+
+        var html = '<div class="quiz-complete fade-up">';
+        html += '<div class="quiz-hero-icon">🌙</div>';
+        html += '<h2 class="quiz-complete-msg">今日の10問は終了！</h2>';
+        html += '<p class="quiz-daily-done-sub">明日また挑戦しよう</p>';
+        html += '<div class="quiz-mini-score">称号：' + esc(title) + '</div>';
 
         html += '<div class="quiz-complete-actions">';
-        if (st.wrong_count > 0) {
-          html += '<button class="btn btn-primary" onclick="startLevel(\\'' + level + '\\',\\'review\\')">復習する（' + st.wrong_count + '問）</button>';
+        // 復習可能なステージがあればボタン表示
+        var reviewStage = -1;
+        for (var i = 0; i < STAGE_COUNT; i++) {
+          if (getStageStats(i).wrong_count > 0 && isStageUnlocked(i)) {
+            reviewStage = i;
+            break;
+          }
+        }
+        if (reviewStage >= 0) {
+          html += '<button class="btn btn-primary" onclick="startStage(' + reviewStage + ',\\'review\\')">復習する（無制限）</button>';
+        }
+        html += '<button class="btn btn-secondary" onclick="backToMenu()">メニューに戻る</button>';
+        html += '<a href="/kabuki/dojo" class="btn btn-secondary" style="display:inline-block;text-align:center;text-decoration:none;">← KABUKI DOJO</a>';
+        html += '</div>';
+        html += '</div>';
+        app.innerHTML = html;
+      }
+
+      // ── 復習完了画面 ──
+      function showComplete(msg) {
+        var idx = state.current_stage;
+        var sst = getStageStats(idx);
+        var ratePct = sst.answered > 0 ? Math.round(sst.rate * 100) : 0;
+        var title = getTitle();
+        var stageName = STAGE_NAMES[idx];
+
+        var html = '<div class="quiz-complete fade-up">';
+        html += '<div class="quiz-hero-icon">🎊</div>';
+        html += '<h2 class="quiz-complete-msg">' + esc(msg) + '</h2>';
+
+        if (sst.cleared) {
+          html += '<div class="quiz-unlock-msg">' + stageName + ' の正答率が70%以上になりました！</div>';
+        }
+
+        html += '<div class="quiz-mini-score">' + sst.correct + '/' + sst.answered + '正解（' + ratePct + '%）　称号：' + esc(title) + '</div>';
+
+        html += '<div class="quiz-complete-actions">';
+        if (sst.wrong_count > 0) {
+          html += '<button class="btn btn-primary" onclick="startStage(' + idx + ',\\'review\\')">もう一度復習（' + sst.wrong_count + '問）</button>';
         }
         html += '<button class="btn btn-secondary" onclick="backToMenu()">メニューに戻る</button>';
         html += '<a href="/kabuki/dojo" class="btn btn-secondary" style="display:inline-block;text-align:center;text-decoration:none;">← KABUKI DOJO</a>';
@@ -450,14 +753,15 @@ export function quizPageHTML() {
         if (!confirm("クイズの記録をリセットしますか？")) return;
         state = defaultState();
         saveState();
-        showLevelSelect();
+        showStageSelect();
       };
 
       window.backToMenu = function() {
         state.phase = "idle";
-        state.current_level = null;
+        state.current_stage = null;
+        state.current_id = null;
         saveState();
-        showLevelSelect();
+        showStageSelect();
       };
 
       // グローバル公開
@@ -507,7 +811,7 @@ export function quizPageHTML() {
       /* ── 総合称号 ── */
       .quiz-overall-title {
         text-align: center;
-        margin-bottom: 1.2rem;
+        margin-bottom: 0.8rem;
         padding: 0.6rem 1rem;
         background: var(--bg-subtle);
         border: 1px solid var(--border-light);
@@ -528,47 +832,91 @@ export function quizPageHTML() {
         letter-spacing: 0.1em;
       }
 
-      /* ── レベルカード ── */
-      .quiz-level-cards {
+      /* ── 全体進捗 ── */
+      .quiz-overall-progress {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin-bottom: 0.8rem;
+      }
+      .quiz-overall-progress .quiz-progress-text {
+        min-width: auto;
+        white-space: nowrap;
+        font-size: 0.78rem;
+      }
+
+      /* ── ステージリスト ── */
+      .quiz-stage-list {
         display: flex;
         flex-direction: column;
-        gap: 0.8rem;
+        gap: 0.5rem;
         margin-bottom: 1.2rem;
       }
-      .quiz-level-card {
+      .quiz-stage-item {
         background: var(--bg-card);
         border: 1px solid var(--border-light);
-        border-radius: 14px;
-        padding: 1rem 1.2rem;
+        border-radius: 12px;
+        overflow: hidden;
         transition: border-color 0.2s, box-shadow 0.2s;
       }
-      .quiz-level-card:not(.locked):hover {
+      .quiz-stage-item.current {
         border-color: var(--kin);
         box-shadow: 0 2px 8px rgba(0,0,0,0.08);
       }
-      .quiz-level-card.locked {
-        opacity: 0.55;
-      }
-      .quiz-level-card.cleared {
+      .quiz-stage-item.cleared {
         border-color: #4CAF50;
         background: rgba(76,175,80,0.04);
       }
-      .quiz-level-header {
+      .quiz-stage-item.locked {
+        opacity: 0.5;
+      }
+
+      /* ── ステージヘッダー ── */
+      .quiz-stage-header {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 0.6rem;
+        gap: 0.6rem;
+        padding: 0.7rem 1rem;
+        cursor: pointer;
+        user-select: none;
       }
-      .quiz-level-icon {
-        font-size: 1.1rem;
+      .quiz-stage-item.locked .quiz-stage-header {
+        cursor: default;
       }
-      .quiz-level-name {
-        font-size: 1rem;
+      .quiz-stage-num {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
         font-weight: 700;
-        color: var(--text-primary);
-        flex: 1;
+        flex-shrink: 0;
+        background: var(--bg-subtle);
+        color: var(--text-tertiary);
+        border: 2px solid var(--border-light);
       }
-      .quiz-level-badge {
+      .quiz-stage-item.current .quiz-stage-num {
+        background: var(--kin);
+        color: #fff;
+        border-color: var(--kin);
+      }
+      .quiz-stage-item.cleared .quiz-stage-num {
+        background: #4CAF50;
+        color: #fff;
+        border-color: #4CAF50;
+      }
+      .quiz-stage-name {
+        flex: 1;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+      .quiz-stage-item.locked .quiz-stage-name {
+        color: var(--text-tertiary);
+      }
+      .quiz-stage-badge {
         font-size: 0.75rem;
         font-weight: 700;
         padding: 2px 10px;
@@ -580,6 +928,19 @@ export function quizPageHTML() {
       }
       .locked-badge {
         font-size: 1rem;
+      }
+      .current-badge {
+        background: rgba(184,134,11,0.12);
+        color: var(--kin);
+        font-size: 0.75rem;
+      }
+
+      /* ── ステージボディ ── */
+      .quiz-stage-body {
+        padding: 0 1rem 0.8rem;
+      }
+      .quiz-stage-body.collapsed {
+        display: none;
       }
 
       /* ── 進捗バー ── */
@@ -629,10 +990,41 @@ export function quizPageHTML() {
         padding: 0.5rem 1rem;
         font-size: 0.85rem;
       }
-      .quiz-level-locked-msg {
+
+      /* ── バッチ情報 ── */
+      .quiz-batch-info {
         font-size: 0.8rem;
+        color: var(--kin);
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+        padding: 0.2rem 0;
+      }
+
+      /* ── 日次残り ── */
+      .quiz-daily-info {
+        font-size: 0.78rem;
         color: var(--text-tertiary);
-        padding: 0.3rem 0;
+        margin-bottom: 0.4rem;
+        padding: 0.2rem 0.6rem;
+        background: rgba(33,150,243,0.08);
+        border-radius: 8px;
+        display: inline-block;
+      }
+
+      /* ── 日次終了メッセージ ── */
+      .quiz-daily-done {
+        font-size: 0.82rem;
+        color: #e6860e;
+        font-weight: 600;
+        margin-bottom: 0.4rem;
+        padding: 0.4rem 0.8rem;
+        background: rgba(255,183,77,0.12);
+        border-radius: 8px;
+      }
+      .quiz-daily-done-sub {
+        font-size: 0.9rem;
+        color: var(--text-tertiary);
+        margin: 0.3rem 0 0.8rem;
       }
 
       /* ── メニューフッター ── */
@@ -657,18 +1049,10 @@ export function quizPageHTML() {
         margin-bottom: 0.8rem;
         flex-wrap: wrap;
       }
-      .quiz-q-level-tag {
-        font-size: 0.8rem;
-        font-weight: 700;
-        padding: 2px 8px;
-        border-radius: 6px;
-      }
-      .level-beginner { background: rgba(76,175,80,0.12); color: #388E3C; }
-      .level-intermediate { background: rgba(255,183,77,0.2); color: #e6860e; }
-      .level-advanced { background: rgba(229,57,53,0.12); color: #C62828; }
       .quiz-q-mode {
-        font-size: 0.8rem;
+        font-size: 0.85rem;
         color: var(--kin);
+        font-weight: 600;
       }
       .quiz-q-text {
         font-size: 1.1rem;

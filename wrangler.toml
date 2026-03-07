@@ -12,7 +12,7 @@ bucket_name = "kerakabuki-content" # 3個のデータが入っているのでこ
 
 [[r2_buckets]]
 binding = "ENMOKU_BUCKET"
-bucket_name = "keranosuke-enmoku-data" # 23個のデータがあるメインのバケットを指定
+bucket_name = "keranosuke-enmoku-data" # 21演目のデータがあるメインのバケットを指定
 
 [[r2_buckets]]
 binding = "QUIZ_BUCKET"

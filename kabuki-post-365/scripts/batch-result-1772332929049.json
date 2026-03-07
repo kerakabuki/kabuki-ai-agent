@@ -1,0 +1,142 @@
+[
+  {
+    "file": "八幡.png",
+    "metadata": {
+      "play_name": "20_編集済",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": "20_編集済 - 八幡"
+    },
+    "dryRun": true
+  },
+  {
+    "file": "化粧坂.png",
+    "metadata": {
+      "play_name": "化粧坂少将",
+      "scene_type": "ポートレート, 舞踊",
+      "visual_features": "白塗り化粧,豪華な着物,日本髪,髪飾り,扇形帯,文字情報",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "歌舞伎の女形が豪華な衣装と白塗り化粧でポーズをとっているポートレートです。左上には「化粧坂少将」の文字が見えます。",
+      "navi_caption": "歌舞伎の女形が豪華な衣装と白塗り化粧でポーズをとっているポートレートです。左上には「化粧坂少将」の文字が見えます。"
+    },
+    "dryRun": true
+  },
+  {
+    "file": "大磯虎御前.png",
+    "metadata": {
+      "play_name": "20_編集済",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": "20_編集済 - 大磯虎御前"
+    },
+    "dryRun": true
+  },
+  {
+    "file": "小林朝比奈.png",
+    "metadata": {
+      "play_name": "20_編集済",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": "20_編集済 - 小林朝比奈"
+    },
+    "dryRun": true
+  },
+  {
+    "file": "工藤祐経.png",
+    "metadata": {
+      "play_name": "20_編集済",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": "20_編集済 - 工藤祐経"
+    },
+    "dryRun": true
+  },
+  {
+    "file": "工藤祐経２.png",
+    "metadata": {
+      "play_name": "20_編集済",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": "20_編集済 - 工藤祐経２"
+    },
+    "dryRun": true
+  },
+  {
+    "file": "曽我五郎.png",
+    "metadata": {
+      "play_name": "20_編集済",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": "20_編集済 - 曽我五郎"
+    },
+    "dryRun": true
+  },
+  {
+    "file": "曽我兄弟.png",
+    "metadata": {
+      "play_name": "曽我兄弟",
+      "scene_type": "見得",
+      "visual_features": "隈取り,赤い衣裳,水色の肩衣,赤と緑の背景,文字要素",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "歌舞伎の舞台衣装をまとった二人の役者が、赤と緑の縦縞の背景の前で見得を切っている。左上には「曽我兄弟」の文字が見える。",
+      "navi_caption": "歌舞伎の舞台衣装をまとった二人の役者が、赤と緑の縦縞の背景の前で見得を切っている。左上には「曽我兄弟」の文字が見える。"
+    },
+    "dryRun": true
+  },
+  {
+    "file": "曽我十郎.png",
+    "metadata": {
+      "play_name": "20_編集済",
+      "scene_type": "ポートレート",
+      "visual_features": "",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "",
+      "navi_caption": "20_編集済 - 曽我十郎"
+    },
+    "dryRun": true
+  },
+  {
+    "file": "近江.png",
+    "metadata": {
+      "play_name": "20_編集済",
+      "scene_type": "ポートレート",
+      "visual_features": "隈取り,刀,和装,髷,幾何学模様の背景,文字要素",
+      "season_tag": "通年",
+      "character_match": null,
+      "character_id": null,
+      "description": "歌舞伎役者が隈取り化粧と和装で刀を構えているポートレートです。背景は黄色の幾何学模様で、「近江小藤太」の文字が添えられています。",
+      "navi_caption": "歌舞伎役者が隈取り化粧と和装で刀を構えているポートレートです。背景は黄色の幾何学模様で、「近江小藤太」の文字が添えられています。"
+    },
+    "dryRun": true
+  }
+]
