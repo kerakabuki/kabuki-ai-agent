@@ -65,6 +65,7 @@ export const api = {
     update: (id: number, data: any) => request<any>(`/images/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
     setPrimary: (id: number) => request<any>(`/images/${id}/primary`, { method: 'PUT' }),
     delete: (id: number) => request<any>(`/images/${id}`, { method: 'DELETE' }),
+    generate: (formData: FormData) => request<any>('/images/generate', { method: 'POST', body: formData }),
   },
   posts: {
     list: (params?: Record<string, string>) => {
@@ -85,10 +86,10 @@ export const api = {
   generate: {
     batch: (params?: { from?: string; to?: string; limit?: number }) =>
       request<any>('/generate/batch', { method: 'POST', body: JSON.stringify(params || {}) }),
-    single: (postId: number) =>
-      request<any>(`/generate/single/${postId}`, { method: 'POST' }),
-    singlePlatform: (postId: number, platform: string) =>
-      request<any>(`/generate/single/${postId}/${platform}`, { method: 'POST' }),
+    single: (postId: number, customPrompt?: string) =>
+      request<any>(`/generate/single/${postId}`, { method: 'POST', body: JSON.stringify(customPrompt ? { customPrompt } : {}) }),
+    singlePlatform: (postId: number, platform: string, customPrompt?: string) =>
+      request<any>(`/generate/single/${postId}/${platform}`, { method: 'POST', body: JSON.stringify(customPrompt ? { customPrompt } : {}) }),
   },
   quiz: {
     list: (params?: Record<string, string>) => {
@@ -110,5 +111,24 @@ export const api = {
   settings: {
     getAll: () => request<Record<string, string>>('/settings'),
     update: (key: string, value: string) => request<any>(`/settings/${key}`, { method: 'PUT', body: JSON.stringify({ value }) }),
+  },
+  autoPost: {
+    postSingle: (postId: number, platform: string, imageBlob?: Blob) => {
+      if (imageBlob) {
+        const formData = new FormData();
+        formData.append('image', imageBlob, 'image.jpg');
+        return request<{ success: boolean; platformPostId?: string; error?: string }>(
+          `/auto-post/post/${postId}/${platform}`,
+          { method: 'POST', body: formData },
+        );
+      }
+      return request<{ success: boolean; platformPostId?: string; error?: string }>(
+        `/auto-post/post/${postId}/${platform}`, { method: 'POST' },
+      );
+    },
+    logs: (params?: Record<string, string>) => {
+      const qs = params ? '?' + new URLSearchParams(params).toString() : '';
+      return request<any>(`/auto-post/logs${qs}`);
+    },
   },
 };

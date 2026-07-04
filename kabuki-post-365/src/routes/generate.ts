@@ -75,6 +75,7 @@ generateRoutes.post('/batch', async (c) => {
 // Generate for single post
 generateRoutes.post('/single/:postId', async (c) => {
   const postId = c.req.param('postId');
+  const body = await c.req.json().catch(() => ({})) as { customPrompt?: string };
   const post = await c.env.DB.prepare(
     `SELECT p.*, c.name as character_name, c.description as character_description,
      c.personality_tags, i.visual_features, i.scene_type,
@@ -93,13 +94,14 @@ generateRoutes.post('/single/:postId', async (c) => {
     settings[s.key] = s.value;
   }
 
-  const texts = await generatePostText(c.env, post as Record<string, unknown>, settings);
+  const texts = await generatePostText(c.env, post as Record<string, unknown>, settings, undefined, body.customPrompt);
 
   await c.env.DB.prepare(
     `UPDATE posts SET
       instagram_text=?, instagram_hashtags=?,
       x_text=?, x_hashtags=?,
       facebook_text=?, facebook_hashtags=?,
+      bluesky_text=?,
       quiz_answer_comment=?,
       updated_at=datetime('now')
     WHERE id=?`
@@ -107,6 +109,7 @@ generateRoutes.post('/single/:postId', async (c) => {
     texts.instagram_text, texts.instagram_hashtags,
     texts.x_text, texts.x_hashtags,
     texts.facebook_text, texts.facebook_hashtags,
+    texts.bluesky_text,
     texts.quiz_answer_comment || null,
     postId
   ).run();
@@ -118,6 +121,7 @@ generateRoutes.post('/single/:postId', async (c) => {
 generateRoutes.post('/single/:postId/:platform', async (c) => {
   const postId = c.req.param('postId');
   const platform = c.req.param('platform');
+  const body = await c.req.json().catch(() => ({})) as { customPrompt?: string };
 
   if (!['instagram', 'x', 'facebook', 'bluesky'].includes(platform)) {
     return c.json({ error: 'Invalid platform' }, 400);
@@ -141,7 +145,7 @@ generateRoutes.post('/single/:postId/:platform', async (c) => {
     settings[s.key] = s.value;
   }
 
-  const texts = await generatePostText(c.env, post as Record<string, unknown>, settings, platform);
+  const texts = await generatePostText(c.env, post as Record<string, unknown>, settings, platform, body.customPrompt);
 
   const updates: Record<string, string | null> = {};
   updates[`${platform}_text`] = texts[`${platform}_text` as keyof typeof texts] || null;

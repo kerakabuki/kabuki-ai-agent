@@ -46,12 +46,9 @@ calendarRoutes.post('/swap', async (c) => {
 
   if (!postA || !postB) return c.json({ error: 'Post not found' }, 404);
 
-  // Use temp date to avoid unique constraint
-  const tempDate = '__swap_temp__';
   await c.env.DB.batch([
-    c.env.DB.prepare('UPDATE posts SET post_date = ? WHERE id = ?').bind(tempDate, postA.id),
-    c.env.DB.prepare('UPDATE posts SET post_date = ? WHERE id = ?').bind(postA.post_date, postB.id),
     c.env.DB.prepare('UPDATE posts SET post_date = ? WHERE id = ?').bind(postB.post_date, postA.id),
+    c.env.DB.prepare('UPDATE posts SET post_date = ? WHERE id = ?').bind(postA.post_date, postB.id),
   ]);
 
   return c.json({ success: true });

@@ -77,6 +77,7 @@ postsRoutes.put('/:id', async (c) => {
        x_text=?, x_hashtags=?,
        facebook_text=?, facebook_hashtags=?,
        cta_type=?, cta_url=?, quiz_answer_comment=?, status=?,
+       x_posted=?, instagram_posted=?, facebook_posted=?, bluesky_posted=?,
        updated_at=datetime('now')
      WHERE id=?`
   ).bind(
@@ -86,7 +87,9 @@ postsRoutes.put('/:id', async (c) => {
     body.x_text || null, body.x_hashtags || null,
     body.facebook_text || null, body.facebook_hashtags || null,
     body.cta_type || null, body.cta_url || null, body.quiz_answer_comment || null,
-    body.status || 'draft', id
+    body.status || 'draft',
+    body.x_posted || 0, body.instagram_posted || 0, body.facebook_posted || 0, body.bluesky_posted || 0,
+    id
   ).run();
   return c.json({ success: true });
 });

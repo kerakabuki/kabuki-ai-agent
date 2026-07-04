@@ -14,6 +14,9 @@ export interface Env {
   X_ACCESS_SECRET?: string;
   BLUESKY_HANDLE?: string;
   BLUESKY_APP_PASSWORD?: string;
+  // LINE通知（未設定なら通知スキップ）
+  LINE_CHANNEL_ACCESS_TOKEN?: string;
+  LINE_ADMIN_USER_ID?: string;
 }
 
 export interface Character {

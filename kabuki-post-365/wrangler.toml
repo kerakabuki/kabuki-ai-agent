@@ -2,7 +2,7 @@ name = "kabuki-post-365"
 main = "src/index.ts"
 compatibility_date = "2026-02-11"
 
-assets = { directory = "frontend/dist" }
+assets = { directory = "frontend/dist", not_found_handling = "single-page-application" }
 
 [[d1_databases]]
 binding = "DB"
@@ -18,6 +18,8 @@ bucket_name = "kabuki-post-365-images"
 binding = "KV"
 id = "9983894f85534eb598c5d56f0224d9ef"
 
+# 15分刻みで発火し、日替わりのランダムスロット（JST 6:00〜11:45）だけ実投稿する
+# 21:00-23:45 UTC = 6:00-8:45 JST / 0:00-2:45 UTC = 9:00-11:45 JST
 [triggers]
-crons = ["0 21 * * *"]   # 21:00 UTC = 06:00 JST
+crons = ["*/15 21-23 * * *", "*/15 0-2 * * *"]
 

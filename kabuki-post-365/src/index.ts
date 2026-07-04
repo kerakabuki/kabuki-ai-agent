@@ -11,7 +11,7 @@ import { exportRoutes } from './routes/export';
 import { settingsRoutes } from './routes/settings';
 import { naviRoutes } from './routes/navi';
 import { autoPostRoutes } from './routes/auto-post';
-import { executeAutoPost } from './lib/auto-post';
+import { shouldRunNow, runDailyPipeline, markDone, getJSTNow } from './lib/daily-run';
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -111,6 +111,15 @@ app.get('/api/health', (c) => c.json({ status: 'ok', service: 'kabuki-post-365' 
 export default {
   fetch: app.fetch,
   async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
-    ctx.waitUntil(executeAutoPost(env));
+    // 15分刻みのcronのうち、日替わりで選ばれたスロットだけ実行する
+    // （投稿時刻を毎日ばらつかせて機械的な運用パターンを避けるため）
+    ctx.waitUntil((async () => {
+      const { run, reason } = await shouldRunNow(env);
+      console.log(`[scheduled] ${reason}`);
+      if (!run) return;
+      const date = getJSTNow().date;
+      await runDailyPipeline(env, date);
+      await markDone(env, date);
+    })());
   },
 };

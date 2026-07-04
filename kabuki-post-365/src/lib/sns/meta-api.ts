@@ -145,6 +145,58 @@ export async function postToFacebook(
   }
 }
 
+// ── Instagram Comment ──
+
+export async function commentOnInstagram(
+  config: MetaConfig,
+  mediaId: string,
+  message: string,
+): Promise<PostResult> {
+  try {
+    const res = await fetch(`${GRAPH_API}/${mediaId}/comments`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message,
+        access_token: config.accessToken,
+      }),
+    });
+    const data = await res.json() as Record<string, unknown>;
+    if (data.error) return { success: false, error: formatMetaError(data.error) };
+    return { success: true, platformPostId: data.id as string };
+  } catch (e: unknown) {
+    return { success: false, error: `Instagram comment error: ${(e as Error).message}` };
+  }
+}
+
+// ── Facebook Comment ──
+
+export async function commentOnFacebook(
+  config: MetaConfig,
+  postId: string,
+  message: string,
+): Promise<PostResult> {
+  if (!config.fbPageId) return { success: false, error: 'FACEBOOK_PAGE_ID not configured' };
+  try {
+    const pageTokenResult = await getPageAccessToken(config);
+    if ('error' in pageTokenResult) return { success: false, error: pageTokenResult.error };
+
+    const res = await fetch(`${GRAPH_API}/${postId}/comments`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message,
+        access_token: pageTokenResult.token,
+      }),
+    });
+    const data = await res.json() as Record<string, unknown>;
+    if (data.error) return { success: false, error: formatMetaError(data.error) };
+    return { success: true, platformPostId: data.id as string };
+  } catch (e: unknown) {
+    return { success: false, error: `Facebook comment error: ${(e as Error).message}` };
+  }
+}
+
 function formatMetaError(err: unknown): string {
   if (typeof err === 'object' && err !== null) {
     const e = err as Record<string, unknown>;

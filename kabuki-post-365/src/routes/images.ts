@@ -1,8 +1,74 @@
 import { Hono } from 'hono';
 import type { Env, Character } from '../types';
 import { analyzeImageWithVision } from '../lib/vision';
+import { generateImage } from '../lib/image-gen';
 
 export const imagesRoutes = new Hono<{ Bindings: Env }>();
+
+// Generate image with Gemini AI
+imagesRoutes.post('/generate', async (c) => {
+  const formData = await c.req.formData();
+  const prompt = formData.get('prompt') as string | null;
+  if (!prompt) {
+    return c.json({ error: 'prompt is required' }, 400);
+  }
+
+  // Optional reference image
+  let referenceBase64: string | undefined;
+  let referenceMimeType: string | undefined;
+  const refFile = formData.get('reference_image') as File | null;
+  if (refFile) {
+    const arrayBuffer = await refFile.arrayBuffer();
+    referenceBase64 = btoa(
+      new Uint8Array(arrayBuffer).reduce((data, byte) => data + String.fromCharCode(byte), '')
+    );
+    referenceMimeType = refFile.type || 'image/png';
+  }
+
+  const result = await generateImage(c.env, prompt, referenceBase64, referenceMimeType);
+  if (!result.success) {
+    return c.json({ error: result.error }, 500);
+  }
+
+  // Save to R2 and create DB record
+  const timestamp = Date.now();
+  const ext = result.mimeType === 'image/png' ? 'png' : 'jpg';
+  const filename = `ai_generated_${timestamp}.${ext}`;
+  const r2Key = `originals/${filename}`;
+
+  // Decode base64 to binary
+  const binaryStr = atob(result.imageBase64!);
+  const bytes = new Uint8Array(binaryStr.length);
+  for (let i = 0; i < binaryStr.length; i++) {
+    bytes[i] = binaryStr.charCodeAt(i);
+  }
+
+  await c.env.R2.put(r2Key, bytes.buffer, {
+    httpMetadata: { contentType: result.mimeType },
+  });
+
+  // Also save SNS variants (same image for now)
+  const snsVariants = ['sns/instagram', 'sns/x', 'sns/facebook'];
+  for (const dir of snsVariants) {
+    await c.env.R2.put(`${dir}/${filename}`, bytes.buffer, {
+      httpMetadata: { contentType: result.mimeType },
+    });
+  }
+
+  // Create DB record
+  const dbResult = await c.env.DB.prepare(
+    `INSERT INTO images (filename, r2_key, scene_type, visual_features, season_tag)
+     VALUES (?, ?, ?, ?, ?)`
+  ).bind(filename, r2Key, 'AI生成', 'AI生成画像', '通年').run();
+
+  return c.json({
+    id: dbResult.meta.last_row_id,
+    filename,
+    r2_key: r2Key,
+    imageBase64: result.imageBase64,
+    mimeType: result.mimeType,
+  }, 201);
+});
 
 // Analyze image with Gemini Vision
 imagesRoutes.post('/analyze', async (c) => {

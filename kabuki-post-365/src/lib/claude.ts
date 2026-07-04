@@ -17,7 +17,8 @@ export async function generatePostText(
   env: Env,
   post: Record<string, unknown>,
   settings: Record<string, string>,
-  platform?: string
+  platform?: string,
+  customPrompt?: string,
 ): Promise<GeneratedTexts> {
   const characterName = post.character_name as string || '（キャラクター未設定）';
   const characterDesc = post.character_description as string || '';
@@ -38,17 +39,22 @@ export async function generatePostText(
     instagram: `Instagram投稿文（最大2200文字、改行自由、ハッシュタグは本文とは別に出力）
 - 親しみやすく丁寧な口調
 - 絵文字を適度に使用
-- 見出し・箇条書きで読みやすく
+- 改行と絵文字で読みやすく（マークダウン記法「#」「##」「**」「-」は絶対に使わない。SNSでは記号がそのまま表示される）
 - URLリンクは本文に含めないこと（アルゴリズム的にリーチが下がるため）
 - 誘導したい場合は「プロフィールのリンクから」と案内`,
-    x: `X（旧Twitter）投稿文（最大280文字、簡潔に）
+    x: `X（旧Twitter）投稿文
+【文字数制限 — 最重要ルール】Xでは日本語1文字が2文字分カウントされる
+- x_textは110文字以内（絶対厳守。絵文字・改行含めて110文字）
+- x_hashtagsは20文字以内（絶対厳守）
 - 短くインパクトのある文
 - ハッシュタグは2-3個
-- 本文にCTAリンクを含める場合はURL分の文字数を考慮`,
+- URLは本文に含めないこと（Xはリンク付き投稿のリーチを下げるため。誘導先URLは自動でリプライに投稿される）
+- 「プロフィールのリンクから」という案内はXでは使わないこと`,
     facebook: `Facebook投稿文（最大500文字程度）
 - 丁寧で落ち着いた口調
 - 詳しい解説を含めてOK
 - コミュニティ感のある呼びかけ
+- マークダウン記法（「#」「##」「**」「-」）は絶対に使わない（SNSでは記号がそのまま表示される）
 - URLリンクは本文に含めないこと（アルゴリズム的にリーチが下がるため）
 - 誘導したい場合は「プロフィールのリンクから」と案内`,
     bluesky: `Bluesky投稿文（最大300文字、ハッシュタグは本文中に含める）
@@ -169,11 +175,12 @@ ${personalityTags ? `【性格タグ】${personalityTags}` : ''}
 ${visualFeatures ? `【画像の特徴】${visualFeatures}` : ''}
 ${sceneType ? `【場面タイプ】${sceneType}` : ''}
 ${cta ? `【CTA】${cta}` : '【CTA】なし（CTAは入れず、読者への問いかけや自分の感想で自然に締めてください）'}${ctaUrl ? `\n【誘導先URL】${ctaUrl}
-- X・Blueskyの本文にはこのURLを含めてOK
-- Facebook・Instagramの本文にはURLを含めないでください（アルゴリズム的にリーチが下がるため）
+- Blueskyの本文にはこのURLを含めてOK
+- X・Facebook・Instagramの本文にはURLを含めないでください（アルゴリズム的にリーチが下がるため）
+- Xでは誘導先URLは自動でリプライに投稿されるため、本文で無理に触れなくてよい
 - Facebook・Instagramでは「プロフィールのリンクから」と案内してください` : ''}
 【共通ハッシュタグ】${commonHashtags}
-
+${customPrompt ? `\n【追加指示】${customPrompt}` : ''}
 以下の各プラットフォーム用の投稿文を作成してください：
 
 ${promptParts}
@@ -198,12 +205,12 @@ ${promptParts}
     systemInstruction: { parts: [{ text: systemPrompt }] },
     generationConfig: {
       temperature: 0.7,
-      maxOutputTokens: 2500,
+      maxOutputTokens: 8192,
       topP: 0.9,
-      responseMimeType: 'application/json',
-      thinkingConfig: { thinkingBudget: 0 },
     },
   });
+  console.log('Gemini request URL:', url.replace(/key=.*/, 'key=***'));
+  console.log('Gemini request body length:', requestBody.length);
 
   let res: Response | null = null;
   let lastError = '';
@@ -215,7 +222,9 @@ ${promptParts}
         body: requestBody,
       });
       if (res.ok) break;
-      lastError = `Gemini API error ${res.status}: ${await res.text()}`;
+      const errBody = await res.text();
+      console.error(`Gemini API error (attempt ${attempt}): status=${res.status}, body=${errBody.substring(0, 500)}`);
+      lastError = `Gemini API error ${res.status}: ${errBody.substring(0, 300)}`;
       res = null;
     } catch (e) {
       lastError = `Fetch failed: ${(e as Error).message}`;
@@ -238,38 +247,36 @@ ${promptParts}
   let text = allParts.map(p => p.text || '').join('');
 
   // Parse JSON from response
-  let parsed: Record<string, string>;
+  let parsed: Record<string, string> | null = null;
   try {
     parsed = JSON.parse(text);
   } catch {
     // Try to extract the last complete JSON object (skip thinking text)
     const jsonMatches = [...text.matchAll(/\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}/g)];
-    let found = false;
     for (let i = jsonMatches.length - 1; i >= 0; i--) {
       try {
         const candidate = JSON.parse(jsonMatches[i][0]);
         if (candidate.instagram_text || candidate.x_text) {
           parsed = candidate;
-          found = true;
           break;
         }
       } catch { /* try next */ }
     }
-    if (!found) {
+    if (!parsed) {
       // Last resort: find outermost braces
       const first = text.indexOf('{');
       const last = text.lastIndexOf('}');
       if (first !== -1 && last > first) {
         try {
           parsed = JSON.parse(text.substring(first, last + 1));
-          found = true;
         } catch { /* give up */ }
       }
     }
-    if (!found!) {
-      console.error('Gemini raw response:', text.substring(0, 500));
-      throw new Error('Failed to parse Gemini response as JSON');
-    }
+  }
+
+  if (!parsed) {
+    console.error('Gemini raw response:', text.substring(0, 500));
+    throw new Error('Failed to parse Gemini response as JSON');
   }
 
   return {

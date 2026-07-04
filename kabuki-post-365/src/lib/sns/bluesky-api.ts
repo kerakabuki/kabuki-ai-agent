@@ -20,6 +20,21 @@ interface Facet {
 }
 
 const BSKY_API = 'https://bsky.social/xrpc';
+const BSKY_GRAPHEME_LIMIT = 300;
+
+/** Truncate text to fit Bluesky's 300 grapheme limit */
+function truncateToGraphemes(text: string, limit: number): string {
+  if (typeof Intl !== 'undefined' && Intl.Segmenter) {
+    const segmenter = new Intl.Segmenter('ja', { granularity: 'grapheme' });
+    const segments = [...segmenter.segment(text)];
+    if (segments.length <= limit) return text;
+    return segments.slice(0, limit - 1).map(s => s.segment).join('') + '…';
+  }
+  // Fallback: Array.from handles surrogate pairs
+  const chars = Array.from(text);
+  if (chars.length <= limit) return text;
+  return chars.slice(0, limit - 1).join('') + '…';
+}
 
 export async function postToBluesky(
   config: BlueskyConfig,
@@ -27,6 +42,9 @@ export async function postToBluesky(
   text: string,
 ): Promise<PostResult> {
   try {
+    // Truncate text to Bluesky's 300 grapheme limit
+    text = truncateToGraphemes(text, BSKY_GRAPHEME_LIMIT);
+
     // Step 1: Authenticate
     const session = await createSession(config);
     if (!session) {
@@ -83,6 +101,61 @@ export async function postToBluesky(
     return { success: true, platformPostId: data.uri as string };
   } catch (e: unknown) {
     return { success: false, error: `Bluesky API error: ${(e as Error).message}` };
+  }
+}
+
+export async function replyToBluesky(
+  config: BlueskyConfig,
+  parentUri: string,
+  text: string,
+): Promise<PostResult> {
+  try {
+    text = truncateToGraphemes(text, BSKY_GRAPHEME_LIMIT);
+
+    const session = await createSession(config);
+    if (!session) return { success: false, error: 'Bluesky authentication failed' };
+
+    // Get parent post to obtain cid
+    const getRes = await fetch(`${BSKY_API}/com.atproto.repo.getRecord?repo=${encodeURIComponent(session.did)}&collection=app.bsky.feed.post&rkey=${parentUri.split('/').pop()}`, {
+      headers: { Authorization: `Bearer ${session.accessJwt}` },
+    });
+    if (!getRes.ok) {
+      return { success: false, error: 'Failed to get parent post for reply' };
+    }
+    const parentData = await getRes.json() as Record<string, unknown>;
+    const parentCid = parentData.cid as string;
+
+    const facets = parseFacets(text);
+    const record: Record<string, unknown> = {
+      $type: 'app.bsky.feed.post',
+      text,
+      createdAt: new Date().toISOString(),
+      reply: {
+        root: { uri: parentUri, cid: parentCid },
+        parent: { uri: parentUri, cid: parentCid },
+      },
+    };
+    if (facets.length > 0) record.facets = facets;
+
+    const res = await fetch(`${BSKY_API}/com.atproto.repo.createRecord`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${session.accessJwt}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        repo: session.did,
+        collection: 'app.bsky.feed.post',
+        record,
+      }),
+    });
+    const data = await res.json() as Record<string, unknown>;
+    if (!res.ok) {
+      return { success: false, error: `Bluesky reply failed [${res.status}]: ${JSON.stringify(data)}` };
+    }
+    return { success: true, platformPostId: data.uri as string };
+  } catch (e: unknown) {
+    return { success: false, error: `Bluesky reply error: ${(e as Error).message}` };
   }
 }
 

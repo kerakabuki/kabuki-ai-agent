@@ -159,6 +159,37 @@ async function createTweet(
   return { success: true, platformPostId: tweetData?.id as string };
 }
 
+// ── Reply to Tweet (v2) ──
+
+export async function replyToX(
+  config: XConfig,
+  tweetId: string,
+  text: string,
+): Promise<PostResult> {
+  try {
+    const url = `${X_API_BASE}/2/tweets`;
+    const body = JSON.stringify({
+      text,
+      reply: { in_reply_to_tweet_id: tweetId },
+    });
+
+    const headers = await buildOAuthHeaders(config, 'POST', url, {});
+    headers['Content-Type'] = 'application/json';
+
+    const res = await fetch(url, { method: 'POST', headers, body });
+    const data = await res.json() as Record<string, unknown>;
+
+    if (!res.ok) {
+      return { success: false, error: `Reply failed [${res.status}]: ${JSON.stringify(data)}` };
+    }
+
+    const tweetData = data.data as Record<string, unknown> | undefined;
+    return { success: true, platformPostId: tweetData?.id as string };
+  } catch (e: unknown) {
+    return { success: false, error: `X reply error: ${(e as Error).message}` };
+  }
+}
+
 // ── OAuth 1.0a (HMAC-SHA1 via SubtleCrypto) ──
 
 async function oauthRequest(
