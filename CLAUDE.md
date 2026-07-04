@@ -69,6 +69,19 @@ Key non-page modules: `auth.js` (LINE Login + Google Sign-In, roles master/edito
 - **Cron:** news RSS refresh 07:00/19:00 JST
 - **Group data:** `getGroup()` reads KV `group:{id}` first; `DEFAULT_GROUPS` in worker.js is only the initial seed. Production group info is edited via the GATE editor UI.
 
+## Model Roles (subagents in `.claude/agents/`)
+
+メインセッション（Fable 5）は設計・判断・統括に徹し、作業は役割別サブエージェントに委譲する:
+
+| Agent | Model | 役割 | 権限 |
+|---|---|---|---|
+| `builder` | Opus | 仕様確定済みの実装（コード） | 読み書き＋実行 |
+| `writer` | Opus | note記事・台本・告知文（日本語長文） | 読み書き |
+| `runner` | Sonnet | デプロイ・wrangler操作・定型実行 | 読み書き＋実行 |
+| `reviewer` | Fable | **push前レビュー（push=本番デプロイのため、自明でない変更は必須ゲート）** | 読み取り専用 |
+| `triager` | Haiku | 要約・分類・カウント・下処理 | 読み取り専用 |
+| `researcher` | Sonnet | Web調査・文献収集・公演情報の裏取り | 読み取り＋Web |
+
 ## Language
 
 All comments, variable names in domain logic, and UI strings are in Japanese. Code structure and function signatures follow standard JS/TS conventions. Respond to the operator in Japanese.
