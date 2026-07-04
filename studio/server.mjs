@@ -334,6 +334,15 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
+// ショートカットからの二重起動は「既に起動済み」として正常終了させる
+server.on('error', (e) => {
+  if (e.code === 'EADDRINUSE') {
+    console.log(`既に起動済みです: http://${HOST}:${PORT}`);
+    process.exit(0);
+  }
+  throw e;
+});
+
 server.listen(PORT, HOST, () => {
   console.log(`歌舞伎ナビ スタジオ 起動: http://${HOST}:${PORT}`);
   console.log(`設定JSON: ${CONFIG_PATH}`);
