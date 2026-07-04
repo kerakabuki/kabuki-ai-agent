@@ -43,6 +43,13 @@ const CUTS = [
     'A moonlit sacred forest at Sonezaki shrine at night, no people, a large pale full moon behind tree silhouettes, a small torii gate, drifting mist, fireflies faintly glowing, atmospheric, melancholic and serene.' },
   { no: '08', name: 'サムネ背景', refs: ['01', '02'], prompt:
     'Using the two reference character images, a dramatic night scene of Sonezaki forest with a huge full moon, two small silhouettes of the lovers in kimono standing together under the moon, high contrast composition with large empty space on the left side for title text.' },
+  // 09: 実際の歌舞伎舞台の構図を参照（下手の暗い往来に編笠の男・上手に灯りの座敷の女）
+  { no: '09', name: '天満屋見世先', refs: ['01', '02'], styleMatch: true, prompt:
+    'Using the two reference character images (the woman in purple kimono and the man in striped kimono), compose a wide night scene styled like a kabuki stage picture: ' +
+    'the right half is the wooden facade of an Edo period teahouse seen slightly from the front-left diagonal, with ONE warmly lit open room where the woman in the purple kimono sits quietly, lit by soft lantern glow through shoji paper screens; ' +
+    'the rest of the street and buildings are sunk in deep indigo night darkness with faint wooden lattice (koushi) windows; ' +
+    'on the left, in the dark empty street, the man in the striped kimono stands alone wearing a deep woven sedge hat (amigasa) that hides his face, body turned toward the lit room, quiet and sorrowful; ' +
+    'strong contrast between the one warm lit room and the surrounding cold darkness, tense hushed atmosphere, theatrical flat stage-like composition, no other people, no text.' },
 ];
 
 // APIキー: 環境変数 GEMINI_API_KEY → リポジトリ直下の .gemini_api_key ファイル の順で探す

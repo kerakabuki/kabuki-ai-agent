@@ -115,6 +115,20 @@ high contrast composition with large empty space on the left side for text
 
 ※左側にタイトル文字とけらのすけを載せる前提の余白構図
 
+### 9. 天満屋見世先（2026-07-05追加・実舞台の構図を参照）
+
+```
+{共通スタイル} {01・02を参照画像に+STYLE_MATCH} a wide night scene styled like a kabuki
+stage picture: the right half is the wooden facade of an Edo period teahouse,
+ONE warmly lit open room where the woman in the purple kimono sits quietly (lantern
+glow through shoji); the rest sunk in deep indigo darkness with faint wooden lattice
+windows; on the left the man in the striped kimono stands alone in a deep sedge hat
+(amigasa) hiding his face, turned toward the lit room; strong warm/cold contrast,
+theatrical flat stage-like composition, no other people, no text
+```
+
+※歌舞伎座公演DVDの舞台面（下手の暗い往来に編笠の男・上手に灯りの座敷）の構図を参考に再解釈。ブロック5の冒頭カットとして使用（→ 05_天満屋の夜へ切替）
+
 ---
 
 ## 生成後チェックリスト
