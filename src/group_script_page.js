@@ -54,9 +54,9 @@ export function groupScriptListPageHTML(group, scripts) {
   const gid = escHTML(g.group_id || "");
 
   const bodyHTML = `
-    <div class="breadcrumb">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">トップ</a><span>&rsaquo;</span><a href="/jikabuki/base">BASE</a><span>&rsaquo;</span><a href="/jikabuki/gate/${gid}">${name}</a><span>&rsaquo;</span>デジタル台本
-    </div>
+    </nav>
 
     <section class="fade-up">
       <p class="gs-intro">スマホ・タブレットで稽古に使えるデジタル台本です。演目名・場面はKABUKI PLUS+の演目ガイドと対応しています。</p>
@@ -635,9 +635,9 @@ export function groupScriptViewerPageHTML(group, script) {
   });
 
   const bodyHTML = `
-    <div class="breadcrumb">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">トップ</a><span>&rsaquo;</span><a href="/jikabuki/gate/${gid}">${name}</a><span>&rsaquo;</span><a href="/groups/${gid}/scripts">台本</a><span>&rsaquo;</span>${escHTML(s.title || "")}
-    </div>
+    </nav>
 
     <div class="sv-controls fade-up">
       <label class="sv-role-label">自分の役：</label>
@@ -756,9 +756,9 @@ export function groupScriptTextViewerHTML(group, meta, content) {
   ).join("");
 
   const bodyHTML = `
-    <div class="breadcrumb">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">トップ</a><span>&rsaquo;</span><a href="/jikabuki/gate/${gid}">${name}</a><span>&rsaquo;</span><a href="/groups/${gid}/scripts">台本</a><span>&rsaquo;</span>${title}
-    </div>
+    </nav>
 
     <div class="tv-header fade-up">
       <span class="gs-type-badge gs-type-text">TEXT</span>
@@ -834,9 +834,9 @@ export function groupScriptPdfViewerHTML(group, meta) {
   const rawUrl = `/api/groups/${gid}/scripts/${escHTML(meta.id)}/raw`;
 
   const bodyHTML = `
-    <div class="breadcrumb">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">トップ</a><span>&rsaquo;</span><a href="/jikabuki/gate/${gid}">${name}</a><span>&rsaquo;</span><a href="/groups/${gid}/scripts">台本</a><span>&rsaquo;</span>${title}
-    </div>
+    </nav>
 
     <div class="pv-header fade-up">
       <span class="gs-type-badge gs-type-pdf">PDF</span>

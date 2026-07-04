@@ -20,9 +20,9 @@ export function groupMembersPageHTML(group) {
   const gidSafe = escHTML(g.group_id);
 
   const bodyHTML = `
-    <div class="breadcrumb">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">トップ</a><span>&rsaquo;</span><a href="/jikabuki/base">BASE</a><span>&rsaquo;</span><a href="/jikabuki/gate/${gidSafe}">${name}</a><span>&rsaquo;</span>メンバー管理
-    </div>
+    </nav>
 
     <section class="gm-welcome fade-up">
       <div class="gm-welcome-main">

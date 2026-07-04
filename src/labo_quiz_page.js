@@ -7,9 +7,9 @@ import { pageShell } from "./web_layout.js";
 
 export function laboQuizPageHTML({ googleClientId = "" } = {}) {
   const bodyHTML = `
-    <div class="breadcrumb">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">トップ</a><span>›</span><a href="/jikabuki/labo">LABO</a><span>›</span><span>クイズエディタ</span>
-    </div>
+    </nav>
 
     <section class="labo-intro fade-up">
       <h2 class="labo-title">クイズエディタ</h2>

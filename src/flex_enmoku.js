@@ -2,6 +2,14 @@
 // 歌舞伎風パレット（トップメニューと統一）
 import { KABUKI } from "./flex_menu.js";
 
+/* ─── 演目ガイド会話プロンプト ─── */
+export function enmokuPromptMessage() {
+  return {
+    type: "text",
+    text: "どの演目が気になる？\n名前を教えてくれたら解説するよ。\n\n例：「義経千本桜」「白浪五人男」「忠臣蔵」"
+  };
+}
+
 /* =========================================================
    演目カタログ（R2）
 ========================================================= */
@@ -55,11 +63,31 @@ export async function loadEnmokuCatalog(env) {
   }
 }
 
-export async function loadEnmokuJson(env, enmokuId) {
+export async function loadEnmokuJson(env, enmokuId, lang) {
   try {
     const obj = await env.ENMOKU_BUCKET.get(`${enmokuId}.json`);
     if (!obj) return null;
-    return await obj.json();
+    const data = await obj.json();
+
+    // 英語版があればマージ
+    if (lang === "en") {
+      try {
+        const enObj = await env.ENMOKU_BUCKET.get(`${enmokuId}.en.json`);
+        if (enObj) {
+          const en = await enObj.json();
+          return {
+            ...data,
+            title: en.title || data.title,
+            title_short: en.title_short || data.title_short,
+            synopsis: en.synopsis || data.synopsis,
+            highlights: en.highlights || data.highlights,
+            info: en.info || data.info,
+            cast: en.cast || data.cast,
+          };
+        }
+      } catch (_) {}
+    }
+    return data;
   } catch (e) {
     console.error("loadEnmokuJson error:", String(e?.stack || e));
     return null;
@@ -284,85 +312,17 @@ export async function groupSubMenuFlex(env, groupName) {
   };
 }
 
-export function sectionMenuFlex(enmokuTitle) {
-  const tile = (icon, label, section, bg) => ({
-    type: "box",
-    layout: "vertical",
-    paddingAll: "12px",
-    spacing: "sm",
-    backgroundColor: bg,
-    cornerRadius: "14px",
-    flex: 1,
-    action: {
-      type: "postback",
-      label,
-      data: `step=section&section=${section}`,
-      displayText: label
-    },
-    contents: [
-      { type: "text", text: icon, size: "xl", flex: 0 },
-      { type: "text", text: label, weight: "bold", size: "sm", color: KABUKI.text, wrap: true }
-    ]
-  });
-
-  const footerBtn = (label, data) => ({
-    type: "button",
-    style: "secondary",
-    height: "sm",
-    flex: 1,
-    action: { type: "postback", label, data, displayText: label }
-  });
-
+export function sectionMenuMessage(enmokuTitle) {
   return {
-    type: "flex",
-    altText: `「${enmokuTitle}」メニュー`,
-    contents: {
-      type: "bubble",
-      body: {
-        type: "box",
-        layout: "vertical",
-        spacing: "md",
-        backgroundColor: KABUKI.bg,
-        contents: [
-          { type: "text", text: `「${enmokuTitle}」`, weight: "bold", size: "lg", color: KABUKI.gold, wrap: true },
-          { type: "text", text: "知りたい項目をえらんでね🙂", size: "sm", color: KABUKI.dim, wrap: true },
-          {
-            type: "box",
-            layout: "vertical",
-            spacing: "sm",
-            contents: [
-              {
-                type: "box",
-                layout: "horizontal",
-                spacing: "sm",
-                contents: [
-                  tile("📖", "あらすじ", "synopsis", KABUKI.card),
-                  tile("🌟", "みどころ", "highlights", KABUKI.cardAlt)
-                ]
-              },
-              {
-                type: "box",
-                layout: "horizontal",
-                spacing: "sm",
-                contents: [
-                  tile("🎭", "登場人物", "cast", KABUKI.card),
-                  tile("📝", "作品情報", "info", KABUKI.cardAlt)
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      footer: {
-        type: "box",
-        layout: "horizontal",
-        spacing: "sm",
-        contents: [
-          footerBtn("演目一覧へ", "step=enmoku_list"),
-          footerBtn("🧭 ナビ", "step=navi_home")
-        ]
-      }
-    }
+    type: "text",
+    text: `「${enmokuTitle}」だね。\n何が知りたい？`,
+    quickReply: { items: [
+      { type: "action", action: { type: "postback", label: "あらすじ",   data: "step=section&section=synopsis",    displayText: "あらすじ" } },
+      { type: "action", action: { type: "postback", label: "みどころ",   data: "step=section&section=highlights",  displayText: "みどころ" } },
+      { type: "action", action: { type: "postback", label: "登場人物",   data: "step=section&section=cast",        displayText: "登場人物" } },
+      { type: "action", action: { type: "postback", label: "作品情報",   data: "step=section&section=info",        displayText: "作品情報" } },
+      { type: "action", action: { type: "postback", label: "演目一覧へ", data: "step=enmoku_list",                 displayText: "演目一覧" } },
+    ]}
   };
 }
 

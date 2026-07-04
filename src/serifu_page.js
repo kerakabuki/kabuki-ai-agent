@@ -1,16 +1,31 @@
 // =============================================================
-// 台詞道場 — /training/serifu
-// YouTube + カラオケ字幕（弁天小僧「知らざぁ言って聞かせやしょう」）
+// 台詞道場 — /training/serifu/:id
+// YouTube + カラオケ字幕（汎用：弁天小僧・五人男 等）
 // =============================================================
 
-export function serifuPageHTML() {
+// 台詞稽古メニュー定義
+const IMG_BASE_SERIFU = "https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/";
+export const SERIFU_MENU = [
+  { id: "benten", title: "弁天小僧", subtitle: "浜松屋の場", quote: "知らざぁ言って聞かせやしょう", videoId: "iFwMXYtqYA0", img: IMG_BASE_SERIFU + "benten_hamatsuya.jpg", difficulty: "★★★" },
+  { id: "gonin_daemon", title: "日本駄右衛門", subtitle: "稲瀬川勢揃いの場", quote: "問われて名乗るもおこがましいが", videoId: "JsXKbp5oUBo", img: IMG_BASE_SERIFU + "dayemon.png", difficulty: "★★" },
+  { id: "gonin_benten", title: "弁天小僧", subtitle: "稲瀬川勢揃いの場", quote: "さて、その次ぎは江ノ島の", videoId: "mN1FqZXeLjM", img: IMG_BASE_SERIFU + "benten.png", difficulty: "★★" },
+  { id: "gonin_tadanobu", title: "忠信利平", subtitle: "稲瀬川勢揃いの場", quote: "続いて後に控えしは", videoId: "RGaNSktrUSE", img: IMG_BASE_SERIFU + "tadanobu.png", difficulty: "★★" },
+  { id: "gonin_akaboshi", title: "赤星十三郎", subtitle: "稲瀬川勢揃いの場", quote: "またその次に列なるは", videoId: "okvHgcAI2UM", img: IMG_BASE_SERIFU + "akaboshi.png", difficulty: "★★" },
+  { id: "gonin_nango", title: "南郷力丸", subtitle: "稲瀬川勢揃いの場", quote: "さてどんじりに控えしは", videoId: "JpL3ost8nU8", img: IMG_BASE_SERIFU + "nango.png", difficulty: "★★" },
+];
+
+export function serifuPageHTML({ lang = "ja", serifuId = "benten" } = {}) {
+  const item = SERIFU_MENU.find(m => m.id === serifuId) || SERIFU_MENU[0];
+  const pageTitle = `台詞稽古 ─ ${item.title}（${item.subtitle}）`;
+  const videoId = item.videoId;
+  const apiPath = `/api/training/serifu/${item.id}`;
 
   return `<!DOCTYPE html>
-<html lang="ja">
+<html lang="${lang}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>台詞稽古 ─ 弁天小僧 | KABUKI PLUS+</title>
+<title>${pageTitle} | KABUKI PLUS+</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -393,6 +408,32 @@ export function serifuPageHTML() {
   .overlay-judge.great { color: #ffd700; text-shadow: 0 0 20px rgba(255,215,0,0.5); }
   .overlay-judge.good  { color: #80d080; text-shadow: 0 0 20px rgba(100,200,100,0.4); }
   .overlay-judge.miss  { color: #e05050; text-shadow: 0 0 20px rgba(200,50,50,0.4); }
+  .ai-feedback {
+    display: none; max-width: 640px; margin: 0 auto; width: 100%;
+    padding: 16px 18px; border-bottom: 1px solid var(--border);
+  }
+  .ai-feedback.show { display: block; }
+  .ai-feedback-header {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+  }
+  .ai-feedback-name {
+    font-family: 'Noto Serif JP', serif; font-size: 14px;
+    font-weight: 700; color: var(--gold); letter-spacing: 0.1em;
+  }
+  .ai-feedback-body {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px 16px;
+    box-shadow: var(--shadow-sm);
+  }
+  .ai-feedback-loading {
+    font-size: 13px; color: var(--text-secondary);
+    animation: recite-pulse 1.5s ease-in-out infinite;
+  }
+  .ai-feedback-text {
+    display: none; font-size: 14px; color: var(--text-primary);
+    line-height: 1.8; white-space: pre-wrap;
+  }
+  .ai-feedback-text.show { display: block; }
   .score-display {
     display: none; text-align: center; padding: 14px 18px;
     border-bottom: 1px solid var(--border); flex-shrink: 0;
@@ -460,7 +501,7 @@ export function serifuPageHTML() {
   <span style="font-size:24px">🎭</span>
   <div>
     <div class="header-title">台詞稽古</div>
-    <div class="header-sub">弁天小僧（浜松屋の場）</div>
+    <div class="header-sub">${item.title}（${item.subtitle}）</div>
   </div>
 </div>
 
@@ -470,13 +511,13 @@ export function serifuPageHTML() {
     <a href="/kabuki/dojo" style="color:var(--gold);text-decoration:none;font-size:0.9rem;">← KABUKI DOJO</a>
   </div>
   <h1>台詞稽古</h1>
-  <div class="subtitle">弁天小僧（浜松屋の場）<br>「知らざぁ言って聞かせやしょう」</div>
+  <div class="subtitle">${item.title}（${item.subtitle}）<br>「${item.quote}」</div>
 
   <div class="how-to">
     <div class="summary-box">
       <b>🎵 お手本と一緒に</b> 動画に合わせて声を出してみよう<br>
       <b>📢 復唱しよう</b> 1フレーズずつ止めてお手本を復唱<br>
-      <b>🎤 マイク判定</b> 全編流しながら声のタイミングを採点
+      <b>🎤 マイク判定</b> 全編流して台詞の正確度＆タイミングを採点
     </div>
     <details>
       <summary>くわしいあそびかた</summary>
@@ -485,7 +526,7 @@ export function serifuPageHTML() {
           <li>下の練習モードを選ぶと動画がスタート</li>
           <li><b>「お手本と一緒に」</b> ── 動画に合わせて声を出す</li>
           <li><b>「復唱しよう」</b> ── 1フレーズずつ止めて復唱。動画が光ったら台詞カードに合わせて</li>
-          <li><b>「マイク判定」</b> ── お手本と同様に全編再生。台詞の区間で声を出すと Great/Good/Miss で採点</li>
+          <li><b>「マイク判定」</b> ── 全編再生しながら音声認識で台詞の正確度とタイミングをAI採点</li>
           <li>台詞の間だけ動画を消すことはできませんが、マイク判定では<b>動画をミュート</b>にして自分の声だけ聞けます</li>
         </ol>
       </div>
@@ -514,7 +555,7 @@ export function serifuPageHTML() {
 
 <div class="video-wrap hidden" id="video-wrap">
   <div class="video-container">
-    <iframe id="yt-iframe" src="https://www.youtube.com/embed/iFwMXYtqYA0?enablejsapi=1&amp;playsinline=1&amp;rel=0&amp;modestbranding=1" title="弁天小僧" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>
+    <div id="yt-player"></div>
     <div class="video-overlay" id="video-overlay">
       <div class="overlay-cue" id="overlay-cue"></div>
       <div class="overlay-cue2" id="overlay-cue2"></div>
@@ -532,6 +573,17 @@ export function serifuPageHTML() {
 <div class="micjudge-end-bar" id="micjudge-end-bar">
   <span class="msg">\u304A\u3064\u304B\u308C\u3055\u307E\uFF01</span>
   <button type="button" class="btn-restart" id="micjudge-btn-restart">\u{1F4E2} \u3082\u3046\u4E00\u56DE\u30B9\u30BF\u30FC\u30C8</button>
+</div>
+
+<div class="ai-feedback" id="ai-feedback">
+  <div class="ai-feedback-header">
+    <span style="font-size:1.5rem">🎭</span>
+    <span class="ai-feedback-name">\u3051\u3089\u306E\u3059\u3051\u30B3\u30FC\u30C1</span>
+  </div>
+  <div class="ai-feedback-body" id="ai-feedback-body">
+    <div class="ai-feedback-loading" id="ai-feedback-loading">\u7A3D\u53E4\u306E\u69D8\u5B50\u3092\u898B\u3066\u3044\u308B\u3088\u2026</div>
+    <div class="ai-feedback-text" id="ai-feedback-text"></div>
+  </div>
 </div>
 
 <div class="mic-section" id="mic-section">
@@ -578,20 +630,22 @@ export function serifuPageHTML() {
   </div>
 </div>
 <div style="flex:1"></div>
-<div class="footer"><a href="/kabuki/dojo" style="color:var(--gold);text-decoration:none;">← KABUKI DOJO へ戻る</a></div>
+<div class="footer"><a href="/kabuki/dojo/training/serifu" style="color:var(--gold);text-decoration:none;">← 台詞稽古一覧へ</a></div>
 
 <script>
 (function() {
   var CUES = [];
   var packLoaded = false;
+  var onCuesLoaded = null; // tryInitPlayer 内で設定されるコールバック
 
-  fetch("/api/training/serifu/benten")
+  fetch("${apiPath}")
     .then(function(r) { return r.json(); })
     .then(function(pack) {
       CUES = pack.cues;
       packLoaded = true;
       var btns = document.querySelectorAll(".start-choice");
       for (var i = 0; i < btns.length; i++) btns[i].disabled = false;
+      if (onCuesLoaded) onCuesLoaded();
     })
     .catch(function(e) {
       console.error("Training pack load error:", e);
@@ -603,63 +657,40 @@ export function serifuPageHTML() {
     return m + ":" + (s < 10 ? "0" : "") + s;
   }
 
-  // YouTube IFrame API を後から読み込む
+  // YouTube IFrame Player API（公式）
   var player = null;
   var playerReady = false;
+  var currentTime = 0;
 
-  window.onYouTubeIframeAPIReady = function() {};
+  // YT API スクリプトを読み込む
+  var ytTag = document.createElement('script');
+  ytTag.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(ytTag);
+
+  window.onYouTubeIframeAPIReady = function() {
+    player = new YT.Player('yt-player', {
+      videoId: '${videoId}',
+      playerVars: { playsinline: 1, rel: 0, modestbranding: 1, enablejsapi: 1 },
+      events: {
+        onReady: function() { playerReady = true; },
+      }
+    });
+  };
+
+  // currentTime を定期更新
+  setInterval(function() {
+    if (player && typeof player.getCurrentTime === 'function') {
+      currentTime = player.getCurrentTime();
+    }
+  }, 100);
 
   function tryInitPlayer() {
-    var iframe = document.getElementById('yt-iframe');
-    if (!iframe) return;
-
-    var currentTime = 0;
-
-    // YouTube postMessage API からの応答を受信
-    window.addEventListener('message', function(e) {
-      if (e.origin !== 'https://www.youtube.com') return;
-      try {
-        var data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
-        if (data.event === 'infoDelivery' && data.info) {
-          if (typeof data.info.currentTime === 'number') {
-            currentTime = data.info.currentTime;
-          }
-        }
-        if (data.event === 'initialDelivery' && data.info) {
-          if (typeof data.info.currentTime === 'number') {
-            currentTime = data.info.currentTime;
-          }
-        }
-      } catch(ex) {}
-    });
-
-    function startListening() {
-      try {
-        // listening を開始（これで infoDelivery イベントが送られてくるようになる）
-        iframe.contentWindow.postMessage(JSON.stringify({
-          event: 'listening',
-          id: 1,
-          channel: 'widget'
-        }), 'https://www.youtube.com');
-      } catch(ex) {}
-    }
-
-    // iframe 読み込み完了後にリスニング開始
-    iframe.addEventListener('load', function() {
-      startListening();
-      // 念のため少し遅れてもう一度
-      setTimeout(startListening, 1000);
-      setTimeout(startListening, 3000);
-    });
-    // すでに読み込み済みの場合
-    startListening();
-
     // ── YouTube 制御 ──
     function ytCmd(func, args) {
       try {
-        iframe.contentWindow.postMessage(JSON.stringify({
-          event: 'command', func: func, args: args || []
-        }), 'https://www.youtube.com');
+        if (player && typeof player[func] === 'function') {
+          player[func].apply(player, args || []);
+        }
       } catch(ex) {}
     }
 
@@ -719,38 +750,44 @@ export function serifuPageHTML() {
     var slotAct  = document.getElementById('slot-active');
     var slotNext = document.getElementById('slot-next');
 
-    // serifu インデックスリスト
+    // serifu インデックスリスト（fetch完了後に再構築）
     var serifuList = [];
-    for (var si = 0; si < CUES.length; si++) {
-      if (CUES[si].type === 'serifu') serifuList.push(si);
-    }
-
-    // 各フレーズの HTML を事前生成
     var phraseHTML = {};
-    var phraseNum = 0;
-    for (var pi = 0; pi < CUES.length; pi++) {
-      if (CUES[pi].type !== 'serifu') continue;
-      phraseNum++;
-      var c = CUES[pi];
-      var textArr = [];
-      for (var ti = 0; ti < c.text.length; ti++) {
-        var cp = c.text.codePointAt(ti);
-        if (cp > 0xFFFF) { textArr.push(c.text.charAt(ti) + c.text.charAt(ti + 1)); ti++; }
-        else textArr.push(c.text.charAt(ti));
+
+    function buildSerifuIndex() {
+      serifuList = [];
+      phraseHTML = {};
+      var phraseNum = 0;
+      for (var si = 0; si < CUES.length; si++) {
+        if (CUES[si].type === 'serifu') serifuList.push(si);
       }
-      var chars = '';
-      for (var j = 0; j < textArr.length; j++) {
-        var ch = textArr[j].replace(/&/g,'&amp;').replace(/</g,'&lt;');
-        chars += '<span class="kchar"><span class="kchar-sizer">' + ch + '</span>'
-          + '<span class="kchar-base">' + ch + '</span>'
-          + '<span class="kchar-lit" style="width:0%">' + ch + '</span></span>';
+      for (var pi = 0; pi < CUES.length; pi++) {
+        if (CUES[pi].type !== 'serifu') continue;
+        phraseNum++;
+        var c = CUES[pi];
+        var textArr = [];
+        for (var ti = 0; ti < c.text.length; ti++) {
+          var cp = c.text.codePointAt(ti);
+          if (cp > 0xFFFF) { textArr.push(c.text.charAt(ti) + c.text.charAt(ti + 1)); ti++; }
+          else textArr.push(c.text.charAt(ti));
+        }
+        var chars = '';
+        for (var j = 0; j < textArr.length; j++) {
+          var ch = textArr[j].replace(/&/g,'&amp;').replace(/</g,'&lt;');
+          chars += '<span class="kchar"><span class="kchar-sizer">' + ch + '</span>'
+            + '<span class="kchar-base">' + ch + '</span>'
+            + '<span class="kchar-lit" style="width:0%">' + ch + '</span></span>';
+        }
+        var rdg = c.reading
+          ? '<div class="phrase-reading">' + c.reading.replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</div>'
+          : '';
+        phraseHTML[pi] = '<div class="phrase-meta">#' + phraseNum + '\u3000' + fmtTime(c.time) + '</div>'
+          + '<div class="phrase-text">' + chars + '</div>' + rdg;
       }
-      var rdg = c.reading
-        ? '<div class="phrase-reading">' + c.reading.replace(/&/g,'&amp;').replace(/</g,'&lt;') + '</div>'
-        : '';
-      phraseHTML[pi] = '<div class="phrase-meta">#' + phraseNum + '\u3000' + fmtTime(c.time) + '</div>'
-        + '<div class="phrase-text">' + chars + '</div>' + rdg;
     }
+    buildSerifuIndex();
+    // fetchが後から完了した場合に再構築
+    onCuesLoaded = function() { buildSerifuIndex(); };
 
     var lPI = -999, lAI = -999, lNI = -999;
     var activeKchars = [];
@@ -849,10 +886,12 @@ export function serifuPageHTML() {
     }
 
     function goToPhrase(sp) {
+      if (serifuList.length === 0) return;
       repeatSP = sp;
       resetRepeatState();
       updateRepeatStatus();
       var ci = serifuList[repeatSP];
+      if (ci === undefined || !CUES[ci]) return;
       ytCmd('seekTo', [CUES[ci].time, true]);
       ytCmd('playVideo');
     }
@@ -873,6 +912,78 @@ export function serifuPageHTML() {
     var sampleInterval = null;
     var VOICE_THRESHOLD = 0.015;
     var micCalibrating = false;
+
+    // ── フレーズ詳細メトリクス（AIフィードバック用） ──
+    var phraseMetrics = {};  // cueIdx → { onsetDelay, volumePattern, sustained, peakVol }
+
+    function analyzePhraseMetrics(cueIdx) {
+      var c = CUES[cueIdx];
+      var t0 = c.time, t1 = c.end, dur = t1 - t0;
+      // フレーズ区間のサンプルを抽出
+      var phraseSamples = [];
+      for (var i = 0; i < voiceSamples.length; i++) {
+        var vt = voiceSamples[i].videoTime;
+        if (vt != null && vt >= t0 - 0.5 && vt <= t1 + 0.5) {
+          phraseSamples.push({ rel: vt - t0, vol: voiceSamples[i].vol });
+        }
+      }
+      if (phraseSamples.length === 0) return { onsetDelay: null, volumePattern: 'silent', sustained: 0, peakVol: 0 };
+
+      // 発声開始タイミング（閾値超え最初のサンプル）
+      var onsetDelay = null;
+      for (var i2 = 0; i2 < phraseSamples.length; i2++) {
+        if (phraseSamples[i2].vol > VOICE_THRESHOLD && phraseSamples[i2].rel >= 0) {
+          onsetDelay = parseFloat(phraseSamples[i2].rel.toFixed(2));
+          break;
+        }
+      }
+
+      // 音量パターン分析（3分割: 頭/中/尾）
+      var thirds = [[], [], []];
+      for (var i3 = 0; i3 < phraseSamples.length; i3++) {
+        var r = phraseSamples[i3].rel;
+        if (r < 0 || r > dur) continue;
+        var seg = Math.min(Math.floor(r / dur * 3), 2);
+        thirds[seg].push(phraseSamples[i3].vol);
+      }
+      var segAvg = thirds.map(function(arr) {
+        if (arr.length === 0) return 0;
+        var s = 0; for (var k = 0; k < arr.length; k++) s += arr[k];
+        return s / arr.length;
+      });
+
+      // パターン判定
+      var pattern = 'steady';
+      var segActive = segAvg.map(function(v) { return v > VOICE_THRESHOLD; });
+      if (!segActive[0] && !segActive[1] && !segActive[2]) pattern = 'silent';
+      else if (segActive[0] && !segActive[2]) pattern = 'trailing_off';  // 尻すぼみ
+      else if (!segActive[0] && segActive[2]) pattern = 'late_start';    // 出遅れ
+      else if (segActive[0] && segActive[1] && segActive[2]) {
+        if (segAvg[0] > segAvg[2] * 1.5) pattern = 'front_heavy';       // 頭が強い
+        else pattern = 'steady';                                         // 安定
+      }
+
+      // 持続率 & ピーク音量
+      var voiceCount = 0, peakVol = 0;
+      for (var i4 = 0; i4 < phraseSamples.length; i4++) {
+        if (phraseSamples[i4].rel >= 0 && phraseSamples[i4].rel <= dur) {
+          if (phraseSamples[i4].vol > VOICE_THRESHOLD) voiceCount++;
+          if (phraseSamples[i4].vol > peakVol) peakVol = phraseSamples[i4].vol;
+        }
+      }
+      var totalInRange = 0;
+      for (var i5 = 0; i5 < phraseSamples.length; i5++) {
+        if (phraseSamples[i5].rel >= 0 && phraseSamples[i5].rel <= dur) totalInRange++;
+      }
+      var sustained = totalInRange > 0 ? parseFloat((voiceCount / totalInRange).toFixed(2)) : 0;
+
+      return {
+        onsetDelay: onsetDelay,
+        volumePattern: pattern,
+        sustained: sustained,
+        peakVol: parseFloat(peakVol.toFixed(3))
+      };
+    }
 
     // スコア
     var judgeResults = {};
@@ -978,6 +1089,7 @@ export function serifuPageHTML() {
       if (mode !== 'micJudge' || !micJudgeWaitingStart) return;
       micJudgeWaitingStart = false;
       document.getElementById('micjudge-start-bar').classList.remove('show');
+      phraseMetrics = {};
       ytCmd('playVideo');
     });
     document.getElementById('micjudge-btn-restart').addEventListener('click', function() {
@@ -987,11 +1099,63 @@ export function serifuPageHTML() {
       judgedPhrasesMicJudge = {};
       voiceSamples = [];
       resetScore();
+      phraseMetrics = {};
       document.getElementById('micjudge-end-bar').classList.remove('show');
+      document.getElementById('ai-feedback').classList.remove('show');
       document.getElementById('micjudge-start-bar').classList.add('show');
       ytCmd('seekTo', [5, true]);
       ytCmd('pauseVideo');
     });
+
+    // ── AIフィードバックリクエスト ──
+    function requestAIFeedback() {
+      var feedbackEl = document.getElementById('ai-feedback');
+      var loadingEl = document.getElementById('ai-feedback-loading');
+      var textEl = document.getElementById('ai-feedback-text');
+      feedbackEl.classList.add('show');
+      loadingEl.style.display = 'block';
+      textEl.classList.remove('show');
+      textEl.textContent = '';
+
+      // メトリクスデータを組み立て
+      var metricsData = [];
+      var keys = Object.keys(phraseMetrics);
+      for (var mi = 0; mi < keys.length; mi++) {
+        var pm = phraseMetrics[keys[mi]];
+        metricsData.push({
+          phrase: pm.text,
+          judge: pm.judge,
+          onsetDelay: pm.onsetDelay,
+          volumePattern: pm.volumePattern,
+          sustained: pm.sustained
+        });
+      }
+      var payload = {
+        title: '${item.title}',
+        subtitle: '${item.subtitle}',
+        greatCount: greatCount,
+        goodCount: goodCount,
+        missCount: missCount,
+        phrases: metricsData
+      };
+
+      fetch('/api/training/serifu/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        loadingEl.style.display = 'none';
+        textEl.textContent = data.feedback || 'おつかれさま！いい稽古だったね。';
+        textEl.classList.add('show');
+      })
+      .catch(function(e) {
+        loadingEl.style.display = 'none';
+        textEl.textContent = 'おつかれさま！次も一緒に稽古しようね。';
+        textEl.classList.add('show');
+      });
+    }
 
     function startVoiceSampling() {
       voiceSamples = [];
@@ -1038,7 +1202,7 @@ export function serifuPageHTML() {
       return result;
     }
 
-    // マイク判定モード用: 動画時間でタグ付きサンプルから判定
+    // マイク判定モード用: 音量ベース判定 + 詳細メトリクス収集
     function judgePhraseByVideoSamples(cueIdx) {
       if (!micActive) return null;
       var c = CUES[cueIdx];
@@ -1066,6 +1230,12 @@ export function serifuPageHTML() {
       else if (activeSeg >= 2 && rate >= 0.25) { result = 'good'; goodCount++; }
       else { result = 'miss'; missCount++; }
       judgeResults[cueIdx] = result;
+
+      // 詳細メトリクス収集（AIフィードバック用）
+      phraseMetrics[cueIdx] = analyzePhraseMetrics(cueIdx);
+      phraseMetrics[cueIdx].judge = result;
+      phraseMetrics[cueIdx].text = c.text || '';
+
       return result;
     }
 
@@ -1295,6 +1465,8 @@ export function serifuPageHTML() {
             micJudgeEndShown = true;
             ytCmd('pauseVideo');
             document.getElementById('micjudge-end-bar').classList.add('show');
+            // AIフィードバック取得
+            requestAIFeedback();
           }
         }
       }

@@ -7,9 +7,9 @@ import { pageShell } from "./web_layout.js";
 
 export function laboHubPageHTML({ googleClientId = "" } = {}) {
   const bodyHTML = `
-    <div class="breadcrumb">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">トップ</a><span>›</span><span>LABO</span>
-    </div>
+    </nav>
 
     <!-- ウェルカムバー -->
     <section class="labo-hub-welcome fade-up">

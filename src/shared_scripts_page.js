@@ -32,9 +32,9 @@ export function sharedScriptsPageHTML(sharedScripts) {
   `;
 
   const bodyHTML = `
-    <div class="breadcrumb">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">トップ</a><span>&rsaquo;</span><a href="/?brand=jikabuki">JIKABUKI PLUS+</a><span>&rsaquo;</span>台本共有
-    </div>
+    </nav>
 
     <section class="ss-intro fade-up">
       <h2 class="ss-intro-title">台本共有ライブラリ</h2>

@@ -3,21 +3,21 @@
 // KABUKI PLUS+ ユーザーズガイド — /kabuki/help
 // =========================================================
 import { pageShell } from "./web_layout.js";
+import { t, langPrefix } from "./i18n.js";
 
-export function kabukiHelpPageHTML({ googleClientId = "" } = {}) {
+export function kabukiHelpPageHTML({ googleClientId = "", lang = "ja" } = {}) {
+  const lp = langPrefix(lang);
   const bodyHTML = `
-    <div class="breadcrumb">
-      <a href="/">トップ</a><span>›</span>ヘルプ
-    </div>
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="${lp}/">${t("common.breadcrumb_top", lang)}</a><span>›</span>${t("help.breadcrumb", lang)}
+    </nav>
 
     <!-- はじめに -->
     <section class="help-intro fade-up">
       <div class="help-intro-icon">🎭</div>
-      <h2 class="help-intro-title">KABUKI PLUS+ とは</h2>
+      <h2 class="help-intro-title">${t("help.intro_title", lang)}</h2>
       <p class="help-intro-desc">
-        歌舞伎をもっと楽しむためのオールインワン・ガイドアプリです。<br>
-        演目の解説・公演情報・観劇記録・学習コンテンツを一か所に集め、<br>
-        初心者からベテランまで幅広い歌舞伎ファンをサポートします。
+        ${t("help.intro_desc", lang)}
       </p>
     </section>
 
@@ -26,43 +26,43 @@ export function kabukiHelpPageHTML({ googleClientId = "" } = {}) {
       <div class="help-section-header help-header-navi">
         <span class="help-section-icon">🧭</span>
         <div>
-          <h2 class="help-section-title">NAVI の使い方</h2>
-          <p class="help-section-subtitle">歌舞伎羅針盤 — 演目・用語・おすすめ・観劇ナビ</p>
+          <h2 class="help-section-title">${t("help.navi_title", lang)}</h2>
+          <p class="help-section-subtitle">${t("help.navi_subtitle", lang)}</p>
         </div>
-        <a href="/kabuki/navi" class="help-section-link">開く →</a>
+        <a href="${lp}/kabuki/navi" class="help-section-link">${t("help.open", lang)}</a>
       </div>
       <div class="help-card-grid">
         <div class="help-card help-card-accent-1">
           <div class="help-card-head">
             <span class="help-card-icon">📖</span>
-            <h3>演目ガイド</h3>
+            <h3>${t("help.play_guide", lang)}</h3>
           </div>
-          <p class="help-card-desc">人気演目のあらすじ・見どころ・登場人物を解説。知識ゼロでも舞台を10倍楽しめます。</p>
-          <a href="/kabuki/navi/enmoku" class="help-card-link">演目ガイドへ →</a>
+          <p class="help-card-desc">${t("help.play_guide_desc", lang)}</p>
+          <a href="${lp}/kabuki/navi/enmoku" class="help-card-link">${t("help.play_guide_link", lang)}</a>
         </div>
         <div class="help-card help-card-accent-2">
           <div class="help-card-head">
             <span class="help-card-icon">📚</span>
-            <h3>用語辞典</h3>
+            <h3>${t("help.glossary", lang)}</h3>
           </div>
-          <p class="help-card-desc">「見得」「花道」「大向う」など、歌舞伎特有の用語をカテゴリ別に検索できます。</p>
-          <a href="/kabuki/navi/glossary" class="help-card-link">用語辞典へ →</a>
+          <p class="help-card-desc">${t("help.glossary_desc", lang)}</p>
+          <a href="${lp}/kabuki/navi/glossary" class="help-card-link">${t("help.glossary_link", lang)}</a>
         </div>
         <div class="help-card help-card-accent-3">
           <div class="help-card-head">
             <span class="help-card-icon">⭐</span>
-            <h3>おすすめ演目</h3>
+            <h3>${t("help.recommend", lang)}</h3>
           </div>
-          <p class="help-card-desc">初心者向けや人気の高い演目をピックアップ。「はじめての歌舞伎」にぴったりの作品を紹介。</p>
-          <a href="/kabuki/navi/recommend" class="help-card-link">おすすめへ →</a>
+          <p class="help-card-desc">${t("help.recommend_desc", lang)}</p>
+          <a href="${lp}/kabuki/navi/recommend" class="help-card-link">${t("help.recommend_link", lang)}</a>
         </div>
         <div class="help-card help-card-accent-gold">
           <div class="help-card-head">
             <span class="help-card-icon">🗺️</span>
-            <h3>観劇ナビ</h3>
+            <h3>${t("help.theater_guide", lang)}</h3>
           </div>
-          <p class="help-card-desc">劇場の選び方・座席の見方・当日の流れなど、観劇の基礎知識をステップ形式でガイドします。</p>
-          <a href="/kabuki/navi/theater" class="help-card-link">観劇ナビへ →</a>
+          <p class="help-card-desc">${t("help.theater_guide_desc", lang)}</p>
+          <a href="${lp}/kabuki/navi/theater" class="help-card-link">${t("help.theater_guide_link", lang)}</a>
         </div>
       </div>
     </section>
@@ -72,26 +72,26 @@ export function kabukiHelpPageHTML({ googleClientId = "" } = {}) {
       <div class="help-section-header help-header-live">
         <span class="help-section-icon">📡</span>
         <div>
-          <h2 class="help-section-title">LIVE の使い方</h2>
-          <p class="help-section-subtitle">公演スケジュール・ニュース</p>
+          <h2 class="help-section-title">${t("help.live_title", lang)}</h2>
+          <p class="help-section-subtitle">${t("help.live_subtitle", lang)}</p>
         </div>
-        <a href="/kabuki/live" class="help-section-link">開く →</a>
+        <a href="${lp}/kabuki/live" class="help-section-link">${t("help.open", lang)}</a>
       </div>
       <div class="help-card-grid">
         <div class="help-card help-card-accent-2">
           <div class="help-card-head">
             <span class="help-card-icon">🎪</span>
-            <h3>公演スケジュール</h3>
+            <h3>${t("help.schedule", lang)}</h3>
           </div>
-          <p class="help-card-desc">歌舞伎美人（kabuki-bito.jp）から最新の公演情報を取得。現在開催中・近日開幕の舞台を一覧表示します。</p>
+          <p class="help-card-desc">${t("help.schedule_desc", lang)}</p>
         </div>
         <div class="help-card help-card-accent-3">
           <div class="help-card-head">
             <span class="help-card-icon">📰</span>
-            <h3>ニュース</h3>
+            <h3>${t("help.news", lang)}</h3>
           </div>
-          <p class="help-card-desc">歌舞伎関連の最新ニュースを自動収集。俳優・演目に関する話題をまとめて確認できます。</p>
-          <a href="/kabuki/live/news" class="help-card-link">ニュースへ →</a>
+          <p class="help-card-desc">${t("help.news_desc", lang)}</p>
+          <a href="${lp}/kabuki/live/news" class="help-card-link">${t("help.news_link", lang)}</a>
         </div>
       </div>
     </section>
@@ -101,30 +101,30 @@ export function kabukiHelpPageHTML({ googleClientId = "" } = {}) {
       <div class="help-section-header help-header-reco">
         <span class="help-section-icon">📝</span>
         <div>
-          <h2 class="help-section-title">RECO の使い方</h2>
-          <p class="help-section-subtitle">観劇ログ・推し俳優</p>
+          <h2 class="help-section-title">${t("help.reco_title", lang)}</h2>
+          <p class="help-section-subtitle">${t("help.reco_subtitle", lang)}</p>
         </div>
-        <a href="/kabuki/reco" class="help-section-link">開く →</a>
+        <a href="${lp}/kabuki/reco" class="help-section-link">${t("help.open", lang)}</a>
       </div>
       <div class="help-card-grid">
         <div class="help-card help-card-accent-1">
           <div class="help-card-head">
             <span class="help-card-icon">📋</span>
-            <h3>観劇ログ</h3>
+            <h3>${t("help.theater_log", lang)}</h3>
           </div>
-          <p class="help-card-desc">観た演目や劇場を記録しておける鑑賞ノート。ログインすると記録が保存されます。</p>
+          <p class="help-card-desc">${t("help.theater_log_desc", lang)}</p>
         </div>
         <div class="help-card help-card-accent-gold">
           <div class="help-card-head">
             <span class="help-card-icon">❤️</span>
-            <h3>推し俳優</h3>
+            <h3>${t("help.favorite_actors", lang)}</h3>
           </div>
-          <p class="help-card-desc">お気に入りの俳優を登録すると、その俳優の最新ニュースや公演情報がまとめて表示されます。</p>
+          <p class="help-card-desc">${t("help.favorite_actors_desc", lang)}</p>
         </div>
       </div>
       <div class="help-note">
         <span class="help-note-icon">💡</span>
-        RECO 機能を使うには LINE または Google アカウントでのログインが必要です。
+        ${t("help.reco_note", lang)}
       </div>
     </section>
 
@@ -133,35 +133,35 @@ export function kabukiHelpPageHTML({ googleClientId = "" } = {}) {
       <div class="help-section-header help-header-dojo">
         <span class="help-section-icon">🥋</span>
         <div>
-          <h2 class="help-section-title">DOJO の使い方</h2>
-          <p class="help-section-subtitle">知識クイズ・台詞稽古・大向う道場</p>
+          <h2 class="help-section-title">${t("help.dojo_title", lang)}</h2>
+          <p class="help-section-subtitle">${t("help.dojo_subtitle", lang)}</p>
         </div>
-        <a href="/kabuki/dojo" class="help-section-link">開く →</a>
+        <a href="${lp}/kabuki/dojo" class="help-section-link">${t("help.open", lang)}</a>
       </div>
       <div class="help-card-grid">
         <div class="help-card help-card-accent-1">
           <div class="help-card-head">
             <span class="help-card-icon">🧠</span>
-            <h3>知識クイズ</h3>
+            <h3>${t("help.quiz", lang)}</h3>
           </div>
-          <p class="help-card-desc">演目・俳優・歴史に関するクイズで歌舞伎知識を試そう。回答履歴から苦手分野を把握できます。</p>
-          <a href="/kabuki/dojo/quiz" class="help-card-link">クイズへ →</a>
+          <p class="help-card-desc">${t("help.quiz_desc", lang)}</p>
+          <a href="${lp}/kabuki/dojo/quiz" class="help-card-link">${t("help.quiz_link", lang)}</a>
         </div>
         <div class="help-card help-card-accent-3">
           <div class="help-card-head">
             <span class="help-card-icon">🎤</span>
-            <h3>台詞稽古</h3>
+            <h3>${t("help.serifu", lang)}</h3>
           </div>
-          <p class="help-card-desc">名台詞のピッチ（音程）を視覚化。歌舞伎特有の発声やイントネーションを耳と目で学べます。</p>
-          <a href="/kabuki/dojo/training/serifu" class="help-card-link">台詞稽古へ →</a>
+          <p class="help-card-desc">${t("help.serifu_desc", lang)}</p>
+          <a href="${lp}/kabuki/dojo/training/serifu" class="help-card-link">${t("help.serifu_link", lang)}</a>
         </div>
         <div class="help-card help-card-accent-2">
           <div class="help-card-head">
             <span class="help-card-icon">📣</span>
-            <h3>大向う道場</h3>
+            <h3>${t("help.kakegoe", lang)}</h3>
           </div>
-          <p class="help-card-desc">「成田屋！」などの大向うの声のかけ方を練習。タイミング・屋号・ルールをマスターしよう。</p>
-          <a href="/kabuki/dojo/training/kakegoe" class="help-card-link">大向う道場へ →</a>
+          <p class="help-card-desc">${t("help.kakegoe_desc", lang)}</p>
+          <a href="${lp}/kabuki/dojo/training/kakegoe" class="help-card-link">${t("help.kakegoe_link", lang)}</a>
         </div>
       </div>
     </section>
@@ -171,68 +171,90 @@ export function kabukiHelpPageHTML({ googleClientId = "" } = {}) {
       <div class="help-section-header help-header-ai">
         <span class="help-section-icon">🤖</span>
         <div>
-          <h2 class="help-section-title">けらのすけ の使い方</h2>
-          <p class="help-section-subtitle">AIアシスタント（LINE・Web）</p>
+          <h2 class="help-section-title">${t("help.kera_title", lang)}</h2>
+          <p class="help-section-subtitle">${t("help.kera_subtitle", lang)}</p>
         </div>
       </div>
       <div class="help-kera-box">
         <div class="help-kera-desc">
-          <p>「けらのすけ」は、KABUKI PLUS+ の AI アシスタントです。LINE で友達追加するか、Web 版で話しかけると、歌舞伎に関するさまざまな質問に答えてくれます。</p>
+          <p>${t("help.kera_desc", lang)}</p>
           <ul class="help-kera-list">
-            <li>演目のあらすじ・見どころを教えて</li>
-            <li>○○という用語の意味は？</li>
-            <li>初心者におすすめの演目は？</li>
-            <li>クイズを出して！</li>
-            <li>大向うの練習をしたい</li>
+            <li>${t("help.kera_item1", lang)}</li>
+            <li>${t("help.kera_item2", lang)}</li>
+            <li>${t("help.kera_item3", lang)}</li>
+            <li>${t("help.kera_item4", lang)}</li>
+            <li>${t("help.kera_item5", lang)}</li>
           </ul>
         </div>
         <div class="help-kera-cta">
-          <a href="/auth/line" class="help-kera-btn-line">💬 LINE で話す</a>
-          <p class="help-kera-cta-note">LINE 友達追加で、いつでもどこでもけらのすけと会話できます</p>
+          <a href="/auth/line" class="help-kera-btn-line">${t("help.kera_line_btn", lang)}</a>
+          <p class="help-kera-cta-note">${t("help.kera_line_note", lang)}</p>
         </div>
       </div>
     </section>
 
     <!-- FAQ -->
     <section class="help-section fade-up-d4">
-      <h2 class="section-title">よくある質問</h2>
+      <h2 class="section-title">${t("help.faq_title", lang)}</h2>
       <div class="help-faq-list">
         <details class="help-faq-item">
-          <summary class="help-faq-q">ログインは必須ですか？</summary>
-          <p class="help-faq-a">ほとんどの機能はログインなしで利用できます。ログインすると観劇ログの保存・推し俳優の登録などの個人データが使えるようになります。</p>
+          <summary class="help-faq-q">${t("help.faq_q1", lang)}</summary>
+          <p class="help-faq-a">${t("help.faq_a1", lang)}</p>
         </details>
         <details class="help-faq-item">
-          <summary class="help-faq-q">対応しているログイン方法は？</summary>
-          <p class="help-faq-a">LINE アカウントと Google アカウントに対応しています。画面右上の「ログイン」ボタンから選択できます。</p>
+          <summary class="help-faq-q">${t("help.faq_q2", lang)}</summary>
+          <p class="help-faq-a">${t("help.faq_a2", lang)}</p>
         </details>
         <details class="help-faq-item">
-          <summary class="help-faq-q">スマートフォンから利用できますか？</summary>
-          <p class="help-faq-a">はい。スマートフォン・タブレット・PC すべてに対応したレスポンシブデザインです。</p>
+          <summary class="help-faq-q">${t("help.faq_q3", lang)}</summary>
+          <p class="help-faq-a">${t("help.faq_a3", lang)}</p>
         </details>
         <details class="help-faq-item">
-          <summary class="help-faq-q">公演情報はリアルタイムで更新されますか？</summary>
-          <p class="help-faq-a">歌舞伎美人（kabuki-bito.jp）から定期的に情報を取得しています。最新情報は公式サイトもあわせてご確認ください。</p>
+          <summary class="help-faq-q">${t("help.faq_q4", lang)}</summary>
+          <p class="help-faq-a">${t("help.faq_a4", lang)}</p>
         </details>
         <details class="help-faq-item">
-          <summary class="help-faq-q">地歌舞伎団体向けの機能はありますか？</summary>
-          <p class="help-faq-a">はい。JIKABUKI PLUS+ として、地歌舞伎団体向けの機能（GATE・BASE・LABO など）を別ブランドで提供しています。ナビの切替ボタンから移動できます。</p>
+          <summary class="help-faq-q">${t("help.faq_q5", lang)}</summary>
+          <p class="help-faq-a">${t("help.faq_a5", lang)}</p>
         </details>
       </div>
     </section>
 
     <div class="help-footer fade-up-d4">
-      <a href="/" class="btn btn-secondary">← トップへ戻る</a>
+      <a href="${lp}/" class="btn btn-secondary">${t("help.back_to_top", lang)}</a>
     </div>
   `;
 
+  const helpPageUrl = `https://kabukiplus.com${lp}/kabuki/help`;
+  const helpOgDesc = lang === "en"
+    ? "How to use KABUKI PLUS+: features guide, navigation tips, and frequently asked questions."
+    : "KABUKI PLUS+の使い方ガイド。各機能の紹介・操作方法・よくある質問をまとめています";
+  const helpJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "name": t("help.title", lang),
+    "description": helpOgDesc,
+    "url": helpPageUrl,
+    "inLanguage": lang === "en" ? "en" : "ja",
+    "publisher": { "@type": "Organization", "name": "KABUKI PLUS+", "url": "https://kabukiplus.com" },
+  };
+
   return pageShell({
-    title: "ヘルプ",
-    subtitle: "KABUKI PLUS+ ユーザーズガイド",
+    title: t("help.title", lang),
+    subtitle: t("help.subtitle", lang),
     bodyHTML,
     activeNav: "home",
+    currentPath: "/kabuki/help",
+    i18nReady: true,
     brand: "kabuki",
+    lang,
     googleClientId,
-    headExtra: `<style>
+    ogDesc: helpOgDesc,
+    ogUrl: helpPageUrl,
+    canonicalUrl: helpPageUrl,
+    headExtra: `
+<script type="application/ld+json">${JSON.stringify(helpJsonLd)}</script>
+<style>
       /* ── はじめにセクション ── */
       .help-intro {
         text-align: center;

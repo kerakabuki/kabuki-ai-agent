@@ -4,123 +4,128 @@
 // 会場でのNG集（やっちゃダメなこと）に特化したシンプル構成
 // =========================================================
 import { pageShell } from "./web_layout.js";
+import { t, langPrefix } from "./i18n.js";
 
 const MANNER_RULES = [
   {
     icon: "📱",
-    title: "スマートフォン",
+    titleKey: "manners.rule1_title",
     accent: "accent-1",
-    items: [
-      "開演中はマナーモードにするか電源を切る",
-      "着信音・バイブは厳禁",
-      "画面の明かりも周囲の迷惑になるため消す",
-      "メール・SNSは幕間に",
-    ],
+    itemKeys: ["manners.rule1_item1", "manners.rule1_item2", "manners.rule1_item3", "manners.rule1_item4"],
   },
   {
     icon: "📸",
-    title: "写真・動画撮影",
+    titleKey: "manners.rule2_title",
     accent: "accent-2",
-    items: [
-      "上演中の撮影・録音・録画は禁止（著作権・肖像権）",
-      "客席内は、開演前・幕間・終演後も撮影禁止の劇場／公演があります。基本は客席では撮らず、当日の場内案内に従ってください",
-      "フラッシュ・ライトは場所を問わず厳禁",
-    ],
+    itemKeys: ["manners.rule2_item1", "manners.rule2_item2", "manners.rule2_item3"],
   },
   {
     icon: "🍱",
-    title: "飲食",
+    titleKey: "manners.rule3_title",
     accent: "accent-3",
-    items: [
-      "上演中は飲食をやめ、幕間（まくあい）に楽しむ",
-      "幕の内弁当は歌舞伎の文化（幕間に食べるのが本来）",
-      "ドリンクはこぼれないよう注意",
-    ],
+    itemKeys: ["manners.rule3_item1", "manners.rule3_item2", "manners.rule3_item3"],
   },
   {
     icon: "🚶",
-    title: "入退場",
+    titleKey: "manners.rule4_title",
     accent: "accent-gold",
-    items: [
-      "遅刻した場合はロビーで待機し、係員の案内に従って入場（案内のタイミングは劇場判断）",
-      "途中退場はできるだけ幕間に。緊急時は係員へ",
-    ],
+    itemKeys: ["manners.rule4_item1", "manners.rule4_item2"],
   },
   {
     icon: "🔇",
-    title: "私語・音",
+    titleKey: "manners.rule5_title",
     accent: "accent-1",
-    items: [
-      "上演中の会話・ヒソヒソ話は控える",
-      "プログラム（筋書き）をめくる音も気になるので幕間に",
-      "咳やくしゃみはハンカチで口元を覆う",
-    ],
+    itemKeys: ["manners.rule5_item1", "manners.rule5_item2", "manners.rule5_item3"],
   },
   {
     icon: "🎒",
-    title: "荷物・服装",
+    titleKey: "manners.rule6_title",
     accent: "accent-2",
-    items: [
-      "大きな荷物はコインロッカーへ（多くの劇場にあり）",
-      "コートは膝の上にたたんで置く",
-      "服装の規定は特になし。普段着でもフォーマルでもOK",
-      "和装（着物）で訪れる人も多い。ヒールの高い靴は足音に注意",
-    ],
+    itemKeys: ["manners.rule6_item1", "manners.rule6_item2", "manners.rule6_item3", "manners.rule6_item4"],
   },
 ];
 
-export function mannersPageHTML({ googleClientId = "" } = {}) {
+export function mannersPageHTML({ googleClientId = "", lang = "ja" } = {}) {
   const rulesHTML = MANNER_RULES.map((r) => `
     <div class="manner-rule-card fade-up">
       <div class="manner-rule-header manner-${r.accent}">
         <span class="manner-rule-icon">${r.icon}</span>
-        <h3 class="manner-rule-title">${r.title}</h3>
+        <h3 class="manner-rule-title">${t(r.titleKey, lang)}</h3>
       </div>
       <ul class="manner-rule-list">
-        ${r.items.map((item) => `<li>${item}</li>`).join("")}
+        ${r.itemKeys.map((k) => `<li>${t(k, lang)}</li>`).join("")}
       </ul>
     </div>
   `).join("\n");
 
+  const lp = langPrefix(lang);
   const bodyHTML = `
-    <div class="breadcrumb">
-      <a href="/">トップ</a><span>›</span><a href="/kabuki/navi">KABUKI NAVI</a><span>›</span>観劇マナー
-    </div>
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="${lp}/">${t("common.breadcrumb_top", lang)}</a><span>›</span><a href="${lp}/kabuki/navi">KABUKI NAVI</a><span>›</span>${t("manners.breadcrumb", lang)}
+    </nav>
 
     <!-- 観劇ナビへの導線バナー -->
-    <a href="/kabuki/navi/theater" class="manner-navi-banner fade-up">
+    <a href="${lp}/kabuki/navi/theater" class="manner-navi-banner fade-up">
       <span class="manner-navi-banner-icon">🧭</span>
-      <span class="manner-navi-banner-text">はじめての方は<strong>観劇ナビ</strong>もチェック</span>
+      <span class="manner-navi-banner-text">${t("manners.navi_banner", lang)}</span>
       <span class="manner-navi-banner-arrow">→</span>
     </a>
 
     <section class="manner-intro fade-up">
       <p class="manner-lead">
-        歌舞伎観劇で「やっちゃいけないこと」を確認しておこう。<br>
-        これさえ守れば、安心して舞台を楽しめます。
+        ${t("manners.lead", lang)}
       </p>
     </section>
 
     <!-- ── 会場でのマナー ── -->
     <section class="manner-section">
-      <h2 class="section-title">会場でのマナー</h2>
+      <h2 class="section-title">${t("manners.section_title", lang)}</h2>
       <div class="manner-rules-grid">
         ${rulesHTML}
       </div>
     </section>
 
     <div class="manner-footer fade-up">
-      <a href="/kabuki/navi" class="btn btn-secondary">← KABUKI NAVI に戻る</a>
+      <a href="${lp}/kabuki/navi" class="btn btn-secondary">${t("manners.back_navi", lang)}</a>
     </div>
   `;
 
+  const mannersPageUrl = `https://kabukiplus.com${langPrefix(lang)}/kabuki/navi/manners`;
+  const mannersOgDesc = lang === "en"
+    ? "Essential etiquette for kabuki theater: dress code, food & drinks, applause, and how to enjoy the show."
+    : "初めての歌舞伎観劇も安心。服装・飲食・拍手のタイミングなど、知っておきたい観劇マナーガイド";
+  const mannersJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "name": t("manners.title", lang),
+    "description": mannersOgDesc,
+    "url": mannersPageUrl,
+    "inLanguage": lang === "en" ? "en" : "ja",
+    "mainEntity": MANNER_RULES.map(r => ({
+      "@type": "Question",
+      "name": t(r.titleKey, lang),
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": r.itemKeys.map(k => t(k, lang)).join(" "),
+      },
+    })),
+  };
+
   return pageShell({
-    title: "観劇マナー",
-    subtitle: "歌舞伎羅針盤",
+    lang,
+    title: t("manners.title", lang),
+    subtitle: t("manners.subtitle", lang),
     bodyHTML,
     activeNav: "navi",
+    currentPath: "/kabuki/navi/manners",
+    i18nReady: true,
     googleClientId,
-    headExtra: `<style>
+    ogDesc: mannersOgDesc,
+    ogUrl: mannersPageUrl,
+    canonicalUrl: mannersPageUrl,
+    headExtra: `
+<script type="application/ld+json">${JSON.stringify(mannersJsonLd)}</script>
+<style>
       /* ── 観劇ナビ導線バナー ── */
       .manner-navi-banner {
         display: flex;

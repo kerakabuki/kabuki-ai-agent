@@ -4,8 +4,14 @@
 // LINE Bot と同じ keraAIv2 パイプラインをWebで提供
 // =========================================================
 import { pageShell } from "./web_layout.js";
+import { t } from "./i18n.js";
 
-export function chatPageHTML({ googleClientId = "" } = {}) {
+export function chatPageHTML({ googleClientId = "", lang = "ja" } = {}) {
+  const chip1 = t("chat.chip1", lang);
+  const chip2 = t("chat.chip2", lang);
+  const chip3 = t("chat.chip3", lang);
+  const chip4 = t("chat.chip4", lang);
+
   const bodyHTML = `
     <div id="chat-container" class="chat-container">
       <div id="chat-messages" class="chat-messages">
@@ -13,12 +19,12 @@ export function chatPageHTML({ googleClientId = "" } = {}) {
       </div>
 
       <div id="chat-suggestions" class="chat-suggestions fade-up">
-        <p class="chat-suggest-label">こんなことを聞いてみよう</p>
+        <p class="chat-suggest-label">${t("chat.suggest_label", lang)}</p>
         <div class="chat-suggest-chips">
-          <button class="chat-chip" data-q="忠臣蔵ってどんな話？">忠臣蔵ってどんな話？</button>
-          <button class="chat-chip" data-q="初心者におすすめの演目は？">初心者におすすめの演目は？</button>
-          <button class="chat-chip" data-q="花道ってなに？">花道ってなに？</button>
-          <button class="chat-chip" data-q="今月の公演情報">今月の公演情報</button>
+          <button class="chat-chip" data-q="${chip1}">${chip1}</button>
+          <button class="chat-chip" data-q="${chip2}">${chip2}</button>
+          <button class="chat-chip" data-q="${chip3}">${chip3}</button>
+          <button class="chat-chip" data-q="${chip4}">${chip4}</button>
         </div>
       </div>
     </div>
@@ -27,25 +33,28 @@ export function chatPageHTML({ googleClientId = "" } = {}) {
       <form id="chat-form" class="chat-form" autocomplete="off">
         <div class="chat-input-row">
           <textarea id="chat-input" class="chat-input" rows="1" maxlength="500"
-            placeholder="歌舞伎について何でも聞いてね" enterkeyhint="send"></textarea>
-          <button type="submit" id="chat-send" class="chat-send-btn" disabled aria-label="送信">
+            placeholder="${t("chat.placeholder", lang)}" enterkeyhint="send"></textarea>
+          <button type="submit" id="chat-send" class="chat-send-btn" disabled aria-label="${lang === "en" ? "Send" : "送信"}">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
           </button>
         </div>
       </form>
       <div class="chat-toolbar">
-        <button id="chat-reset" class="chat-toolbar-btn" title="話題を変える">🔄 話題を変える</button>
+        <button id="chat-reset" class="chat-toolbar-btn" title="${t("chat.reset", lang)}">${t("chat.reset", lang)}</button>
       </div>
     </div>
   `;
 
   return pageShell({
-    title: "けらのすけに聞く",
-    subtitle: "AIチャット",
+    title: t("chat.title", lang),
+    subtitle: t("chat.subtitle", lang),
     bodyHTML,
     hideNav: true,
     googleClientId,
-    ogDesc: "歌舞伎AIアシスタント「けらのすけ」に何でも聞いてみよう。演目・用語・公演情報をわかりやすく回答します。",
+    lang,
+    currentPath: "/kabuki/chat",
+    i18nReady: true,
+    ogDesc: t("chat.og_desc", lang),
     ogImage: "https://kabukiplus.com/assets/ogp/ogp_navi.png",
     headExtra: `<style>
       /* ── チャットコンテナ ── */
@@ -329,13 +338,15 @@ export function chatPageHTML({ googleClientId = "" } = {}) {
       var sending = false;
       var AVATAR_URL = 'https://kabukiplus.com/assets/keranosukelogo.png';
 
+      var __lang = ${JSON.stringify(lang)};
+
       // ── ウェルカムメッセージ ──
       function showWelcome() {
         var w = document.createElement('div');
         w.className = 'chat-welcome fade-up';
-        w.innerHTML = '<div class="chat-welcome-icon"><img src="' + AVATAR_URL + '" alt="けらのすけ" width="72" height="72"></div>'
-          + '<div class="chat-welcome-title">けらのすけだよ！</div>'
-          + '<div class="chat-welcome-desc">歌舞伎のことなら何でも聞いてね。<br>演目のあらすじ、用語の意味、公演情報など<br>わかる範囲でお答えするよ。</div>';
+        w.innerHTML = '<div class="chat-welcome-icon"><img src="' + AVATAR_URL + '" alt="${t("chat.ai_name", lang)}" width="72" height="72"></div>'
+          + '<div class="chat-welcome-title">${t("chat.welcome_title", lang)}</div>'
+          + '<div class="chat-welcome-desc">${t("chat.welcome_desc", lang).replace(/\n/g, "<br>")}</div>';
         messagesEl.appendChild(w);
         suggestionsEl.style.display = '';
       }
@@ -352,7 +363,7 @@ export function chatPageHTML({ googleClientId = "" } = {}) {
         var row = document.createElement('div');
         row.className = 'chat-ai-row';
         row.innerHTML = '<img src="' + AVATAR_URL + '" alt="" class="chat-ai-avatar" width="36" height="36">'
-          + '<div class="chat-bubble-ai"><div class="chat-ai-name">けらのすけ</div><div class="chat-ai-text"></div></div>';
+          + '<div class="chat-bubble-ai"><div class="chat-ai-name">${t("chat.ai_name", lang)}</div><div class="chat-ai-text"></div></div>';
         row.querySelector('.chat-ai-text').textContent = text;
         messagesEl.appendChild(row);
         scrollToBottom();
@@ -427,7 +438,7 @@ export function chatPageHTML({ googleClientId = "" } = {}) {
         fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: text.trim(), sessionId: sessionId })
+          body: JSON.stringify({ message: text.trim(), sessionId: sessionId, lang: __lang, brand: 'kabuki-plus' })
         })
         .then(function(r){ return r.json(); })
         .then(function(data){
@@ -437,12 +448,12 @@ export function chatPageHTML({ googleClientId = "" } = {}) {
           } else if (data.error) {
             showError(data.error);
           } else {
-            showError('回答を取得できませんでした。もう一度お試しください。');
+            showError(${JSON.stringify(t("chat.error_no_reply", lang))});
           }
         })
         .catch(function(){
           hideTyping();
-          showError('通信エラーが発生しました。もう一度お試しください。');
+          showError(${JSON.stringify(t("chat.error_network", lang))});
         })
         .finally(function(){
           sending = false;

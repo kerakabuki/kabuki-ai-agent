@@ -6,9 +6,9 @@ import { pageShell } from "./web_layout.js";
 
 export function groupDeleteRequestPageHTML({ groupId = "", groupName = "", googleClientId = "" } = {}) {
   const bodyHTML = `
-    <div class="breadcrumb">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">トップ</a><span>&rsaquo;</span><a href="/jikabuki/base">BASE</a><span>&rsaquo;</span>団体削除申請
-    </div>
+    </nav>
 
     <section class="dr-section fade-up">
       <div class="dr-card">

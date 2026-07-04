@@ -718,7 +718,7 @@ export function projectPageHTML() {
         <p>気良歌舞伎の事務局を務めるなかで、いつも感じていたことがあります。台本を探すのに何日もかかる。稽古のスケジュール調整はLINEグループで埋もれる。団体の魅力を伝えたくても、ウェブサイトを作る余裕がない。</p>
         <p>全国に約200ある地歌舞伎の団体が、きっと同じ課題を抱えている。ならば、テクノロジーの力で「演じる人の楽屋」を作れないか。ファンの人たちが歌舞伎をもっと気軽に楽しめる場所を作れないか。</p>
         <p>AIに歌舞伎のことを教え込み、演目ガイドや用語辞典を整え、公演情報を自動で集め、団体の公式サイトを質問に答えるだけで生成できるようにする──。ひとつひとつ、手作りで積み上げてきました。</p>
-        <p>56,000行を超えるコードのすべてに、「地歌舞伎を次の世代に届けたい」という想いが込められています。</p>
+        <p>58,000行を超えるコードのすべてに、「地歌舞伎を次の世代に届けたい」という想いが込められています。</p>
       </div>
       <div class="dm-sign">── 気良歌舞伎事務局</div>
     </div>
@@ -759,16 +759,16 @@ export function projectPageHTML() {
   <section class="section animate-in delay-4">
     <div class="section-heading">
       <span class="bar"></span>
-      <h2>数字で見るプロジェクト<span style="font-size:11px; font-weight:400; color:var(--text-tertiary); margin-left:8px;">R8.3.7 現在</span></h2>
+      <h2>数字で見るプロジェクト<span style="font-size:11px; font-weight:400; color:var(--text-tertiary); margin-left:8px;">R8.3.8 現在</span></h2>
     </div>
 
     <div class="stats-grid">
       <div class="stat-card">
-        <div class="stat-num">56,300<span class="stat-unit">+</span></div>
+        <div class="stat-num">58,000<span class="stat-unit">+</span></div>
         <div class="stat-label">行のコード</div>
       </div>
       <div class="stat-card">
-        <div class="stat-num">72</div>
+        <div class="stat-num">74</div>
         <div class="stat-label">モジュール</div>
       </div>
       <div class="stat-card">
@@ -782,7 +782,7 @@ export function projectPageHTML() {
         <div class="stat-label">演目ガイド</div>
       </div>
       <div class="stat-card">
-        <div class="stat-num">126</div>
+        <div class="stat-num">190</div>
         <div class="stat-label">用語辞典</div>
       </div>
       <div class="stat-card">
@@ -835,7 +835,7 @@ export function projectPageHTML() {
         <div class="v-icon">🧭</div>
         <div>
           <div class="v-title">知るをもっと手軽に</div>
-          <div class="v-desc">演目のあらすじ、用語の意味、俳優の情報──AIガイド「けらのすけ」に聞くだけで、歌舞伎の予備知識がすぐ手に入る世界。23+の演目ガイドと126語の用語辞典を搭載。</div>
+          <div class="v-desc">演目のあらすじ、用語の意味、俳優の情報──AIガイド「けらのすけ」に聞くだけで、歌舞伎の予備知識がすぐ手に入る世界。23+の演目ガイドと190語の用語辞典を搭載。</div>
         </div>
       </div>
       <div class="vision-item">
@@ -874,7 +874,7 @@ export function projectPageHTML() {
       <div class="feature-card">
         <div class="f-icon">🧭</div>
         <div class="f-title">KABUKI NAVI</div>
-        <div class="f-desc">演目ガイド・用語辞典<br>おすすめ・観劇マナー</div>
+        <div class="f-desc">演目ガイド・用語辞典<br>コラム・由来のことば</div>
       </div>
       <div class="feature-card">
         <div class="f-icon">📡</div>
@@ -930,6 +930,7 @@ export function projectPageHTML() {
       <div class="point-item"><strong>ランニングコストほぼ無料</strong> ── Cloudflare Workers / KV / R2の無料枠 + Gemini無料枠で運用。地歌舞伎団体の負担にならないサステナブルな設計。</div>
       <div class="point-item"><strong>LINE + Web の2面展開</strong> ── 日本のユーザーリーチに最適。LINEは会話特化、Webは全機能。PWA対応でスマホにインストール可能。</div>
       <div class="point-item"><strong>チャットで導入完了</strong> ── 新規団体はけらのすけの質問に答えるだけで、FAQ・公式サイト・チャットボットが自動生成。8テーマから選ぶだけでデザインも完成。</div>
+      <div class="point-item"><strong>多言語対応（i18n）</strong> ── 日本語/英語の2言語切り替えに対応。歌舞伎の魅力を海外にも届ける設計。</div>
       <div class="point-item"><strong>段階的に</strong> ── まず気良歌舞伎で全機能を使い込み、磨いてから他団体へ。気良が「最高のテンプレート」に。</div>
       <p style="margin-top:1rem; font-size:13px;"><a href="/architecture" style="color:var(--gold-dark); font-weight:600;">サービス構成図で詳しく見る →</a></p>
     </div>
@@ -1015,7 +1016,7 @@ export function projectPageHTML() {
         <tr><td>開発者</td><td>けらのすけ（気良歌舞伎事務局）</td></tr>
         <tr><td>開発協力</td><td>岐阜大学 日本語・日本文化教育センター<br>株式会社杉インターフェース</td></tr>
         <tr><td>技術構成</td><td>Cloudflare Workers / R2 / KV<br>Gemini 2.5 Flash + Workers AI<br>LINE Messaging API</td></tr>
-        <tr><td>規模</td><td>51,500+ 行 / 68 モジュール / 90+ ルート</td></tr>
+        <tr><td>規模</td><td>58,000+ 行 / 74 モジュール / 100+ ルート</td></tr>
         <tr><td>開始</td><td>2025年〜</td></tr>
         <tr><td>ステータス</td><td>公開運用中</td></tr>
       </table>

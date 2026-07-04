@@ -3,14 +3,15 @@
 // おすすめ演目ページ — /recommend
 // =========================================================
 import { pageShell, escHTML } from "./web_layout.js";
+import { t, langPrefix } from "./i18n.js";
 
-export function recommendPageHTML({ googleClientId = "" } = {}) {
+export function recommendPageHTML({ googleClientId = "", lang = "ja" } = {}) {
   const bodyHTML = `
     <div class="breadcrumb" id="breadcrumb">
-      <a href="/">トップ</a><span>›</span><a href="/kabuki/navi">KABUKI NAVI</a><span>›</span><span id="bc-tail">おすすめ演目</span>
+      <a href="${langPrefix(lang)}/">${t("common.breadcrumb_top", lang)}</a><span>›</span><a href="${langPrefix(lang)}/kabuki/navi">KABUKI NAVI</a><span>›</span><span id="bc-tail">${t("recommend.title", lang)}</span>
     </div>
     <div id="app">
-      <div class="loading">おすすめデータを読み込み中…</div>
+      <div class="loading">${t("recommend.loading", lang)}</div>
     </div>
 
     <script>
@@ -19,14 +20,14 @@ export function recommendPageHTML({ googleClientId = "" } = {}) {
       var bcTail = document.getElementById("bc-tail");
       var recData = null;
 
-      fetch("/api/recommend")
+      fetch("/api/recommend?lang=${lang}")
         .then(function(r){ return r.json(); })
         .then(function(data){
           recData = data;
           route();
         })
         .catch(function(){
-          app.innerHTML = '<div class="empty-state">おすすめデータの読み込みに失敗しました。</div>';
+          app.innerHTML = '<div class="empty-state">${t("recommend.error", lang)}</div>';
         });
 
       function route() {
@@ -48,20 +49,20 @@ export function recommendPageHTML({ googleClientId = "" } = {}) {
 
       // ── おすすめ一覧 ──
       function showList() {
-        bcTail.innerHTML = "おすすめ演目";
+        bcTail.innerHTML = "${t("recommend.title", lang)}";
         var faqs = getFaqs();
         if (faqs.length === 0) {
-          app.innerHTML = '<div class="empty-state">おすすめデータがまだ登録されていません。</div>';
+          app.innerHTML = '<div class="empty-state">${t("recommend.empty", lang)}</div>';
           return;
         }
 
-        var html = '<h2 class="section-title">おすすめ演目 <span style="font-size:0.8rem;color:var(--text-tertiary);">' + faqs.length + '件</span></h2>';
-        html += '<p style="font-size:0.85rem;color:var(--text-tertiary);margin-bottom:1rem;">気になる質問をタップして、おすすめの演目を見てみよう。</p>';
+        var html = '<h2 class="section-title">${t("recommend.title", lang)} <span style="font-size:0.8rem;color:var(--text-tertiary);">' + faqs.length + '${t("recommend.count_suffix", lang)}</span></h2>';
+        html += '<p style="font-size:0.85rem;color:var(--text-tertiary);margin-bottom:1rem;">${t("recommend.lead", lang)}</p>';
 
         faqs.forEach(function(f, i) {
           var id = f.id || i;
           html += '<a href="/kabuki/navi/recommend/' + encodeURIComponent(id) + '" class="list-item fade-up" style="animation-delay:' + (i*0.04) + 's" onclick="return nav(this)">';
-          html += '<div class="list-item-title">🏮 ' + esc(f.label || f.question || "（無題）") + '</div>';
+          html += '<div class="list-item-title">🏮 ' + esc(f.label || f.question || "${t("recommend.untitled", lang)}") + '</div>';
           if (f.tags && f.tags.length) {
             html += '<div class="rec-tags">';
             f.tags.forEach(function(t){ html += '<span class="rec-tag">' + esc(t) + '</span>'; });
@@ -77,15 +78,15 @@ export function recommendPageHTML({ googleClientId = "" } = {}) {
         var faqs = getFaqs();
         var faq = faqs.find(function(f){ return String(f.id) === String(id); }) || faqs[Number(id)];
         if (!faq) {
-          app.innerHTML = '<div class="empty-state">おすすめが見つかりませんでした。<br><a href="/kabuki/navi/recommend" onclick="return nav(this)">一覧に戻る</a></div>';
+          app.innerHTML = '<div class="empty-state">${t("recommend.not_found", lang)}<br><a href="${langPrefix(lang)}/kabuki/navi/recommend" onclick="return nav(this)">${t("recommend.back_to_list", lang)}</a></div>';
           return;
         }
-        bcTail.innerHTML = '<a href="/kabuki/navi/recommend" onclick="return nav(this)">おすすめ演目</a><span>›</span>' + esc(faq.label || faq.question || "おすすめ");
+        bcTail.innerHTML = '<a href="${langPrefix(lang)}/kabuki/navi/recommend" onclick="return nav(this)">${t("recommend.breadcrumb", lang)}</a><span>›</span>' + esc(faq.label || faq.question || "${t("recommend.title", lang)}");
 
         var html = '<div class="rec-detail fade-up">';
-        html += '<h2 class="rec-detail-title">' + esc(faq.question || faq.label || "おすすめ") + '</h2>';
+        html += '<h2 class="rec-detail-title">' + esc(faq.question || faq.label || "${t("recommend.title", lang)}") + '</h2>';
         html += '<hr style="border:none;border-top:1px solid var(--border-light);margin:0.8rem 0;">';
-        html += '<div class="rec-answer">' + formatText(faq.answer || "回答がありません") + '</div>';
+        html += '<div class="rec-answer">' + formatText(faq.answer || "${t("recommend.no_answer", lang)}") + '</div>';
 
         // 動画リンク
         var videos = recData && recData.videos || {};
@@ -95,27 +96,27 @@ export function recommendPageHTML({ googleClientId = "" } = {}) {
 
         if (vLinks.length > 0) {
           html += '<div class="rec-videos">';
-          html += '<h3 class="rec-videos-title">▶ 気良歌舞伎の公演動画</h3>';
+          html += '<h3 class="rec-videos-title">▶ ${t("recommend.videos_title", lang)}</h3>';
           vLinks.forEach(function(v) {
-            html += '<a href="' + esc(v.url) + '" target="_blank" rel="noopener" class="rec-video-link">🎬 ' + esc(v.title || "動画を見る") + '</a>';
+            html += '<a href="' + esc(v.url) + '" target="_blank" rel="noopener" class="rec-video-link">🎬 ' + esc(v.title || "${t("recommend.watch_video", lang)}") + '</a>';
           });
           html += '</div>';
         }
 
         // 関連演目リンク（カタログと照合して正しいID・表示名で表示）
         if (enmokuIds.length > 0) {
-          html += '<div class="rec-related" id="rec-related-wrap"><p class="rec-related-loading">関連演目を読み込み中…</p></div>';
+          html += '<div class="rec-related" id="rec-related-wrap"><p class="rec-related-loading">${t("recommend.related_loading", lang)}</p></div>';
         }
 
         html += '</div>';
         html += '<div style="margin-top:1.5rem;">';
-        html += '<a href="/kabuki/navi/recommend" class="btn btn-secondary" onclick="return nav(this)">← おすすめ一覧へ</a>';
+        html += '<a href="${langPrefix(lang)}/kabuki/navi/recommend" class="btn btn-secondary" onclick="return nav(this)">${t("recommend.back_btn", lang)}</a>';
         html += '</div>';
         app.innerHTML = html;
 
         if (enmokuIds.length > 0) {
           var enmokuAlias = { moritsuna:"moritunajinya", sodehagi:"adachigaharasandanme", chushingura07:"gionichiriki", chushingura09:"yamashinakankyo", kirare:"kirareyosa", hamamamatsuya:"hamamatsuya" };
-          fetch("/api/enmoku/catalog")
+          fetch("/api/enmoku/catalog?lang=${lang}")
             .then(function(r){ return r.json(); })
             .then(function(catalog){
               var list = Array.isArray(catalog) ? catalog : [];
@@ -127,15 +128,15 @@ export function recommendPageHTML({ googleClientId = "" } = {}) {
               });
               var wrap = document.getElementById("rec-related-wrap");
               if (!wrap) return;
-              var inner = '<h3 style="font-size:0.85rem;color:var(--kin);margin-bottom:0.4rem;">📜 関連演目ガイド</h3>';
+              var inner = '<h3 style="font-size:0.85rem;color:var(--kin);margin-bottom:0.4rem;">📜 ${t("recommend.related_title", lang)}</h3>';
               resolved.forEach(function(r){
-                inner += '<a href="/kabuki/navi/enmoku/' + encodeURIComponent(r.id) + '" class="rec-related-btn">' + esc(r.label) + '</a>';
+                inner += '<a href="${langPrefix(lang)}/kabuki/navi/enmoku/' + encodeURIComponent(r.id) + '" class="rec-related-btn">' + esc(r.label) + '</a>';
               });
               wrap.innerHTML = inner;
             })
             .catch(function(){
               var wrap = document.getElementById("rec-related-wrap");
-              if (wrap) wrap.innerHTML = '<h3 style="font-size:0.85rem;color:var(--kin);margin-bottom:0.4rem;">📜 関連演目ガイド</h3><p class="rec-related-loading">読み込みに失敗しました。</p>';
+              if (wrap) wrap.innerHTML = '<h3 style="font-size:0.85rem;color:var(--kin);margin-bottom:0.4rem;">📜 ${t("recommend.related_title", lang)}</h3><p class="rec-related-loading">${t("recommend.related_error", lang)}</p>';
             });
         }
       }
@@ -171,13 +172,36 @@ export function recommendPageHTML({ googleClientId = "" } = {}) {
     </script>
   `;
 
+  const recPageUrl = `https://kabukiplus.com${langPrefix(lang)}/kabuki/navi/recommend`;
+  const recOgDesc = lang === "en"
+    ? "Find your perfect kabuki play! Answer a few questions and get personalized recommendations for beginners."
+    : "あなたにぴったりの歌舞伎演目を診断。好みや気分に合わせて初心者におすすめの演目をご提案します";
+  const recJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": t("recommend.title", lang),
+    "description": recOgDesc,
+    "url": recPageUrl,
+    "inLanguage": lang === "en" ? "en" : "ja",
+    "applicationCategory": "Entertainment",
+    "provider": { "@type": "Organization", "name": "KABUKI PLUS+", "url": "https://kabukiplus.com" },
+  };
+
   return pageShell({
-    title: "おすすめ演目",
-    subtitle: "初心者向け・ジャンル別のおすすめ",
+    title: t("recommend.title", lang),
+    subtitle: t("recommend.subtitle", lang),
     bodyHTML,
     activeNav: "navi",
+    currentPath: "/kabuki/navi/recommend",
+    i18nReady: true,
     googleClientId,
-    headExtra: `<style>
+    lang,
+    ogDesc: recOgDesc,
+    ogUrl: recPageUrl,
+    canonicalUrl: recPageUrl,
+    headExtra: `
+<script type="application/ld+json">${JSON.stringify(recJsonLd)}</script>
+<style>
       .rec-tags {
         display: flex;
         gap: 0.3rem;

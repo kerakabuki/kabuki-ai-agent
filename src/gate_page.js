@@ -341,9 +341,9 @@ export function gatePageHTML(group, extraData = {}) {
     </section>`;
 
   const bodyHTML = `
-    <div class="breadcrumb">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">トップ</a><span>&rsaquo;</span><a href="/jikabuki/gate">GATE</a><span>&rsaquo;</span>${name}
-    </div>
+    </nav>
     ${dropdownHTML}
     ${heroBlockHTML}
     ${newsHTML}
@@ -1337,9 +1337,9 @@ export function gateTopPageHTML(gateGroups = [], defaultGroups = {}, { googleCli
   }).join("");
 
   const bodyHTML = `
-    <div class="breadcrumb">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">トップ</a><span>&rsaquo;</span>GATE
-    </div>
+    </nav>
 
     <section class="gate-top-hero">
       <div class="gate-top-title">GATE</div>

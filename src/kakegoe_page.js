@@ -2,13 +2,26 @@
 // 大向こう稽古 — /training/kakegoe
 // 白浪五人男「稲瀬川勢揃い」専用レイアウト
 // =============================================================
-export function kakegoePageHTML() {
+import { langPrefix } from "./i18n.js";
+
+export function kakegoePageHTML({ lang = "ja" } = {}) {
+  const isEn = lang === "en";
+  const lp = langPrefix(lang);
+  const L = (ja, en) => isEn ? en : ja;
+
   return `<!DOCTYPE html>
-<html lang="ja">
+<html lang="${lang}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>大向う道場 ─ 白浪五人男 | KABUKI PLUS+</title>
+<title>${L("大向う道場 ─ 白浪五人男", "Kakegoe Dojo ─ Shiranami Gonin Otoko")} | KABUKI PLUS+</title>
+<meta name="description" content="${L(
+  "歌舞伎の掛け声を動画で練習！白浪五人男「稲瀬川勢揃い」でタイミングよく掛け声と拍手を打とう。",
+  "Practice kabuki kakegoe calls with video! Time your shouts and applause to Shiranami Gonin Otoko."
+)}">
+${isEn ? `<link rel="alternate" hreflang="ja" href="https://keranosuke.com/kabuki/dojo/training/kakegoe">
+<link rel="alternate" hreflang="en" href="https://keranosuke.com/en/kabuki/dojo/training/kakegoe">` : `<link rel="alternate" hreflang="ja" href="https://keranosuke.com/kabuki/dojo/training/kakegoe">
+<link rel="alternate" hreflang="en" href="https://keranosuke.com/en/kabuki/dojo/training/kakegoe">`}
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -51,8 +64,15 @@ export function kakegoePageHTML() {
   }
   body > * { position: relative; z-index: 1; }
 
+  /* ── lang switch ── */
+  .lang-switch{position:absolute;top:0.5rem;right:0.5rem;z-index:20;}
+  .lang-switch a{display:inline-block;padding:4px 10px;border-radius:6px;font-size:0.75rem;
+    background:var(--bg-card);border:1px solid var(--border-medium);color:var(--text-secondary);
+    text-decoration:none;transition:all 0.2s;}
+  .lang-switch a:hover{border-color:var(--kin);color:var(--kin);}
+
   /* ── イントロ画面 ── */
-  #intro{max-width:760px;margin:0 auto;padding:1rem;text-align:center;}
+  #intro{max-width:760px;margin:0 auto;padding:1rem;text-align:center;position:relative;}
   #intro h1{font-size:1.8rem;letter-spacing:0.25em;color:var(--text-primary);
     margin:1rem 0 0.3rem;font-family:'Noto Serif JP', serif;}
   #intro .subtitle{font-size:1rem;color:var(--text-tertiary);letter-spacing:0.1em;margin-bottom:1rem;}
@@ -282,76 +302,103 @@ export function kakegoePageHTML() {
 
 <!-- ===== イントロ画面 ===== -->
 <div id="intro">
-  <div style="text-align:left;margin-bottom:0.5rem;">
-    <a href="/kabuki/dojo" style="color:var(--gold);text-decoration:none;font-size:0.9rem;">← KABUKI DOJO</a>
+  <div class="lang-switch">
+    <a href="${isEn ? "/kabuki/dojo/training/kakegoe" : "/en/kabuki/dojo/training/kakegoe"}">${isEn ? "日本語" : "English"}</a>
   </div>
-  <h1>大向う道場</h1>
-  <div class="subtitle">白浪五人男「稲瀬川勢揃い」</div>
+  <div style="text-align:left;margin-bottom:0.5rem;">
+    <a href="${lp}/kabuki/dojo" style="color:var(--gold);text-decoration:none;font-size:0.9rem;">← KABUKI DOJO</a>
+  </div>
+  <h1>${L("大向う道場", "Kakegoe Dojo")}</h1>
+  <div class="subtitle">${L('白浪五人男「稲瀬川勢揃い」', "Shiranami Gonin Otoko — Inasegawa Lineup")}</div>
 
   <div class="cast-row" id="cast-row">
     <div class="cast-card" data-char="benten">
-      <span class="role role-kakegoe">🎤 掛け声</span>
-      <img src="https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/benten.png" alt="弁天小僧">
-      <div class="name"><span>弁天小僧</span><small>座長</small></div>
+      <span class="role role-kakegoe">${L("🎤 掛け声", "🎤 Kakegoe")}</span>
+      <img src="https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/benten.png" alt="${L("弁天小僧", "Benten Kozō")}">
+      <div class="name"><span>${L("弁天小僧", "Benten Kozō")}</span><small>${L("座長", "Troupe Leader")}</small></div>
     </div>
     <div class="cast-card" data-char="tadanobu">
-      <span class="role role-kakegoe">🎤 掛け声</span>
-      <img src="https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/tadanobu.png" alt="忠信利平">
-      <div class="name"><span>忠信利平</span><small>郡上市役所</small></div>
+      <span class="role role-kakegoe">${L("🎤 掛け声", "🎤 Kakegoe")}</span>
+      <img src="https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/tadanobu.png" alt="${L("忠信利平", "Tadanobu Rihei")}">
+      <div class="name"><span>${L("忠信利平", "Tadanobu Rihei")}</span><small>${L("郡上市役所", "City Hall")}</small></div>
     </div>
     <div class="cast-card" data-char="akaboshi">
-      <span class="role role-kakegoe">🎤 掛け声</span>
-      <img src="https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/akaboshi.png" alt="赤星十三郎">
-      <div class="name"><span>赤星十三郎</span><small>イケメン営業</small></div>
+      <span class="role role-kakegoe">${L("🎤 掛け声", "🎤 Kakegoe")}</span>
+      <img src="https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/akaboshi.png" alt="${L("赤星十三郎", "Akaboshi Jūzaburō")}">
+      <div class="name"><span>${L("赤星十三郎", "Akaboshi Jūzaburō")}</span><small>${L("イケメン営業", "Handsome Sales")}</small></div>
     </div>
     <div class="cast-card" data-char="nango">
-      <span class="role role-kakegoe">🎤 掛け声</span>
-      <img src="https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/nango.png" alt="南郷力丸">
-      <div class="name"><span>南郷力丸</span><small>信用金庫</small></div>
+      <span class="role role-kakegoe">${L("🎤 掛け声", "🎤 Kakegoe")}</span>
+      <img src="https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/nango.png" alt="${L("南郷力丸", "Nangō Rikimaru")}">
+      <div class="name"><span>${L("南郷力丸", "Nangō Rikimaru")}</span><small>${L("信用金庫", "Credit Union")}</small></div>
     </div>
     <div class="cast-card" data-char="dayemon">
-      <span class="role role-kakegoe">🎤 掛け声</span>
-      <img src="https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/dayemon.png" alt="日本駄右衛門">
-      <div class="name"><span>日本駄右衛門</span><small>太っ腹社長</small></div>
+      <span class="role role-kakegoe">${L("🎤 掛け声", "🎤 Kakegoe")}</span>
+      <img src="https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/dayemon.png" alt="${L("日本駄右衛門", "Nippon Daemon")}">
+      <div class="name"><span>${L("日本駄右衛門", "Nippon Daemon")}</span><small>${L("太っ腹社長", "Big Boss")}</small></div>
     </div>
   </div>
 
   <div class="how-to">
     <div class="summary-box">
-      動画を見ながら <b>🎤 掛け声</b> と <b>👏 拍手</b> をタイミングよくタップ！拍手の後は <b>🪙 おひねり</b> チャンスも！
+      ${L(
+        '動画を見ながら <b>🎤 掛け声</b> と <b>👏 拍手</b> をタイミングよくタップ！拍手の後は <b>🪙 おひねり</b> チャンスも！',
+        'Watch the video and tap <b>🎤 Kakegoe</b> and <b>👏 Applause</b> at the right timing! After applause, you get a <b>🪙 Coin Toss</b> chance!'
+      )}
     </div>
     <details>
-      <summary>📖 くわしいあそびかた</summary>
+      <summary>${L("📖 くわしいあそびかた", "📖 How to Play")}</summary>
       <div class="detail-body">
         <ol>
-          <li>下の <b>「稽古をはじめる」</b> ボタンを押すと動画がスタート</li>
-          <li>画面の <b>ヒント</b> を見ながらタイミングを待つ</li>
-          <li>役者の登場やツラネの見せ場で <b style="color:var(--aka);">🎤 掛け声！</b> をタップ</li>
-          <li>見得やツラネの終わりで <b style="color:var(--moegi);">👏 拍手！</b> をタップ</li>
-          <li>拍手が成功すると <b style="color:var(--kin);">🪙 おひねり</b> チャンス！タップでボーナス</li>
-          <li>タイミングが良いほど高得点！全28回の掛け声＆拍手に挑戦</li>
+          <li>${L(
+            '下の <b>「稽古をはじめる」</b> ボタンを押すと動画がスタート',
+            'Press the <b>"Start Practice"</b> button below to start the video'
+          )}</li>
+          <li>${L(
+            '画面の <b>ヒント</b> を見ながらタイミングを待つ',
+            'Watch the <b>hints</b> on screen and wait for the right moment'
+          )}</li>
+          <li>${L(
+            '役者の登場やツラネの見せ場で <b style="color:var(--aka);">🎤 掛け声！</b> をタップ',
+            'Tap <b style="color:var(--aka);">🎤 Kakegoe!</b> when an actor makes an entrance or strikes a pose'
+          )}</li>
+          <li>${L(
+            '見得やツラネの終わりで <b style="color:var(--moegi);">👏 拍手！</b> をタップ',
+            'Tap <b style="color:var(--moegi);">👏 Applause!</b> at the end of a mie pose or speech'
+          )}</li>
+          <li>${L(
+            '拍手が成功すると <b style="color:var(--kin);">🪙 おひねり</b> チャンス！タップでボーナス',
+            'Successful applause triggers a <b style="color:var(--kin);">🪙 Coin Toss</b> chance! Tap for bonus points'
+          )}</li>
+          <li>${L(
+            'タイミングが良いほど高得点！全28回の掛け声＆拍手に挑戦',
+            'Better timing = higher score! Challenge all 28 kakegoe & applause cues'
+          )}</li>
         </ol>
         <div class="tip">
-          💡 <b>大当たり</b>＝ぴったり、<b>良し</b>＝ちょっとずれ、<b>空振り</b>＝タイミング逃し。<br>
-          掛け声と拍手の<b>種類を間違えない</b>ように！
+          ${L(
+            '💡 <b>大当たり</b>＝ぴったり、<b>良し</b>＝ちょっとずれ、<b>空振り</b>＝タイミング逃し。<br>掛け声と拍手の<b>種類を間違えない</b>ように！',
+            '💡 <b>Perfect</b> = right on time, <b>Good</b> = slightly off, <b>Miss</b> = too late.<br>Don\'t mix up <b>kakegoe and applause</b>!'
+          )}
         </div>
       </div>
     </details>
     <div class="caution">
-      ⚠️ <b>大事なお願い</b><br>
-      この大向う道場は歌舞伎の<b>大向うの掛け声</b>を楽しく学ぶための練習コンテンツです。<br>
-      実際の歌舞伎公演では、掛け声のマナーや劇場のルールを守りましょう。<b>初心者のうちは拍手で十分</b>です。
+      ${L(
+        '⚠️ <b>大事なお願い</b><br>この大向う道場は歌舞伎の<b>大向うの掛け声</b>を楽しく学ぶための練習コンテンツです。<br>実際の歌舞伎公演では、掛け声のマナーや劇場のルールを守りましょう。<b>初心者のうちは拍手で十分</b>です。',
+        '⚠️ <b>Important Note</b><br>This Kakegoe Dojo is a practice tool for learning <b>traditional kabuki shouts (kakegoe)</b> in a fun way.<br>At actual kabuki performances, please follow proper etiquette and theater rules. <b>For beginners, applause alone is perfectly fine</b>.'
+      )}
     </div>
   </div>
 
-  <div class="pre-btn">準備できたら押してね（動画が再生されます）</div>
-  <button id="start-btn" disabled>🎭 稽古をはじめる</button>
+  <div class="pre-btn">${L("準備できたら押してね（動画が再生されます）", "Press when ready (video will start playing)")}</div>
+  <button id="start-btn" disabled>${L("🎭 稽古をはじめる", "🎭 Start Practice")}</button>
 </div>
 
 <!-- ===== プレイ画面 ===== -->
 <div id="stage">
   <div style="padding:0 0.5rem 0.3rem;">
-    <a href="/kabuki/dojo" style="color:var(--gold);text-decoration:none;font-size:0.85rem;">← KABUKI DOJO</a>
+    <a href="${lp}/kabuki/dojo" style="color:var(--gold);text-decoration:none;font-size:0.85rem;">← KABUKI DOJO</a>
   </div>
   <div id="player-wrap">
     <div id="player"></div>
@@ -364,7 +411,7 @@ export function kakegoePageHTML() {
 <div id="now-playing">
   <div id="now-char">
     <img id="now-char-img" src="https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/benten.png" alt="">
-    <span id="now-char-name">弁天小僧</span>
+    <span id="now-char-name">${L("弁天小僧", "Benten Kozō")}</span>
   </div>
 </div>
 
@@ -379,51 +426,117 @@ export function kakegoePageHTML() {
 <div id="tap-zone">
   <div class="tap-buttons">
     <button class="tap-btn" id="btn-kakegoe-play">
-      🎤 掛け声！
-      <span class="sub">声を掛けるタイミングで</span>
+      ${L("🎤 掛け声！", "🎤 Kakegoe!")}
+      <span class="sub">${L("声を掛けるタイミングで", "Shout at the right moment")}</span>
     </button>
     <button class="tap-btn" id="btn-hakushu-play">
-      👏 拍手！
-      <span class="sub">一区切りのタイミングで</span>
+      ${L("👏 拍手！", "👏 Applause!")}
+      <span class="sub">${L("一区切りのタイミングで", "Clap at a pause or finale")}</span>
     </button>
   </div>
 </div>
 
 <div id="ohineri-zone">
   <div id="ohineri-inner">
-    <button id="btn-ohineri">🪙 投げろ！おひねり！</button>
-    <span id="ohineri-label">拍手成功！今だけのチャンス</span>
+    <button id="btn-ohineri">${L("🪙 投げろ！おひねり！", "🪙 Throw Coins!")}</button>
+    <span id="ohineri-label">${L("拍手成功！今だけのチャンス", "Applause hit! Limited-time chance")}</span>
     <div id="ohineri-timer" style="width:200px;"></div>
   </div>
 </div>
 
 <div id="score-bar">
   <div class="score-grid">
-    <div class="score-row s-great"><span class="s-label">大当たり</span><span class="s-val" id="s-great">0</span></div>
-    <div class="score-row s-good"><span class="s-label">良し</span><span class="s-val" id="s-good">0</span></div>
-    <div class="score-row s-miss"><span class="s-label">空振り</span><span class="s-val" id="s-miss">0</span></div>
-    <div class="score-row s-ohineri"><span class="s-label">🪙 おひねり</span><span class="s-val" id="s-ohineri">0</span></div>
+    <div class="score-row s-great"><span class="s-label">${L("大当たり", "Perfect")}</span><span class="s-val" id="s-great">0</span></div>
+    <div class="score-row s-good"><span class="s-label">${L("良し", "Good")}</span><span class="s-val" id="s-good">0</span></div>
+    <div class="score-row s-miss"><span class="s-label">${L("空振り", "Miss")}</span><span class="s-val" id="s-miss">0</span></div>
+    <div class="score-row s-ohineri"><span class="s-label">${L("🪙 おひねり", "🪙 Coins")}</span><span class="s-val" id="s-ohineri">0</span></div>
   </div>
 </div>
 
 <div id="result">
-  <h2>お稽古おつかれさま！</h2>
+  <h2>${L("お稽古おつかれさま！", "Great Practice!")}</h2>
   <div class="big-score" id="result-score"></div>
   <div class="detail" id="result-detail"></div>
   <div class="cast-row" id="result-cast"></div>
-  <button onclick="location.reload()">もう一度やる</button>
+  <button onclick="location.reload()">${L("もう一度やる", "Try Again")}</button>
 </div>
 
 <footer>
-  <a href="/kabuki/dojo">← KABUKI DOJO へ戻る</a>
+  <a href="${lp}/kabuki/dojo">${L("← KABUKI DOJO へ戻る", "← Back to KABUKI DOJO")}</a>
 </footer>
 
 <script>
 // =========================================================
+// i18n UI strings
+// =========================================================
+const LANG = "${lang}";
+const isEn = LANG === "en";
+const UI = isEn ? {
+  load_error: "Loading Error",
+  no_cues: "All cues done! Great job!",
+  hint_next: "Next... ",
+  hint_soon: "Coming soon! ",
+  hint_ready: "Get ready...! ",
+  hint_now: "NOW!! ",
+  wrong_type: "Wrong type!",
+  ohineri1: "🪙 Coin Toss!",
+  ohineri2: "🪙🪙 Generous!",
+  ohineri3: "🪙🪙🪙 Big Spender!!",
+  rank_novice: "Novice",
+  rank_training: "In Training",
+  rank_skilled: "Skilled",
+  rank_expert: "Expert",
+  rank_master: "Grand Master 🏆",
+  score_suffix: " pts",
+  result_detail: function(s, total) {
+    var line = "Perfect: " + s.great + " / Good: " + s.good + " / Miss: " + s.miss;
+    line += "<br>" + total + " kakegoe & applause cues";
+    if (s.ohineri > 0) line += "<br>🪙 Coins: " + s.ohineri;
+    return line;
+  },
+  kakegoe_label: "kakegoe",
+  applause_label: "Applause",
+  char_sep: " — ",
+} : {
+  load_error: "読み込みエラー",
+  no_cues: "もうキューはないよ！おつかれさま！",
+  hint_next: "次は… ",
+  hint_soon: "もうすぐ！ ",
+  hint_ready: "くるよ…！ ",
+  hint_now: "今だ！！ ",
+  wrong_type: "種類が違うよ！",
+  ohineri1: "🪙 おひねり！",
+  ohineri2: "🪙🪙 太っ腹！",
+  ohineri3: "🪙🪙🪙 大盤振る舞い！！",
+  rank_novice: "前座",
+  rank_training: "稽古中",
+  rank_skilled: "上手",
+  rank_expert: "名人",
+  rank_master: "大名人 🏆",
+  score_suffix: "点",
+  result_detail: function(s, total) {
+    var line = "大当たり: " + s.great + " / 良し: " + s.good + " / 空振り: " + s.miss;
+    line += "<br>全" + total + "回の掛け声・拍手";
+    if (s.ohineri > 0) line += "<br>🪙 おひねり: " + s.ohineri + "回";
+    return line;
+  },
+  kakegoe_label: "掛け声",
+  applause_label: "拍手",
+  char_sep: "（",
+};
+
+// =========================================================
 // キャラクターデータ
 // =========================================================
 const IMG_BASE = "https://raw.githubusercontent.com/kerakabuki/kabuki-ai-agent/main/assets/shiranami/";
-const CHARS = {
+const CHARS = isEn ? {
+  benten:   { name: "Benten Kozō",         actor: "Troupe Leader",   kakegoe: "よっ座長！",         img: IMG_BASE + "benten.png" },
+  tadanobu: { name: "Tadanobu Rihei",       actor: "City Hall",       kakegoe: "よっ郡上市役所！",   img: IMG_BASE + "tadanobu.png" },
+  akaboshi: { name: "Akaboshi Jūzaburō",   actor: "Handsome Sales",  kakegoe: "よっイケメン営業！", img: IMG_BASE + "akaboshi.png" },
+  nango:    { name: "Nangō Rikimaru",       actor: "Credit Union",    kakegoe: "よっ信用金庫！",     img: IMG_BASE + "nango.png" },
+  dayemon:  { name: "Nippon Daemon",        actor: "Big Boss",        kakegoe: "よっ太っ腹社長！",   img: IMG_BASE + "dayemon.png" },
+  all:      { name: "Shiranami Gonin Otoko", actor: "All Five",       kakegoe: "日本一！",           img: IMG_BASE + "complete.png" },
+} : {
   benten:   { name: "弁天小僧",     actor: "気良歌舞伎座長", kakegoe: "よっ座長！",             img: IMG_BASE + "benten.png" },
   tadanobu: { name: "忠信利平",     actor: "郡上市役所",     kakegoe: "よっ郡上市役所！",       img: IMG_BASE + "tadanobu.png" },
   akaboshi: { name: "赤星十三郎",   actor: "イケメン営業",   kakegoe: "よっイケメン営業！",     img: IMG_BASE + "akaboshi.png" },
@@ -454,7 +567,7 @@ let CHAR_TIMELINE = [];
     document.getElementById("start-btn").disabled = false;
   } catch (e) {
     console.error("Training pack load error:", e);
-    document.getElementById("start-btn").textContent = "読み込みエラー";
+    document.getElementById("start-btn").textContent = UI.load_error;
   }
 })();
 
@@ -576,7 +689,9 @@ function updateNowPlaying(t) {
   if (currentChar && CHARS[currentChar]) {
     const ch = CHARS[currentChar];
     document.getElementById("now-char-img").src = ch.img;
-    document.getElementById("now-char-name").textContent = ch.name + "（" + ch.actor + "）";
+    document.getElementById("now-char-name").textContent = isEn
+      ? ch.name + " — " + ch.actor
+      : ch.name + "（" + ch.actor + "）";
     // イントロのカードもハイライト
     document.querySelectorAll(".cast-card").forEach(c => c.classList.remove("active"));
     const card = document.querySelector('.cast-card[data-char="' + currentChar + '"]');
@@ -588,21 +703,23 @@ function updateHint(t) {
   const el = document.getElementById("next-hint");
   const next = cues.find(c => c.result === null);
   if (!next) {
-    el.innerHTML = "もうキューはないよ！おつかれさま！";
+    el.innerHTML = UI.no_cues;
     return;
   }
   const isKake = next.type !== "hakushu";
   const icon = isKake ? "🎤" : "👏";
-  const label = isKake ? ("「" + (next.text || "掛け声") + "」") : "拍手";
+  const label = isKake
+    ? (isEn ? (next.text || "Kakegoe") : ("「" + (next.text || "掛け声") + "」"))
+    : (isEn ? "Applause" : "拍手");
   const diff = next.time - t;
   if (diff > 10) {
-    el.innerHTML = "次は… " + icon + " <span class='hint-text'>" + next.hint + "</span>";
+    el.innerHTML = UI.hint_next + icon + " <span class='hint-text'>" + (next.hint || "") + "</span>";
   } else if (diff > 3) {
-    el.innerHTML = "もうすぐ！ " + icon + " <span class='hint-text'>" + label + "</span>";
+    el.innerHTML = UI.hint_soon + icon + " <span class='hint-text'>" + label + "</span>";
   } else if (diff > 0) {
-    el.innerHTML = "<span style='color:var(--aka);font-size:1.1rem;font-weight:bold;'>くるよ…！ " + icon + "</span>";
+    el.innerHTML = "<span style='color:var(--aka);font-size:1.1rem;font-weight:bold;'>" + UI.hint_ready + icon + "</span>";
   } else {
-    el.innerHTML = "<span style='color:var(--kin);font-size:1.1rem;font-weight:bold;'>今だ！！ " + icon + "</span>";
+    el.innerHTML = "<span style='color:var(--kin);font-size:1.1rem;font-weight:bold;'>" + UI.hint_now + icon + "</span>";
   }
 }
 
@@ -651,7 +768,7 @@ function handleTap(tapType, e, btn) {
     markCue(bestIdx, "hit");
     if (cueType === "hakushu") wasHakushuHit = true;
   } else if (bestDiff <= wGood && !typeMatch) {
-    showKakegoe("種類が違うよ！", "var(--aka)");
+    showKakegoe(UI.wrong_type, "var(--aka)");
     return;
   } else {
     showKakegoe("…", "var(--text-secondary)");
@@ -728,11 +845,11 @@ document.getElementById("btn-ohineri").addEventListener("click", function(e) {
   const count = 6 + Math.min(score.ohineri, 10); // 連打するほど豪華に
   spawnOhineri(e.clientX, e.clientY, stageRect, count);
   if (score.ohineri <= 3) {
-    showKakegoe("🪙 おひねり！", "var(--kin)");
+    showKakegoe(UI.ohineri1, "var(--kin)");
   } else if (score.ohineri <= 8) {
-    showKakegoe("🪙🪙 太っ腹！", "var(--kin)");
+    showKakegoe(UI.ohineri2, "var(--kin)");
   } else {
-    showKakegoe("🪙🪙🪙 大盤振る舞い！！", "var(--kin)");
+    showKakegoe(UI.ohineri3, "var(--kin)");
   }
 });
 
@@ -790,17 +907,16 @@ function showResult() {
   const total = cues.length;
   const pct = total > 0 ? Math.round(((score.great * 1.0 + score.good * 0.5) / total) * 100) : 0;
 
-  let rank = "前座";
-  if (pct >= 90) rank = "大名人 🏆";
-  else if (pct >= 70) rank = "名人";
-  else if (pct >= 50) rank = "上手";
-  else if (pct >= 30) rank = "稽古中";
+  let rank = UI.rank_novice;
+  if (pct >= 90) rank = UI.rank_master;
+  else if (pct >= 70) rank = UI.rank_expert;
+  else if (pct >= 50) rank = UI.rank_skilled;
+  else if (pct >= 30) rank = UI.rank_training;
 
-  document.getElementById("result-score").textContent = pct + "点（" + rank + "）";
-  const ohineriLine = score.ohineri > 0 ? "<br>🪙 おひねり: " + score.ohineri + "回" : "";
-  document.getElementById("result-detail").innerHTML =
-    "大当たり: " + score.great + " / 良し: " + score.good + " / 空振り: " + score.miss +
-    "<br>全" + total + "回の掛け声・拍手" + ohineriLine;
+  document.getElementById("result-score").textContent = isEn
+    ? pct + " pts (" + rank + ")"
+    : pct + "点（" + rank + "）";
+  document.getElementById("result-detail").innerHTML = UI.result_detail(score, total);
 
   // 結果画面にもキャラカードを表示
   const rc = document.getElementById("result-cast");

@@ -3,15 +3,17 @@
 // ニュースページ — /news
 // =========================================================
 import { pageShell, escHTML } from "./web_layout.js";
+import { t, langPrefix } from "./i18n.js";
 
-export function newsPageHTML({ googleClientId = "" } = {}) {
+export function newsPageHTML({ googleClientId = "", lang = "ja" } = {}) {
+  const lp = langPrefix(lang);
   const bodyHTML = `
-    <div class="breadcrumb">
-      <a href="/">トップ</a><span>›</span><a href="/kabuki/live">KABUKI LIVE</a><span>›</span>ニュース一覧
-    </div>
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="${lp}/">${t("common.breadcrumb_top", lang)}</a><span>›</span><a href="${lp}/kabuki/live">KABUKI LIVE</a><span>›</span>${t("news.breadcrumb", lang)}
+    </nav>
 
     <div id="news-container">
-      <div class="loading">ニュースを読み込み中…</div>
+      <div class="loading">${t("news.loading", lang)}</div>
     </div>
 
     <script>
@@ -22,20 +24,20 @@ export function newsPageHTML({ googleClientId = "" } = {}) {
         .then(function(r){ return r.json(); })
         .then(function(data){
           if (!data || !data.articles || data.articles.length === 0) {
-            container.innerHTML = '<div class="empty-state">📰 まだニュースが取得できていないよ。<br>もう少し待ってね！</div>';
+            container.innerHTML = '<div class="empty-state">📰 ${t("news.empty", lang)}</div>';
             return;
           }
           render(data);
         })
         .catch(function(){
-          container.innerHTML = '<div class="empty-state">ニュースの読み込みに失敗しました。</div>';
+          container.innerHTML = '<div class="empty-state">${t("news.error", lang)}</div>';
         });
 
       function render(data) {
         var articles = data.articles;
         var updated = data.updatedAt ? formatTime(data.updatedAt) : "";
 
-        var html = '<p class="news-updated">更新: ' + esc(updated) + '</p>';
+        var html = '<p class="news-updated">${t("news.updated", lang)}' + esc(updated) + '</p>';
 
         articles.forEach(function(a, i) {
           var date = a.pubTs ? formatDate(a.pubTs) : "";
@@ -74,13 +76,35 @@ export function newsPageHTML({ googleClientId = "" } = {}) {
     </script>
   `;
 
+  const pageUrl = `https://kabukiplus.com${lp}/kabuki/live/news`;
+  const newsJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": t("news.title", lang),
+    "description": lang === "en"
+      ? "Latest kabuki news: performances, actors, and events."
+      : "歌舞伎に関する最新ニュースをまとめてお届け。公演情報・俳優の話題・イベント情報をチェック",
+    "url": pageUrl,
+    "inLanguage": lang === "en" ? "en" : "ja",
+    "publisher": { "@type": "Organization", "name": "KABUKI PLUS+", "url": "https://kabukiplus.com" },
+    "dateModified": new Date().toISOString().split("T")[0],
+  };
+
   return pageShell({
-    title: "ニュース一覧",
-    subtitle: "KABUKI LIVE — 歌舞伎瓦版",
+    lang,
+    title: t("news.title", lang),
+    subtitle: t("news.subtitle", lang),
     bodyHTML,
     activeNav: "live",
+    currentPath: "/kabuki/live/news",
+    i18nReady: false,
     googleClientId,
-    headExtra: `<style>
+    ogDesc: "歌舞伎に関する最新ニュースをまとめてお届け。公演情報・俳優の話題・イベント情報をチェック",
+    ogUrl: pageUrl,
+    canonicalUrl: pageUrl,
+    headExtra: `
+<script type="application/ld+json">${JSON.stringify(newsJsonLd)}</script>
+<style>
       .news-updated {
         font-size: 0.78rem;
         color: var(--text-secondary);

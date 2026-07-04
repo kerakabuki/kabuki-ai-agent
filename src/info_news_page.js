@@ -7,9 +7,9 @@ import { pageShell } from "./web_layout.js";
 
 export function infoNewsPageHTML() {
   const bodyHTML = `
-    <div class="breadcrumb">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">トップ</a><span>›</span><a href="/jikabuki/info">INFO</a><span>›</span>地歌舞伎ニュース
-    </div>
+    </nav>
 
     <section class="in-hero fade-up">
       <h2 class="in-hero-title">📰 地歌舞伎ニュース</h2>
@@ -151,6 +151,18 @@ export function infoNewsPageHTML() {
     </script>
   `;
 
+  const infoNewsPageUrl = "https://kabukiplus.com/jikabuki/info/news";
+  const infoNewsJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "地歌舞伎ニュース",
+    "description": "全国の地歌舞伎・地芝居に関する最新ニュース一覧。地域の芝居文化を知る・応援するための情報をまとめています。",
+    "url": infoNewsPageUrl,
+    "inLanguage": "ja",
+    "publisher": { "@type": "Organization", "name": "JIKABUKI PLUS+", "url": "https://kabukiplus.com" },
+    "dateModified": new Date().toISOString().split("T")[0],
+  };
+
   return pageShell({
     title: "地歌舞伎ニュース",
     subtitle: "INFO — 地歌舞伎の入口",
@@ -159,7 +171,11 @@ export function infoNewsPageHTML() {
     brand: "jikabuki",
     ogTitle: "地歌舞伎ニュース | JIKABUKI PLUS+",
     ogDesc: "全国の地歌舞伎・地芝居に関する最新ニュース一覧。地域の芝居文化を知る・応援するための情報をまとめています。",
-    headExtra: `<style>
+    ogUrl: infoNewsPageUrl,
+    canonicalUrl: infoNewsPageUrl,
+    headExtra: `
+<script type="application/ld+json">${JSON.stringify(infoNewsJsonLd)}</script>
+<style>
       /* ── ヒーロー ── */
       .in-hero {
         text-align: center;

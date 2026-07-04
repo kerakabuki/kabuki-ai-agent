@@ -3,97 +3,101 @@
 // トップページ — / （3層構造：けらのすけ → 注目コンテンツ → モジュール一覧）
 // =========================================================
 import { pageShell } from "./web_layout.js";
+import { t, langPrefix } from "./i18n.js";
 
-export function topPageHTML() {
+export function topPageHTML({ lang = "ja" } = {}) {
+  const lp = langPrefix(lang);
+
+  // English top page: KABUKI only (no brand toggle, no JIKABUKI section)
+  const showBrandToggle = lang === "ja";
+
   const bodyHTML = `
     <!-- ── ブランド切替トグル ── -->
-    <div class="brand-toggle-wrap fade-up">
+    ${showBrandToggle ? `<div class="brand-toggle-wrap fade-up">
       <div class="brand-toggle">
         <button class="brand-toggle-btn bt-kabuki active" onclick="switchBrand('kabuki')">KABUKI PLUS+</button>
         <button class="brand-toggle-btn bt-jikabuki" onclick="switchBrand('jikabuki')">JIKABUKI PLUS+</button>
       </div>
       <div class="brand-toggle-labels">
-        <span>歌舞伎ファン・初心者向け</span>
-        <span>地歌舞伎の演者・運営者向け</span>
+        <span>${t("top.brand_kabuki", lang)}</span>
+        <span>${t("top.brand_jikabuki", lang)}</span>
       </div>
-    </div>
+    </div>` : ""}
 
     <!-- ═══ KABUKI PLUS+ コンテンツ ═══ -->
-    <div id="content-kabuki" style="display:none;">
+    <div id="content-kabuki" style="${showBrandToggle ? 'display:none;' : ''}">
 
       <!-- ━━ Layer 1: けらのすけ ━━ -->
       <section class="kera-hero fade-up">
         <div class="kera-hero-inner">
-          <img src="https://kabukiplus.com/assets/keranosukelogo.png" alt="けらのすけ" class="kera-hero-avatar">
+          <img src="https://kabukiplus.com/assets/keranosukelogo.png" alt="${t("top.kera_name", lang)}" class="kera-hero-avatar">
           <div class="kera-hero-body">
-            <div class="kera-hero-name">けらのすけ</div>
-            <div class="kera-hero-role">歌舞伎の友達AI</div>
+            <div class="kera-hero-name">${t("top.kera_name", lang)}</div>
+            <div class="kera-hero-role">${t("top.kera_role", lang)}</div>
             <p class="kera-hero-msg">
-              やあ！歌舞伎のことなら何でも聞いてね。<br>
-              「歌舞伎座に初めて行く」「義経千本桜ってどんな話？」<br>
-              なんて気軽にどうぞ！
+              ${t("top.kera_msg", lang).replace(/\n/g, "<br>\n              ")}
             </p>
           </div>
         </div>
         <div class="kera-hero-cta-row">
-          <a href="https://line.me/R/oaMessage/@117oizby/" target="_blank" rel="noopener" class="kera-hero-cta">
+          ${lang !== "en" ? `<a href="https://line.me/R/oaMessage/@117oizby/" target="_blank" rel="noopener" class="kera-hero-cta">
             <span class="kera-hero-cta-icon">💬</span>
-            LINE で話す
-          </a>
-          <a href="/kabuki/chat" target="_blank" rel="noopener" class="kera-hero-cta kera-hero-cta-web">
+            ${t("top.line_chat", lang)}
+          </a>` : ""}
+          <a href="${lp}/kabuki/chat" target="_blank" rel="noopener" class="kera-hero-cta kera-hero-cta-web">
             <span class="kera-hero-cta-icon">🌐</span>
-            Web で聞く
+            ${t("top.web_chat", lang)}
           </a>
         </div>
-        <div class="kera-hero-sub">演目ガイド・公演情報・クイズ・用語解説──何でも聞ける歌舞伎AIアシスタント</div>
+        <div class="kera-hero-sub">${t("top.kera_sub", lang)}</div>
       </section>
 
       <!-- ━━ Layer 2: 注目演目 ━━ -->
       <section class="tp-section fade-up-d1" id="tp-featured" style="display:none;">
-        <h2 class="tp-section-title">注目の演目</h2>
+        <h2 class="tp-section-title">${t("top.featured", lang)}</h2>
         <div id="tp-featured-items" class="featured-grid"></div>
         <div class="featured-more">
-          <a href="/kabuki/live">公演スケジュールを見る &rarr;</a>
+          <a href="${lp}/kabuki/live">${t("top.featured_more", lang)} &rarr;</a>
         </div>
       </section>
 
       <!-- ━━ Layer 3: モジュール一覧 ━━ -->
       <section class="tp-section fade-up-d2">
-        <h2 class="tp-section-title">コンテンツ</h2>
+        <h2 class="tp-section-title">${t("top.contents", lang)}</h2>
         <div class="hub-grid hub-grid-4">
-          <a href="/kabuki/navi" class="hub-card hub-navi">
+          <a href="${lp}/kabuki/navi" class="hub-card hub-navi">
             <div class="hub-icon">🧭</div>
             <div class="hub-body">
               <h3>KABUKI NAVI</h3>
-              <span class="hub-subtitle">歌舞伎羅針盤</span>
-              <p>演目・人物・用語を探索</p>
+              <span class="hub-subtitle">${t("top.navi_sub", lang)}</span>
+              <p>${t("top.navi_desc", lang)}</p>
             </div>
             <span class="hub-arrow">&rarr;</span>
           </a>
-          <a href="/kabuki/live" class="hub-card hub-live">
+          <a href="${lp}/kabuki/live" class="hub-card hub-live">
             <div class="hub-icon">📡</div>
             <div class="hub-body">
               <h3>KABUKI LIVE</h3>
-              <span class="hub-subtitle">歌舞伎瓦版</span>
-              <p>ニュース・公演スケジュール</p>
+              <span class="hub-subtitle">${t("top.live_sub", lang)}</span>
+              <p>${t("top.live_desc", lang)}</p>
             </div>
             <span class="hub-arrow">&rarr;</span>
           </a>
-          <a href="/kabuki/reco" class="hub-card hub-reco">
+          <a href="${lp}/kabuki/reco" class="hub-card hub-reco">
             <div class="hub-icon">📝</div>
             <div class="hub-body">
               <h3>KABUKI RECO</h3>
-              <span class="hub-subtitle">歌舞伎帖</span>
-              <p>観劇記録・推し俳優・統計</p>
+              <span class="hub-subtitle">${t("top.reco_sub", lang)}</span>
+              <p>${t("top.reco_desc", lang)}</p>
             </div>
             <span class="hub-arrow">&rarr;</span>
           </a>
-          <a href="/kabuki/dojo" class="hub-card hub-dojo">
+          <a href="${lp}/kabuki/dojo" class="hub-card hub-dojo">
             <div class="hub-icon">🥋</div>
             <div class="hub-body">
               <h3>KABUKI DOJO</h3>
-              <span class="hub-subtitle">歌舞伎道場</span>
-              <p>クイズ・台詞稽古・大向う</p>
+              <span class="hub-subtitle">${t("top.dojo_sub", lang)}</span>
+              <p>${t("top.dojo_desc", lang)}</p>
             </div>
             <span class="hub-arrow">&rarr;</span>
           </a>
@@ -102,20 +106,19 @@ export function topPageHTML() {
 
       <section class="tp-section fade-up-d3">
         <p class="tp-mission">
-          気良歌舞伎（岐阜県）から、全国の地歌舞伎へ。<br>
-          伝統をテクノロジーで守るプロジェクトです。
+          ${t("top.mission", lang).replace(/\n/g, "<br>\n          ")}
         </p>
-        <p class="tp-mission-link"><a href="/project">プロジェクト概要を読む &rarr;</a></p>
+        <p class="tp-mission-link"><a href="${lp}/project">${t("top.mission_link", lang)} &rarr;</a></p>
       </section>
 
-      <div class="brand-cross-link">
-        <span>🏯</span> 地歌舞伎の団体運営・稽古には
+      ${lang === "ja" ? `<div class="brand-cross-link">
+        <span>🏯</span> ${t("top.cross_jikabuki", lang)}
         <a href="/?brand=jikabuki">JIKABUKI PLUS+</a>
-      </div>
+      </div>` : ""}
 
     </div>
 
-    <!-- ═══ JIKABUKI PLUS+ コンテンツ ═══ -->
+    ${showBrandToggle ? `<!-- ═══ JIKABUKI PLUS+ コンテンツ ═══ -->
     <div id="content-jikabuki" style="display:none;">
 
       <!-- ━━ Layer 1: けらのすけ ━━ -->
@@ -192,11 +195,11 @@ export function topPageHTML() {
       </div>
 
       <div class="brand-cross-link">
-        <span>🎭</span> 歌舞伎の観劇・学習には
+        <span>🎭</span> ${t("top.cross_kabuki", lang)}
         <a href="/?brand=kabuki">KABUKI PLUS+</a>
       </div>
 
-    </div>
+    </div>` : ""}
 
     <!-- ── データ取得スクリプト ── -->
     <script>
@@ -213,7 +216,7 @@ export function topPageHTML() {
           var title = f.title || "";
           var period = f.period_text || "";
           var naviLink = f.naviId ? '/kabuki/navi/enmoku/' + encodeURIComponent(f.naviId) : '';
-          var tag = naviLink ? '<a href="' + naviLink + '" class="featured-guide-link">演目ガイド</a>' : '';
+          var tag = naviLink ? '<a href="' + naviLink + '" class="featured-guide-link">${t("top.enmoku_guide", lang)}</a>' : '';
           return '<div class="featured-card">'
             + '<div class="featured-theater">' + theater.replace(/</g,"&lt;") + '</div>'
             + '<div class="featured-title">' + title.replace(/</g,"&lt;") + '</div>'
@@ -226,7 +229,7 @@ export function topPageHTML() {
     })();
     </script>
 
-    <!-- ── ブランド切替スクリプト ── -->
+    ${showBrandToggle ? `<!-- ── ブランド切替スクリプト ── -->
     <script>
     var __tabNav = {
       kabuki: [
@@ -279,18 +282,54 @@ export function topPageHTML() {
         }
       } catch(e) { switchBrand('kabuki'); }
     })();
-    </script>
+    </script>` : ""}
 
   `;
 
+  const topPageUrl = `https://kabukiplus.com${lp}/`;
+  const topOgDesc = lang === "en"
+    ? "Kabuki, made exciting. Play guides, show schedules, theater logs, quizzes and AI chat — your gateway to the world of kabuki."
+    : "歌舞伎をもっと面白く。演目ガイド・公演情報・観劇記録・クイズ・AIチャットで歌舞伎の世界を楽しむ総合プラットフォーム";
+  const topJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "KABUKI PLUS+",
+    "alternateName": lang === "en" ? "Kabuki Plus" : "歌舞伎プラス",
+    "url": "https://kabukiplus.com",
+    "description": topOgDesc,
+    "inLanguage": lang === "en" ? "en" : "ja",
+    "publisher": {
+      "@type": "Organization",
+      "name": "KABUKI PLUS+",
+      "url": "https://kabukiplus.com",
+      "logo": "https://kabukiplus.com/assets/ogp/ogp_kabukiplus_top.png",
+    },
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://kabukiplus.com/kabuki/navi/glossary?q={search_term_string}",
+      },
+      "query-input": "required name=search_term_string",
+    },
+  };
+
   return pageShell({
-    title: "歌舞伎を、もっと面白く。",
-    subtitle: "観る、学ぶ、演じる。",
+    title: t("top.title", lang),
+    subtitle: t("top.subtitle", lang),
     bodyHTML,
     activeNav: "home",
     hideNav: true,
+    lang,
+    currentPath: "/",
+    i18nReady: true,
+    ogDesc: topOgDesc,
     ogImage: "https://kabukiplus.com/assets/ogp/ogp_kabukiplus_top.png",
-    headExtra: `<style>
+    ogUrl: topPageUrl,
+    canonicalUrl: topPageUrl,
+    headExtra: `
+<script type="application/ld+json">${JSON.stringify(topJsonLd)}</script>
+<style>
       /* ── ブランド切替トグル ── */
       .brand-toggle-wrap { text-align: center; margin-bottom: 1.5rem; }
       .brand-toggle {

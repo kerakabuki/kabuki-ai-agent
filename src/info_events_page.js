@@ -7,9 +7,9 @@ import { pageShell } from "./web_layout.js";
 
 export function infoEventsPageHTML() {
   const bodyHTML = `
-    <div class="breadcrumb">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">トップ</a><span>›</span><a href="/jikabuki/info">INFO</a><span>›</span><span>公演カレンダー</span>
-    </div>
+    </nav>
 
     <section class="ie-header fade-up">
       <h2 class="ie-title">公演カレンダー</h2>
@@ -158,13 +158,28 @@ export function infoEventsPageHTML() {
 .ie-coming-cta:hover { opacity: 0.85; }
 </style>`;
 
+  const eventsJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "地歌舞伎 公演カレンダー",
+    "description": "気良歌舞伎の次回公演情報とカウントダウン。全国の地歌舞伎公演カレンダーは準備中。GATEに参加いただいた団体の情報が順次掲載されます。",
+    "url": "https://kabukiplus.com/jikabuki/info/events",
+    "inLanguage": "ja",
+    "publisher": { "@type": "Organization", "name": "JIKABUKI PLUS+", "url": "https://kabukiplus.com" },
+  };
+  const eventsHeadExtra = `
+<script type="application/ld+json">${JSON.stringify(eventsJsonLd)}</script>
+${headExtra}`;
+
   return pageShell({
     title: "公演カレンダー",
     subtitle: "地歌舞伎の公演情報",
     bodyHTML,
-    headExtra,
+    headExtra: eventsHeadExtra,
     activeNav: "info",
     brand: "jikabuki",
     ogDesc: "気良歌舞伎の次回公演情報とカウントダウン。全国の地歌舞伎公演カレンダーは準備中。GATEに参加いただいた団体の情報が順次掲載されます。",
+    ogUrl: "https://kabukiplus.com/jikabuki/info/events",
+    canonicalUrl: "https://kabukiplus.com/jikabuki/info/events",
   });
 }

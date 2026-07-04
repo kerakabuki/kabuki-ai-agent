@@ -4,11 +4,12 @@
 // クライアントサイドルーティング（SPA風）
 // =========================================================
 import { pageShell, escHTML } from "./web_layout.js";
+import { t, langPrefix } from "./i18n.js";
 
 // =========================================================
 // SSR版 演目詳細ページ（SEO対応）
 // =========================================================
-export function enmokuDetailSSR({ id, data, catalogEntry, relatedColumns = [] }) {
+export function enmokuDetailSSR({ id, data, catalogEntry, relatedColumns = [], glossaryTerms = [], catalog = [], lang = "ja" }) {
   const e = escHTML;
   const title = data.title || data.title_short || id;
   const titleShort = data.title_short || title;
@@ -18,16 +19,18 @@ export function enmokuDetailSSR({ id, data, catalogEntry, relatedColumns = [] })
   const cast = Array.isArray(data.cast) ? data.cast : [];
   const authors = Array.isArray(data.authors) ? data.authors : [];
 
+  const lp = langPrefix(lang);
+
   // あらすじの先頭120文字をdescriptionに
   const descText = synopsis.replace(/\n/g, " ").slice(0, 150).trim();
-  const ogDesc = `${title}のあらすじ・見どころ・登場人物を解説。${descText}…`;
-  const pageUrl = `https://kabukiplus.com/kabuki/navi/enmoku/${encodeURIComponent(id)}`;
+  const ogDesc = `${t("enmoku.og_desc", lang).replace("${title}", title)}${descText}…`;
+  const pageUrl = `https://kabukiplus.com${lp}/kabuki/navi/enmoku/${encodeURIComponent(id)}`;
 
   // JSON-LD 構造化データ
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    "headline": `${title} — あらすじ・見どころ・登場人物｜KABUKI PLUS+`,
+    "headline": `${title} — ${t("enmoku.jsonld_suffix", lang)}`,
     "description": ogDesc,
     "url": pageUrl,
     "publisher": {
@@ -36,15 +39,28 @@ export function enmokuDetailSSR({ id, data, catalogEntry, relatedColumns = [] })
       "url": "https://kabukiplus.com"
     },
     "mainEntityOfPage": pageUrl,
+    "datePublished": data.created || "2025-01-01",
+    "dateModified": data.updated || data.created || new Date().toISOString().split("T")[0],
+    "keywords": [lang === "en" ? "kabuki" : "歌舞伎", title, lang === "en" ? "synopsis" : "あらすじ", lang === "en" ? "highlights" : "見どころ"].filter(Boolean),
+    "inLanguage": lang === "en" ? "en" : "ja",
+    "author": info["作者"]
+      ? { "@type": "Person", "name": info["作者"] }
+      : { "@type": "Organization", "name": "KABUKI PLUS+" },
   };
-  if (info["作者"]) jsonLd.author = { "@type": "Person", "name": info["作者"] };
 
   // 作品情報テーブル
-  const infoKeys = ["作者", "初演", "種別", "上演時間", "別名・通称", "原作"];
+  const infoKeyMap = [
+    { key: "作者", labelKey: "enmoku.info_author" },
+    { key: "初演", labelKey: "enmoku.info_premiere" },
+    { key: "種別", labelKey: "enmoku.info_genre" },
+    { key: "上演時間", labelKey: "enmoku.info_duration" },
+    { key: "別名・通称", labelKey: "enmoku.info_alias" },
+    { key: "原作", labelKey: "enmoku.info_original" },
+  ];
   let infoHTML = "";
-  for (const k of infoKeys) {
-    if (info[k]) {
-      infoHTML += `<tr><th>${e(k)}</th><td>${e(String(info[k]))}</td></tr>`;
+  for (const { key, labelKey } of infoKeyMap) {
+    if (info[key]) {
+      infoHTML += `<tr><th>${e(t(labelKey, lang))}</th><td>${e(String(info[key]))}</td></tr>`;
     }
   }
 
@@ -68,14 +84,47 @@ export function enmokuDetailSSR({ id, data, catalogEntry, relatedColumns = [] })
   let authorsHTML = "";
   if (authors.length) {
     authorsHTML = `<div class="enmoku-authors">
-      <span class="enmoku-authors-label">✍️ 執筆:</span> ${authors.map(a => e(a.displayName || "匿名")).join("、")}
+      <span class="enmoku-authors-label">${t("enmoku.written_by", lang)}</span> ${authors.map(a => e(a.displayName || t("enmoku.anonymous", lang))).join("、")}
     </div>`;
   }
 
+  // 関連コンテンツ（用語・類似演目）
+  let relatedHTML = "";
+  {
+    const contentText = (synopsis + " " + highlights).toLowerCase();
+    // 関連用語: 本文中に登場する用語を検出（最大5件）
+    const matchedTerms = glossaryTerms
+      .filter(tm => tm.term && contentText.includes(tm.term.toLowerCase()))
+      .slice(0, 5);
+    // 類似演目: 同じ種別（ジャンル）の他の演目（最大5件）
+    const genre = info["種別"] || "";
+    const similarPlays = genre
+      ? catalog.filter(c => c.id !== id && c.group && c.group === genre).slice(0, 5)
+      : [];
+
+    if (matchedTerms.length || similarPlays.length) {
+      relatedHTML = `<aside class="enmoku-related">
+        <h2 class="enmoku-section-title">${lang === "en" ? "Related Content" : "関連するコンテンツ"}</h2>
+        ${matchedTerms.length ? `<div class="related-group">
+          <h3 class="related-group-title">${lang === "en" ? "Glossary Terms" : "関連する用語"}</h3>
+          <div class="related-links">${matchedTerms.map(tm =>
+            `<a href="${lp}/kabuki/navi/glossary/term/${encodeURIComponent(tm.term)}" class="related-chip">${e(tm.term)}</a>`
+          ).join("")}</div>
+        </div>` : ""}
+        ${similarPlays.length ? `<div class="related-group">
+          <h3 class="related-group-title">${lang === "en" ? "Similar Plays" : "類似テーマの演目"}</h3>
+          <div class="related-links">${similarPlays.map(c =>
+            `<a href="${lp}/kabuki/navi/enmoku/${encodeURIComponent(c.id)}" class="related-chip">${e(c.short || c.full || c.id)}</a>`
+          ).join("")}</div>
+        </div>` : ""}
+      </aside>`;
+    }
+  }
+
   const bodyHTML = `
-    <div class="breadcrumb">
-      <a href="/">トップ</a><span>›</span><a href="/kabuki/navi">KABUKI NAVI</a><span>›</span><a href="/kabuki/navi/enmoku">演目ガイド</a><span>›</span><span>${e(titleShort)}</span>
-    </div>
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="${lp}/">${t("common.breadcrumb_top", lang)}</a><span>›</span><a href="${lp}/kabuki/navi">KABUKI NAVI</a><span>›</span><a href="${lp}/kabuki/navi/enmoku">${t("enmoku.play_guide", lang)}</a><span>›</span><span>${e(titleShort)}</span>
+    </nav>
 
     <article class="enmoku-detail" itemscope itemtype="https://schema.org/Article">
       <div class="detail-header fade-up">
@@ -83,41 +132,56 @@ export function enmokuDetailSSR({ id, data, catalogEntry, relatedColumns = [] })
         ${title !== titleShort ? `<p class="detail-sub">${e(title)}</p>` : ""}
       </div>
 
-      <nav class="enmoku-toc" aria-label="セクション目次">
-        ${infoHTML ? '<a href="#sec-info">📝 作品情報</a>' : ''}
-        <a href="#sec-synopsis">📖 あらすじ</a>
-        ${highlights ? '<a href="#sec-highlights">🌟 みどころ</a>' : ''}
-        ${cast.length ? '<a href="#sec-cast">🎭 登場人物</a>' : ''}
+      <nav class="enmoku-toc" aria-label="${t("enmoku.section_nav", lang)}">
+        ${infoHTML ? `<a href="#sec-info">${t("enmoku.section_info", lang)}</a>` : ''}
+        <a href="#sec-synopsis">${t("enmoku.section_synopsis", lang)}</a>
+        ${highlights ? `<a href="#sec-highlights">${t("enmoku.section_highlights", lang)}</a>` : ''}
+        ${cast.length ? `<a href="#sec-cast">${t("enmoku.section_cast", lang)}</a>` : ''}
       </nav>
 
       ${infoHTML ? `
       <section class="enmoku-section" id="sec-info">
-        <h2 class="enmoku-section-title">📝 作品情報</h2>
+        <h2 class="enmoku-section-title">${t("enmoku.section_info", lang)}</h2>
         <table class="enmoku-info-table">${infoHTML}</table>
       </section>` : ""}
 
       <section class="enmoku-section" id="sec-synopsis" itemprop="articleBody">
-        <h2 class="enmoku-section-title">📖 あらすじ</h2>
-        <div class="detail-text">${formatSSR(synopsis || "データがありません")}</div>
+        <h2 class="enmoku-section-title">${t("enmoku.section_synopsis", lang)}</h2>
+        <div class="detail-text">${formatSSR(synopsis || t("enmoku.no_data", lang))}</div>
       </section>
 
       ${highlights ? `
       <section class="enmoku-section" id="sec-highlights">
-        <h2 class="enmoku-section-title">🌟 みどころ</h2>
+        <h2 class="enmoku-section-title">${t("enmoku.section_highlights", lang)}</h2>
         <div class="detail-text">${formatSSR(highlights)}</div>
       </section>` : ""}
 
       ${cast.length ? `
       <section class="enmoku-section" id="sec-cast">
-        <h2 class="enmoku-section-title">🎭 登場人物</h2>
+        <h2 class="enmoku-section-title">${t("enmoku.section_cast", lang)}</h2>
         ${castHTML}
       </section>` : ""}
 
       ${authorsHTML}
 
+      ${relatedHTML}
+
+      <section class="content-meta">
+        <div class="meta-credit">
+          <strong>${lang === "en" ? "Supervised by" : "監修"}</strong>：${lang === "en" ? "Kera Kabuki Preservation Society (Gujo, Gifu)" : "気良歌舞伎保存会（岐阜県郡上市）"}
+          <p>${lang === "en"
+            ? "A group dedicated to preserving jikabuki (regional kabuki) traditions since the Edo period. Content accuracy is reviewed based on their knowledge and experience."
+            : "江戸時代から続く地歌舞伎を保存・継承する団体。地域の伝統芸能としての歌舞伎の知識と経験に基づき、コンテンツの正確性を監修しています。"}</p>
+        </div>
+        <div class="meta-dates">
+          ${data.created ? `<span>${lang === "en" ? "Published" : "公開日"}：${data.created}</span>` : ""}
+          ${data.updated ? `<span>${lang === "en" ? "Updated" : "最終更新"}：${data.updated}</span>` : ""}
+        </div>
+      </section>
+
       ${relatedColumns.length ? `
       <section class="enmoku-section" style="margin-top:2rem;">
-        <h2 class="enmoku-section-title">✍️ 関連コラム</h2>
+        <h2 class="enmoku-section-title">${t("enmoku.section_columns", lang)}</h2>
         ${relatedColumns.map(col => `<a href="/kabuki/navi/column/${encodeURIComponent(col.id)}" style="display:block;padding:10px 0;border-bottom:1px solid var(--border,#e5e5e5);text-decoration:none;color:inherit;">
           <div style="font-weight:700;font-size:0.95rem;">${e(col.title)}</div>
           ${col.subtitle ? `<div style="font-size:0.82rem;color:var(--text-secondary);margin-top:2px;">${e(col.subtitle)}</div>` : ""}
@@ -125,16 +189,19 @@ export function enmokuDetailSSR({ id, data, catalogEntry, relatedColumns = [] })
       </section>` : ""}
 
       <div style="margin-top:1.5rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
-        <a href="/kabuki/navi/enmoku" class="btn btn-secondary">← 演目一覧に戻る</a>
+        <a href="${lp}/kabuki/navi/enmoku" class="btn btn-secondary">${t("enmoku.back_to_list", lang)}</a>
       </div>
     </article>
   `;
 
   return pageShell({
-    title: `${title} — あらすじ・見どころ・登場人物`,
-    subtitle: "演目ガイド",
+    title: `${title} ${t("enmoku.title_suffix", lang)}`,
+    subtitle: t("enmoku.play_guide", lang),
     bodyHTML,
     activeNav: "navi",
+    currentPath: "/kabuki/navi/enmoku",
+    i18nReady: true,
+    lang,
     ogDesc,
     ogUrl: pageUrl,
     canonicalUrl: pageUrl,
@@ -166,6 +233,17 @@ export function enmokuDetailSSR({ id, data, catalogEntry, relatedColumns = [] })
   .cast-desc { font-size: 0.9rem; line-height: 1.7; color: var(--text-secondary); margin-top: 0.4rem; }
   .enmoku-authors { margin-top: 1.5rem; padding: 0.6rem 0.8rem; font-size: 13px; color: var(--text-secondary); background: var(--bg-subtle); border-radius: var(--radius-sm); }
   .enmoku-authors-label { font-weight: 600; color: var(--text-tertiary); }
+  .enmoku-related { margin-top: 2rem; padding: 1.2rem; background: var(--bg-subtle, #f8f6f2); border-radius: var(--radius-sm, 8px); }
+  .related-group { margin-bottom: 0.8rem; }
+  .related-group:last-child { margin-bottom: 0; }
+  .related-group-title { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin: 0 0 0.5rem; }
+  .related-links { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .related-chip { display: inline-block; padding: 0.3rem 0.7rem; font-size: 0.82rem; background: var(--bg-card, #fff); border: 1px solid var(--border-light, #e5e0d5); border-radius: 999px; color: var(--text-primary); text-decoration: none; transition: border-color 0.15s, background 0.15s; }
+  .related-chip:hover { border-color: var(--kin, #A8873A); background: var(--gold-light, #faf3e0); }
+  .content-meta { margin-top: 2rem; padding: 1rem 1.2rem; background: var(--bg-subtle, #f8f6f2); border: 1px solid var(--border-light, #e5e0d5); border-radius: var(--radius-sm, 8px); font-size: 0.85rem; line-height: 1.7; color: var(--text-secondary); }
+  .content-meta .meta-credit strong { color: var(--text-primary); }
+  .content-meta .meta-credit p { margin: 0.3rem 0 0; }
+  .content-meta .meta-dates { margin-top: 0.6rem; display: flex; gap: 1.2rem; flex-wrap: wrap; font-size: 0.8rem; color: var(--text-tertiary); }
 </style>`,
   });
 }
@@ -174,13 +252,14 @@ function formatSSR(text) {
   return escHTML(text).replace(/\n\n/g, "</p><p>").replace(/\n/g, "<br>");
 }
 
-export function enmokuPageHTML({ googleClientId = "" } = {}) {
+export function enmokuPageHTML({ googleClientId = "", lang = "ja" } = {}) {
+  const lp = langPrefix(lang);
   const bodyHTML = `
     <div class="breadcrumb" id="breadcrumb">
-      <a href="/">トップ</a><span>›</span><a href="/kabuki/navi">KABUKI NAVI</a><span>›</span><span id="bc-tail">演目ガイド</span>
+      <a href="${lp}/">${t("common.breadcrumb_top", lang)}</a><span>›</span><a href="${lp}/kabuki/navi">KABUKI NAVI</a><span>›</span><span id="bc-tail">${t("enmoku.play_guide", lang)}</span>
     </div>
     <div id="app">
-      <div class="loading">演目データを読み込み中…</div>
+      <div class="loading">${t("enmoku.loading", lang)}</div>
     </div>
 
     <script>
@@ -188,12 +267,12 @@ export function enmokuPageHTML({ googleClientId = "" } = {}) {
       var app = document.getElementById("app");
 
       // ── 演目一覧表示 ──
-      app.innerHTML = '<div class="loading">演目データを読み込み中…</div>';
-      fetch("/api/enmoku/catalog")
+      app.innerHTML = '<div class="loading">${t("enmoku.loading", lang)}</div>';
+      fetch("/api/enmoku/catalog${lang === "en" ? "?lang=en" : ""}")
         .then(function(r){ return r.json(); })
         .then(function(data){
           if (!Array.isArray(data) || data.length === 0) {
-            app.innerHTML = '<div class="empty-state">演目データがまだ登録されていません。</div>';
+            app.innerHTML = '<div class="empty-state">${t("enmoku.empty", lang)}</div>';
             return;
           }
           var groups = [];
@@ -210,12 +289,12 @@ export function enmokuPageHTML({ googleClientId = "" } = {}) {
             }
           });
 
-          var html = '<h2 class="section-title">演目ガイド <span style="font-size:0.8rem;color:var(--text-tertiary);">全' + data.length + '演目</span></h2>'
-            + '<p style="font-size:0.85rem;color:var(--text-secondary);margin:0 0 1rem;">現在 <b>' + data.length + '</b> 演目を収録中。今後も順次追加していきます 🌱</p>';
+          var html = '<h2 class="section-title">${t("enmoku.play_guide", lang)} <span style="font-size:0.8rem;color:var(--text-tertiary);">${t("enmoku.all_count", lang).replace("${n}", "' + data.length + '")}</span></h2>'
+            + '<p style="font-size:0.85rem;color:var(--text-secondary);margin:0 0 1rem;">${t("enmoku.current_count", lang).replace("${n}", "' + data.length + '")}</p>';
           groups.forEach(function(g) {
             if (g.label) {
               html += '<div class="enmoku-group fade-up">';
-              html += '<h3 class="enmoku-group-title">📁 ' + esc(g.label) + ' <span class="enmoku-group-count">' + g.items.length + '演目</span></h3>';
+              html += '<h3 class="enmoku-group-title">📁 ' + esc(g.label) + ' <span class="enmoku-group-count">${t("enmoku.group_count", lang).replace("${n}", "\' + g.items.length + \'")}</span></h3>';
               g.items.forEach(function(e){ html += enmokuCard(e); });
               html += '</div>';
             } else {
@@ -224,10 +303,10 @@ export function enmokuPageHTML({ googleClientId = "" } = {}) {
           });
           app.innerHTML = html;
         })
-        .catch(function(){ app.innerHTML = '<div class="empty-state">演目データの読み込みに失敗しました。</div>'; });
+        .catch(function(){ app.innerHTML = '<div class="empty-state">${t("enmoku.load_error", lang)}</div>'; });
 
       function enmokuCard(e) {
-        return '<a href="/kabuki/navi/enmoku/' + encodeURIComponent(e.id) + '" class="list-item">'
+        return '<a href="${langPrefix(lang)}/kabuki/navi/enmoku/' + encodeURIComponent(e.id) + '" class="list-item">'
           + '<div class="list-item-title">' + esc(e.short) + '</div>'
           + (e.full && e.full !== e.short ? '<div class="list-item-sub">' + esc(e.full) + '</div>' : '')
           + '</a>';
@@ -244,11 +323,17 @@ export function enmokuPageHTML({ googleClientId = "" } = {}) {
   `;
 
   return pageShell({
-    title: "演目ガイド",
-    subtitle: "あらすじ・みどころ・登場人物",
+    title: t("enmoku.play_guide", lang),
+    subtitle: t("enmoku.synopsis_highlights_characters_suffix", lang),
     bodyHTML,
     activeNav: "navi",
+    currentPath: "/kabuki/navi/enmoku",
+    i18nReady: true,
     googleClientId,
+    lang,
+    ogDesc: lang === "en"
+      ? "Explore classic kabuki plays: synopses, highlights, and character guides. A comprehensive encyclopedia for kabuki enthusiasts."
+      : "歌舞伎の名作演目を網羅。あらすじ・見どころ・登場人物をわかりやすく解説する演目事典",
     headExtra: `<style>
       .enmoku-group {
         margin-bottom: 1.5rem;

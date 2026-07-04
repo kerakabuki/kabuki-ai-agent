@@ -9,7 +9,7 @@ export function theaterEditorPageHTML() {
   const breadcrumb = `<a href="/">トップ</a><span>&rsaquo;</span><a href="/jikabuki/base">BASE</a><span>&rsaquo;</span><span>芝居小屋管理</span>`;
 
   const bodyHTML = `
-    <div class="breadcrumb">${breadcrumb}</div>
+    <nav class="breadcrumb" aria-label="Breadcrumb">${breadcrumb}</nav>
 
     <section class="te-welcome fade-up">
       <div class="te-welcome-main">

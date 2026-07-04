@@ -4,49 +4,53 @@
 // やってみる：クイズ・台詞稽古・大向う道場
 // =========================================================
 import { pageShell } from "./web_layout.js";
+import { t, langPrefix } from "./i18n.js";
 
-export function dojoPageHTML({ googleClientId = "" } = {}) {
+export function dojoPageHTML({ googleClientId = "", lang = "ja" } = {}) {
+  const lp = langPrefix(lang);
+  const dojoFooterText = lang === "en"
+    ? `Deepen your knowledge at <a href="${lp}/kabuki/navi">KABUKI NAVI</a>.<br>Log your theater visits at <a href="${lp}/kabuki/reco">KABUKI RECO</a>.`
+    : `学んだ知識は<a href="/kabuki/navi">KABUKI NAVI</a>でさらに深めよう。<br>観劇の記録は<a href="/kabuki/reco">KABUKI RECO</a>で。`;
   const bodyHTML = `
-    <div class="breadcrumb">
-      <a href="/">トップ</a><span>›</span>KABUKI DOJO
-    </div>
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="${lp}/">${t("common.breadcrumb_top", lang)}</a><span>›</span>KABUKI DOJO
+    </nav>
 
     <section class="dojo-intro fade-up">
       <p class="dojo-lead">
-        知識の腕試し、台詞の練習、掛け声の修行。<br>
-        歌舞伎を「体験」しよう。
+        ${t("dojo.lead", lang).replace(/\n/g, "<br>")}
       </p>
     </section>
 
     <div class="dojo-grid">
       <!-- クイズ -->
-      <a href="/kabuki/dojo/quiz" class="dojo-card dojo-quiz fade-up-d1">
+      <a href="${lp}/kabuki/dojo/quiz" class="dojo-card dojo-quiz fade-up-d1">
         <div class="dojo-card-icon">👺</div>
         <div class="dojo-card-body">
-          <h3>歌舞伎クイズ</h3>
-          <p>全100問の三択で楽しく学ぼう。正解数に応じて称号が変わる！</p>
+          <h3>${t("dojo.quiz_title", lang)}</h3>
+          <p>${t("dojo.quiz_desc", lang)}</p>
           <div class="dojo-card-stats" id="quiz-stats"></div>
         </div>
         <span class="dojo-card-arrow">→</span>
       </a>
 
       <!-- 大向う道場 -->
-      <a href="/kabuki/dojo/training/kakegoe" class="dojo-card dojo-kakegoe fade-up-d2">
+      <a href="${lp}/kabuki/dojo/training/kakegoe" class="dojo-card dojo-kakegoe fade-up-d2">
         <div class="dojo-card-icon">📣</div>
         <div class="dojo-card-body">
-          <h3>大向う道場</h3>
-          <p>「白浪五人男」の動画で掛け声と拍手のタイミングを練習しよう。</p>
+          <h3>${t("dojo.kakegoe_title", lang)}</h3>
+          <p>${t("dojo.kakegoe_desc", lang)}</p>
           <div class="dojo-card-stats" id="kakegoe-stats"></div>
         </div>
         <span class="dojo-card-arrow">→</span>
       </a>
 
       <!-- 台詞稽古チャレンジ -->
-      <a href="/kabuki/dojo/training/serifu" class="dojo-card dojo-serifu fade-up-d3">
+      <a href="${lp}/kabuki/dojo/training/serifu" class="dojo-card dojo-serifu fade-up-d3">
         <div class="dojo-card-icon">🎤</div>
         <div class="dojo-card-body">
-          <h3>台詞稽古チャレンジ</h3>
-          <p>弁天小僧の名台詞「知らざぁ言って聞かせやしょう」をカラオケ感覚で体験。</p>
+          <h3>${t("dojo.serifu_title", lang)}</h3>
+          <p>${t("dojo.serifu_desc", lang)}</p>
           <div class="dojo-card-stats" id="serifu-stats"></div>
         </div>
         <span class="dojo-card-arrow">→</span>
@@ -55,30 +59,29 @@ export function dojoPageHTML({ googleClientId = "" } = {}) {
 
     <!-- ── 学習進捗 ── -->
     <section class="dojo-progress fade-up-d4" id="dojo-progress">
-      <h2 class="section-title">学習進捗</h2>
+      <h2 class="section-title">${t("dojo.progress", lang)}</h2>
       <div class="dojo-stats-grid" id="dojo-stats-grid">
         <div class="dojo-stat">
           <div class="dojo-stat-icon">📋</div>
           <div class="dojo-stat-num" id="stat-clips">0</div>
-          <div class="dojo-stat-label">クリップ</div>
+          <div class="dojo-stat-label">${t("dojo.clips", lang)}</div>
         </div>
         <div class="dojo-stat">
           <div class="dojo-stat-icon">👁️</div>
           <div class="dojo-stat-num" id="stat-recent">0</div>
-          <div class="dojo-stat-label">閲覧履歴</div>
+          <div class="dojo-stat-label">${t("dojo.history", lang)}</div>
         </div>
         <div class="dojo-stat">
           <div class="dojo-stat-icon">❓</div>
           <div class="dojo-stat-num" id="stat-quiz">0</div>
-          <div class="dojo-stat-label">クイズ正答</div>
+          <div class="dojo-stat-label">${t("dojo.quiz_correct", lang)}</div>
         </div>
       </div>
       <div class="dojo-badge-area" id="dojo-badges"></div>
     </section>
 
     <div class="dojo-footer fade-up-d5">
-      <p>学んだ知識は<a href="/kabuki/navi">KABUKI NAVI</a>でさらに深めよう。<br>
-      観劇の記録は<a href="/kabuki/reco">KABUKI RECO</a>で。</p>
+      <p>${dojoFooterText}</p>
     </div>
 
     <script>
@@ -194,14 +197,44 @@ export function dojoPageHTML({ googleClientId = "" } = {}) {
     </script>
   `;
 
+  const dojoPageUrl = `https://kabukiplus.com${lp}/kabuki/dojo`;
+  const dojoOgDesc = lang === "en"
+    ? "Test your kabuki knowledge with quizzes, practice famous lines, and learn kakegoe shouts."
+    : "歌舞伎クイズ・台詞稽古チャレンジ・大向う道場。楽しみながら歌舞伎の知識と体験を深める修行場";
+  const dojoJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "LearningResource",
+    "name": "KABUKI DOJO",
+    "description": dojoOgDesc,
+    "url": dojoPageUrl,
+    "inLanguage": lang === "en" ? "en" : "ja",
+    "educationalLevel": lang === "en" ? "Beginner" : "初心者〜中級者",
+    "learningResourceType": "interactive exercise",
+    "teaches": lang === "en" ? "Kabuki theater knowledge and appreciation" : "歌舞伎の知識・鑑賞力・伝統芸能体験",
+    "provider": { "@type": "Organization", "name": "KABUKI PLUS+", "url": "https://kabukiplus.com" },
+    "hasPart": [
+      { "@type": "Quiz", "name": t("dojo.quiz_title", lang), "url": `${dojoPageUrl}/quiz` },
+      { "@type": "LearningResource", "name": t("dojo.kakegoe_title", lang), "url": `${dojoPageUrl}/training/kakegoe` },
+      { "@type": "LearningResource", "name": t("dojo.serifu_title", lang), "url": `${dojoPageUrl}/training/serifu` },
+    ],
+  };
+
   return pageShell({
+    lang,
     title: "KABUKI DOJO",
-    subtitle: "歌舞伎道場",
+    subtitle: t("dojo.subtitle", lang),
     bodyHTML,
     activeNav: "dojo",
+    currentPath: "/kabuki/dojo",
+    i18nReady: true,
     googleClientId,
+    ogDesc: dojoOgDesc,
     ogImage: "https://kabukiplus.com/assets/ogp/ogp_dojo.png",
-    headExtra: `<style>
+    ogUrl: dojoPageUrl,
+    canonicalUrl: dojoPageUrl,
+    headExtra: `
+<script type="application/ld+json">${JSON.stringify(dojoJsonLd)}</script>
+<style>
       .dojo-intro {
         text-align: center;
         padding: 24px 16px 32px;

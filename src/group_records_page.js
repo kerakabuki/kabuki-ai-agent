@@ -20,9 +20,9 @@ export function groupRecordsPageHTML(group, googleClientId) {
   const gid = escHTML(g.group_id || "");
 
   const bodyHTML = `
-    <div class="breadcrumb">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">トップ</a><span>&rsaquo;</span><a href="/jikabuki/base">BASE</a><span>&rsaquo;</span><a href="/jikabuki/gate/${gid}">${name}</a><span>&rsaquo;</span>公演記録
-    </div>
+    </nav>
 
     <div id="gr-app">
       <div class="loading">読み込み中...</div>

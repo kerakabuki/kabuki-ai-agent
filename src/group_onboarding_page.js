@@ -7,9 +7,9 @@ import { pageShell, escHTML } from "./web_layout.js";
 
 export function groupOnboardingPageHTML() {
   const bodyHTML = `
-    <div class="breadcrumb">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">トップ</a><span>&rsaquo;</span><a href="/jikabuki/base">BASE</a><span>&rsaquo;</span>新規団体登録
-    </div>
+    </nav>
 
     <section class="ob-hero fade-up">
       <div class="ob-hero-icon"><img src="https://kabukiplus.com/assets/keranosukelogo.png" alt="けらのすけ"></div>

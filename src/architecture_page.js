@@ -1,7 +1,7 @@
 // src/architecture_page.js
 // =========================================================
 // サービス構成図 — /architecture
-// KABUKI PLUS+ / JIKABUKI PLUS+ ツインブランド構想 v3.1
+// KABUKI PLUS+ / JIKABUKI PLUS+ ツインブランド構想 v3.2
 // =========================================================
 
 export function architecturePageHTML() {
@@ -177,7 +177,7 @@ export function architecturePageHTML() {
 <body>
 <div class="page">
   <div class="page-title">
-    <div class="label">ARCHITECTURE v3.1</div>
+    <div class="label">ARCHITECTURE v3.2</div>
     <h1>サービス構成図</h1>
     <div class="sub">KABUKI PLUS+ / JIKABUKI PLUS+ ツインブランド構想</div>
     <div class="deco-line"><span class="diamond"></span></div>
@@ -192,12 +192,12 @@ export function architecturePageHTML() {
   <!-- Stats bar -->
   <div style="margin: 16px 0 0;">
     <div class="stats-bar" style="margin:0;">
-      <div class="sbar-item"><div class="sbar-num">56,300+</div><div class="sbar-label">行のコード</div></div>
-      <div class="sbar-item"><div class="sbar-num">72</div><div class="sbar-label">モジュール</div></div>
-      <div class="sbar-item"><div class="sbar-num">95+</div><div class="sbar-label">ルート</div></div>
-      <div class="sbar-item"><div class="sbar-num">60+</div><div class="sbar-label">API</div></div>
+      <div class="sbar-item"><div class="sbar-num">58,000+</div><div class="sbar-label">行のコード</div></div>
+      <div class="sbar-item"><div class="sbar-num">74</div><div class="sbar-label">モジュール</div></div>
+      <div class="sbar-item"><div class="sbar-num">100+</div><div class="sbar-label">ルート</div></div>
+      <div class="sbar-item"><div class="sbar-num">65+</div><div class="sbar-label">API</div></div>
     </div>
-    <div style="text-align:right; font-size:10px; color:var(--text-tertiary); margin-top:4px; letter-spacing:0.5px;">R8.3.7 現在</div>
+    <div style="text-align:right; font-size:10px; color:var(--text-tertiary); margin-top:4px; letter-spacing:0.5px;">R8.3.8 現在</div>
   </div>
 
   <div class="connector"><div class="connector-legs"></div></div>
@@ -212,12 +212,13 @@ export function architecturePageHTML() {
         <div class="bh-target">歌舞伎ファン・初心者向け</div>
       </div>
       <div class="feature-list">
-        <div class="sublabel sublabel-kabuki">🧭 KABUKI NAVI<span class="sublabel-desc">── 読んで学ぶ（23+演目 / 126語 / コラム21本）</span></div>
+        <div class="sublabel sublabel-kabuki">🧭 KABUKI NAVI<span class="sublabel-desc">── 読んで学ぶ（23+演目 / 190語 / コラム21本 / 由来）</span></div>
         <div class="feat"><div class="feat-icon">🎭</div><div><div class="feat-name">演目ガイド</div><div class="feat-desc">あらすじ・見どころ・配役（23+演目）</div></div></div>
-        <div class="feat"><div class="feat-icon">📘</div><div><div class="feat-name">用語辞典</div><div class="feat-desc">126語・8カテゴリ</div></div></div>
+        <div class="feat"><div class="feat-icon">📘</div><div><div class="feat-name">用語辞典</div><div class="feat-desc">190語・8カテゴリ</div></div></div>
         <div class="feat"><div class="feat-icon">⭐</div><div><div class="feat-name">おすすめ演目</div><div class="feat-desc">パーソナライズレコメンド</div></div></div>
         <div class="feat"><div class="feat-icon">🎫</div><div><div class="feat-name">観劇ナビ</div><div class="feat-desc">初心者向け6ステップガイド</div></div></div>
         <div class="feat feat-new"><div class="feat-icon">📝</div><div><div class="feat-name">コラム記事</div><div class="feat-desc">台詞解説・研究紀行ほか（21本）</div></div></div>
+        <div class="feat feat-new"><div class="feat-icon">🔤</div><div><div class="feat-name">歌舞伎由来のことば</div><div class="feat-desc">日常語の歌舞伎ルーツを紹介</div></div></div>
       </div>
       <div style="margin:0 14px; border-top:1px dashed var(--border-light);"></div>
       <div class="feature-list">
@@ -238,7 +239,7 @@ export function architecturePageHTML() {
       <div class="feature-list">
         <div class="sublabel sublabel-kabuki">🥋 KABUKI DOJO<span class="sublabel-desc">── やってみる（体験型）</span></div>
         <div class="feat feat-new"><div class="feat-icon">❓</div><div><div class="feat-name">歌舞伎クイズ</div><div class="feat-desc">3段階難易度（初級/中級/上級）</div></div></div>
-        <div class="feat"><div class="feat-icon">🗣️</div><div><div class="feat-name">台詞稽古チャレンジ</div><div class="feat-desc">カラオケ風・YouTube字幕同期</div></div></div>
+        <div class="feat"><div class="feat-icon">🗣️</div><div><div class="feat-name">台詞稽古チャレンジ</div><div class="feat-desc">カラオケ風・YouTube字幕同期・メニュー選択</div></div></div>
         <div class="feat"><div class="feat-icon">📢</div><div><div class="feat-name">大向う道場</div><div class="feat-desc">掛け声タイミング・おひねり演出</div></div></div>
       </div>
     </div>
@@ -258,7 +259,7 @@ export function architecturePageHTML() {
         <div class="feat"><div class="feat-icon">🏠</div><div><div class="feat-name">団体公式サイト</div><div class="feat-desc">8テーマから選択・自動生成</div></div></div>
         <div class="feat feat-new"><div class="feat-icon">🤖</div><div><div class="feat-name">カスタムFAQボット</div><div class="feat-desc">質問に答えるだけで完成（19テンプレート）</div></div></div>
         <div class="feat"><div class="feat-icon">📅</div><div><div class="feat-name">公演情報ページ</div><div class="feat-desc">SNSリンク・アクセス情報</div></div></div>
-        <div class="feat feat-new"><div class="feat-icon">🏛️</div><div><div class="feat-name">気良歌舞伎公式LP</div><div class="feat-desc">公式サイト・アーカイブ・ガイド・お知らせ</div></div></div>
+        <div class="feat feat-new"><div class="feat-icon">🏛️</div><div><div class="feat-name">気良歌舞伎公式LP</div><div class="feat-desc">公式サイト・アーカイブ・ガイド・PRESS・かわら版</div></div></div>
       </div>
       <div style="margin:0 14px; border-top:1px dashed var(--border-light);"></div>
 
@@ -308,7 +309,9 @@ export function architecturePageHTML() {
       <div class="shared-item"><span class="si-icon">💬</span>Webチャット（けらのすけに聞く）</div>
       <div class="shared-item"><span class="si-icon">🔐</span>認証（LINE OAuth / Google Sign-In）</div>
       <div class="shared-item"><span class="si-icon">📱</span>PWA（Service Worker / ボトムタブ）</div>
+      <div class="shared-item"><span class="si-icon">🌐</span>i18n 多言語対応（日本語 / English）</div>
       <div class="shared-item"><span class="si-icon">📊</span>OGP / JSON-LD（全ページSEO対応）</div>
+      <div class="shared-item"><span class="si-icon">⏰</span>Cron Trigger（ニュース・公演 自動取得）</div>
     </div>
     <div style="margin-top:14px; border-top:1px dashed var(--border-light); padding-top:14px;">
       <div style="font-size:11px; font-weight:600; color:var(--gold-dark); margin-bottom:8px; letter-spacing:0.5px;">チャネル役割</div>
@@ -319,7 +322,7 @@ export function architecturePageHTML() {
         </div>
         <div style="flex:1; padding:10px 12px; background:var(--accent-blue-soft); border-radius:8px;">
           <div style="font-size:12px; font-weight:600; color:var(--accent-blue); margin-bottom:2px;">🌐 Web PWA</div>
-          <div style="font-size:10px; color:var(--text-secondary); line-height:1.5;">全機能提供。72モジュール・95+ルート。オフライン対応。インストール可能。OGP対応。</div>
+          <div style="font-size:10px; color:var(--text-secondary); line-height:1.5;">全機能提供。74モジュール・100+ルート。オフライン対応。インストール可能。OGP対応。</div>
         </div>
       </div>
     </div>
@@ -383,6 +386,7 @@ export function architecturePageHTML() {
     <strong>ランニングコストほぼ無料</strong> ── Cloudflare Workers / KV / R2 の無料枠 + Gemini 無料枠。地歌舞伎団体の財務負担にならない持続可能な設計。<br><br>
     <strong>3層キャッシュ戦略</strong> ── Service Worker（ブラウザ内）+ HTTP Cache-Control + KVキャッシュ（サーバーサイド）。静的アセットは永続キャッシュ、HTMLはNetwork-first、GATEページはno-cache（常に最新）。<br><br>
     <strong>チャットで導入完了</strong> ── 新しい団体は、けらのすけの質問に答えていくだけで、FAQ・公式サイト・チャットボットが自動生成。8テーマから選ぶだけでデザインも完成。ITに不慣れな事務局でも参入障壁ゼロ。<br><br>
+    <strong>多言語対応（i18n）</strong> ── 日本語/英語の2言語に対応。演目ガイド・用語辞典・チャットなど主要ページで言語切り替え可能。歌舞伎を世界に届ける設計。<br><br>
     <strong>段階的に</strong> ── まず気良歌舞伎で全機能を使い込み、磨いてから他団体へ。気良歌舞伎が「最高のテンプレート」になる。
   </div>
 
@@ -391,7 +395,7 @@ export function architecturePageHTML() {
   </div>
 
   <div class="footer">
-    JIKABUKI × AI — Architecture v3.1
+    JIKABUKI × AI — Architecture v3.2
   </div>
 </div>
 </body>

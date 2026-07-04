@@ -4,29 +4,30 @@
 // はじめての歌舞伎観劇をステップ形式でガイド
 // =========================================================
 import { pageShell } from "./web_layout.js";
+import { t, langPrefix } from "./i18n.js";
 
-export function kangekinaviPageHTML({ googleClientId = "" } = {}) {
+export function kangekinaviPageHTML({ googleClientId = "", lang = "ja" } = {}) {
+  const lp = langPrefix(lang);
   const bodyHTML = `
-    <div class="breadcrumb">
-      <a href="/">トップ</a><span>›</span><a href="/kabuki/navi">KABUKI NAVI</a><span>›</span>観劇ナビ
-    </div>
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="${lp}/">${t("common.breadcrumb_top", lang)}</a><span>›</span><a href="${lp}/kabuki/navi">KABUKI NAVI</a><span>›</span>${t("theater.breadcrumb", lang)}
+    </nav>
 
     <div class="kn-intro-card fade-up">
       <div class="kn-intro-icon">🧭</div>
-      <h2>はじめての歌舞伎座、<br>これ一本で大丈夫。</h2>
+      <h2>${t("theater.intro_heading", lang)}</h2>
       <p>
-        チケットの買い方から、劇場の楽しみ方、終演後まで。<br>
-        6つのステップで、はじめての観劇をナビします。
+        ${t("theater.intro_text", lang)}
       </p>
     </div>
 
     <div class="kn-progress-bar fade-up-d1" id="kn-progress-bar">
-      <div class="kn-progress-dot active" data-step="1"><span class="kn-dot-num">1</span> チケット</div>
-      <div class="kn-progress-dot" data-step="2"><span class="kn-dot-num">2</span> 移動</div>
-      <div class="kn-progress-dot" data-step="3"><span class="kn-dot-num">3</span> 入場</div>
-      <div class="kn-progress-dot" data-step="4"><span class="kn-dot-num">4</span> 開演</div>
-      <div class="kn-progress-dot" data-step="5"><span class="kn-dot-num">5</span> 幕間</div>
-      <div class="kn-progress-dot" data-step="6"><span class="kn-dot-num">6</span> 終演後</div>
+      <div class="kn-progress-dot active" data-step="1"><span class="kn-dot-num">1</span> ${t("theater.step_label_1", lang)}</div>
+      <div class="kn-progress-dot" data-step="2"><span class="kn-dot-num">2</span> ${t("theater.step_label_2", lang)}</div>
+      <div class="kn-progress-dot" data-step="3"><span class="kn-dot-num">3</span> ${t("theater.step_label_3", lang)}</div>
+      <div class="kn-progress-dot" data-step="4"><span class="kn-dot-num">4</span> ${t("theater.step_label_4", lang)}</div>
+      <div class="kn-progress-dot" data-step="5"><span class="kn-dot-num">5</span> ${t("theater.step_label_5", lang)}</div>
+      <div class="kn-progress-dot" data-step="6"><span class="kn-dot-num">6</span> ${t("theater.step_label_6", lang)}</div>
     </div>
 
     <div class="kn-timeline">
@@ -36,57 +37,57 @@ export function kangekinaviPageHTML({ googleClientId = "" } = {}) {
         <div class="kn-step-header" onclick="knToggleStep(1)">
           <div class="kn-step-number">1</div>
           <div class="kn-step-title-area">
-            <div class="kn-step-title">チケットを手に入れる</div>
-            <div class="kn-step-timing">観劇の1〜2週間前</div>
+            <div class="kn-step-title">${t("theater.s1_title", lang)}</div>
+            <div class="kn-step-timing">${t("theater.s1_timing", lang)}</div>
           </div>
           <div class="kn-step-toggle">▼</div>
         </div>
         <div class="kn-step-body">
           <div class="kn-highlight-box">
-            <span class="kn-highlight-label">まずはここだけ</span>
-            チケットWeb松竹で<strong>3階A席（6,000円）</strong>を購入 ＆ 開演<strong>30分前</strong>に到着するだけで、はじめての観劇は十分楽しめます。
+            <span class="kn-highlight-label">${t("theater.s1_highlight_label", lang)}</span>
+            ${t("theater.s1_highlight", lang)}
           </div>
 
-          <h4>購入方法</h4>
+          <h4>${t("theater.s1_how_to_buy", lang)}</h4>
           <ul>
-            <li><strong>チケットWeb松竹</strong>（オンライン）― 最も一般的。会員登録で購入可能</li>
-            <li><strong>チケットホン松竹</strong>（電話）― 10:00〜17:00 受付</li>
-            <li><strong>劇場窓口</strong> ― 地下2階・木挽町広場の切符売場。当日券は残席がある場合のみ</li>
-            <li><strong>一幕見席</strong> ― 4階席。1幕だけ観られるお手軽チケット</li>
+            <li>${t("theater.s1_buy1", lang)}</li>
+            <li>${t("theater.s1_buy2", lang)}</li>
+            <li>${t("theater.s1_buy3", lang)}</li>
+            <li>${t("theater.s1_buy4", lang)}</li>
           </ul>
 
-          <h4>座席と価格の目安</h4>
-          <p>※2025年7月より座席区分が変更されています</p>
+          <h4>${t("theater.s1_seats_title", lang)}</h4>
+          <p>${t("theater.s1_seats_note", lang)}</p>
           <ul>
-            <li>1階桟敷席：20,000円（掘りごたつ式テーブル付きの特別席）</li>
-            <li>特等席：20,000円（1階前方の中央エリア）</li>
-            <li>1等席：18,000円</li>
-            <li>2等席：14,000円</li>
-            <li>3階A席：6,000円</li>
-            <li>3階B席：5,000円</li>
-            <li>一幕見席（4階）：1,000〜2,000円程度（演目により異なる）</li>
+            <li>${t("theater.s1_seat1", lang)}</li>
+            <li>${t("theater.s1_seat2", lang)}</li>
+            <li>${t("theater.s1_seat3", lang)}</li>
+            <li>${t("theater.s1_seat4", lang)}</li>
+            <li>${t("theater.s1_seat5", lang)}</li>
+            <li>${t("theater.s1_seat6", lang)}</li>
+            <li>${t("theater.s1_seat7", lang)}</li>
           </ul>
 
           <div class="kn-info-box">
-            <span class="kn-info-label">🔰 はじめてなら</span>
-            3階A席・B席（5,000〜6,000円）がおすすめ。舞台全体が見渡せて、歌舞伎通の常連さんも多い活気あるエリアです。お試しなら一幕見席で1幕だけ観るのも◎。
+            <span class="kn-info-label">${t("theater.s1_first_timer_label", lang)}</span>
+            ${t("theater.s1_first_timer", lang)}
           </div>
 
-          <h4>一幕見席について</h4>
+          <h4>${t("theater.s1_hitomakumi_title", lang)}</h4>
           <ul>
-            <li>4階の約90席（指定席約70席＋自由席約20席）</li>
-            <li>指定席は<strong>前日12:00からオンライン予約</strong>可能（クレジットカード決済＋手数料110円）</li>
-            <li>自由席は<strong>当日窓口で現金購入</strong>（劇場正面向かって左側の専用入口）</li>
-            <li>1階〜3階のロビー・売店は利用不可（4階のみ）</li>
+            <li>${t("theater.s1_hitomakumi1", lang)}</li>
+            <li>${t("theater.s1_hitomakumi2", lang)}</li>
+            <li>${t("theater.s1_hitomakumi3", lang)}</li>
+            <li>${t("theater.s1_hitomakumi4", lang)}</li>
           </ul>
 
           <div class="kn-info-box">
-            <span class="kn-info-label">🎓 U25当日半額チケット</span>
-            25歳以下の方は、歌舞伎座切符売場（地下2階）限定で当日半額チケットを購入できます。
+            <span class="kn-info-label">${t("theater.s1_u25_label", lang)}</span>
+            ${t("theater.s1_u25", lang)}
           </div>
 
           <div class="kn-tip-box">
-            人気公演は発売日に完売することも。チケットWeb松竹で発売スケジュールをチェックしておきましょう。松竹歌舞伎会に入会すると先行販売を利用できます。
+            ${t("theater.s1_tip", lang)}
           </div>
         </div>
       </div>
@@ -96,35 +97,35 @@ export function kangekinaviPageHTML({ googleClientId = "" } = {}) {
         <div class="kn-step-header" onclick="knToggleStep(2)">
           <div class="kn-step-number">2</div>
           <div class="kn-step-title-area">
-            <div class="kn-step-title">劇場へ向かう</div>
-            <div class="kn-step-timing">当日・出発前に確認</div>
+            <div class="kn-step-title">${t("theater.s2_title", lang)}</div>
+            <div class="kn-step-timing">${t("theater.s2_timing", lang)}</div>
           </div>
           <div class="kn-step-toggle">▼</div>
         </div>
         <div class="kn-step-body">
-          <h4>歌舞伎座へのアクセス</h4>
+          <h4>${t("theater.s2_access_title", lang)}</h4>
           <ul>
-            <li><strong>東京メトロ日比谷線・都営浅草線「東銀座」駅</strong> ― 3番出口直結（地下から濡れずに入れます）</li>
-            <li><strong>東京メトロ銀座線・丸ノ内線・日比谷線「銀座」駅</strong> ― A7出口より徒歩5分</li>
+            <li>${t("theater.s2_access1", lang)}</li>
+            <li>${t("theater.s2_access2", lang)}</li>
           </ul>
-          <p>住所：東京都中央区銀座四丁目12番15号</p>
+          <p>${t("theater.s2_address", lang)}</p>
 
-          <h4>到着時間の目安</h4>
-          <p>開演の<strong>30分前</strong>を目安に到着すると安心です。イヤホンガイドの受取やお弁当の購入など、開演前にやりたいことは意外と多いです。</p>
+          <h4>${t("theater.s2_arrival_title", lang)}</h4>
+          <p>${t("theater.s2_arrival", lang)}</p>
 
-          <h4>公演スケジュール</h4>
+          <h4>${t("theater.s2_schedule_title", lang)}</h4>
           <ul>
-            <li>毎月約25日間公演（月初〜月末）</li>
-            <li><strong>昼の部</strong>と<strong>夜の部</strong>に分かれ、それぞれ別の演目を上演</li>
-            <li>昼の部：11:00開演が多い ／ 夜の部：16:30開演が多い</li>
-            <li>チケットは昼・夜それぞれ別購入</li>
+            <li>${t("theater.s2_schedule1", lang)}</li>
+            <li>${t("theater.s2_schedule2", lang)}</li>
+            <li>${t("theater.s2_schedule3", lang)}</li>
+            <li>${t("theater.s2_schedule4", lang)}</li>
           </ul>
 
-          <h4>服装</h4>
-          <p>ドレスコードはありません。<strong>普段着でOK</strong>です。着物の方もいますが、ジーンズやスニーカーの方も多いので気負わずどうぞ。</p>
+          <h4>${t("theater.s2_dress_title", lang)}</h4>
+          <p>${t("theater.s2_dress", lang)}</p>
 
           <div class="kn-tip-box">
-            地下2階「木挽町広場」は東銀座駅から直結。ここにチケット売場やお土産店、屋台があり、開演前から楽しめます。
+            ${t("theater.s2_tip", lang)}
           </div>
         </div>
       </div>
@@ -134,46 +135,43 @@ export function kangekinaviPageHTML({ googleClientId = "" } = {}) {
         <div class="kn-step-header" onclick="knToggleStep(3)">
           <div class="kn-step-number">3</div>
           <div class="kn-step-title-area">
-            <div class="kn-step-title">劇場に入ったら</div>
-            <div class="kn-step-timing">開演の30分前に到着</div>
+            <div class="kn-step-title">${t("theater.s3_title", lang)}</div>
+            <div class="kn-step-timing">${t("theater.s3_timing", lang)}</div>
           </div>
           <div class="kn-step-toggle">▼</div>
         </div>
         <div class="kn-step-body">
-          <h4>イヤホンガイドを借りよう</h4>
-          <p>あらすじや見どころを、上演に合わせてリアルタイムで解説してくれる音声ガイドです。役者の屋号や衣装の解説、場面の背景まで教えてくれるので、<strong>初心者には必須アイテム</strong>。</p>
+          <h4>${t("theater.s3_earphone_title", lang)}</h4>
+          <p>${t("theater.s3_earphone_desc", lang)}</p>
           <div class="kn-info-box">
-            <span class="kn-info-label">料金（1階〜3階席）</span>
-            当日：800円（税込）／ 事前予約（耳寄屋）：700円（税込＋手数料2%）<br>
-            ※保証金なし。終演後、各出口手前の返却BOXに返却
+            <span class="kn-info-label">${t("theater.s3_price_floor13_label", lang)}</span>
+            ${t("theater.s3_price_floor13", lang)}
           </div>
           <div class="kn-info-box">
-            <span class="kn-info-label">料金（4階・一幕見席）</span>
-            500円（税込）・当日現金決済のみ<br>
-            ※4階案内所で貸出し。事前予約不可
+            <span class="kn-info-label">${t("theater.s3_price_floor4_label", lang)}</span>
+            ${t("theater.s3_price_floor4", lang)}
           </div>
-          <p>貸出場所は劇場外の東側カウンター（開演45分前〜）と、劇場内1階ロビー（開場時間〜）。事前にオンラインストア「耳寄屋」で予約するとスムーズでお得です。</p>
+          <p>${t("theater.s3_earphone_where", lang)}</p>
 
-          <h4>字幕ガイド（ポータブル字幕）</h4>
-          <p>タブレット端末にセリフや解説が文字で表示されるサービスです。義太夫や長唄の詞章も文字で確認できるので、「何を言っているかわからない」という不安が解消されます。</p>
+          <h4>${t("theater.s3_subtitle_title", lang)}</h4>
+          <p>${t("theater.s3_subtitle_desc", lang)}</p>
           <div class="kn-info-box">
-            <span class="kn-info-label">料金</span>
-            1階〜3階席：1,000円（税込）／ 一幕見席：500円（税込）＋保証金1,000円（返却時返金）<br>
-            ※当日・現金決済のみ。1階字幕ガイドカウンターにて
+            <span class="kn-info-label">${t("theater.s3_subtitle_price_label", lang)}</span>
+            ${t("theater.s3_subtitle_price", lang)}
           </div>
 
-          <h4>筋書（パンフレット）を買おう</h4>
-          <p>配役・あらすじ・舞台写真が載った公演プログラムです。読みながら観ると理解度が格段に上がります。観劇の記念にもなります。</p>
+          <h4>${t("theater.s3_program_title", lang)}</h4>
+          <p>${t("theater.s3_program_desc", lang)}</p>
           <div class="kn-info-box">
-            <span class="kn-info-label">料金</span>
-            1,200〜1,500円程度。1階ロビーの売店で購入できます。
+            <span class="kn-info-label">${t("theater.s3_program_price_label", lang)}</span>
+            ${t("theater.s3_program_price", lang)}
           </div>
 
-          <h4>座席を見つける</h4>
-          <p>チケットに記載の席番号を確認し、場内の案内係に聞けば親切に教えてくれます。大きな荷物は1階のコインロッカーへ。</p>
+          <h4>${t("theater.s3_seat_title", lang)}</h4>
+          <p>${t("theater.s3_seat_desc", lang)}</p>
 
           <div class="kn-tip-box">
-            イヤホンガイドと字幕ガイドは別サービス。どちらか一方でも十分楽しめますが、初めてなら音声解説の<strong>イヤホンガイド</strong>がおすすめです。
+            ${t("theater.s3_tip", lang)}
           </div>
         </div>
       </div>
@@ -183,30 +181,30 @@ export function kangekinaviPageHTML({ googleClientId = "" } = {}) {
         <div class="kn-step-header" onclick="knToggleStep(4)">
           <div class="kn-step-number">4</div>
           <div class="kn-step-title-area">
-            <div class="kn-step-title">いよいよ開演</div>
-            <div class="kn-step-timing">開演〜幕間まで</div>
+            <div class="kn-step-title">${t("theater.s4_title", lang)}</div>
+            <div class="kn-step-timing">${t("theater.s4_timing", lang)}</div>
           </div>
           <div class="kn-step-toggle">▼</div>
         </div>
         <div class="kn-step-body">
-          <h4>拍手</h4>
-          <p>拍手は歓迎されます。幕開き、見得（みえ）、幕切れなど、感動したら自然に拍手してOK。台詞の最中や静かな場面では控えめに。</p>
+          <h4>${t("theater.s4_applause_title", lang)}</h4>
+          <p>${t("theater.s4_applause", lang)}</p>
 
-          <h4>掛け声（大向こう）</h4>
-          <p>「成田屋！」「播磨屋！」など、役者の屋号を声をかける伝統的な応援です。江戸以来の文化ですが、タイミングや声量を誤ると周囲の迷惑になるおそれがあるため、<strong>まずは拍手で楽しみましょう</strong>。</p>
+          <h4>${t("theater.s4_kakegoe_title", lang)}</h4>
+          <p>${t("theater.s4_kakegoe", lang)}</p>
 
           <div class="kn-info-box">
-            <span class="kn-info-label">📝 豆知識</span>
-            初心者のうちは周囲の常連さんの掛け声に耳を傾けるのがおすすめです。
+            <span class="kn-info-label">${t("theater.s4_trivia_label", lang)}</span>
+            ${t("theater.s4_trivia", lang)}
           </div>
 
-          <h4>上演中のお約束</h4>
+          <h4>${t("theater.s4_rules_title", lang)}</h4>
           <ul>
-            <li>スマートフォンは電源OFF（マナーモードも不可）</li>
-            <li>撮影・録音は禁止</li>
-            <li>飲食は幕間のみ</li>
+            <li>${t("theater.s4_rule1", lang)}</li>
+            <li>${t("theater.s4_rule2", lang)}</li>
+            <li>${t("theater.s4_rule3", lang)}</li>
           </ul>
-          <a href="/kabuki/navi/manners" class="kn-link-btn">→ 観劇マナーをもっと見る</a>
+          <a href="${lp}/kabuki/navi/manners" class="kn-link-btn">${t("theater.s4_manners_link", lang)}</a>
         </div>
       </div>
 
@@ -215,34 +213,34 @@ export function kangekinaviPageHTML({ googleClientId = "" } = {}) {
         <div class="kn-step-header" onclick="knToggleStep(5)">
           <div class="kn-step-number">5</div>
           <div class="kn-step-title-area">
-            <div class="kn-step-title">幕間を楽しむ</div>
-            <div class="kn-step-timing">15〜30分の休憩時間</div>
+            <div class="kn-step-title">${t("theater.s5_title", lang)}</div>
+            <div class="kn-step-timing">${t("theater.s5_timing", lang)}</div>
           </div>
           <div class="kn-step-toggle">▼</div>
         </div>
         <div class="kn-step-body">
-          <h4>幕間（まくあい）って？</h4>
-          <p>幕と幕の間の休憩時間です。通常<strong>15〜30分</strong>。この間にお弁当を食べたり、売店を覗いたりできます。</p>
+          <h4>${t("theater.s5_what_title", lang)}</h4>
+          <p>${t("theater.s5_what_desc", lang)}</p>
 
-          <h4>お弁当・食事</h4>
+          <h4>${t("theater.s5_bento_title", lang)}</h4>
           <ul>
-            <li>歌舞伎座内の売店で幕の内弁当が購入可能（事前にオンライン予約も可）</li>
-            <li>3階の食事処「花篭」で食事もできます（要予約）</li>
-            <li>座席で折詰弁当を届けてもらうサービスあり（30分以上の幕間に限る）</li>
-            <li>外で購入して持ち込んでもOK</li>
-            <li>座席での飲食は幕間のみ（上演中は不可）</li>
+            <li>${t("theater.s5_bento1", lang)}</li>
+            <li>${t("theater.s5_bento2", lang)}</li>
+            <li>${t("theater.s5_bento3", lang)}</li>
+            <li>${t("theater.s5_bento4", lang)}</li>
+            <li>${t("theater.s5_bento5", lang)}</li>
           </ul>
 
-          <h4>ロビー・施設を楽しむ</h4>
+          <h4>${t("theater.s5_lobby_title", lang)}</h4>
           <ul>
-            <li>1階お土産処「木挽町」 ― 歌舞伎グッズ、和菓子、限定品</li>
-            <li>地下2階「木挽町広場」 ― 屋台、売店（東銀座駅直結）</li>
-            <li>5階「歌舞伎座ギャラリー」 ― 歌舞伎の歴史を感じる回廊</li>
-            <li>屋上庭園 ― 銀座を見下ろす穴場スポット</li>
+            <li>${t("theater.s5_lobby1", lang)}</li>
+            <li>${t("theater.s5_lobby2", lang)}</li>
+            <li>${t("theater.s5_lobby3", lang)}</li>
+            <li>${t("theater.s5_lobby4", lang)}</li>
           </ul>
 
           <div class="kn-tip-box">
-            幕間の時間は限られています。お弁当は開演前に購入しておくとスムーズ。人気の弁当は売り切れることもあります。
+            ${t("theater.s5_tip", lang)}
           </div>
         </div>
       </div>
@@ -252,45 +250,45 @@ export function kangekinaviPageHTML({ googleClientId = "" } = {}) {
         <div class="kn-step-header" onclick="knToggleStep(6)">
           <div class="kn-step-number">6</div>
           <div class="kn-step-title-area">
-            <div class="kn-step-title">終演後の楽しみ方</div>
-            <div class="kn-step-timing">余韻をもっと深める</div>
+            <div class="kn-step-title">${t("theater.s6_title", lang)}</div>
+            <div class="kn-step-timing">${t("theater.s6_timing", lang)}</div>
           </div>
           <div class="kn-step-toggle">▼</div>
         </div>
         <div class="kn-step-body">
-          <h4>イヤホンガイド・字幕ガイドを返却</h4>
-          <p>イヤホンガイドは各出口手前の返却BOXへ。字幕ガイドは1階カウンターまたは返却場所へ。一幕見席の字幕ガイドは保証金1,000円が返却時に戻ります。</p>
+          <h4>${t("theater.s6_return_title", lang)}</h4>
+          <p>${t("theater.s6_return_desc", lang)}</p>
 
-          <h4>観劇ログをつけてみよう</h4>
-          <p>日付・演目・印象に残った場面・好きな役者…。記録を残すと、次の観劇がもっと楽しくなります。筋書の余白にメモを書き込むのも通の楽しみ方です。</p>
-          <a href="/kabuki/reco" class="kn-link-btn kn-link-btn-primary">📓 KABUKI RECO で観劇記録をつける →</a>
+          <h4>${t("theater.s6_log_title", lang)}</h4>
+          <p>${t("theater.s6_log_desc", lang)}</p>
+          <a href="${lp}/kabuki/reco" class="kn-link-btn kn-link-btn-primary">${t("theater.s6_reco_link", lang)}</a>
 
-          <h4>次はどれを観る？</h4>
-          <p>一度観ると「次も観たい」が始まります。演目の世界を広げてみましょう。</p>
-          <a href="/kabuki/navi/recommend" class="kn-link-btn">→ おすすめ演目を見る</a>
+          <h4>${t("theater.s6_next_title", lang)}</h4>
+          <p>${t("theater.s6_next_desc", lang)}</p>
+          <a href="${lp}/kabuki/navi/recommend" class="kn-link-btn">${t("theater.s6_recommend_link", lang)}</a>
         </div>
       </div>
 
     </div><!-- /kn-timeline -->
 
     <!-- マナーページリンク -->
-    <a href="/kabuki/navi/manners" class="kn-manner-banner">
+    <a href="${lp}/kabuki/navi/manners" class="kn-manner-banner">
       <div class="kn-banner-icon">📋</div>
       <div class="kn-banner-text">
-        <div class="kn-banner-title">観劇マナー</div>
-        <div class="kn-banner-sub">会場でのルールをまとめてチェック</div>
+        <div class="kn-banner-title">${t("theater.manners_banner_title", lang)}</div>
+        <div class="kn-banner-sub">${t("theater.manners_banner_sub", lang)}</div>
       </div>
       <div class="kn-banner-arrow">›</div>
     </a>
 
     <!-- 地歌舞伎への橋渡し -->
     <div class="kn-bridge-card">
-      <h3>🌿 歌舞伎座の感動を、地元でも。</h3>
-      <p>今日観た演目が、実は全国のお祭りや神社で<br>地域の人々の手によって上演されています。<br>プロとはまた違う熱さがある「地歌舞伎」の世界へ。</p>
-      <a href="/jikabuki/gate/kera" class="kn-bridge-btn">地歌舞伎を知る →</a>
+      <h3>${t("theater.bridge_heading", lang)}</h3>
+      <p>${t("theater.bridge_text", lang)}</p>
+      <a href="/jikabuki/gate/kera" class="kn-bridge-btn">${t("theater.bridge_link", lang)}</a>
     </div>
 
-    <a href="/kabuki/navi" class="kn-back-link">← KABUKI NAVI に戻る</a>
+    <a href="${lp}/kabuki/navi" class="kn-back-link">${t("theater.back_navi", lang)}</a>
 
 <script>
 function knStickyOffset() {
@@ -336,13 +334,11 @@ document.querySelectorAll('.kn-progress-dot').forEach(function(dot) {
       else { c.classList.remove('open'); }
     }
     knUpdateProgressDots();
-    /* CSS transition (max-height 0.4s) が完了してから正しい位置にスクロール */
     var target = document.getElementById('kn-step-' + n);
     if (target) setTimeout(function() { knScrollTo(target); }, 420);
   });
 });
 
-/* スクロール位置に応じてアクティブドットを更新 */
 window.addEventListener('scroll', function() {
   var active = null;
   for (var i = 1; i <= 6; i++) {
@@ -352,7 +348,7 @@ window.addEventListener('scroll', function() {
       if (rect.top <= 120) active = i;
     }
   }
-  if (active === null) return; /* 条件を満たすステップがなければ更新しない */
+  if (active === null) return;
   document.querySelectorAll('.kn-progress-dot').forEach(function(dot) {
     if (parseInt(dot.dataset.step, 10) === active) dot.classList.add('active');
     else dot.classList.remove('active');
@@ -361,30 +357,33 @@ window.addEventListener('scroll', function() {
 </script>
   `;
 
-  const pageUrl = "https://kabukiplus.com/kabuki/navi/theater";
-  const ogDesc = "はじめての歌舞伎座を6ステップでガイド。チケットの買い方、座席の選び方、イヤホンガイド、幕間の過ごし方まで丸わかり。";
+  const pageUrl = `https://kabukiplus.com${lp}/kabuki/navi/theater`;
+  const ogDesc = t("theater.og_desc", lang);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "HowTo",
-    "name": "はじめての歌舞伎座ガイド",
+    "name": t("theater.jsonld_name", lang),
     "description": ogDesc,
     "url": pageUrl,
     "step": [
-      { "@type": "HowToStep", "name": "チケットを手に入れる", "position": 1 },
-      { "@type": "HowToStep", "name": "劇場へ向かう", "position": 2 },
-      { "@type": "HowToStep", "name": "劇場に入ったら", "position": 3 },
-      { "@type": "HowToStep", "name": "いよいよ開演", "position": 4 },
-      { "@type": "HowToStep", "name": "幕間を楽しむ", "position": 5 },
-      { "@type": "HowToStep", "name": "終演後の楽しみ方", "position": 6 },
+      { "@type": "HowToStep", "name": t("theater.jsonld_step1", lang), "position": 1 },
+      { "@type": "HowToStep", "name": t("theater.jsonld_step2", lang), "position": 2 },
+      { "@type": "HowToStep", "name": t("theater.jsonld_step3", lang), "position": 3 },
+      { "@type": "HowToStep", "name": t("theater.jsonld_step4", lang), "position": 4 },
+      { "@type": "HowToStep", "name": t("theater.jsonld_step5", lang), "position": 5 },
+      { "@type": "HowToStep", "name": t("theater.jsonld_step6", lang), "position": 6 },
     ],
     "publisher": { "@type": "Organization", "name": "KABUKI PLUS+", "url": "https://kabukiplus.com" },
   };
 
   return pageShell({
-    title: "観劇ナビ — はじめての歌舞伎座ガイド",
-    subtitle: "はじめての歌舞伎座ガイド",
+    lang,
+    title: t("theater.page_title", lang),
+    subtitle: t("theater.page_subtitle", lang),
     bodyHTML,
     activeNav: "navi",
+    currentPath: "/kabuki/navi/theater",
+    i18nReady: true,
     googleClientId,
     ogDesc,
     ogUrl: pageUrl,

@@ -4,12 +4,13 @@
 // 今を見る：歌舞伎ニュース + 公演スケジュール
 // =========================================================
 import { pageShell } from "./web_layout.js";
+import { t, langPrefix } from "./i18n.js";
 import { loadEnmokuCatalog } from "./flex_enmoku.js";
 import { pickFeatured, saveMissedToKV } from "./featured_enmoku.js";
 import { getPerformancesCached } from "./kabuki_bito.js";
 
 /* ── 注目演目ブロック HTML 生成 ── */
-function buildFeaturedHTML(featured) {
+function buildFeaturedHTML(featured, lang = "ja") {
   if (!featured) return "";
   const { thisMonth, nextMonth, showNextMonth } = featured;
   if (!thisMonth && !nextMonth) return "";
@@ -17,8 +18,8 @@ function buildFeaturedHTML(featured) {
   function card(item, labelPrefix, icon) {
     if (!item) return "";
     const naviLink = item.naviId
-      ? `<a href="/kabuki/navi/enmoku/${encodeURIComponent(item.naviId)}" class="featured-navi-link">演目ガイドを見る →</a>`
-      : `<span class="featured-no-navi">ガイド準備中</span>`;
+      ? `<a href="/kabuki/navi/enmoku/${encodeURIComponent(item.naviId)}" class="featured-navi-link">${t("live.guide_link", lang)}</a>`
+      : `<span class="featured-no-navi">${t("live.guide_pending", lang)}</span>`;
     const cdText = item.countdown != null
       ? `<span class="featured-countdown">${icon} ${item.countdownLabel}あと<strong>${item.countdown}</strong>日</span>`
       : "";
@@ -35,11 +36,11 @@ function buildFeaturedHTML(featured) {
   }
 
   let html = '<section class="live-section fade-up" id="featured-section">';
-  html += '<h2 class="section-title">🎯 注目の演目</h2>';
+  html += `<h2 class="section-title">${t("live.featured", lang)}</h2>`;
   html += '<div class="featured-grid">';
-  html += card(thisMonth, "今月の注目", "⏳");
+  html += card(thisMonth, t("live.featured_this", lang), "⏳");
   if (showNextMonth && nextMonth) {
-    html += card(nextMonth, "来月の注目", "⏳");
+    html += card(nextMonth, t("live.featured_next", lang), "⏳");
   }
   html += '</div></section>';
   return html;
@@ -49,10 +50,12 @@ function escHtml(s) {
   return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
-export async function livePageHTML(env) {
+export async function livePageHTML(env, { lang = "ja" } = {}) {
+  const lp = langPrefix(lang);
   /* enmoku タイトルをサーバー側で取得して HTML に埋め込む（クライアントフェッチ不要） */
   let enmokuTitlesJson = "[]";
   let featuredHTML = "";
+  let eventJsonLd = "";
   try {
     const catalog = env ? await loadEnmokuCatalog(env) : [];
     const titles = (catalog || []).map(e => ({ id: e.id, short: e.short || "", full: e.full || "" }));
@@ -80,7 +83,25 @@ export async function livePageHTML(env) {
           return { ...p, ...extra };
         });
         const featured = await pickFeatured(items, env);
-        featuredHTML = buildFeaturedHTML(featured);
+        featuredHTML = buildFeaturedHTML(featured, lang);
+
+        // Event JSON-LD（公演スケジュール構造化データ）
+        const eventItems = items.filter(p => p.start_date).slice(0, 20);
+        if (eventItems.length) {
+          const events = eventItems.map(p => {
+            const ev = {
+              "@type": "TheaterEvent",
+              "name": p.title || p.theater || "歌舞伎公演",
+              "startDate": p.start_date,
+              "location": { "@type": "Place", "name": p.theater || "" },
+              "description": [p.title, p.subtitle, p.period_text].filter(Boolean).join(" — "),
+            };
+            if (p.end_date) ev.endDate = p.end_date;
+            if (p.url) ev.offers = { "@type": "Offer", "url": p.url };
+            return ev;
+          });
+          eventJsonLd = `<script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@graph": events })}</script>`;
+        }
 
         // LABO用: missed をKVに保存（非同期・失敗しても無視）
         if (featured.missed.length) {
@@ -96,14 +117,13 @@ export async function livePageHTML(env) {
     }
   } catch (_) { /* フォールバック: マッチなしで表示 */ }
   const bodyHTML = `
-    <div class="breadcrumb">
-      <a href="/">トップ</a><span>›</span>KABUKI LIVE
-    </div>
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="${lp}/">${t("common.breadcrumb_top", lang)}</a><span>›</span>KABUKI LIVE
+    </nav>
 
     <section class="live-intro fade-up">
       <p class="live-lead">
-        歌舞伎の「今」をチェック。<br>
-        最新ニュースと公演スケジュールをまとめてお届け。
+        ${t("live.lead", lang).replace(/\n/g, "<br>")}
       </p>
     </section>
 
@@ -112,44 +132,44 @@ export async function livePageHTML(env) {
     <!-- ── 推し俳優ニュース ── -->
     <section class="live-section fade-up" id="oshi-section">
       <div class="section-title-row">
-        <h2 class="section-title">⭐ 推し俳優ニュース<span class="oshi-count-badge" id="oshi-count-badge"></span></h2>
-        <button class="oshi-manage-btn" id="oshi-manage-btn" onclick="LiveOshi.openPanel()">推しを管理</button>
+        <h2 class="section-title">${t("live.oshi_title", lang)}<span class="oshi-count-badge" id="oshi-count-badge"></span></h2>
+        <button class="oshi-manage-btn" id="oshi-manage-btn" onclick="LiveOshi.openPanel()">${t("live.oshi_manage", lang)}</button>
       </div>
-      <div id="oshi-section-body"><div class="loading" style="font-size:13px;">読み込み中…</div></div>
+      <div id="oshi-section-body"><div class="loading" style="font-size:13px;">${t("common.loading", lang)}</div></div>
     </section>
 
     <!-- ── 歌舞伎ニュース ── -->
     <section class="live-section fade-up-d1" id="news-section">
       <div class="section-title-row">
-        <h2 class="section-title">歌舞伎ニュース</h2>
+        <h2 class="section-title">${t("live.news_title", lang)}</h2>
         <span class="section-updated" id="news-updated"></span>
       </div>
       <div class="live-news-grid">
         <div class="live-news-slot" id="news-kabuki-slot">
           <div class="live-news-items" id="news-kabuki-items">
-            <div class="loading">読み込み中…</div>
+            <div class="loading">${t("common.loading", lang)}</div>
           </div>
         </div>
       </div>
       <div class="live-more">
-        <a href="/kabuki/live/news" class="live-news-more">ニュース一覧へ →</a>
+        <a href="${lp}/kabuki/live/news" class="live-news-more">${t("live.news_more", lang)}</a>
       </div>
     </section>
 
     <!-- ── 公演スケジュール ── -->
     <section class="live-section fade-up-d2" id="perf-section">
       <div class="section-title-row">
-        <h2 class="section-title">公演スケジュール</h2>
+        <h2 class="section-title">${t("live.schedule", lang)}</h2>
         <span class="section-updated" id="perf-updated"></span>
       </div>
       <div class="perf-month-tabs" id="perf-month-tabs"></div>
       <div class="perf-oshi-row" id="perf-oshi-row" style="display:none">
         <label class="oshi-toggle-switch"><input type="checkbox" id="oshi-toggle-cb"><span class="oshi-toggle-track"><span class="oshi-toggle-knob"></span></span></label>
-        <span class="oshi-toggle-text">\u2b50 推し俳優の出演のみ</span>
+        <span class="oshi-toggle-text">${t("live.oshi_only", lang)}</span>
       </div>
-      <div class="perf-theater-grid" id="perf-theater-grid"><div class="loading">読み込み中…</div></div>
+      <div class="perf-theater-grid" id="perf-theater-grid"><div class="loading">${t("common.loading", lang)}</div></div>
       <div class="live-more">
-        <a href="https://www.kabuki-bito.jp/theaters/kabukiza" target="_blank" rel="noopener" class="live-ext-link">歌舞伎美人で詳しく見る →</a>
+        <a href="https://www.kabuki-bito.jp/theaters/kabukiza" target="_blank" rel="noopener" class="live-ext-link">${t("live.ext_link", lang)}</a>
       </div>
     </section>
 
@@ -842,13 +862,18 @@ export async function livePageHTML(env) {
   `;
 
   return pageShell({
+    lang,
     title: "KABUKI LIVE",
-    subtitle: "歌舞伎瓦版",
+    subtitle: t("live.subtitle", lang),
     bodyHTML,
+    currentPath: "/kabuki/live",
+    i18nReady: false,
     activeNav: "live",
     googleClientId: env?.GOOGLE_CLIENT_ID || "",
+    ogDesc: "歌舞伎座・国立劇場など主要劇場の最新公演スケジュールと歌舞伎ニュースをまとめてチェック",
     ogImage: "https://kabukiplus.com/assets/ogp/ogp_live.png",
-    headExtra: `<style>
+    headExtra: `${eventJsonLd}
+<style>
       .live-intro {
         text-align: center;
         padding: 24px 16px 32px;

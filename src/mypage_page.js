@@ -7,10 +7,11 @@ import { pageShell, escHTML } from "./web_layout.js";
 
 export function mypagePageHTML(opts) {
   var googleClientId = (opts && opts.googleClientId) || '';
+  var lang = (opts && opts.lang) || 'ja';
   const bodyHTML = `
-    <div class="breadcrumb">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">トップ</a><span>›</span>KABUKI RECO
-    </div>
+    </nav>
     <div id="app">
       <div class="loading">読み込み中…</div>
     </div>
@@ -5514,7 +5515,9 @@ export function mypagePageHTML(opts) {
     subtitle: "歌舞伎帖",
     bodyHTML,
     activeNav: "reco",
+    lang,
     googleClientId,
+    ogDesc: "観劇記録をつけて歌舞伎帖を作ろう。バッジコレクション・推し俳優の記録・SNSシェアで歌舞伎体験を残す",
     ogImage: "https://kabukiplus.com/assets/ogp/ogp_reco.png",
     headExtra: `<style>
       /* ── RECO固有のCSS変数（内部コンポーネント用） ── */

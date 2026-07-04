@@ -3,6 +3,7 @@
 // 用語辞典ページ — /glossary
 // =========================================================
 import { pageShell, escHTML } from "./web_layout.js";
+import { t, langPrefix } from "./i18n.js";
 
 const CAT_ICONS = {
   "演技・演出": "🎭", "役柄": "🎎", "舞台": "🏯", "音・裏方": "🎵",
@@ -12,7 +13,7 @@ const CAT_ICONS = {
 // =========================================================
 // SSR版 用語詳細ページ（SEO対応）
 // =========================================================
-export function glossaryTermSSR({ term, allTerms }) {
+export function glossaryTermSSR({ term, allTerms, lang = "ja" }) {
   const e = escHTML;
   const termName = term.term || "";
   const reading = term.reading || "";
@@ -21,8 +22,9 @@ export function glossaryTermSSR({ term, allTerms }) {
   const catIcon = CAT_ICONS[category] || "📖";
 
   const descPlain = desc.replace(/\n/g, " ").slice(0, 150).trim();
-  const ogDesc = `歌舞伎用語「${termName}」の意味・解説。${descPlain}…`;
-  const pageUrl = `https://kabukiplus.com/kabuki/navi/glossary/term/${encodeURIComponent(termName)}`;
+  const ogDesc = t("glossary.og_term", lang).replace("${termName}", termName) + descPlain + "…";
+  const langPath = lang === "en" ? "/en" : "";
+  const pageUrl = `https://kabukiplus.com${langPath}/kabuki/navi/glossary/term/${encodeURIComponent(termName)}`;
 
   // JSON-LD
   const jsonLd = {
@@ -32,10 +34,11 @@ export function glossaryTermSSR({ term, allTerms }) {
     "description": desc.replace(/\n/g, " ").slice(0, 300),
     "inDefinedTermSet": {
       "@type": "DefinedTermSet",
-      "name": "歌舞伎用語辞典",
-      "url": "https://kabukiplus.com/kabuki/navi/glossary",
+      "name": t("glossary.jsonld_name", lang),
+      "url": `https://kabukiplus.com${langPath}/kabuki/navi/glossary`,
     },
     "url": pageUrl,
+    "inLanguage": lang === "en" ? "en" : "ja",
   };
 
   // 同じカテゴリの他の用語（関連用語）
@@ -46,9 +49,9 @@ export function glossaryTermSSR({ term, allTerms }) {
   let relatedHTML = "";
   if (related.length) {
     relatedHTML = `<section class="glossary-section" id="sec-related">
-      <h2 class="glossary-section-title">${e(catIcon)} ${e(category)}の他の用語</h2>
+      <h2 class="glossary-section-title">${e(catIcon)} ${t("glossary.related_title", lang).replace("$" + "{category}", e(category))}</h2>
       <div class="glossary-related-list">
-        ${related.map(r => `<a href="/kabuki/navi/glossary/term/${encodeURIComponent(r.term)}" class="glossary-related-item">
+        ${related.map(r => `<a href="${langPrefix(lang)}/kabuki/navi/glossary/term/${encodeURIComponent(r.term)}" class="glossary-related-item">
           <span class="glossary-related-name">${e(r.term)}</span>
           ${r.reading ? `<span class="glossary-related-reading">${e(r.reading)}</span>` : ""}
         </a>`).join("")}
@@ -57,9 +60,9 @@ export function glossaryTermSSR({ term, allTerms }) {
   }
 
   const bodyHTML = `
-    <div class="breadcrumb">
-      <a href="/">トップ</a><span>›</span><a href="/kabuki/navi">KABUKI NAVI</a><span>›</span><a href="/kabuki/navi/glossary">用語辞典</a><span>›</span><a href="/kabuki/navi/glossary/${encodeURIComponent(category)}">${e(category)}</a><span>›</span><span>${e(termName)}</span>
-    </div>
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="${langPrefix(lang)}/">${t("common.breadcrumb_top", lang)}</a><span>›</span><a href="${langPrefix(lang)}/kabuki/navi">KABUKI NAVI</a><span>›</span><a href="${langPrefix(lang)}/kabuki/navi/glossary">${t("glossary.breadcrumb", lang)}</a><span>›</span><a href="${langPrefix(lang)}/kabuki/navi/glossary/${encodeURIComponent(category)}">${e(category)}</a><span>›</span><span>${e(termName)}</span>
+    </nav>
 
     <article class="glossary-detail" itemscope itemtype="https://schema.org/DefinedTerm">
       <div class="glossary-header fade-up">
@@ -69,24 +72,27 @@ export function glossaryTermSSR({ term, allTerms }) {
       </div>
 
       <section class="glossary-section" id="sec-desc">
-        <h2 class="glossary-section-title">📖 解説</h2>
-        <div class="glossary-desc" itemprop="description">${formatGlossarySSR(desc || "説明がありません")}</div>
+        <h2 class="glossary-section-title">${t("glossary.section_desc", lang)}</h2>
+        <div class="glossary-desc" itemprop="description">${formatGlossarySSR(desc || t("glossary.no_desc", lang))}</div>
       </section>
 
       ${relatedHTML}
 
       <div style="margin-top:1.5rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
-        <a href="/kabuki/navi/glossary/${encodeURIComponent(category)}" class="btn btn-secondary">← ${e(category)}に戻る</a>
-        <a href="/kabuki/navi/glossary" class="btn btn-secondary">カテゴリ一覧</a>
+        <a href="${langPrefix(lang)}/kabuki/navi/glossary/${encodeURIComponent(category)}" class="btn btn-secondary">${t("glossary.back_to_category", lang).replace("$" + "{category}", e(category))}</a>
+        <a href="${langPrefix(lang)}/kabuki/navi/glossary" class="btn btn-secondary">${t("glossary.all_categories", lang)}</a>
       </div>
     </article>
   `;
 
   return pageShell({
-    title: `${termName}${reading && !termName.includes(reading) ? `（${reading}）` : ""} — 歌舞伎用語辞典`,
-    subtitle: "歌舞伎用語辞典",
+    title: `${termName}${reading && !termName.includes(reading) ? `（${reading}）` : ""} — ${t("glossary.title", lang)}`,
+    subtitle: t("glossary.title", lang),
     bodyHTML,
     activeNav: "navi",
+    currentPath: "/kabuki/navi/glossary",
+    i18nReady: true,
+    lang,
     ogDesc,
     ogUrl: pageUrl,
     canonicalUrl: pageUrl,
@@ -114,53 +120,69 @@ export function glossaryTermSSR({ term, allTerms }) {
 // =========================================================
 // SSR版 カテゴリ別用語一覧ページ（SEO対応）
 // =========================================================
-export function glossaryCategorySSR({ category, terms }) {
+export function glossaryCategorySSR({ category, terms, lang = "ja" }) {
   const e = escHTML;
   const catIcon = CAT_ICONS[category] || "📖";
   const sorted = [...terms].sort((a, b) => (a.term || "").localeCompare(b.term || "", "ja"));
 
-  const ogDesc = `歌舞伎用語「${category}」カテゴリの用語一覧（${terms.length}語）。${sorted.slice(0, 5).map(t => t.term).join("・")}など。`;
-  const pageUrl = `https://kabukiplus.com/kabuki/navi/glossary/${encodeURIComponent(category)}`;
+  const ogDesc = t("glossary.og_category", lang).replace("${category}", category).replace("${count}", terms.length) + sorted.slice(0, 5).map(tm => tm.term).join("・") + "…";
+  const langPath = lang === "en" ? "/en" : "";
+  const pageUrl = `https://kabukiplus.com${langPath}/kabuki/navi/glossary/${encodeURIComponent(category)}`;
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "DefinedTermSet",
-    "name": `歌舞伎用語辞典 — ${category}`,
+    "name": t("glossary.jsonld_category", lang).replace("$" + "{category}", category),
     "description": ogDesc,
     "url": pageUrl,
     "hasDefinedTerm": sorted.map(t => ({
       "@type": "DefinedTerm",
       "name": t.term,
-      "url": `https://kabukiplus.com/kabuki/navi/glossary/term/${encodeURIComponent(t.term)}`,
+      "url": `https://kabukiplus.com${langPath}/kabuki/navi/glossary/term/${encodeURIComponent(t.term)}`,
     })),
   };
 
   let listHTML = "";
   for (const t of sorted) {
-    listHTML += `<a href="/kabuki/navi/glossary/term/${encodeURIComponent(t.term)}" class="list-item">
+    listHTML += `<a href="${langPrefix(lang)}/kabuki/navi/glossary/term/${encodeURIComponent(t.term)}" class="list-item">
       <div class="list-item-title">${e(t.term)}</div>
       ${t.reading ? `<div class="list-item-sub">${e(t.reading)}</div>` : ""}
     </a>`;
   }
 
   const bodyHTML = `
-    <div class="breadcrumb">
-      <a href="/">トップ</a><span>›</span><a href="/kabuki/navi">KABUKI NAVI</a><span>›</span><a href="/kabuki/navi/glossary">用語辞典</a><span>›</span><span>${e(category)}</span>
-    </div>
-    <h2 class="section-title">${e(catIcon)} ${e(category)} <span style="font-size:0.8rem;color:var(--text-tertiary);">${terms.length}語</span></h2>
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="${langPrefix(lang)}/">${t("common.breadcrumb_top", lang)}</a><span>›</span><a href="${langPrefix(lang)}/kabuki/navi">KABUKI NAVI</a><span>›</span><a href="${langPrefix(lang)}/kabuki/navi/glossary">${t("glossary.breadcrumb", lang)}</a><span>›</span><span>${e(category)}</span>
+    </nav>
+    <h2 class="section-title">${e(catIcon)} ${e(category)} <span style="font-size:0.8rem;color:var(--text-tertiary);">${t("glossary.term_count", lang).replace("$" + "{count}", terms.length)}</span></h2>
     ${listHTML}
-    <div style="margin-top:1rem;"><a href="/kabuki/navi/glossary" class="btn btn-secondary">← カテゴリ一覧へ</a></div>
+    <div style="margin-top:1rem;"><a href="${langPrefix(lang)}/kabuki/navi/glossary" class="btn btn-secondary">${t("glossary.back_all", lang)}</a></div>
   `;
 
   return pageShell({
-    title: `${category} — 歌舞伎用語辞典`,
-    subtitle: "歌舞伎用語辞典",
+    title: `${category} — ${t("glossary.title", lang)}`,
+    subtitle: t("glossary.title", lang),
     bodyHTML,
     activeNav: "navi",
+    currentPath: "/kabuki/navi/glossary",
+    i18nReady: true,
+    lang,
     ogDesc,
     ogUrl: pageUrl,
     canonicalUrl: pageUrl,
-    headExtra: `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>`,
+    headExtra: `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
+<script type="application/ld+json">${JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": sorted.slice(0, 50).map(tm => ({
+    "@type": "Question",
+    "name": `${tm.term}とは？`,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": (tm.desc || tm.description || "").slice(0, 300),
+    },
+  })),
+})}</script>`,
   });
 }
 
@@ -168,18 +190,18 @@ function formatGlossarySSR(text) {
   return escHTML(text).replace(/\n\n/g, "</p><p>").replace(/\n/g, "<br>");
 }
 
-export function glossaryPageHTML({ googleClientId = "" } = {}) {
+export function glossaryPageHTML({ googleClientId = "", lang = "ja" } = {}) {
   const bodyHTML = `
-    <div class="breadcrumb">
-      <a href="/">トップ</a><span>›</span><a href="/kabuki/navi">KABUKI NAVI</a><span>›</span><span>用語辞典</span>
-    </div>
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="${langPrefix(lang)}/">${t("common.breadcrumb_top", lang)}</a><span>›</span><a href="${langPrefix(lang)}/kabuki/navi">KABUKI NAVI</a><span>›</span><span>${t("glossary.breadcrumb", lang)}</span>
+    </nav>
 
     <div class="search-bar">
-      <input type="text" id="search-input" placeholder="用語を検索…" autocomplete="off">
+      <input type="text" id="search-input" placeholder="${t("glossary.search_placeholder", lang)}" autocomplete="off">
     </div>
 
     <div id="app">
-      <div class="loading">用語データを読み込み中…</div>
+      <div class="loading">${t("glossary.loading", lang)}</div>
     </div>
 
     <script>
@@ -188,7 +210,16 @@ export function glossaryPageHTML({ googleClientId = "" } = {}) {
       var searchInput = document.getElementById("search-input");
       var allTerms = null;
 
-      var CAT_ORDER = [
+      var CAT_ORDER = ${lang === "en" ? `[
+        { key: "Acting & Direction", icon: "🎭" },
+        { key: "Roles & Characters", icon: "🎎" },
+        { key: "Stage", icon: "🏯" },
+        { key: "Music & Backstage", icon: "🎵" },
+        { key: "House Specialties", icon: "📜" },
+        { key: "Genres", icon: "📚" },
+        { key: "Theatergoing", icon: "🎫" },
+        { key: "Costumes & Props", icon: "👘" }
+      ]` : `[
         { key: "演技・演出", icon: "🎭" },
         { key: "役柄", icon: "🎎" },
         { key: "舞台", icon: "🏯" },
@@ -197,9 +228,9 @@ export function glossaryPageHTML({ googleClientId = "" } = {}) {
         { key: "ジャンル", icon: "📚" },
         { key: "鑑賞", icon: "🎫" },
         { key: "衣装・小道具", icon: "👘" }
-      ];
+      ]`};
 
-      fetch("/api/glossary")
+      fetch("/api/glossary?lang=${lang}")
         .then(function(r){ return r.json(); })
         .then(function(data){
           if (Array.isArray(data)) { allTerms = data; }
@@ -208,21 +239,21 @@ export function glossaryPageHTML({ googleClientId = "" } = {}) {
           showCategories();
         })
         .catch(function(){
-          app.innerHTML = '<div class="empty-state">用語データの読み込みに失敗しました。</div>';
+          app.innerHTML = '<div class="empty-state">${t("glossary.load_error", lang)}</div>';
         });
 
       function showCategories() {
         var catCounts = {};
         allTerms.forEach(function(t){ catCounts[t.category] = (catCounts[t.category] || 0) + 1; });
 
-        var html = '<h2 class="section-title">用語辞典 <span style="font-size:0.8rem;color:var(--text-tertiary);">全' + allTerms.length + '語</span></h2>';
+        var html = '<h2 class="section-title">${t("glossary.section_title", lang)} <span style="font-size:0.8rem;color:var(--text-tertiary);">' + '${t("glossary.all_count", lang)}'.replace('$' + '{count}', allTerms.length) + '</span></h2>';
         html += '<div class="card-grid" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr));">';
         CAT_ORDER.forEach(function(c, i) {
           if (!catCounts[c.key]) return;
-          html += '<a href="/kabuki/navi/glossary/' + encodeURIComponent(c.key) + '" class="card fade-up-d' + i + '" style="text-align:center;padding:1.2rem;">';
+          html += '<a href="${langPrefix(lang)}/kabuki/navi/glossary/' + encodeURIComponent(c.key) + '" class="card fade-up-d' + i + '" style="text-align:center;padding:1.2rem;">';
           html += '<div style="font-size:2rem;margin-bottom:0.3rem;">' + c.icon + '</div>';
           html += '<h3 style="font-size:0.95rem;">' + esc(c.key) + '</h3>';
-          html += '<p class="card-desc">' + catCounts[c.key] + '語</p>';
+          html += '<p class="card-desc">' + '${t("glossary.cat_count", lang)}'.replace('$' + '{count}', catCounts[c.key]) + '</p>';
           html += '</a>';
         });
         html += '</div>';
@@ -242,12 +273,12 @@ export function glossaryPageHTML({ googleClientId = "" } = {}) {
               || (t.desc || t.description || "").toLowerCase().indexOf(q) >= 0;
           });
           if (results.length === 0) {
-            app.innerHTML = '<div class="empty-state">「' + esc(q) + '」に一致する用語はありませんでした。</div>';
+            app.innerHTML = '<div class="empty-state">' + '${t("glossary.no_match", lang)}'.replace('$' + '{q}', esc(q)) + '</div>';
             return;
           }
-          var html = '<h2 class="section-title">検索結果 <span style="font-size:0.8rem;color:#888;">' + results.length + '件</span></h2>';
+          var html = '<h2 class="section-title">${t("glossary.search_results", lang)} <span style="font-size:0.8rem;color:#888;">' + '${t("glossary.result_count", lang)}'.replace('$' + '{count}', results.length) + '</span></h2>';
           results.forEach(function(t) {
-            html += '<a href="/kabuki/navi/glossary/term/' + encodeURIComponent(t.term) + '" class="list-item">';
+            html += '<a href="${langPrefix(lang)}/kabuki/navi/glossary/term/' + encodeURIComponent(t.term) + '" class="list-item">';
             html += '<div class="list-item-title">' + esc(t.term) + '</div>';
             html += '<div class="list-item-sub">' + esc(t.category) + (t.reading ? ' · ' + esc(t.reading) : '') + '</div>';
             html += '</a>';
@@ -267,11 +298,14 @@ export function glossaryPageHTML({ googleClientId = "" } = {}) {
   `;
 
   return pageShell({
-    title: "歌舞伎用語辞典",
-    subtitle: "126の用語をカテゴリ別に解説",
+    title: t("glossary.title", lang),
+    subtitle: t("glossary.subtitle", lang),
     bodyHTML,
     activeNav: "navi",
+    currentPath: "/kabuki/navi/glossary",
+    i18nReady: true,
     googleClientId,
+    lang,
     headExtra: `<style>
       .search-bar { margin-bottom: 1rem; }
       .search-bar input {

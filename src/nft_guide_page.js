@@ -6,9 +6,9 @@ import { pageShell } from "./web_layout.js";
 
 export function nftGuidePageHTML() {
   const bodyHTML = `
-    <div class="breadcrumb">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">トップ</a><span>›</span><a href="/jikabuki/gate/kera">JIKABUKI PLUS+</a><span>›</span>NFT購入ガイド
-    </div>
+    </nav>
 
     <section class="nft-intro fade-up">
       <h2 class="section-title">🪙 NFT購入ガイド</h2>

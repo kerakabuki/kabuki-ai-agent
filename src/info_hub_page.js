@@ -7,9 +7,9 @@ import { pageShell } from "./web_layout.js";
 
 export function infoHubPageHTML({} = {}) {
   const bodyHTML = `
-    <div class="breadcrumb">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">トップ</a><span>›</span><span>INFO</span>
-    </div>
+    </nav>
 
     <!-- Hero -->
     <section class="info-hero fade-up">
@@ -723,15 +723,35 @@ a.pick-card:hover {
 .info-notice-btn:hover { opacity: 0.85; text-decoration: none; color: #fff; }
 </style>`;
 
+  const infoHubJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "JIKABUKI INFO",
+    "description": "全国の地歌舞伎・地芝居団体を探す。お気に入り団体の次回公演を追う。地歌舞伎・地芝居の発見と応援の入口。",
+    "url": "https://kabukiplus.com/jikabuki/info",
+    "inLanguage": "ja",
+    "publisher": { "@type": "Organization", "name": "JIKABUKI PLUS+", "url": "https://kabukiplus.com" },
+    "hasPart": [
+      { "@type": "WebPage", "name": "地歌舞伎ニュース", "url": "https://kabukiplus.com/jikabuki/info/news" },
+      { "@type": "WebPage", "name": "公演カレンダー", "url": "https://kabukiplus.com/jikabuki/info/events" },
+      { "@type": "WebPage", "name": "全国の地歌舞伎団体", "url": "https://kabukiplus.com/jikabuki/info/groups" },
+    ],
+  };
+  const infoHubHeadExtra = `
+<script type="application/ld+json">${JSON.stringify(infoHubJsonLd)}</script>
+${headExtra}`;
+
   return pageShell({
     title: "INFO",
     subtitle: "たより",
     bodyHTML,
-    headExtra,
+    headExtra: infoHubHeadExtra,
     activeNav: "info",
     brand: "jikabuki",
     ogDesc: "全国の地歌舞伎・地芝居団体を探す。お気に入り団体の次回公演を追う。地歌舞伎・地芝居の発見と応援の入口。",
     ogImage: "https://kabukiplus.com/assets/ogp/ogp_info.png",
+    ogUrl: "https://kabukiplus.com/jikabuki/info",
+    canonicalUrl: "https://kabukiplus.com/jikabuki/info",
   });
 }
 
@@ -740,9 +760,9 @@ a.pick-card:hover {
 // =========================================================
 export function infoTheatersPageHTML() {
   const bodyHTML = `
-    <div class="breadcrumb">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">トップ</a><span>›</span><a href="/jikabuki/info">INFO</a><span>›</span><span>芝居小屋</span>
-    </div>
+    </nav>
 
     <section class="th-hero fade-up">
       <h2 class="th-hero-title">全国の芝居小屋</h2>

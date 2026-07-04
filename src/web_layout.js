@@ -2,6 +2,7 @@
 // =========================================================
 // 共通レイアウト — 歌舞伎デザインのページシェル
 // =========================================================
+import { t, langPrefix } from "./i18n.js";
 
 /**
  * 歌舞伎風ページの共通シェル
@@ -14,55 +15,153 @@
  * @param {boolean} [opts.hideNav] - true ならグロナビを非表示
  * @returns {string} 完全なHTML文字列
  */
-export function pageShell({ title, subtitle, bodyHTML, overlayHTML = "", headExtra = "", activeNav = "", hideNav = false, brand = "kabuki", googleClientId = "", ogDesc = "", ogImage = "", ogUrl = "", canonicalUrl = "" }) {
-  const navItems = brand === "jikabuki" ? jikabukiNav : kabukiNav;
+// パンくずリスト JSON-LD 生成
+const BREADCRUMB_NAMES = {
+  "": "KABUKI PLUS+",
+  "kabuki": "KABUKI PLUS+",
+  "navi": "NAVI",
+  "live": "LIVE",
+  "reco": "RECO",
+  "dojo": "DOJO",
+  "chat": "AIチャット",
+  "help": "ヘルプ",
+  "enmoku": "演目ガイド",
+  "glossary": "用語いろは",
+  "recommend": "おすすめ演目",
+  "theater": "劇場ガイド",
+  "manners": "観劇マナー",
+  "column": "コラム",
+  "news": "ニュース",
+  "quiz": "クイズ",
+  "training": "修行",
+  "kakegoe": "大向う道場",
+  "serifu": "台詞稽古",
+  "kawaraban": "かわら版",
+  "jikabuki": "JIKABUKI PLUS+",
+  "gate": "GATE",
+  "info": "INFO",
+  "base": "BASE",
+  "labo": "LABO",
+  "events": "イベント",
+  "groups": "団体一覧",
+  "kerakabuki": "気良歌舞伎",
+  "story": "ストーリー",
+  "press": "プレス",
+  "guide": "ガイド",
+  "term": "用語詳細",
+  "project": "プロジェクト",
+};
+const BREADCRUMB_NAMES_EN = {
+  "": "KABUKI PLUS+",
+  "kabuki": "KABUKI PLUS+",
+  "navi": "NAVI",
+  "live": "LIVE",
+  "reco": "RECO",
+  "dojo": "DOJO",
+  "chat": "AI Chat",
+  "help": "Help",
+  "enmoku": "Play Guide",
+  "glossary": "Glossary",
+  "recommend": "Recommendations",
+  "theater": "Theater Guide",
+  "manners": "Theater Etiquette",
+  "column": "Columns",
+  "news": "News",
+  "quiz": "Quiz",
+  "training": "Training",
+  "kakegoe": "Kakegoe",
+  "serifu": "Dialogue Practice",
+};
+
+function buildBreadcrumbJsonLd(currentPath, brand, lang) {
+  if (!currentPath || currentPath === "/") return "";
+  const base = "https://kabukiplus.com";
+  const names = lang === "en" ? BREADCRUMB_NAMES_EN : BREADCRUMB_NAMES;
+  // /en/ プレフィックスを除去して処理
+  const cleanPath = currentPath.replace(/^\/en\//, "/").replace(/^\/en$/, "/");
+  const segments = cleanPath.split("/").filter(Boolean);
+  if (segments.length === 0) return "";
+
+  const items = [{ name: brand === "jikabuki" ? "JIKABUKI PLUS+" : "KABUKI PLUS+", url: base + "/" }];
+  let accum = "";
+  for (let i = 0; i < segments.length; i++) {
+    const seg = segments[i];
+    accum += "/" + seg;
+    const decoded = decodeURIComponent(seg);
+    const label = names[seg] || decoded;
+    items.push({ name: label, url: base + accum });
+  }
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": items.map((item, idx) => ({
+      "@type": "ListItem",
+      "position": idx + 1,
+      "name": item.name,
+      "item": item.url,
+    })),
+  };
+  return `<script type="application/ld+json">\n${JSON.stringify(jsonLd)}\n</script>`;
+}
+
+export function pageShell({ title, subtitle, bodyHTML, overlayHTML = "", headExtra = "", activeNav = "", hideNav = false, brand = "kabuki", googleClientId = "", ogDesc = "", ogImage = "", ogUrl = "", canonicalUrl = "", lang = "ja", currentPath = "/", i18nReady = false }) {
+  const lp = langPrefix(lang);
+  const navItems = brand === "jikabuki" ? jikabukiNav : kabukiNav(lang);
   function navLink(n) {
     const active = n.key === activeNav;
     const cls = active ? "nav-item nav-active" : "nav-item";
-    return `<a href="${n.href}" class="${cls}">${n.icon} ${n.label}</a>`;
+    const href = brand === "jikabuki" ? n.href : (lp + n.href);
+    return `<a href="${href}" class="${cls}">${n.icon} ${n.label}</a>`;
   }
   const hubLinks = navItems.map(navLink).join("\n        ");
 
   const brandIcon = brand === "jikabuki" ? "🏯" : "🎭";
   const brandName = brand === "jikabuki" ? "JIKABUKI PLUS+" : "KABUKI PLUS+";
   const brandTagline = brand === "jikabuki"
-    ? "演じる人の、デジタル楽屋。"
-    : "歌舞伎を、もっと面白く。";
+    ? t("brand.tagline.jikabuki", lang)
+    : t("brand.tagline.kabuki", lang);
 
-  const brandToggleHTML = activeNav === "home" ? `
+  const brandToggleHTML = activeNav === "home" && lang === "ja" ? `
     <div class="nav-brand-toggle" aria-label="プラットフォーム切替">
       <a href="/?brand=kabuki" class="nav-toggle-btn ${brand === "kabuki" ? "active" : ""}">KABUKI</a>
       <a href="/?brand=jikabuki" class="nav-toggle-btn ${brand === "jikabuki" ? "active" : ""}">JIKABUKI</a>
     </div>` : "";
   const loginModalHTML = `
 <div id="nlm-backdrop" class="nlm-backdrop" style="display:none" onclick="if(event.target===this)closeLoginModal()">
-  <div class="nlm-box" role="dialog" aria-modal="true" aria-label="\u30ed\u30b0\u30a4\u30f3">
-    <button class="nlm-close" onclick="closeLoginModal()" aria-label="\u9589\u3058\u308b">\u00d7<\/button>
-    <p class="nlm-title">\u30ed\u30b0\u30a4\u30f3<\/p>
-    <p class="nlm-desc">\u5e55\u304c\u964d\u308a\u305f\u3089\u3001\u3053\u3053\u306b\u4e00\u7b46\u3002<br>\u30ed\u30b0\u30a4\u30f3\u3067\u8a18\u9332\u304c\u6b8b\u308a\u307e\u3059\u3002<\/p>
-    <a href="#" class="nlm-btn-line" onclick="window.location.href='/auth/line?from='+encodeURIComponent(location.pathname+location.search);return false;">LINE \u3067\u30ed\u30b0\u30a4\u30f3<\/a>
+  <div class="nlm-box" role="dialog" aria-modal="true" aria-label="${t("login.title", lang)}">
+    <button class="nlm-close" onclick="closeLoginModal()" aria-label="${t("login.close", lang)}">\u00d7<\/button>
+    <p class="nlm-title">${t("login.title", lang)}<\/p>
+    <p class="nlm-desc">${t("login.desc", lang).replace(/\n/g, "<br>")}<\/p>
+    <a href="#" class="nlm-btn-line" onclick="window.location.href='/auth/line?from='+encodeURIComponent(location.pathname+location.search);return false;">${t("login.line", lang)}<\/a>
     <div id="nlm-google-btn" style="min-height:40px"><\/div>
     <p id="nlm-google-status" class="nlm-status"><\/p>
   <\/div>
 <\/div>`;
 
+  const langSwitchHref = lang === "en" ? currentPath : "/en" + currentPath;
+  const langSwitchHTML = i18nReady ? `<a href="${langSwitchHref}" class="nav-lang-switch">${t("lang.switch", lang)}</a>` : "";
+
   const navHTML = hideNav ? "" : `
 <nav class="global-nav" id="global-nav">
   <div class="nav-top-bar">
     ${brandToggleHTML}
-    <div class="nav-auth" id="nav-auth-btn">
-      <button type="button" class="nav-login-btn" onclick="openLoginModal()" title="\u30ed\u30b0\u30a4\u30f3">\u30ed\u30b0\u30a4\u30f3<\/button>
+    <div style="display:flex;align-items:center;flex-shrink:0;">
+      ${langSwitchHTML}
+      <div class="nav-auth" id="nav-auth-btn">
+        <button type="button" class="nav-login-btn" onclick="openLoginModal()" title="${t("login.btn", lang)}">${t("login.btn", lang)}<\/button>
+      </div>
     </div>
   </div>
   <div class="nav-inner">
     <div class="nav-links">${hubLinks}</div>
   </div>
 </nav>
-<div class="line-cta-bar" id="line-cta-bar">
-  <span class="line-cta-text">💬 LINE で「けらのすけ」と話す</span>
-  <a href="https://line.me/R/oaMessage/@117oizby/" target="_blank" rel="noopener" class="line-cta-btn">友達追加 →</a>
-  <button class="line-cta-close" onclick="dismissLineCta()" aria-label="閉じる">&times;</button>
-</div>
+${lang !== "en" ? `<div class="line-cta-bar" id="line-cta-bar">
+  <span class="line-cta-text">${t("line_cta.text", lang)}</span>
+  <a href="https://line.me/R/oaMessage/@117oizby/" target="_blank" rel="noopener" class="line-cta-btn">${t("line_cta.btn", lang)}</a>
+  <button class="line-cta-close" onclick="dismissLineCta()" aria-label="${t("login.close", lang)}">&times;</button>
+</div>` : ""}
 ${loginModalHTML}
 <script>
 window.__GOOGLE_CLIENT_ID = ${JSON.stringify(googleClientId)};
@@ -94,14 +193,14 @@ window.__nlmRenderGoogle=function(){
 };
 window.__nlmHandleGoogle=function(response){
   var st=document.getElementById("nlm-google-status");
-  if(st)st.textContent="\u30ed\u30b0\u30a4\u30f3\u4e2d\u2026";
+  if(st)st.textContent=${JSON.stringify(t("login.logging_in", lang))};
   fetch("/api/auth/google",{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify({credential:response.credential})})
     .then(function(r){return r.json();})
     .then(function(d){
       if(d&&d.ok){window.location.reload();}
-      else{if(st)st.textContent="\u30ed\u30b0\u30a4\u30f3\u306b\u5931\u6557\u3057\u307e\u3057\u305f\u3002";}
+      else{if(st)st.textContent=${JSON.stringify(t("login.failed", lang))};}
     })
-    .catch(function(){if(st)st.textContent="\u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002";});
+    .catch(function(){if(st)st.textContent=${JSON.stringify(t("login.error", lang))};});
 };
 (function(){
   /* Google GSI スクリプト読み込み */
@@ -130,13 +229,13 @@ window.__nlmHandleGoogle=function(response){
             pic+
             (name?"<span class='nav-user-name'>"+name.replace(/</g,"&lt;")+"<\/span>":"")+
             "<span class='nav-user-badge'>"+badge+"<\/span>"+
-            '<button class="nav-login-btn" onclick="navLogout()">\u30ed\u30b0\u30a2\u30a6\u30c8<\/button>'+
+            '<button class="nav-login-btn" onclick="navLogout()">${t("login.logout", lang)}<\/button>'+
           '<\/div>';
       }
     }).catch(function(){});
 })();
 function navLogout(){
-  if(!confirm("\u30ed\u30b0\u30a2\u30a6\u30c8\u3057\u307e\u3059\u304b\uff1f"))return;
+  if(!confirm(${JSON.stringify(t("login.logout_confirm", lang))}))return;
   fetch("/api/auth/logout",{method:"POST",credentials:"same-origin"})
     .then(function(){window.location.reload();})
     .catch(function(){window.location.reload();});
@@ -158,18 +257,28 @@ function dismissLineCta(){
   ${tabItems.map(n => {
     const active = n.key === activeNav;
     const cls = active ? "pwa-tab-active" : (n.key === "_switch" ? "pwa-tab-switch" : "");
-    return `<a href="${n.href}" class="${cls}"><span class="pwa-tab-icon">${n.icon}</span>${n.label}</a>`;
+    const href = brand === "jikabuki" ? n.href : (lp + n.href);
+    return `<a href="${href}" class="${cls}"><span class="pwa-tab-icon">${n.icon}</span>${n.label}</a>`;
   }).join("\n  ")}
 </div>`;
 
   const metaDesc = ogDesc || (brand === "jikabuki"
     ? "地歌舞伎の演者・運営者のためのデジタル楽屋。台本管理・稽古支援・団体運営をサポート。"
-    : "歌舞伎をもっと面白く。演目ガイド・公演情報・観劇記録・クイズで歌舞伎の世界を楽しもう。");
+    : lang === "en"
+      ? "Kabuki, made exciting. Explore play guides, show schedules, theater logs & quizzes to enjoy the world of kabuki."
+      : "歌舞伎をもっと面白く。演目ガイド・公演情報・観劇記録・クイズで歌舞伎の世界を楽しもう。");
   const metaImage = ogImage || "https://kabukiplus.com/assets/ogp/ogp_kabukiplus_top.png";
   const fullTitle = `${escHTML(title)} | ${brandName}`;
 
+  const ogLocale = lang === "en" ? "en_US" : "ja_JP";
+  const altLang = lang === "en" ? "ja" : "en";
+  const currentUrl = canonicalUrl || ogUrl || "https://kabukiplus.com/";
+  const altUrl = lang === "en"
+    ? currentUrl.replace("https://kabukiplus.com/en/", "https://kabukiplus.com/").replace(/^(https:\/\/kabukiplus\.com)\/en$/, "$1/")
+    : currentUrl.replace("https://kabukiplus.com/", "https://kabukiplus.com/en/").replace(/\/+$/, "") || "https://kabukiplus.com/en/";
+
   return `<!DOCTYPE html>
-<html lang="ja">
+<html lang="${lang}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -184,9 +293,12 @@ function dismissLineCta(){
 <meta name="twitter:title" content="${fullTitle}">
 <meta name="twitter:description" content="${escHTML(metaDesc)}">
 <meta name="twitter:image" content="${metaImage}">
-<meta property="og:url" content="${ogUrl || 'https://kabukiplus.com/'}">
-<meta property="og:locale" content="ja_JP">
-<link rel="canonical" href="${canonicalUrl || ogUrl || 'https://kabukiplus.com/'}">
+<meta property="og:url" content="${currentUrl}">
+<meta property="og:locale" content="${ogLocale}">
+<link rel="canonical" href="${currentUrl}">
+<meta http-equiv="content-language" content="${lang}">
+${i18nReady ? `<link rel="alternate" hreflang="${lang}" href="${currentUrl}">
+<link rel="alternate" hreflang="${altLang}" href="${altUrl}">` : ""}
 <link rel="icon" href="/assets/apple-touch-icon.png" type="image/png">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.json">
@@ -205,7 +317,7 @@ function dismissLineCta(){
   "description": "${escHTML(metaDesc).replace(/"/g, '\\"')}",
   "applicationCategory": "EntertainmentApplication",
   "operatingSystem": "Web",
-  "inLanguage": "ja",
+  "inLanguage": "${lang}",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
   "publisher": {
     "@type": "Organization",
@@ -215,6 +327,18 @@ function dismissLineCta(){
   }
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "${brand === "jikabuki" ? "JIKABUKI PLUS+" : "KABUKI PLUS+"}",
+  "url": "https://kabukiplus.com${brand === "jikabuki" ? "/jikabuki/gate" : ""}",
+  "logo": "https://kabukiplus.com/assets/ogp/ogp_kabukiplus_top.png",
+  "description": "${brand === "jikabuki" ? "演じる人の、デジタル楽屋。地歌舞伎の公演記録・台本管理・稽古支援・団体公式サイト生成を提供" : "歌舞伎を、もっと面白く。演目ガイド・公演情報・観劇記録・体験型コンテンツを提供する歌舞伎総合プラットフォーム"}",
+  "sameAs": ["https://lin.ee/kerakabuki"]
+}
+</script>
+${buildBreadcrumbJsonLd(currentPath, brand, lang)}
 ${headExtra}
 <style>
 ${BASE_CSS}
@@ -234,6 +358,7 @@ ${BASE_CSS}
     <h1>${escHTML(title)}</h1>
     ${subtitle ? `<p class="header-sub">${escHTML(subtitle)}</p>` : ""}
     <div class="deco-line"><span class="diamond"></span></div>
+    ${hideNav ? `<div class="header-lang-switch">${langSwitchHTML}</div>` : ""}
   </div>
 </header>
 ${navHTML}
@@ -243,22 +368,22 @@ ${bodyHTML}
 </main>
 ${overlayHTML}
 
-<section class="layout-support" aria-label="応援">
-  <p class="support-onelink"><a href="/project">このプロジェクトを応援する →</a></p>
+<section class="layout-support" aria-label="${lang === "en" ? "Support" : "応援"}">
+  <p class="support-onelink"><a href="${lp}/project">${t("footer.support", lang)}</a></p>
 </section>
 
 <footer>
   <p>${brandName} &mdash; ${brandTagline}</p>
-  <p style="margin-top:4px;font-size:0.72rem;"><a href="/project" style="color:inherit;text-decoration:none;">地歌舞伎&times;AI プロジェクト</a>｜Produced by <a href="/jikabuki/gate/kera">KERAKABUKI（気良歌舞伎）</a></p>
-  <p style="margin-top:4px;"><a href="/">トップへ戻る</a>｜<a href="${brand === 'jikabuki' ? '/jikabuki/help' : '/kabuki/help'}">ヘルプ</a></p>
+  <p style="margin-top:4px;font-size:0.72rem;"><a href="${lp}/project" style="color:inherit;text-decoration:none;">${t("footer.project", lang)}</a>｜Produced by <a href="/jikabuki/gate/kera">KERAKABUKI${lang === "en" ? " (Kera Kabuki)" : "（気良歌舞伎）"}</a></p>
+  <p style="margin-top:4px;"><a href="${lp}/">${t("footer.home", lang)}</a>｜<a href="${brand === 'jikabuki' ? '/jikabuki/help' : lp + '/kabuki/help'}">${t("footer.help", lang)}</a></p>
 </footer>
 
 <div class="pwa-install-banner" id="pwa-install-banner">
   <span class="pwa-install-banner-icon">🎭</span>
   <div class="pwa-install-banner-text" id="pwa-install-banner-text">
-    <strong>ホーム画面に追加</strong><br>アプリのように使えます
+    <strong>${t("pwa.add_to_home", lang)}</strong><br>${t("pwa.use_as_app", lang)}
   </div>
-  <button class="pwa-install-banner-btn" id="pwa-install-btn">追加</button>
+  <button class="pwa-install-banner-btn" id="pwa-install-btn">${t("pwa.add_btn", lang)}</button>
   <button class="pwa-install-banner-close" id="pwa-install-close">&times;</button>
 </div>
 ${tabBarHTML}
@@ -306,7 +431,7 @@ if('serviceWorker' in navigator){
   var isIOS=/iP(hone|od|ad)/.test(navigator.userAgent)&&!window.MSStream;
   if(isIOS){
     var t=document.getElementById('pwa-install-banner-text');
-    if(t)t.innerHTML='<strong>ホーム画面に追加</strong><br>共有ボタン <span style="font-size:16px">⎋</span> →「ホーム画面に追加」';
+    if(t)t.innerHTML='<strong>${t("pwa.add_to_home", lang)}</strong><br>${t("pwa.ios_instruction", lang)}';
     var b=document.getElementById('pwa-install-btn');
     if(b)b.style.display='none';
     setTimeout(showBanner,1500);
@@ -331,13 +456,15 @@ if('serviceWorker' in navigator){
 
 // ─── ナビゲーション定義 ───
 // KABUKI PLUS+（歌舞伎ファン・初心者向け）
-const kabukiNav = [
-  { key: "home", href: "/",       icon: "🏠", label: "トップ" },
-  { key: "navi", href: "/kabuki/navi",   icon: "🧭", label: "NAVI" },
-  { key: "live", href: "/kabuki/live",   icon: "📡", label: "LIVE" },
-  { key: "reco", href: "/kabuki/reco",   icon: "📝", label: "RECO" },
-  { key: "dojo", href: "/kabuki/dojo",   icon: "🥋", label: "DOJO" },
-];
+function kabukiNav(lang = "ja") {
+  return [
+    { key: "home", href: "/",              icon: "🏠", label: t("nav.home", lang) },
+    { key: "navi", href: "/kabuki/navi",    icon: "🧭", label: t("nav.navi", lang) },
+    { key: "live", href: "/kabuki/live",    icon: "📡", label: t("nav.live", lang) },
+    { key: "reco", href: "/kabuki/reco",    icon: "📝", label: t("nav.reco", lang) },
+    { key: "dojo", href: "/kabuki/dojo",    icon: "🥋", label: t("nav.dojo", lang) },
+  ];
+}
 
 // JIKABUKI PLUS+（地歌舞伎の演者・運営者向け）
 const jikabukiNav = [
@@ -1169,4 +1296,24 @@ const BASE_CSS = `
   body.has-tab-bar main { padding-bottom: 80px; }
   body.has-tab-bar footer { padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px)); }
   body.has-tab-bar .layout-support { padding-bottom: 0; }
+
+  /* ── 言語切替リンク ── */
+  .header-lang-switch {
+    margin-top: 8px;
+  }
+  .nav-lang-switch {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    text-decoration: none;
+    padding: 4px 8px;
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    margin-right: 6px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .nav-lang-switch:hover {
+    color: var(--gold-dark);
+    border-color: var(--gold);
+    text-decoration: none;
+  }
 `;

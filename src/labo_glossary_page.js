@@ -14,9 +14,9 @@ export function laboGlossaryPageHTML({ googleClientId = "" } = {}) {
   const catOptions = CAT_LIST.map(c => `<option value="${c}">${c}</option>`).join("");
 
   const bodyHTML = `
-    <div class="breadcrumb">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">トップ</a><span>›</span><a href="/jikabuki/labo">LABO</a><span>›</span><span>用語エディタ</span>
-    </div>
+    </nav>
 
     <section class="labo-intro fade-up">
       <h2 class="labo-title">用語エディタ</h2>

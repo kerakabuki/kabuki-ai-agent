@@ -80,6 +80,11 @@ export function serifuEditorHTML() {
     border-radius:4px;padding:0.25rem 0.4rem;font-size:0.8rem;font-family:inherit;width:100%;}
   .del-btn{background:none;border:none;color:#666;cursor:pointer;font-size:1rem;}
   .del-btn:hover{color:var(--aka);}
+  .adj-btn{background:#333;border:1px solid #555;color:var(--kin);cursor:pointer;
+    font-size:0.85rem;width:24px;height:24px;border-radius:4px;line-height:1;
+    font-weight:bold;padding:0;vertical-align:middle;}
+  .adj-btn:hover{background:#444;border-color:var(--kin);}
+  .adj-btn:active{background:var(--kin);color:var(--kuro);}
 
   /* ── エクスポート ── */
   #export-area{max-width:760px;margin:1rem auto;padding:0 1rem;}
@@ -109,8 +114,20 @@ export function serifuEditorHTML() {
 </header>
 <div class="bar"></div>
 
+<div class="preset-area" style="max-width:760px;margin:1rem auto;padding:0 1rem;">
+  <h3 style="font-size:0.9rem;color:var(--kin);margin-bottom:0.5rem;border-left:3px solid var(--kin);padding-left:0.6rem;">プリセット選択</h3>
+  <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+    <button class="preset-btn" data-vid="iFwMXYtqYA0" data-id="benten" style="padding:0.5rem 1rem;border:1px solid #555;border-radius:8px;background:#222;color:var(--shiro);cursor:pointer;font-family:inherit;font-size:0.85rem;">🎭 弁天小僧（浜松屋）</button>
+    <button class="preset-btn" data-vid="JsXKbp5oUBo" data-id="gonin_daemon" style="padding:0.5rem 1rem;border:1px solid #555;border-radius:8px;background:#222;color:var(--shiro);cursor:pointer;font-family:inherit;font-size:0.85rem;">👹 日本駄右衛門</button>
+    <button class="preset-btn" data-vid="mN1FqZXeLjM" data-id="gonin_benten" style="padding:0.5rem 1rem;border:1px solid #555;border-radius:8px;background:#222;color:var(--shiro);cursor:pointer;font-family:inherit;font-size:0.85rem;">🌸 弁天小僧（勢揃い）</button>
+    <button class="preset-btn" data-vid="RGaNSktrUSE" data-id="gonin_tadanobu" style="padding:0.5rem 1rem;border:1px solid #555;border-radius:8px;background:#222;color:var(--shiro);cursor:pointer;font-family:inherit;font-size:0.85rem;">🌙 忠信利平</button>
+    <button class="preset-btn" data-vid="okvHgcAI2UM" data-id="gonin_akaboshi" style="padding:0.5rem 1rem;border:1px solid #555;border-radius:8px;background:#222;color:var(--shiro);cursor:pointer;font-family:inherit;font-size:0.85rem;">⭐ 赤星十三郎</button>
+    <button class="preset-btn" data-vid="JpL3ost8nU8" data-id="gonin_nango" style="padding:0.5rem 1rem;border:1px solid #555;border-radius:8px;background:#222;color:var(--shiro);cursor:pointer;font-family:inherit;font-size:0.85rem;">🌊 南郷力丸</button>
+  </div>
+</div>
+
 <div class="input-row">
-  <input id="video-id" placeholder="YouTube動画ID（例: iFwMXYtqYA0）" value="iFwMXYtqYA0">
+  <input id="video-id" placeholder="YouTube動画ID（例: iFwMXYtqYA0）" value="">
   <button id="btn-load">動画を読み込む</button>
 </div>
 
@@ -166,6 +183,16 @@ export function serifuEditorHTML() {
 <footer><a href="/kabuki/dojo">← KABUKI DOJO へ戻る</a></footer>
 
 <script>
+// ── preset templates ──
+var PRESET_TEMPLATES = {
+  benten: "知らざぁ言って聞かせやしょう\\n浜の真砂と五右衛門が\\n歌に残した盗人の\\n種は尽きねぇ七里が浜\\nその白浪の夜働き\\n以前を言やァ江の島で\\n年季勤めの稚児ヶ渕\\n百味で散らす蒔銭を\\n当に小皿の一文子\\n百が二百と賽銭の\\nくすね銭せえだんだんに\\n悪事はのぼる上の宮\\n岩本院で講中の\\n枕さがしも度重なり\\nお手長講と札附きに\\nとうとう島を追い出され\\nそれから若衆の美人局\\nここやかしこの寺島で\\n小耳に聞いた音羽屋の\\n似ぬ声色で小ゆすりかたり\\n名さえ由縁の弁天小僧\\n菊之助たァおれがことだ",
+  gonin_daemon: "問われて名乗るも　おこがましいが\\n生まれは遠州浜松在\\n十四の年から親に放れ\\n身の生業も白浪の\\n沖を越えたる夜働き\\n盗みはすれど非道はせず\\n人に情けを掛川から\\n金谷をかけて宿々で\\n義賊と噂　高札に\\n回る配布の盥越し\\n危ねえその身の境涯も\\n最早四十に人間の　定めは僅か五十年\\n六十余州に隠れのねえ\\n賊徒の張本、日本駄右衛門",
+  gonin_benten: "さて、その次ぎは江ノ島の\\n岩本院の稚児上がり\\nふだん着慣れし　振袖から\\n髷も島田に　由比ヶ浜\\n打ち込む浪に　しっぽりと\\n女に化けて　美人局\\n油断のならぬ　小娘も\\n小袋坂に　身の破れ\\n悪い浮名も　龍ノ口\\n土の牢へも　二度三度\\nだんだん越ゆる　鳥居数\\n八幡さまの　氏子にて\\n鎌倉無宿と　肩書きも\\n島に育って　その名せえ\\n弁天小僧、菊之助",
+  gonin_tadanobu: "続いて後に　控えしは\\n月の武蔵の　江戸育ち\\n幼児の折から　手癖が悪く\\n抜け参りから　ぐれ出して\\n旅をかせぎに　西国を\\n回って首尾も　吉野山\\nまぶな仕事も　大峯に\\n足を留めたる　奈良の京\\n碁打ちと言って　寺々や\\n豪家へ入り込み　盗んだる\\n金が御嶽の　罪科は\\n蹴抜けの塔の　二重三重\\n重なる悪事に　高飛びなし\\n後を隠せし　判官の\\n御名前騙りの　忠信利平",
+  gonin_akaboshi: "またその次に　列なるは\\n以前は武家の　中小姓\\n故主のために　切取りも\\n鈍き刃の　腰越や\\n砥上ヶ原に　身の錆を\\n砥ぎなおしても　抜け兼ぬる\\n盗み心の　深翠り\\n柳の都　谷七郷\\n花水橋の　切取りから\\n今牛若と　名も高く\\n忍ぶ姿も　人の目に\\n月影ヶ谷　神輿ヶ嶽\\n今日ぞ命の　明け方に\\n消ゆる間近き　星月夜\\nその名も　赤星十三郎",
+  gonin_nango: "さてどんじりに　控えしは\\n潮風荒き　小ゆるぎの\\n磯馴れの松の　曲がりなり\\n人となったる　浜育ち\\n仁義の道も　白川の\\n夜船へ乗り込む　船盗人\\n波にきらめく　稲妻の\\n白刃で脅す　人殺し\\n背負って立たれぬ　罪科は\\nその身に重き　虎ヶ石\\n悪事千里と　言うからは\\nどうで終いは　木の空と\\n覚悟は予て　鴫立沢\\n然し哀れは　身に知らぬ\\n念仏嫌えの　南郷力丸",
+};
+
 // ── state ──
 let player = null;
 let cueData = []; // { time, type, text }
@@ -257,9 +284,30 @@ function renderTable() {
 
       var tdTime = document.createElement("td");
       tdTime.className = "time-cell";
+      tdTime.style.whiteSpace = "nowrap";
+      var btnMinus = document.createElement("button");
+      btnMinus.textContent = "−";
+      btnMinus.className = "adj-btn";
+      btnMinus.addEventListener("click", function() { cueData[idx].time = Math.max(0, parseFloat((cueData[idx].time - 0.1).toFixed(1))); renderTable(); });
+      tdTime.appendChild(btnMinus);
+      var timeSpan = document.createElement("span");
+      timeSpan.style.cursor = "pointer";
+      timeSpan.style.padding = "0 4px";
+      timeSpan.style.minWidth = "50px";
+      timeSpan.style.display = "inline-block";
+      timeSpan.style.textAlign = "center";
       var m = Math.floor(c.time / 60);
       var s = (c.time % 60).toFixed(1).padStart(4, "0");
-      tdTime.textContent = m + ":" + s;
+      timeSpan.textContent = m + ":" + s;
+      timeSpan.addEventListener("click", function() {
+        if (player && player.seekTo) player.seekTo(cueData[idx].time, true);
+      });
+      tdTime.appendChild(timeSpan);
+      var btnPlus = document.createElement("button");
+      btnPlus.textContent = "+";
+      btnPlus.className = "adj-btn";
+      btnPlus.addEventListener("click", function() { cueData[idx].time = parseFloat((cueData[idx].time + 0.1).toFixed(1)); renderTable(); });
+      tdTime.appendChild(btnPlus);
       tr.appendChild(tdTime);
 
       var tdType = document.createElement("td");
@@ -287,11 +335,7 @@ function renderTable() {
       tdDel.appendChild(delBtn);
       tr.appendChild(tdDel);
 
-      // クリックで動画のその時間にジャンプ
-      tdTime.style.cursor = "pointer";
-      tdTime.addEventListener("click", function() {
-        if (player && player.seekTo) player.seekTo(c.time, true);
-      });
+      // 時間クリックでジャンプは timeSpan に移動済み
 
       tbody.appendChild(tr);
     })(i);
@@ -330,6 +374,33 @@ document.getElementById("btn-copy").addEventListener("click", function() {
   var msg = document.getElementById("copy-msg");
   msg.style.opacity = "1";
   setTimeout(function() { msg.style.opacity = "0"; }, 1500);
+});
+
+// ── Preset buttons ──
+document.querySelectorAll(".preset-btn").forEach(function(btn) {
+  btn.addEventListener("click", function() {
+    var vid = btn.getAttribute("data-vid");
+    var pid = btn.getAttribute("data-id");
+    // Set video ID and load
+    document.getElementById("video-id").value = vid;
+    loadYT(vid);
+    // Set template
+    if (PRESET_TEMPLATES[pid]) {
+      document.getElementById("template-box").value = PRESET_TEMPLATES[pid];
+      templateLines = PRESET_TEMPLATES[pid].split("\\n").map(function(l) { return l.trim(); }).filter(function(l) { return l.length > 0; });
+      templateIndex = 0;
+      if (templateLines.length > 0) {
+        document.getElementById("serifu-text").value = templateLines[0];
+      }
+      // Clear previous cues
+      cueData = [];
+      renderTable();
+    }
+    // Highlight active button
+    document.querySelectorAll(".preset-btn").forEach(function(b) { b.style.borderColor = "#555"; b.style.background = "#222"; });
+    btn.style.borderColor = "var(--kin)";
+    btn.style.background = "#2a2510";
+  });
 });
 
 // キーボードショートカット（スペースで台詞タップ、Enterで間マーク）

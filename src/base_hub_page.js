@@ -8,9 +8,9 @@ import { pageShell } from "./web_layout.js";
 
 export function baseHubPageHTML({ googleClientId = "" } = {}) {
   const bodyHTML = `
-    <div class="breadcrumb">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">トップ</a><span>&rsaquo;</span><span>BASE</span>
-    </div>
+    </nav>
 
     <!-- ヘッダー + 団体セレクター -->
     <section class="bd-header fade-up">

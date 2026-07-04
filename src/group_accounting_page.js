@@ -20,9 +20,9 @@ export function groupAccountingPageHTML(group) {
   const gid = escHTML(g.group_id || "");
 
   const bodyHTML = `
-    <div class="breadcrumb">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">トップ</a><span>&rsaquo;</span><a href="/jikabuki/base">BASE</a><span>&rsaquo;</span><a href="/jikabuki/gate/${gid}">${name}</a><span>&rsaquo;</span>収支管理
-    </div>
+    </nav>
 
     <div id="ga-app">
       <div class="loading">読み込み中...</div>

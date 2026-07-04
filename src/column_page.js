@@ -43,7 +43,7 @@ const ENMOKU_DISPLAY = {
 // =========================================================
 // コラム一覧ページ
 // =========================================================
-export function columnListPageHTML({ columns = [], googleClientId = "" } = {}) {
+export function columnListPageHTML({ columns = [], googleClientId = "", lang = "ja" } = {}) {
   const e = escHTML;
 
   // 演目別にグループ化（guide も serifu も統合）
@@ -118,9 +118,9 @@ export function columnListPageHTML({ columns = [], googleClientId = "" } = {}) {
   const totalCount = columns.length;
 
   const bodyHTML = `
-    <div class="breadcrumb">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">トップ</a><span>›</span><a href="/kabuki/navi">KABUKI NAVI</a><span>›</span><span>コラム</span>
-    </div>
+    </nav>
 
     <section class="col-intro fade-up">
       <p class="col-lead">
@@ -142,7 +142,10 @@ export function columnListPageHTML({ columns = [], googleClientId = "" } = {}) {
     subtitle: "歌舞伎よみもの",
     bodyHTML,
     activeNav: "navi",
+    currentPath: "/kabuki/navi/column",
+    i18nReady: true,
     googleClientId,
+    lang,
     ogDesc: "白浪五人男・寿曽我対面・封印切など、歌舞伎の名台詞を現代語訳で徹底解説。初心者向け演目ガイドも。",
     ogUrl: "https://kabukiplus.com/kabuki/navi/column",
     canonicalUrl: "https://kabukiplus.com/kabuki/navi/column",
@@ -300,7 +303,7 @@ function buildCard(e, col) {
 // =========================================================
 // コラム個別SSRページ
 // =========================================================
-export function columnDetailSSR({ article, relatedEnmoku = null }) {
+export function columnDetailSSR({ article, relatedEnmoku = null, lang = "ja" }) {
   const e = escHTML;
   const title = article.title || "";
   const subtitle = article.subtitle || "";
@@ -319,12 +322,17 @@ export function columnDetailSSR({ article, relatedEnmoku = null }) {
     "url": pageUrl,
     "datePublished": article.created || "",
     "dateModified": article.updated || article.created || "",
+    "author": {
+      "@type": "Person",
+      "name": article.author || "KABUKI PLUS+ 編集部",
+    },
     "publisher": {
       "@type": "Organization",
       "name": "KABUKI PLUS+",
       "url": "https://kabukiplus.com",
     },
     "mainEntityOfPage": pageUrl,
+    "inLanguage": lang === "en" ? "en" : "ja",
   };
 
   // マークダウン→HTML変換（簡易）
@@ -372,9 +380,9 @@ export function columnDetailSSR({ article, relatedEnmoku = null }) {
   const enmokuName = enmokuInfo ? enmokuInfo.name : "";
 
   const bodyContent = `
-    <div class="breadcrumb">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">トップ</a><span>›</span><a href="/kabuki/navi">KABUKI NAVI</a><span>›</span><a href="/kabuki/navi/column">コラム</a><span>›</span><span>${e(title.length > 20 ? title.slice(0, 20) + "…" : title)}</span>
-    </div>
+    </nav>
 
     <article class="col-article" itemscope itemtype="https://schema.org/Article">
       <div class="col-header fade-up">
@@ -409,6 +417,9 @@ export function columnDetailSSR({ article, relatedEnmoku = null }) {
     subtitle: "コラム",
     bodyHTML: bodyContent,
     activeNav: "navi",
+    currentPath: "/kabuki/navi/column",
+    i18nReady: true,
+    lang,
     ogDesc,
     ogUrl: pageUrl,
     canonicalUrl: pageUrl,

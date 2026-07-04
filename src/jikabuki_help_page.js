@@ -6,9 +6,9 @@ import { pageShell } from "./web_layout.js";
 
 export function jikabukiHelpPageHTML({ googleClientId = "" } = {}) {
   const bodyHTML = `
-    <div class="breadcrumb">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">トップ</a><span>›</span>ヘルプ
-    </div>
+    </nav>
 
     <!-- はじめに -->
     <section class="jhelp-intro fade-up">
@@ -247,6 +247,16 @@ export function jikabukiHelpPageHTML({ googleClientId = "" } = {}) {
     </div>
   `;
 
+  const jHelpJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "name": "JIKABUKI PLUS+ ユーザーズガイド",
+    "description": "JIKABUKI PLUS+の使い方ガイド。GATE・INFO・BASE・LABOの各機能と操作方法をまとめています",
+    "url": "https://kabukiplus.com/jikabuki/help",
+    "inLanguage": "ja",
+    "publisher": { "@type": "Organization", "name": "JIKABUKI PLUS+", "url": "https://kabukiplus.com" },
+  };
+
   return pageShell({
     title: "ヘルプ",
     subtitle: "JIKABUKI PLUS+ ユーザーズガイド",
@@ -254,7 +264,12 @@ export function jikabukiHelpPageHTML({ googleClientId = "" } = {}) {
     activeNav: "home",
     brand: "jikabuki",
     googleClientId,
-    headExtra: `<style>
+    ogDesc: "JIKABUKI PLUS+の使い方ガイド。GATE・INFO・BASE・LABOの各機能と操作方法をまとめています",
+    ogUrl: "https://kabukiplus.com/jikabuki/help",
+    canonicalUrl: "https://kabukiplus.com/jikabuki/help",
+    headExtra: `
+<script type="application/ld+json">${JSON.stringify(jHelpJsonLd)}</script>
+<style>
       /* ── はじめにセクション ── */
       .jhelp-intro {
         text-align: center;

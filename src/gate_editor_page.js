@@ -28,7 +28,7 @@ export function gateEditorPageHTML(groupId, mode) {
   );
 
   const bodyHTML = `
-    <div class="breadcrumb">${breadcrumb}</div>
+    <nav class="breadcrumb" aria-label="Breadcrumb">${breadcrumb}</nav>
 
     <section class="ge-welcome fade-up">
       <div class="ge-welcome-main">
@@ -1203,9 +1203,9 @@ export function gateEditorListPageHTML(gateGroups) {
   `).join("");
 
   const bodyHTML = `
-    <div class="breadcrumb">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">トップ</a><span>&rsaquo;</span><a href="/jikabuki/labo">LABO</a><span>&rsaquo;</span><span>GATEエディタ</span>
-    </div>
+    </nav>
 
     <section class="gel-hero fade-up">
       <h2 class="gel-title">GATEエディタ</h2>

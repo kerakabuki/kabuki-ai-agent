@@ -7,9 +7,9 @@ import { pageShell } from "./web_layout.js";
 
 export function infoGroupsPageHTML({} = {}) {
   const bodyHTML = `
-    <div class="breadcrumb">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">トップ</a><span>›</span><a href="/jikabuki/info">INFO</a><span>›</span><span>全国の地歌舞伎団体</span>
-    </div>
+    </nav>
 
     <section class="ig-header fade-up">
       <h2 class="ig-title">全国の地歌舞伎・地芝居団体</h2>
@@ -354,12 +354,27 @@ export function infoGroupsPageHTML({} = {}) {
 }
 </style>`;
 
+  const groupsJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "全国の地歌舞伎・地芝居団体",
+    "description": "全国約100の地歌舞伎団体を収録した名前ディレクトリ。団体名で検索・都道府県で絞り込み。☆でお気に入り登録できます（ログイン不要）。",
+    "url": "https://kabukiplus.com/jikabuki/info/groups",
+    "inLanguage": "ja",
+    "publisher": { "@type": "Organization", "name": "JIKABUKI PLUS+", "url": "https://kabukiplus.com" },
+  };
+  const groupsHeadExtra = `
+<script type="application/ld+json">${JSON.stringify(groupsJsonLd)}</script>
+${headExtra}`;
+
   return pageShell({
     title: "全国の地歌舞伎団体",
     subtitle: "団体名ディレクトリ",
     bodyHTML,
-    headExtra,
+    headExtra: groupsHeadExtra,
     ogDesc: "全国約100の地歌舞伎団体を収録した名前ディレクトリ。団体名で検索・都道府県で絞り込み。☆でお気に入り登録できます（ログイン不要）。",
+    ogUrl: "https://kabukiplus.com/jikabuki/info/groups",
+    canonicalUrl: "https://kabukiplus.com/jikabuki/info/groups",
     activeNav: "info",
     brand: "jikabuki",
   });
