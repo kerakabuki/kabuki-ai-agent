@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "npm run build:frontend && wrangler dev",
     "build:frontend": "cd frontend && npm run build",
-    "deploy": "npm run build:frontend && wrangler deploy",
+    "deploy": "tsc --noEmit && npm run build:frontend && wrangler deploy",
     "db:migrate": "wrangler d1 migrations apply kabuki-post-365-db --local",
     "db:migrate:remote": "wrangler d1 migrations apply kabuki-post-365-db --remote"
   },

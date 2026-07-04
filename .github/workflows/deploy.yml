@@ -1,12 +1,18 @@
 # main への push で Cloudflare Workers に自動デプロイ
 # 初回のみ: GitHub リポジトリの Settings → Secrets and variables → Actions に
 # CLOUDFLARE_API_TOKEN を追加してください（Cloudflare Dashboard → My Profile → API Tokens で作成）
+# デプロイ対象は main worker のみ（kabuki-post-365 は kabuki-post-365/ 内で npm run deploy）
 
 name: Deploy to Cloudflare Workers
 
 on:
   push:
     branches: [main]
+    paths:
+      - "worker.js"
+      - "src/**"
+      - "wrangler.toml"
+      - ".github/workflows/deploy.yml"
   workflow_dispatch:
 
 jobs:
@@ -23,7 +29,12 @@ jobs:
           node-version: "20"
           cache: "npm"
 
+      - name: Syntax check
+        run: |
+          node --check worker.js
+          for f in src/*.js; do node --check "$f"; done
+
       - name: Deploy
-        run: npx wrangler deploy
+        run: npx wrangler@4 deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

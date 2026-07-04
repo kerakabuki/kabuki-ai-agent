@@ -11,6 +11,7 @@ serifu-viz/dist/
 __debug_*
 __tmp_*
 .venv*/
-travel-writer/.env
+travel-writer/
+.vscode/
 .claude/settings.local.json
 .gemini_api_key
