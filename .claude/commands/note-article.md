@@ -1,15 +1,26 @@
+---
+name: note-article
+description: 演目IDを指定して、歌舞伎初心者向けのnote解説記事を生成する。R2の演目データを参照して記事を note-articles/ に保存し、本文をクリップボードにコピーする。「note記事を書いて」「{演目名}のnote記事を作って」といった依頼で使用。
+argument-hint: 演目ID（例 sonezakisinju）
+---
+
 演目ID「$ARGUMENTS」のnote記事を生成してください。
 
 ## 手順
 
-1. `tmp/catalog.json` から該当演目のエントリを探す
-2. 演目の詳細JSONを `tmp/{演目ID}.json` から読む（なければR2のデータを参照）
+1. 演目カタログから該当演目のエントリを探す：
+   ```
+   npx wrangler r2 object get keranosuke-enmoku-data/catalog.json --remote --pipe
+   ```
+2. 演目の詳細JSONをR2から読む：
+   ```
+   npx wrangler r2 object get keranosuke-enmoku-data/{演目ID}.json --remote --pipe
+   ```
 3. 公演情報を確認する：
    - `https://kabukiplus.com/api/performances` から現在の公演一覧を取得
    - 演目名で検索し、現在上演中・近日上演の公演があれば劇場名・公演タイトル・日程を記事の「観に行くなら」セクションに反映する
    - API に演目レベルのデータがない場合は、WebFetch で `https://www.kabuki-bito.jp/theaters/` 等を確認し、該当演目の公演情報を探す
-4. 以下のルールに従って記事を生成する
-4. `note-articles/{演目ID}.md` に保存する
+4. 以下のルールに従って記事を生成し、`note-articles/{演目ID}.md` に保存する
 5. 保存後、frontmatter（`---`で囲まれた部分）と画像プロンプト（`<!-- 画像生成プロンプト ... -->`）を除いた**記事本文だけ**をクリップボードにコピーする。Windows環境ではUTF-8文字化け防止のため以下のコマンドを使うこと：
    ```
    sed -n '/^# /,/^<!-- 画像生成/{ /^<!-- 画像生成/d; p; }' note-articles/{演目ID}.md | powershell.exe -NoProfile -Command "[Console]::InputEncoding=[System.Text.Encoding]::UTF8; Set-Clipboard -Value (([System.IO.StreamReader]::new([Console]::OpenStandardInput(), [System.Text.Encoding]::UTF8)).ReadToEnd())"

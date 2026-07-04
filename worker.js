@@ -250,7 +250,7 @@ const DEFAULT_GROUPS = {
     ],
     next_performance: {
       title: "令和8年 気良歌舞伎公演（予定）",
-      date: "令和8年9月26日（土） 17:00 開演",
+      date: "令和8年9月26日（土） 18:00 開演",
       venue: "気良座（旧明方小学校講堂）",
       note: "詳細は決まり次第お知らせします。最新情報はInstagramでもご確認いただけます。"
     },
