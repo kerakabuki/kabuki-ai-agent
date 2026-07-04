@@ -1,0 +1,7546 @@
+{
+  "collectedAt": "2026-03-18T13:57:39.703Z",
+  "description": "CiNii + J-STAGE 統合: 地芝居・地歌舞伎関連論文",
+  "ciniiCount": 442,
+  "jstageCount": 342,
+  "mergedUniqueCount": 437,
+  "papers": [
+    {
+      "title": "大正期常盤座における水野好美の新派興行",
+      "authors": [
+        "藤﨑 景"
+      ],
+      "publisher": "日本演劇学会",
+      "publicationName": "演劇学論集 日本演劇学会紀要",
+      "volume": "80",
+      "number": "0",
+      "startingPage": "35",
+      "publicationDate": "2025-06-15",
+      "keywords": [],
+      "url": null,
+      "doi": "10.18935/jjstr.80.0_35",
+      "matchedQuery": "常磐座",
+      "source": "cinii"
+    },
+    {
+      "title": "浦幌村岐阜農場の地歌舞伎と勇足歌舞伎",
+      "authors": [
+        "後藤 秀彦"
+      ],
+      "publisher": "浦幌町 (北海道) : 浦幌町立博物館",
+      "publicationName": "浦幌町立博物館紀要 = Bulletin of the Historical Museum of Urahoro",
+      "volume": null,
+      "number": "25",
+      "startingPage": "29",
+      "publicationDate": "2025-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "小豆島農村歌舞伎(しょうどしまのうそんかぶき)",
+      "authors": [],
+      "publisher": "東京 : 第一法規",
+      "publicationName": "月刊文化財 / 文化庁 監修",
+      "volume": null,
+      "number": "727",
+      "startingPage": "10",
+      "publicationDate": "2024-04",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "地芝居で上演される演目考",
+      "authors": [
+        "中村 規"
+      ],
+      "publisher": "川崎 : 藝能学会",
+      "publicationName": "藝能 / 藝能学会編集委員会 編",
+      "volume": null,
+      "number": "30",
+      "startingPage": "178",
+      "publicationDate": "2024-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "飯地五⽑座の地歌舞伎を次世代に引き継ぐ",
+      "authors": [
+        "⼭⼝, 鉦⼀"
+      ],
+      "publisher": "中部大学国際人間学研究所",
+      "publicationName": "中部大学国際人間学研究所シンポジウム : 持続可能な社会",
+      "volume": "2023",
+      "number": null,
+      "startingPage": "8",
+      "publicationDate": "2024-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "仕事場(96)明治座創業150周年記念『明治座9月純烈公演』 : 観客が集中できる明かりを目指したい 引き込まれていくような",
+      "authors": [
+        "青野 時彦",
+        "千早 正美"
+      ],
+      "publisher": "東京 : 日本照明家協会",
+      "publicationName": "日本照明家協会誌 = Journal of Japan Association of Lighting Engineers &amp; Designers",
+      "volume": "55",
+      "number": "1",
+      "startingPage": "6",
+      "publicationDate": "2024-01",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "『横仙歌舞伎』を顕彰する : 岡山県北の芸能文化を支える人々",
+      "authors": [
+        "廣坂 武昌"
+      ],
+      "publisher": "岡山 : 吉備人出版",
+      "publicationName": "岡山人じゃが : 地域総合文化誌 / 岡山ペンクラブ [編]",
+      "volume": null,
+      "number": "16",
+      "startingPage": "48",
+      "publicationDate": "2024",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "横仙歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "大鹿歌舞伎に魅せられて ダンサー 石川かおりさん : 長野県大鹿村(おおしかむら)",
+      "authors": [],
+      "publisher": "東京 : 全国過疎地域連盟",
+      "publicationName": "De POLA = でぽら : 地方と都市を結ぶホットライン・マガジン",
+      "volume": null,
+      "number": "57",
+      "startingPage": "24",
+      "publicationDate": "2023-12",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "大鹿歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "歌舞伎の演技を知るために －浮世絵と地芝居－",
+      "authors": [
+        "藤澤, 茜"
+      ],
+      "publisher": "神奈川大学日本常民文化研究所 非文字資料研究センター",
+      "publicationName": "非文字資料研究センター News Letter",
+      "volume": null,
+      "number": "50",
+      "startingPage": "14",
+      "publicationDate": "2023-09-30",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "播磨国黍田村のかくれ芝居 : 江戸時代の農村歌舞伎",
+      "authors": [
+        "田原 曻"
+      ],
+      "publisher": "神戸 : 神戸史学会",
+      "publicationName": "歴史と神戸 : 神戸を中心とした兵庫県郷土研究誌 / 神戸史学会 編",
+      "volume": "62",
+      "number": "4",
+      "startingPage": "25",
+      "publicationDate": "2023-08",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "「篠路歌舞伎」から「篠路子ども歌舞伎」へ-農村歌舞伎の伝承について-",
+      "authors": [
+        "高橋, 克依",
+        "Takahashi, Katsuyori"
+      ],
+      "publisher": null,
+      "publicationName": "北星学園大学文学部北星論集",
+      "volume": "60",
+      "number": "2",
+      "startingPage": "57",
+      "publicationDate": "2023-03-15",
+      "keywords": [
+        "篠路歌舞伎",
+        "篠路子ども歌舞伎",
+        "農村歌舞伎",
+        "北海道"
+      ],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "東濃地方の地芝居等文化資源記録保存プロジェクト : 地芝居をはじめとする伝統芸能継承の試みと持続可能な観光への可能性について",
+      "authors": [
+        "永田, 典子",
+        "嘉原, 優子"
+      ],
+      "publisher": "中部大学国際人間学研究所",
+      "publicationName": "中部大学国際人間学研究所シンポジウム : 持続可能な観光",
+      "volume": "2022",
+      "number": null,
+      "startingPage": "32",
+      "publicationDate": "2023-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "東濃地方に伝承された地歌舞伎と振付師の活動について",
+      "authors": [
+        "松本, 団女"
+      ],
+      "publisher": "中部大学国際人間学研究所",
+      "publicationName": "中部大学国際人間学研究所シンポジウム : 持続可能な観光",
+      "volume": "2022",
+      "number": null,
+      "startingPage": "10",
+      "publicationDate": "2023-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "『校注 琉球戯曲集』に記された三つ葉布をめぐって : 宮古蔵・村芝居の踊り衣装との関連から",
+      "authors": [
+        "久貝 典子"
+      ],
+      "publisher": "川崎 : 藝能学会",
+      "publicationName": "藝能 / 藝能学会編集委員会 編",
+      "volume": null,
+      "number": "29",
+      "startingPage": "92",
+      "publicationDate": "2023-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "村芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "地撮り!(25)300年続く農村歌舞伎 4年ぶりに開催 : 香川県小豆島町",
+      "authors": [],
+      "publisher": "戸田 : 農山漁村文化協会",
+      "publicationName": "季刊地域",
+      "volume": null,
+      "number": "55",
+      "startingPage": "115",
+      "publicationDate": "2023",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "『校注 琉球戯曲集』に記された三つ葉布をめぐって －宮古蔵・村芝居の踊り衣装との関連からー",
+      "authors": [
+        "久貝 典子"
+      ],
+      "publisher": null,
+      "publicationName": "年刊 藝能",
+      "volume": "29号",
+      "number": null,
+      "startingPage": "101",
+      "publicationDate": "2023",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "村芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "『校注 琉球戯曲集』に記された三つ葉布をめぐって ー宮古蔵・村芝居の踊り衣装との関連からー",
+      "authors": [
+        "久貝 典子"
+      ],
+      "publisher": null,
+      "publicationName": "年刊 芸能",
+      "volume": "29(通巻446)",
+      "number": null,
+      "startingPage": null,
+      "publicationDate": "2023",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "村芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "祭礼が育む地方都市の求心性と駆動力：滋賀県長浜市・長浜曳山祭を事例として",
+      "authors": [
+        "武田 俊輔"
+      ],
+      "publisher": null,
+      "publicationName": "第85回全国都市問題会議 文化芸術・スポーツが生み出す都市の魅力と発展",
+      "volume": "1",
+      "number": null,
+      "startingPage": "84",
+      "publicationDate": "2023",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "コロナ禍における祭礼開催をめぐる地域社会での合意形成ー滋賀県・長浜曳山祭を事例としてー",
+      "authors": [
+        "武田 俊輔"
+      ],
+      "publisher": null,
+      "publicationName": "令和四年度 文化財防災センターシンポジウム 無形文化遺産と防災 ー被災の経験から考える防災・減災",
+      "volume": "1",
+      "number": null,
+      "startingPage": "60",
+      "publicationDate": "2023",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "貴重な衣裳や小道具を保存継承する美濃歌舞伎博物館 相生座",
+      "authors": [
+        "奈良部 和美"
+      ],
+      "publisher": "東京 : 地域創造",
+      "publicationName": "地域創造 : 町づくりアートを応援します",
+      "volume": "49",
+      "number": null,
+      "startingPage": "71",
+      "publicationDate": "2023",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "美濃歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "秩父・西多摩地域における民俗芸能の持続可能なかかわりの拡大の可能性（人）",
+      "authors": [
+        "安倍 希美"
+      ],
+      "publisher": "一般社団法人 日本体育・スポーツ・健康学会",
+      "publicationName": "日本体育・スポーツ・健康学会予稿集",
+      "volume": "73",
+      "number": "0",
+      "startingPage": "80",
+      "publicationDate": "2023",
+      "keywords": [],
+      "url": null,
+      "doi": "10.20693/jspehssconf.73.0_80",
+      "matchedQuery": "小鹿野歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "コロナ禍における民俗文化継承活動 : 最上郡「鮭川歌舞伎」の活動を中心に",
+      "authors": [
+        "菊地 和博"
+      ],
+      "publisher": "山形 : 山形県民俗研究協議会",
+      "publicationName": "山形民俗",
+      "volume": null,
+      "number": "36",
+      "startingPage": "29",
+      "publicationDate": "2022-11",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "鮭川歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "コロナ禍における都市祭礼のレジリエンス : 長浜曳山祭の再開を事例として",
+      "authors": [
+        "武田 俊輔"
+      ],
+      "publisher": "東京 : 自治労サービス",
+      "publicationName": "月刊自治研 / 自治研中央推進委員会 編",
+      "volume": "64",
+      "number": "755",
+      "startingPage": "20",
+      "publicationDate": "2022-08",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "埼玉県小鹿野町 地域を盛り上げる「小鹿野歌舞伎」",
+      "authors": [
+        "肥沼 隆弘"
+      ],
+      "publisher": "東京 : 第一法規",
+      "publicationName": "自治実務セミナー",
+      "volume": null,
+      "number": "718",
+      "startingPage": "17",
+      "publicationDate": "2022-04",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "小鹿野歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "東濃地方の芝居等文化資源記録プロジェクト : コロナ禍における恵那市地歌舞伎保存会の活動と伝統芸能継承の試みについて",
+      "authors": [
+        "永田, 典子",
+        "嘉原, 優子"
+      ],
+      "publisher": "中部大学国際人間学研究所",
+      "publicationName": "中部大学国際人間学研究所シンポジウム : 持続可能な観光",
+      "volume": "2021",
+      "number": null,
+      "startingPage": "37",
+      "publicationDate": "2022-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "福島県内に現存する地歌舞伎への地域住民の意識に関する研究",
+      "authors": [
+        "浦部 智義",
+        "渡邉 洋一"
+      ],
+      "publisher": "一般社団法人 日本建築学会",
+      "publicationName": "日本建築学会技術報告集",
+      "volume": "28",
+      "number": "68",
+      "startingPage": "402",
+      "publicationDate": "2022-02-20",
+      "keywords": [
+        "地歌舞伎",
+        "舞台建築",
+        "福島県",
+        "地域・集落",
+        "住民意識"
+      ],
+      "url": null,
+      "doi": "10.3130/aijt.28.402",
+      "matchedQuery": "地歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "コロナ禍における都市祭礼のレジリエンス―長浜曳山祭の再開を事例として",
+      "authors": [
+        "武田 俊輔"
+      ],
+      "publisher": null,
+      "publicationName": "月刊自治研",
+      "volume": "64(755)",
+      "number": null,
+      "startingPage": "20",
+      "publicationDate": "2022",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "武田俊輔著 『コモンズとしての都市祭礼―長浜曳山祭の都市社会学』",
+      "authors": [
+        "竹元 秀樹"
+      ],
+      "publisher": "日本社会学会",
+      "publicationName": "社会学評論",
+      "volume": "72",
+      "number": "4",
+      "startingPage": "572",
+      "publicationDate": "2022",
+      "keywords": [
+        "General Medicine"
+      ],
+      "url": null,
+      "doi": "10.4057/jsr.72.572",
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "武田俊輔著『コモンズとしての都市祭礼 : 長浜曳山祭の都市社会学』（新曜社 2019 年）",
+      "authors": [
+        "片平 深雪"
+      ],
+      "publisher": "立命館大学大学院先端総合学術研究科",
+      "publicationName": "コア・エシックス",
+      "volume": "18",
+      "number": null,
+      "startingPage": "193",
+      "publicationDate": "2022",
+      "keywords": [],
+      "url": null,
+      "doi": "10.34382/00016719",
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "武田俊輔著 『コモンズとしての都市祭礼 長浜曳山祭の都市社会学』",
+      "authors": [
+        "田中 志敬"
+      ],
+      "publisher": "日本村落研究学会",
+      "publicationName": "Journal of Rural Studies",
+      "volume": "27",
+      "number": "2",
+      "startingPage": "47",
+      "publicationDate": "2021-04-25",
+      "keywords": [],
+      "url": null,
+      "doi": "10.9747/jars.27.2_47",
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "東濃地方の芝居等文化資源記録プロジェクト : コロナ禍における恵那市地歌舞伎保存会の活動と飯地ふるさと民俗資料館資料について",
+      "authors": [
+        "永田, 典子",
+        "嘉原, 優子"
+      ],
+      "publisher": "中部大学国際人間学研究所",
+      "publicationName": "中部大学国際人間学研究所シンポジウム : 持続可能な観光",
+      "volume": "2020",
+      "number": null,
+      "startingPage": "3",
+      "publicationDate": "2021-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "香川県の家庭料理 行事食の特徴",
+      "authors": [
+        "次田 一代",
+        "村川 みなみ",
+        "渡辺 ひろ美",
+        "加藤 みゆき",
+        "川染 節江"
+      ],
+      "publisher": "日本調理科学会",
+      "publicationName": "日本調理科学会大会研究発表要旨集",
+      "volume": "32",
+      "number": "0",
+      "startingPage": "180",
+      "publicationDate": "2021",
+      "keywords": [
+        "家庭料理",
+        "行事食",
+        "香川県"
+      ],
+      "url": null,
+      "doi": "10.11402/ajscs.32.0_180",
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "曳山の修復から考える文化継承モデルの一考察――米原曳山祭りの事例から",
+      "authors": [
+        "日高 真吾"
+      ],
+      "publisher": null,
+      "publicationName": "継承される地域文化―災害復興から社会創発へ",
+      "volume": "-",
+      "number": null,
+      "startingPage": "286",
+      "publicationDate": "2021",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "米原曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "書評 武田俊輔著『コモンズとしての都市祭礼 : 長浜曳山祭の都市社会学』",
+      "authors": [
+        "牧野 修也"
+      ],
+      "publisher": "京都 : 関西社会学会 ; 2002-",
+      "publicationName": "フォーラム現代社会学 = Kansai sociological review : official journal of the Kansai Sociological Association / 関西社会学会 編",
+      "volume": "20",
+      "number": null,
+      "startingPage": "93",
+      "publicationDate": "2021",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "自著を語る～MY FIRST BOOK～ 『コモンズとしての都市祭礼―長浜曳山祭の都市社会学』",
+      "authors": [
+        "武田 俊輔"
+      ],
+      "publisher": "関西社会学会",
+      "publicationName": "フォーラム現代社会学",
+      "volume": "20",
+      "number": "0",
+      "startingPage": "81",
+      "publicationDate": "2021",
+      "keywords": [],
+      "url": null,
+      "doi": "10.20791/ksr.20.0_81",
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "武田 俊輔 著『コモンズとしての都市祭礼―長浜曳山祭の都市社会学―』",
+      "authors": [
+        "牧野 修也"
+      ],
+      "publisher": "関西社会学会",
+      "publicationName": "フォーラム現代社会学",
+      "volume": "20",
+      "number": "0",
+      "startingPage": "93",
+      "publicationDate": "2021",
+      "keywords": [],
+      "url": null,
+      "doi": "10.20791/ksr.20.0_93",
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "高知県における絵金のコメモレイション",
+      "authors": [
+        "小松 秀雄",
+        "Hideo KOMATSU"
+      ],
+      "publisher": "dummy publisher",
+      "publicationName": "神戸女学院大学論集 = KOBE COLLEGE STUDIES",
+      "volume": "67",
+      "number": "2",
+      "startingPage": "49",
+      "publicationDate": "2020-12-20",
+      "keywords": [
+        "絵金",
+        "芝居絵屏風",
+        "コメモレイション",
+        "集合的記憶",
+        "社会学",
+        "Ekin",
+        "Shibai-e screens",
+        "commemoration",
+        "collective memory",
+        "sociology"
+      ],
+      "url": null,
+      "doi": "10.18878/00005674",
+      "matchedQuery": "土佐絵金歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "小さな村の挑戦記(第7回)地歌舞伎の町の産業振興 : 埼玉県小鹿野町",
+      "authors": [
+        "長谷川 清"
+      ],
+      "publisher": "東京 : ぎょうせい",
+      "publicationName": "地方財務 / ぎょうせい 編",
+      "volume": null,
+      "number": "796",
+      "startingPage": "227",
+      "publicationDate": "2020-10",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "丸山幸太郎先生講演会記録 岐阜県における地芝居の興隆と保存",
+      "authors": [
+        "丸山 幸太郎"
+      ],
+      "publisher": "岐阜 : 岐阜県郷土資料研究協議会",
+      "publicationName": "郷土研究・岐阜 : 岐阜県郷土資料研究協議会会報 / 岐阜県郷土資料研究協議会 編",
+      "volume": null,
+      "number": "134",
+      "startingPage": "3",
+      "publicationDate": "2020-09",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "平成地芝居の三十年",
+      "authors": [
+        "舘野 太朗"
+      ],
+      "publisher": "東京 : 歌舞伎学会",
+      "publicationName": "歌舞伎 : 研究と批評 : 歌舞伎学会誌 / 歌舞伎学会 編",
+      "volume": null,
+      "number": "65",
+      "startingPage": "38",
+      "publicationDate": "2020-07",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "農村歌舞伎",
+      "authors": [
+        "安田 文吉",
+        "安田 徳子"
+      ],
+      "publisher": "東京 : 歌舞伎学会",
+      "publicationName": "歌舞伎 : 研究と批評 : 歌舞伎学会誌 / 歌舞伎学会 編",
+      "volume": null,
+      "number": "65",
+      "startingPage": "25",
+      "publicationDate": "2020-07",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "武田俊輔著 『コモンズとしての都市祭礼──長浜曳山祭の都市社会学』（新曜社 2019年）",
+      "authors": [
+        "山崎 翔"
+      ],
+      "publisher": "地域社会学会",
+      "publicationName": "地域社会学会年報",
+      "volume": "32",
+      "number": "0",
+      "startingPage": "179",
+      "publicationDate": "2020-05-25",
+      "keywords": [],
+      "url": null,
+      "doi": "10.20737/jarcs.32.0_179",
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "村遊び(村芝居)の衣装 : 所収の服物資料試案名称の訂改正",
+      "authors": [
+        "植木 ちか子"
+      ],
+      "publisher": "西原町 (沖縄県) : 沖縄民俗学会",
+      "publicationName": "沖縄民俗研究 = Journal of Okinawan folklore studies",
+      "volume": null,
+      "number": "36",
+      "startingPage": "67",
+      "publicationDate": "2020-04",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "村芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "東濃地方の地芝居等文化資源記録保存プロジェクト:恵那市における地芝居調査中間報告",
+      "authors": [
+        "永田, 典子",
+        "嘉原, 優子"
+      ],
+      "publisher": "中部大学国際人間学研究所",
+      "publicationName": "中部大学国際人間学研究所シンポジウム : 持続可能な観光",
+      "volume": "2019",
+      "number": null,
+      "startingPage": "22",
+      "publicationDate": "2020-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "開拓期における農村歌舞伎の研究史ノート",
+      "authors": [
+        "高尾 英男"
+      ],
+      "publisher": "札幌 : 北海道地域文化学会",
+      "publicationName": "北海道地域文化研究",
+      "volume": null,
+      "number": "12",
+      "startingPage": "15",
+      "publicationDate": "2020-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "農業・農村・JA 地方創生と伝統行事 : 土地の記憶を行動で共有する(5)大鹿歌舞伎(後編 その2)",
+      "authors": [
+        "平沼 浩"
+      ],
+      "publisher": "東京 : JA共済総合研究所",
+      "publicationName": "共済総研レポート",
+      "volume": null,
+      "number": "167",
+      "startingPage": "38",
+      "publicationDate": "2020-02",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "大鹿歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "小鹿野歌舞伎の小学校での実践とその教育的効果について",
+      "authors": [
+        "佐藤 節子"
+      ],
+      "publisher": "仙台 : 宮城教育大学",
+      "publicationName": "宮城教育大学紀要",
+      "volume": "55",
+      "number": null,
+      "startingPage": "209",
+      "publicationDate": "2020",
+      "keywords": [
+        "歌舞伎体験学習",
+        "小学校",
+        "教育的効果"
+      ],
+      "url": null,
+      "matchedQuery": "小鹿野歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "檜枝岐歌舞伎における上演空間と存立基盤の変容",
+      "authors": [
+        "田嶋 玲"
+      ],
+      "publisher": "公益社団法人 日本地理学会",
+      "publicationName": "日本地理学会発表要旨集",
+      "volume": "2020s",
+      "number": "0",
+      "startingPage": "335",
+      "publicationDate": "2020",
+      "keywords": [
+        "檜枝岐歌舞伎",
+        "地芝居",
+        "民俗芸能",
+        "パフォーマンス",
+        "檜枝岐村"
+      ],
+      "url": null,
+      "doi": "10.14866/ajg.2020s.0_335",
+      "matchedQuery": "檜枝岐歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "農業・農村・JA 地方創生と伝統行事 : 土地の記憶を行動で共有する(5)大鹿歌舞伎(後編 その1)",
+      "authors": [
+        "平沼 浩"
+      ],
+      "publisher": "東京 : JA共済総合研究所",
+      "publicationName": "共済総研レポート",
+      "volume": null,
+      "number": "166",
+      "startingPage": "48",
+      "publicationDate": "2019-12",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "大鹿歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "武田俊輔 著 コモンズとしての都市祭礼 ―長浜曳山祭の都市社会学―",
+      "authors": [
+        "阿南 透"
+      ],
+      "publisher": "一般社団法人 日本民俗学会",
+      "publicationName": "日本民俗学",
+      "volume": "300",
+      "number": "0",
+      "startingPage": "233",
+      "publicationDate": "2019-11-30",
+      "keywords": [],
+      "url": null,
+      "doi": "10.34560/nihonminzokugaku.300.0_233",
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "書評 武田俊輔著 コモンズとしての都市祭礼 : 長浜曳山祭の都市社会学",
+      "authors": [
+        "阿南 透"
+      ],
+      "publisher": "東京 : 日本民俗学会",
+      "publicationName": "日本民俗学 = Bulletin of the Folklore Society of Japan / 日本民俗学会 編",
+      "volume": null,
+      "number": "300",
+      "startingPage": "233",
+      "publicationDate": "2019-11",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "農業・農村・JA 地方創生と伝統行事 : 土地の記憶を行動で共有する(5)大鹿歌舞伎(前編)",
+      "authors": [
+        "平沼 浩"
+      ],
+      "publisher": "東京 : JA共済総合研究所",
+      "publicationName": "共済総研レポート",
+      "volume": null,
+      "number": "165",
+      "startingPage": "40",
+      "publicationDate": "2019-10",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "大鹿歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "5089 近年に廃絶した岩手県内の2つの地歌舞伎に関する研究 東北地方に現存し歴史を持つ劇場空間の実態と役割についての研究 その9",
+      "authors": [
+        "飯村 萌",
+        "浦部 智義",
+        "渡邉 洋一",
+        "藤野 純也"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "建築計画",
+      "volume": null,
+      "number": "2019",
+      "startingPage": "177",
+      "publicationDate": "2019-07-20",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "市川秀之・武田俊輔編『長浜曳山祭の過去と現在──祭礼と芸能継承のダイナミズム』（おうみ学術出版会 2017年）",
+      "authors": [
+        "築山 秀夫"
+      ],
+      "publisher": "地域社会学会",
+      "publicationName": "地域社会学会年報",
+      "volume": "31",
+      "number": "0",
+      "startingPage": "80",
+      "publicationDate": "2019-05-11",
+      "keywords": [],
+      "url": null,
+      "doi": "10.20737/jarcs.31.0_80",
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "アートな時間 舞台 第三十五回記念 四国こんぴら歌舞伎大芝居 : 現存する日本最古の芝居小屋で名作とともに江戸情緒を楽しむ",
+      "authors": [
+        "小玉 祥子"
+      ],
+      "publisher": "東京 : 毎日新聞出版",
+      "publicationName": "エコノミスト",
+      "volume": "97",
+      "number": "12",
+      "startingPage": "97",
+      "publicationDate": "2019-03-26",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "芝居小屋 歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "篠原歌舞伎の地芝居衣裳について : 付・当館所蔵衣裳一覧表",
+      "authors": [
+        "三浦麻緒"
+      ],
+      "publisher": "神奈川県",
+      "publicationName": "神奈川県立博物館研究報告. 人文科学",
+      "volume": "(45)",
+      "number": null,
+      "startingPage": null,
+      "publicationDate": "2019-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "農村歌舞伎の興亡に与えた開拓村落の形成と営農 : 篠路、新山梨・山梨、栃木地区の事例",
+      "authors": [
+        "高尾 英男"
+      ],
+      "publisher": "札幌 : 北海道地域文化学会",
+      "publicationName": "北海道地域文化研究",
+      "volume": null,
+      "number": "11",
+      "startingPage": "67",
+      "publicationDate": "2019-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "北海道における農村歌舞伎の概要史 : 佐呂間町栃木歌舞伎と他約20か所に発生した歌舞伎の盛衰",
+      "authors": [
+        "岡田 祐一"
+      ],
+      "publisher": "札幌 : 北海道地域文化学会",
+      "publicationName": "北海道地域文化研究",
+      "volume": null,
+      "number": "11",
+      "startingPage": "39",
+      "publicationDate": "2019-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "研究会見学会報告 美濃歌舞伎博物館 相生座",
+      "authors": [
+        "横川 公子"
+      ],
+      "publisher": "西宮 : 服飾美学会",
+      "publicationName": "服飾美学 / 服飾美学会 編",
+      "volume": null,
+      "number": "65",
+      "startingPage": "70",
+      "publicationDate": "2019-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "美濃歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "長野県/大鹿(おおしか)村立大鹿中学校 伝統文化が息づく学校 江戸時代から伝わる村自慢の｢大鹿歌舞伎｣ 伝統文化に接して、ふるさとへの誇りと愛着を育む",
+      "authors": [
+        "永池 隆"
+      ],
+      "publisher": "東京 : Gakken",
+      "publicationName": "教育ジャーナル",
+      "volume": "57",
+      "number": "12",
+      "startingPage": "1",
+      "publicationDate": "2019-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "大鹿歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "小鹿野歌舞伎における三番叟について(2)",
+      "authors": [
+        "安倍 希美"
+      ],
+      "publisher": "大妻女子大学人間生活文化研究所",
+      "publicationName": "International Journal of Human Culture Studies",
+      "volume": "2019",
+      "number": "29",
+      "startingPage": "65",
+      "publicationDate": "2019-01-01",
+      "keywords": [
+        "小鹿野歌舞伎",
+        "三番叟",
+        "歴史的背景",
+        "坂東彦五郎",
+        "音羽屋"
+      ],
+      "url": null,
+      "doi": "10.9748/hcs.2019.65",
+      "matchedQuery": "小鹿野歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "篠原(しのばら)歌舞伎の地芝居衣裳について : 付・当館所蔵衣裳一覧表",
+      "authors": [
+        "三浦 麻緒"
+      ],
+      "publisher": "横浜 : 神奈川県立歴史博物館",
+      "publicationName": "神奈川県立博物館研究報告. 人文科学 = Bulletin of the Kanagawa Prefectural Museum. Cultural sciences / 神奈川県立歴史博物館 編",
+      "volume": null,
+      "number": "45",
+      "startingPage": "89",
+      "publicationDate": "2019",
+      "keywords": [
+        "地芝居",
+        "篠原歌舞伎",
+        "農村歌舞伎衣裳"
+      ],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "岐阜県東南部における地歌舞伎小屋の発展について その２",
+      "authors": [
+        "三島 雅博",
+        "井上 晴加",
+        "岩井 麗"
+      ],
+      "publisher": "独立行政法人 国立高等専門学校機構豊田工業高等専門学校",
+      "publicationName": "豊田工業高等専門学校研究紀要",
+      "volume": "51",
+      "number": "0",
+      "startingPage": "n/a",
+      "publicationDate": "2019",
+      "keywords": [
+        "岐阜県",
+        "東濃",
+        "農村舞台",
+        "拝殿",
+        "劇場",
+        "半小屋",
+        "地歌舞伎小屋",
+        "村国座"
+      ],
+      "url": null,
+      "doi": "10.20692/toyotakosenkiyo.51-5",
+      "matchedQuery": "地歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "岐阜県東南部における地歌舞伎小屋の発展について その１",
+      "authors": [
+        "三島 雅博",
+        "井上 晴加",
+        "岩井 麗"
+      ],
+      "publisher": "独立行政法人 国立高等専門学校機構豊田工業高等専門学校",
+      "publicationName": "豊田工業高等専門学校研究紀要",
+      "volume": "51",
+      "number": "0",
+      "startingPage": "n/a",
+      "publicationDate": "2019",
+      "keywords": [
+        "岐阜県",
+        "東濃",
+        "農村舞台",
+        "拝殿",
+        "劇場",
+        "半小屋",
+        "地歌舞伎小屋",
+        "掛小屋"
+      ],
+      "url": null,
+      "doi": "10.20692/toyotakosenkiyo.51-4",
+      "matchedQuery": "地歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "令和元年度解釈学会全国大会(第五一回) 公開講演記録 岐阜県のたから物「地歌舞伎」の特徴と次世代への伝承",
+      "authors": [
+        "安田 徳子"
+      ],
+      "publisher": "鎌倉 : 解釈学会",
+      "publicationName": "解釈 / 解釈学会 編",
+      "volume": "65",
+      "number": "11・12",
+      "startingPage": "47",
+      "publicationDate": "2019",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "檜枝岐歌舞伎の上演場所とその変遷",
+      "authors": [
+        "田嶋 玲"
+      ],
+      "publisher": "公益社団法人 日本地理学会",
+      "publicationName": "日本地理学会発表要旨集",
+      "volume": "2019s",
+      "number": "0",
+      "startingPage": "169",
+      "publicationDate": "2019",
+      "keywords": [
+        "檜枝岐歌舞伎",
+        "地芝居",
+        "民俗芸能",
+        "パフォーマンス",
+        "檜枝岐村"
+      ],
+      "url": null,
+      "doi": "10.14866/ajg.2019s.0_169",
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "博士論文賞を受賞して 受賞作『長浜曳山祭の都市社会学―伝統消費型都市の生活共同と社会的ネットワーク―』",
+      "authors": [
+        "武田 俊輔"
+      ],
+      "publisher": "日本生活学会",
+      "publicationName": "生活学論叢",
+      "volume": "35",
+      "number": "0",
+      "startingPage": "88",
+      "publicationDate": "2019",
+      "keywords": [],
+      "url": null,
+      "doi": "10.24528/lifology.35.0_88",
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "長浜曳山祭の町衆座談会 未来をつくる町衆の心意気",
+      "authors": [
+        "三宅 貴江",
+        "竹中 一浩",
+        "西川 丈雄",
+        "漣 泰寿",
+        "岡本 保男",
+        "家森 裕雄",
+        "桐山 惠行",
+        "沢田 昌宏"
+      ],
+      "publisher": "大津 : びわ湖芸術文化財団",
+      "publicationName": "湖国と文化 / びわ湖芸術文化財団 編",
+      "volume": "43",
+      "number": "3",
+      "startingPage": "30",
+      "publicationDate": "2019",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "小鹿野歌舞伎の中学校での実践とその教育的効果について",
+      "authors": [
+        "佐藤 節子"
+      ],
+      "publisher": "仙台 : 宮城教育大学",
+      "publicationName": "宮城教育大学紀要",
+      "volume": "54",
+      "number": null,
+      "startingPage": "293",
+      "publicationDate": "2019",
+      "keywords": [
+        "Folk performing arts (民俗芸能)",
+        "experiential kabuki class (歌舞伎体験学習)",
+        "middle school (中学校)",
+        "educational effect (教育的効果)"
+      ],
+      "url": null,
+      "matchedQuery": "小鹿野歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "07発-12-ポ-37 秩父地域における民俗芸能としての歌舞伎学習の現状とそこにおける児童・生徒の心身の健全な育成について",
+      "authors": [
+        "安倍 希美"
+      ],
+      "publisher": "一般社団法人 日本体育学会",
+      "publicationName": "日本体育学会大会予稿集",
+      "volume": "70",
+      "number": "0",
+      "startingPage": "217_1",
+      "publicationDate": "2019",
+      "keywords": [],
+      "url": null,
+      "doi": "10.20693/jspehss.70.217_1",
+      "matchedQuery": "小鹿野歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "地芝居の楽しみ(12)日本文化の花「地芝居」",
+      "authors": [
+        "安田 文吉",
+        "安田 徳子"
+      ],
+      "publisher": "東京 : 森林文化協会",
+      "publicationName": "グリーン・パワー = Green power : 森と人の文化誌",
+      "volume": null,
+      "number": "480",
+      "startingPage": "17",
+      "publicationDate": "2018-12",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "地芝居の楽しみ(11)最盛期の地芝居を支えた三河地域の万人講",
+      "authors": [
+        "安田 文吉",
+        "安田 徳子"
+      ],
+      "publisher": "東京 : 森林文化協会",
+      "publicationName": "グリーン・パワー = Green power : 森と人の文化誌",
+      "volume": null,
+      "number": "479",
+      "startingPage": "17",
+      "publicationDate": "2018-11",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "地芝居の楽しみ(10)瀬戸内の地芝居 : 小豆島の歌舞伎",
+      "authors": [
+        "安田 文吉",
+        "安田 徳子"
+      ],
+      "publisher": "東京 : 森林文化協会",
+      "publicationName": "グリーン・パワー = Green power : 森と人の文化誌",
+      "volume": null,
+      "number": "478",
+      "startingPage": "17",
+      "publicationDate": "2018-10",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "地芝居の楽しみ(9)日本一の地芝居王国 : 岐阜県の地歌舞伎",
+      "authors": [
+        "安田 文吉",
+        "安田 徳子"
+      ],
+      "publisher": "東京 : 森林文化協会",
+      "publicationName": "グリーン・パワー = Green power : 森と人の文化誌",
+      "volume": null,
+      "number": "477",
+      "startingPage": "17",
+      "publicationDate": "2018-09",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "地芝居 : いずみ歌舞伎の実態に関する研究 : 保存会へのインタビューを通して",
+      "authors": [
+        "小畠 佳子"
+      ],
+      "publisher": "横浜 : フェリス女学院大学多文化・共生コミュニケーション学会",
+      "publicationName": "多文化・共生コミュニケーション論叢 = Multicultural communication studies",
+      "volume": null,
+      "number": "13",
+      "startingPage": "193",
+      "publicationDate": "2018-09",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "地芝居の楽しみ(8)秘境の夜芝居 : 檜枝岐歌舞伎",
+      "authors": [
+        "安田 文吉",
+        "安田 徳子"
+      ],
+      "publisher": "東京 : 森林文化協会",
+      "publicationName": "グリーン・パワー = Green power : 森と人の文化誌",
+      "volume": null,
+      "number": "476",
+      "startingPage": "17",
+      "publicationDate": "2018-08",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "5177 地歌舞伎公演における観客の属性に関する研究 東北地方に現存し歴史を持つ劇場空間の実態と役割についての研究 その7",
+      "authors": [
+        "武田 健大",
+        "浦部 智義",
+        "渡邉 洋一"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "建築計画",
+      "volume": null,
+      "number": "2018",
+      "startingPage": "375",
+      "publicationDate": "2018-07-20",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "地芝居の楽しみ(7)地芝居の広がり : 播州の地芝居とその舞台",
+      "authors": [
+        "安田 文吉",
+        "安田 徳子"
+      ],
+      "publisher": "東京 : 森林文化協会",
+      "publicationName": "グリーン・パワー = Green power : 森と人の文化誌",
+      "volume": null,
+      "number": "475",
+      "startingPage": "17",
+      "publicationDate": "2018-07",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "地芝居の楽しみ(6)仕掛け満載「上三原田の歌舞伎舞台」",
+      "authors": [
+        "安田 文吉",
+        "安田 徳子"
+      ],
+      "publisher": "東京 : 森林文化協会",
+      "publicationName": "グリーン・パワー = Green power : 森と人の文化誌",
+      "volume": null,
+      "number": "474",
+      "startingPage": "17",
+      "publicationDate": "2018-06",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "地芝居の楽しみ(5)雪中の「黒森歌舞伎」",
+      "authors": [
+        "安田 文吉",
+        "安田 徳子"
+      ],
+      "publisher": "東京 : 森林文化協会",
+      "publicationName": "グリーン・パワー = Green power : 森と人の文化誌",
+      "volume": null,
+      "number": "473",
+      "startingPage": "17",
+      "publicationDate": "2018-05",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "讃岐の神楽雑考 : 地芝居との関係・婆々の玉の由来など",
+      "authors": [
+        "中井 幸比古"
+      ],
+      "publisher": "綾川町 (香川県) : 香川民俗学会",
+      "publicationName": "香川の民俗",
+      "volume": null,
+      "number": "80",
+      "startingPage": "16",
+      "publicationDate": "2018-05",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "地芝居の楽しみ(4)伝統の「大鹿歌舞伎」",
+      "authors": [
+        "安田 文吉",
+        "安田 徳子"
+      ],
+      "publisher": "東京 : 森林文化協会",
+      "publicationName": "グリーン・パワー = Green power : 森と人の文化誌",
+      "volume": null,
+      "number": "472",
+      "startingPage": "17",
+      "publicationDate": "2018-04",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "国重要無形民俗文化財『大鹿歌舞伎』の保存伝承と子どもたち",
+      "authors": [
+        "北村 尚幸"
+      ],
+      "publisher": "長野 : 長野県文化財保護協会",
+      "publicationName": "文化財信濃 / 長野県文化財保護協会 編",
+      "volume": "45",
+      "number": "1",
+      "startingPage": "13",
+      "publicationDate": "2018-04",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "大鹿歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "地芝居の楽しみ(3)無形遺産の子ども歌舞伎",
+      "authors": [
+        "安田 文吉",
+        "安田 徳子"
+      ],
+      "publisher": "東京 : 森林文化協会",
+      "publicationName": "グリーン・パワー = Green power : 森と人の文化誌",
+      "volume": null,
+      "number": "471",
+      "startingPage": "17",
+      "publicationDate": "2018-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "美濃・飛騨における地芝居の始まり",
+      "authors": [
+        "丸山 幸太郎"
+      ],
+      "publisher": "岐阜 : 岐阜女子大学地域文化研究所",
+      "publicationName": "岐阜女子大学地域文化研究 / 岐阜女子大学地域文化研究所 [編]",
+      "volume": null,
+      "number": "35",
+      "startingPage": "1",
+      "publicationDate": "2018-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "小鹿野歌舞伎と屋台芝居",
+      "authors": [
+        "山本 正実"
+      ],
+      "publisher": "さいたま : 埼玉県文化財保護協会",
+      "publicationName": "埼玉の文化財 / 埼玉県文化財保護協会 編",
+      "volume": null,
+      "number": "58",
+      "startingPage": "37",
+      "publicationDate": "2018-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "小鹿野歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "地芝居の楽しみ(2)都から山間の地まで",
+      "authors": [
+        "安田 文吉",
+        "安田 徳子"
+      ],
+      "publisher": "東京 : 森林文化協会",
+      "publicationName": "グリーン・パワー = Green power : 森と人の文化誌",
+      "volume": null,
+      "number": "470",
+      "startingPage": "17",
+      "publicationDate": "2018-02",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "地芝居の楽しみ(1)地域共同体の活力源",
+      "authors": [
+        "安田 文吉",
+        "安田 徳子"
+      ],
+      "publisher": "東京 : 森林文化協会",
+      "publicationName": "グリーン・パワー = Green power : 森と人の文化誌",
+      "volume": null,
+      "number": "469",
+      "startingPage": "17",
+      "publicationDate": "2018-01",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "明治座の両輪 : 楽しいお芝居、美味しい食事",
+      "authors": [
+        "若山 裕美"
+      ],
+      "publisher": "東京 : 早川書房",
+      "publicationName": "悲劇喜劇",
+      "volume": "71",
+      "number": "1",
+      "startingPage": "43",
+      "publicationDate": "2018-01",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "岐阜県の「地歌舞伎」について",
+      "authors": [
+        "蒲池 卓巳",
+        "南本 有紀"
+      ],
+      "publisher": "関 : 岐阜県博物館",
+      "publicationName": "岐阜県博物館調査研究報告 / 岐阜県博物館 編",
+      "volume": null,
+      "number": "39",
+      "startingPage": "29",
+      "publicationDate": "2018",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "イラストSCOPE 子ども世代から継承のタネを蒔き、育む 岡山県奈義町「横仙歌舞伎」",
+      "authors": [
+        "奈良部 和美"
+      ],
+      "publisher": "東京 : 地域創造",
+      "publicationName": "地域創造 : 町づくりアートを応援します",
+      "volume": "43",
+      "number": null,
+      "startingPage": "57",
+      "publicationDate": "2018",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "横仙歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "12人-25-口-07 民俗芸能の学校での実践の教育的効果についての一考察",
+      "authors": [
+        "佐藤 節子",
+        "石水 極子"
+      ],
+      "publisher": "一般社団法人 日本体育学会",
+      "publicationName": "日本体育学会大会予稿集",
+      "volume": "69",
+      "number": "0",
+      "startingPage": "278_1",
+      "publicationDate": "2018",
+      "keywords": [],
+      "url": null,
+      "doi": "10.20693/jspehss.69.278_1",
+      "matchedQuery": "小鹿野歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "檜枝岐歌舞伎の観光資源化とその影響",
+      "authors": [
+        "田嶋 玲"
+      ],
+      "publisher": "東京 : 明治大学大学院",
+      "publicationName": "文学研究論集 = Studies in arts &amp; letters / 明治大学大学院文学研究科",
+      "volume": null,
+      "number": "50",
+      "startingPage": "129",
+      "publicationDate": "2018",
+      "keywords": [
+        "伝統芸能",
+        "観光資源化",
+        "コンフリクト",
+        "檜枝岐歌舞伎",
+        "福島県檜枝岐村"
+      ],
+      "url": null,
+      "matchedQuery": "檜枝岐歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "出石町のまちづくりと永楽館の復原―歴史社会学とエートス論の視点からの再考―",
+      "authors": [
+        "小松 秀雄",
+        "Hideo KOMATSU"
+      ],
+      "publisher": "dummy publisher",
+      "publicationName": "神戸女学院大学論集 = KOBE COLLEGE STUDIES",
+      "volume": "64",
+      "number": "2",
+      "startingPage": "13",
+      "publicationDate": "2017-12-20",
+      "keywords": [
+        "まちづくり",
+        "城下町",
+        "エートス",
+        "永楽館",
+        "歴史社会学",
+        "machizukuri",
+        "castle town",
+        "ethos",
+        "Eirakukan",
+        "historical sociology"
+      ],
+      "url": null,
+      "doi": "10.18878/00005450",
+      "matchedQuery": "芝居小屋 歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "松本市安曇稲核諏訪神社祭典で上演される村芝居(稲核座)について",
+      "authors": [
+        "小原 稔"
+      ],
+      "publisher": "安曇野 : 長野県民俗の会",
+      "publicationName": "長野県民俗の会会報",
+      "volume": null,
+      "number": "40",
+      "startingPage": "33",
+      "publicationDate": "2017-11",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "村芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "コモンズとしての山・鉾・屋台をめぐる社会関係 : 長浜曳山祭における曳山の管理とその変容を手がかりとして",
+      "authors": [
+        "武田 俊輔"
+      ],
+      "publisher": "東京 : 民俗芸能学会",
+      "publicationName": "民俗芸能研究 / 民俗芸能学会編集委員会 編",
+      "volume": null,
+      "number": "63",
+      "startingPage": "75",
+      "publicationDate": "2017-09",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "京都・祇園座設立の経緯とその意義",
+      "authors": [
+        "日置 貴之"
+      ],
+      "publisher": "東京 : 筑摩書房",
+      "publicationName": "国語と国文学 = Japanese Linguistics and Japanese literature / 東京大学国語国文学会 編",
+      "volume": "94",
+      "number": "8",
+      "startingPage": "35",
+      "publicationDate": "2017-08",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "祇園座",
+      "source": "cinii"
+    },
+    {
+      "title": "5004 専用舞台を持たない地歌舞伎の公演に関する研究 東北地方に現存し歴史を持つ劇場空間の実態と役割についての研究 その6",
+      "authors": [
+        "武田 健大",
+        "浦部 智義",
+        "我妻 佑磨",
+        "渡邉 洋一"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "建築計画",
+      "volume": null,
+      "number": "2017",
+      "startingPage": "7",
+      "publicationDate": "2017-07-20",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "再解釈される「伝統」と都市祭礼のダイナミクス : 長浜曳山祭における若衆-中老間のコンフリクトを手がかりとして",
+      "authors": [
+        "武田 俊輔"
+      ],
+      "publisher": "名古屋 : 東海社会学会",
+      "publicationName": "東海社会学会年報 = The annual review of the Tokai Sociological Society / 東海社会学会年報編集委員会 編",
+      "volume": null,
+      "number": "9",
+      "startingPage": "81",
+      "publicationDate": "2017-07",
+      "keywords": [
+        "都市祭礼",
+        "伝統",
+        "コンフリクト"
+      ],
+      "url": null,
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "暮らしの表現空間(1)集落の絆を育み、暮らしを彩る郷土芸能 : 埼玉県秩父郡・小鹿野歌舞伎の伝承",
+      "authors": [
+        "佐藤 一子"
+      ],
+      "publisher": "東京 : 旬報社",
+      "publicationName": "月刊社会教育 / 「月刊社会教育」編集委員会 編",
+      "volume": "61",
+      "number": "7",
+      "startingPage": "52",
+      "publicationDate": "2017-07",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "小鹿野歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "兵庫県の農村舞台と播州歌舞伎の歴史社会学的再考",
+      "authors": [
+        "小松 秀雄",
+        "Hideo KOMATSU"
+      ],
+      "publisher": "dummy publisher",
+      "publicationName": "神戸女学院大学論集 = KOBE COLLEGE STUDIES",
+      "volume": "64",
+      "number": "1",
+      "startingPage": "19",
+      "publicationDate": "2017-06-20",
+      "keywords": [
+        "農村舞台",
+        "農村歌舞伎",
+        "高室芝居",
+        "播州歌舞伎",
+        "歴史社会学",
+        "rural stage",
+        "rural kabuki",
+        "Takamuro Shibai",
+        "Banshu Kabuki",
+        "historical sociology"
+      ],
+      "url": null,
+      "doi": "10.18878/00005409",
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "自然と舞台と観客の一体感 : 長野県大鹿村 大鹿歌舞伎保存会",
+      "authors": [],
+      "publisher": "東京 : あしたの日本を創る協会",
+      "publicationName": "まち・むら : 自治会町内会情報誌",
+      "volume": null,
+      "number": "138",
+      "startingPage": "1p,1",
+      "publicationDate": "2017-06",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "大鹿歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "長浜曳山祭の曳山行事 : 保存継承の歩みと曳山修理の実際",
+      "authors": [
+        "二宮 義信"
+      ],
+      "publisher": "東京 : 第一法規",
+      "publicationName": "月刊文化財 / 文化庁 監修",
+      "volume": null,
+      "number": "643",
+      "startingPage": "34",
+      "publicationDate": "2017-04",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "「間」を指導内容とした低学年の鑑賞授業",
+      "authors": [
+        "渡部 尚子"
+      ],
+      "publisher": "日本学校音楽教育実践学会",
+      "publicationName": "学校音楽教育実践論集",
+      "volume": "1",
+      "number": "0",
+      "startingPage": "82",
+      "publicationDate": "2017-03-31",
+      "keywords": [],
+      "url": null,
+      "doi": "10.19005/ssmeti.1.0_82",
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "Ⅲ だれもが主体的に取り組む日本伝統音楽の授業",
+      "authors": [
+        "廣津 友香",
+        "小島 律子",
+        "渡部 尚子"
+      ],
+      "publisher": "日本学校音楽教育実践学会",
+      "publicationName": "学校音楽教育実践論集",
+      "volume": "1",
+      "number": "0",
+      "startingPage": "29",
+      "publicationDate": "2017-03-31",
+      "keywords": [],
+      "url": null,
+      "doi": "10.19005/ssmeti.1.0_29",
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "南会津の地歌舞伎とその衣裳について― 南郷・伊南の歌舞伎衣裳を中心として―",
+      "authors": [
+        "田辺, 真弓"
+      ],
+      "publisher": "郡山女子大学",
+      "publicationName": "紀要",
+      "volume": "53",
+      "number": null,
+      "startingPage": "70",
+      "publicationDate": "2017-03",
+      "keywords": [
+        "福島県",
+        "南会津",
+        "歌舞伎",
+        "衣裳",
+        "民俗"
+      ],
+      "url": null,
+      "matchedQuery": "地歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "小鹿野歌舞伎における三番叟について（1）",
+      "authors": [
+        "安倍 希美"
+      ],
+      "publisher": "大妻女子大学人間生活文化研究所",
+      "publicationName": "International Journal of Human Culture Studies",
+      "volume": "2017",
+      "number": "27",
+      "startingPage": "221",
+      "publicationDate": "2017-01-01",
+      "keywords": [
+        "小鹿野歌舞伎",
+        "三番叟",
+        "歴史的背景",
+        "民俗芸能",
+        "秩父"
+      ],
+      "url": null,
+      "doi": "10.9748/hcs.2017.221",
+      "matchedQuery": "小鹿野歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "小学校低学年における歌舞伎（農村歌舞伎）を教材とした鑑賞授業",
+      "authors": [
+        "廣津 友香",
+        "小島 律子",
+        "渡部 尚子"
+      ],
+      "publisher": null,
+      "publicationName": "学校音楽教育実践論集",
+      "volume": "1",
+      "number": null,
+      "startingPage": "29",
+      "publicationDate": "2017",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "コモンズとしての山・鉾・屋台をめぐる社会関係：長浜曳山祭における曳山の管理とその変容を手がかりとして",
+      "authors": [
+        "武田 俊輔"
+      ],
+      "publisher": null,
+      "publicationName": "民俗芸能研究",
+      "volume": "63",
+      "number": null,
+      "startingPage": "75",
+      "publicationDate": "2017",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "都市祭礼における対抗関係と見物人の作用",
+      "authors": [
+        "武田 俊輔"
+      ],
+      "publisher": "日本社会学会",
+      "publicationName": "社会学評論",
+      "volume": "68",
+      "number": "2",
+      "startingPage": "265",
+      "publicationDate": "2017",
+      "keywords": [
+        "都市祭礼",
+        "対抗関係",
+        "見物人"
+      ],
+      "url": null,
+      "doi": "10.4057/jsr.68.265",
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "12人−09−口−07 小鹿野歌舞伎における三番叟の特徴",
+      "authors": [
+        "佐藤 節子"
+      ],
+      "publisher": "一般社団法人 日本体育学会",
+      "publicationName": "日本体育学会大会予稿集",
+      "volume": "68",
+      "number": "0",
+      "startingPage": "290_1",
+      "publicationDate": "2017",
+      "keywords": [],
+      "url": null,
+      "doi": "10.20693/jspehss.68.290_1",
+      "matchedQuery": "小鹿野歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "金丸座(旧金毘羅大芝居)と琴平町のまちづくり",
+      "authors": [
+        "小松 秀雄",
+        "Hideo KOMATSU"
+      ],
+      "publisher": "dummy publisher",
+      "publicationName": "神戸女学院大学論集 = KOBE COLLEGE STUDIES",
+      "volume": "63",
+      "number": "2",
+      "startingPage": "51",
+      "publicationDate": "2016-12-20",
+      "keywords": [
+        "芝居小屋",
+        "観光まちづくり",
+        "金丸座（旧金毘羅大芝居）",
+        "門前町",
+        "重要文化財",
+        "traditional theater",
+        "tourism-based community development",
+        "Kanamaruza(the former Kompira Grand Theater)",
+        "temple town",
+        "important cultural propetty"
+      ],
+      "url": null,
+      "doi": "10.18878/00005275",
+      "matchedQuery": "芝居小屋 歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "播州歌舞伎を通した児童の主体的な学びに関する縦断的研究",
+      "authors": [
+        "小林, 小夜子",
+        "田中, 悠菜"
+      ],
+      "publisher": "兵庫教育大学",
+      "publicationName": "兵庫教育大学学校教育学研究",
+      "volume": "29",
+      "number": null,
+      "startingPage": "59",
+      "publicationDate": "2016-11",
+      "keywords": [
+        "主体的学び",
+        "播州歌舞伎",
+        "作文分析"
+      ],
+      "url": null,
+      "matchedQuery": "播州歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "歌舞伎の躍動を伝える! 劇場&amp;芝居小屋一覧",
+      "authors": [],
+      "publisher": "[東京] : [ダイヤモンド社]",
+      "publicationName": "Diamond weekly = 週刊ダイヤモンド",
+      "volume": "104",
+      "number": "37",
+      "startingPage": "54",
+      "publicationDate": "2016-09-24",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "芝居小屋 歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "創り上げられる「山の芸」 : 長浜曳山祭・奉納子供歌舞伎にみる町衆の心意気",
+      "authors": [
+        "浅野 久枝"
+      ],
+      "publisher": "東京 : 民俗芸能学会",
+      "publicationName": "民俗芸能研究 / 民俗芸能学会編集委員会 編",
+      "volume": null,
+      "number": "61",
+      "startingPage": "48",
+      "publicationDate": "2016-09",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "曳山 歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "聞き書き「山梨県上野原市西原の一宮神社における農村歌舞伎」",
+      "authors": [
+        "本村 あずみ",
+        "森 貴久"
+      ],
+      "publisher": "dummy publisher",
+      "publicationName": "帝京科学大学紀要 = Bulletin of Teikyo University of Science",
+      "volume": "12",
+      "number": null,
+      "startingPage": "161",
+      "publicationDate": "2016-03-31",
+      "keywords": [
+        "村芝居",
+        "地芝居",
+        "素人歌舞伎",
+        "芸能史",
+        "上野原市西原"
+      ],
+      "url": null,
+      "doi": "10.18881/00000303",
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "小鹿野歌舞伎隆盛の仕組みー長若地区の伝承事例ー",
+      "authors": [
+        "佐藤, 節子",
+        "SATO, Setsuko"
+      ],
+      "publisher": "埼玉女子短期大学",
+      "publicationName": "埼玉女子短期大学研究紀要",
+      "volume": null,
+      "number": "33",
+      "startingPage": "27",
+      "publicationDate": "2016-03-31",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "小鹿野歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "総合政策学会エクスカーション報告 : 加子母地歌舞伎見学",
+      "authors": [
+        "森下 英治"
+      ],
+      "publisher": "日進 : 愛知学院大学総合政策学会",
+      "publicationName": "総合政策学会総合政策研究",
+      "volume": "18",
+      "number": "2",
+      "startingPage": "61",
+      "publicationDate": "2016-03",
+      "keywords": [
+        "地歌舞伎",
+        "加子母",
+        "住民参加",
+        "地域活性化",
+        "Ji-Kabuki",
+        "Kashimo-area",
+        "public participation",
+        "rural revitalization"
+      ],
+      "url": null,
+      "matchedQuery": "地歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "福島県内に現存する地歌舞伎の運営に関する研究",
+      "authors": [
+        "浦部 智義",
+        "渡邉 洋一"
+      ],
+      "publisher": "一般社団法人 日本建築学会",
+      "publicationName": "日本建築学会技術報告集",
+      "volume": "22",
+      "number": "51",
+      "startingPage": "711",
+      "publicationDate": "2016",
+      "keywords": [
+        "地歌舞伎",
+        "舞台建築",
+        "福島県",
+        "運営",
+        "地域・集落"
+      ],
+      "url": null,
+      "doi": "10.3130/aijt.22.711",
+      "matchedQuery": "地歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "都市祭礼におけるコンフリクトと高揚 長浜曳山祭における山組組織を事例として",
+      "authors": [
+        "武田 俊輔"
+      ],
+      "publisher": null,
+      "publicationName": "生活学論叢",
+      "volume": "28",
+      "number": null,
+      "startingPage": "17",
+      "publicationDate": "2016",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "都市祭礼における社会関係資本の活用と顕示 : 長浜曳山祭における若衆たちの資金調達プロセスを手がかりとして",
+      "authors": [
+        "武田 俊輔"
+      ],
+      "publisher": "京都 : 関西社会学会 ; 2002-",
+      "publicationName": "フォーラム現代社会学 = Kansai sociological review : official journal of the Kansai Sociological Association / 関西社会学会 編",
+      "volume": "15",
+      "number": null,
+      "startingPage": "18",
+      "publicationDate": "2016",
+      "keywords": [
+        "都市祭礼",
+        "社会関係資本",
+        "資金調達",
+        "social capital",
+        "festivals",
+        "fundraising"
+      ],
+      "url": null,
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "都市祭礼における周縁的な役割の組織化と祭礼集団の再編――長浜曳山祭におけるシャギリ（囃子）の位置づけとその変容を手がかりとして――",
+      "authors": [
+        "武田 俊輔"
+      ],
+      "publisher": "関東社会学会",
+      "publicationName": "年報社会学論集",
+      "volume": "2016",
+      "number": "29",
+      "startingPage": "80",
+      "publicationDate": "2016",
+      "keywords": [],
+      "url": null,
+      "doi": "10.5690/kantoh.2016.80",
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "都市祭礼における社会関係資本の活用と顕示",
+      "authors": [
+        "武田 俊輔"
+      ],
+      "publisher": "関西社会学会",
+      "publicationName": "フォーラム現代社会学",
+      "volume": "15",
+      "number": "0",
+      "startingPage": "18",
+      "publicationDate": "2016",
+      "keywords": [
+        "都市祭礼",
+        "社会関係資本",
+        "資金調達"
+      ],
+      "url": null,
+      "doi": "10.20791/ksr.15.0_18",
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "問題提起 地芝居にみる三河地域",
+      "authors": [
+        "神谷 朋衣"
+      ],
+      "publisher": "東京 : 地方史研究協議会",
+      "publicationName": "地方史研究",
+      "volume": "65",
+      "number": "5",
+      "startingPage": "34",
+      "publicationDate": "2015-10",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "子供歌舞伎振付師の系譜からみえる長浜曳山祭地芝居の傾向",
+      "authors": [
+        "浅野 久枝"
+      ],
+      "publisher": "東京 : 民俗芸能学会",
+      "publicationName": "民俗芸能研究 / 民俗芸能学会編集委員会 編",
+      "volume": null,
+      "number": "59",
+      "startingPage": "4",
+      "publicationDate": "2015-09",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "地芝居考(2)『広辞苑』の地芝居解釈をめぐって",
+      "authors": [
+        "中村 規"
+      ],
+      "publisher": "名古屋 : まつり同好会",
+      "publicationName": "まつり = Festival",
+      "volume": null,
+      "number": "77",
+      "startingPage": "5",
+      "publicationDate": "2015",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "地芝居と学生歌舞伎",
+      "authors": [
+        "舘野 太朗"
+      ],
+      "publisher": "名古屋 : まつり同好会",
+      "publicationName": "まつり = Festival",
+      "volume": null,
+      "number": "77",
+      "startingPage": "45",
+      "publicationDate": "2015",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "採物神楽の地芝居としての性質 : 鳥取県日野郡江府町の下蚊屋荒神神楽から",
+      "authors": [
+        "星野 岳義"
+      ],
+      "publisher": "米子 : 伯耆文化研究会",
+      "publicationName": "伯耆文化研究 / 伯耆文化研究会 編",
+      "volume": null,
+      "number": "16",
+      "startingPage": "46",
+      "publicationDate": "2015",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "沖縄のスーマチ(3)南西諸島のサークルダンス",
+      "authors": [
+        "坂本 要"
+      ],
+      "publisher": "名古屋 : まつり同好会",
+      "publicationName": "まつり = Festival",
+      "volume": null,
+      "number": "77",
+      "startingPage": "67",
+      "publicationDate": "2015",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "都市祭礼におけるコンフリクトと高揚―長浜曳山祭における山組組織を事例として―",
+      "authors": [
+        "武田 俊輔"
+      ],
+      "publisher": "日本生活学会",
+      "publicationName": "生活学論叢",
+      "volume": "28",
+      "number": "0",
+      "startingPage": "17",
+      "publicationDate": "2015",
+      "keywords": [
+        "都市祭礼",
+        "町内におけるコンフリクト",
+        "祭礼の高揚感"
+      ],
+      "url": null,
+      "doi": "10.24528/lifology.28.0_17",
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "12人-27-口-10 小鹿野歌舞伎隆盛の仕組み(12 スポーツ人類学,一般研究発表,2020東京オリンピック・パラリンピックと体育・スポーツ科学研究)",
+      "authors": [
+        "佐藤 節子"
+      ],
+      "publisher": "一般社団法人 日本体育学会",
+      "publicationName": "日本体育学会大会予稿集",
+      "volume": "66",
+      "number": "0",
+      "startingPage": "401",
+      "publicationDate": "2015",
+      "keywords": [],
+      "url": null,
+      "doi": "10.20693/jspehss.66.401_2",
+      "matchedQuery": "小鹿野歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "07発-27-ポ-31 小鹿野歌舞伎における子ども達の活動(07 発育発達,一般研究発表,2020東京オリンピック・パラリンピックと体育・スポーツ科学研究)",
+      "authors": [
+        "安倍 希美"
+      ],
+      "publisher": "一般社団法人 日本体育学会",
+      "publicationName": "日本体育学会大会予稿集",
+      "volume": "66",
+      "number": "0",
+      "startingPage": "256",
+      "publicationDate": "2015",
+      "keywords": [],
+      "url": null,
+      "doi": "10.20693/jspehss.66.256_1",
+      "matchedQuery": "小鹿野歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "NPO法人舞台芸術21ネットワーク制作理事 舞藝舎代表 芦野孝男氏に聞く(上)歌舞伎、地芝居の魅力を伝えたい",
+      "authors": [
+        "芦野 孝男"
+      ],
+      "publisher": "東京 : 教育公論社",
+      "publicationName": "週刊教育資料 = Educational public opinion / 日本教育新聞社 編",
+      "volume": null,
+      "number": "1325",
+      "startingPage": "4",
+      "publicationDate": "2014-12-22",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "7519 都市空間に演出される祝祭空間の都市形態学的解読その8 : 長浜曳山祭における子ども歌舞伎の場合(歴史的街路景観,都市計画,2014年度日本建築学会大会(近畿)学術講演会・建築デザイン発表会)",
+      "authors": [
+        "松浦 健治郎"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "都市計画",
+      "volume": null,
+      "number": "2014",
+      "startingPage": "1127",
+      "publicationDate": "2014-09-12",
+      "keywords": [
+        "祝祭空間",
+        "都市空間",
+        "長浜曳山祭",
+        "子ども歌舞伎",
+        "劇場的空間"
+      ],
+      "url": null,
+      "matchedQuery": "曳山 歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "「瑞穂国」の農と食をゆく(第37回)農村歌舞伎を守る伊那谷の村 : 地域資源として伝統芸能、特産物、景観を見直す",
+      "authors": [
+        "中西 博之"
+      ],
+      "publisher": "東京 : 全国共同出版",
+      "publicationName": "農業協同組合経営実務",
+      "volume": "69",
+      "number": "7",
+      "startingPage": "66",
+      "publicationDate": "2014-07",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "北海道における地芝居の成立の研究にかかわる問題点",
+      "authors": [
+        "高橋 克依"
+      ],
+      "publisher": "札幌 : 北海道地域文化学会",
+      "publicationName": "北海道地域文化研究",
+      "volume": null,
+      "number": "6",
+      "startingPage": "79",
+      "publicationDate": "2014-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "近世大坂芝居地の社会構造 : 道頓堀開発と芸能興行の展開",
+      "authors": [
+        "木上 由梨佳"
+      ],
+      "publisher": "大阪市立大学大学院文学研究科 : 都市文化研究センター",
+      "publicationName": "都市文化研究",
+      "volume": "16",
+      "number": null,
+      "startingPage": "28",
+      "publicationDate": "2014-03",
+      "keywords": [
+        "芸能",
+        "歌舞伎",
+        "浄瑠璃",
+        "道頓堀",
+        "芝居地"
+      ],
+      "url": null,
+      "doi": "10.24544/ocu.20171213-057",
+      "matchedQuery": "芝居小屋 歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "美しい村に残る江戸遺産 大鹿歌舞伎",
+      "authors": [
+        "杉 一浩"
+      ],
+      "publisher": "東京 : 江戸連",
+      "publicationName": "江戸連",
+      "volume": null,
+      "number": "9",
+      "startingPage": "44",
+      "publicationDate": "2014-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "大鹿歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "岐阜県の芝居小屋・地歌舞伎の運営体系",
+      "authors": [
+        "若原 唯子",
+        "清水 裕之",
+        "村山 顕人"
+      ],
+      "publisher": "[名古屋] : 日本建築学会東海支部",
+      "publicationName": "日本建築学会東海支部研究報告集 = Proceedings of Tokai Chapter Architectural Research Meeting",
+      "volume": null,
+      "number": "52",
+      "startingPage": "565",
+      "publicationDate": "2014-02",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "特集クローズアップ 芝居小屋を沸かせた人気作! 歌舞伎にみる御家騒動",
+      "authors": [
+        "堀口 茉純"
+      ],
+      "publisher": "東京 : Kadokawa",
+      "publicationName": "歴史読本",
+      "volume": "59",
+      "number": "1",
+      "startingPage": "154",
+      "publicationDate": "2014-01",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "芝居小屋 歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "都市空間に演出される祝祭空間の都市形態学的解読その8長浜曳山祭における子ども歌舞伎の場合",
+      "authors": [
+        "川原 晋",
+        "岡村 祐"
+      ],
+      "publisher": null,
+      "publicationName": "日本建築学会大会大会学術梗概集（都市計画）",
+      "volume": "F1",
+      "number": null,
+      "startingPage": "1023",
+      "publicationDate": "2014",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "曳山 歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "近世の東海地方における地域文化の形成 : 歌舞伎・浄瑠璃の受容と地芝居の上演を通じて",
+      "authors": [
+        "神谷朋衣"
+      ],
+      "publisher": "早稲田大学総合人文科学研究センター",
+      "publicationName": "Waseda RILAS journal",
+      "volume": "(1)",
+      "number": null,
+      "startingPage": null,
+      "publicationDate": "2013-10-21",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "近世の東海地方における地域文化の形成 -歌舞伎・浄瑠璃の受容と地芝居の上演を通じて-",
+      "authors": [
+        "Kamiya, Tomoe",
+        "神谷, 朋衣"
+      ],
+      "publisher": "早稲田大学総合人文科学研究センター",
+      "publicationName": "Waseda RILAS journal",
+      "volume": "1",
+      "number": null,
+      "startingPage": "200",
+      "publicationDate": "2013-10-21",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "農村歌舞伎で地域の元気・エネルギーを醸成(兵庫県養父市) : 目指すは、子どもから大人までのオンリーワンの地域づくり",
+      "authors": [
+        "安達 洋道"
+      ],
+      "publisher": "東京 : 中央文化社",
+      "publicationName": "地方議会人 : 議員研修誌 / 全国町村議会議長会 編",
+      "volume": "44",
+      "number": "3",
+      "startingPage": "32",
+      "publicationDate": "2013-08",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "蛙子池と肥土山農村歌舞伎",
+      "authors": [
+        "佐々木 育夫"
+      ],
+      "publisher": "東京 : 建設コンサルタンツ協会",
+      "publicationName": "Civil engineering consultant : 建設コンサルタンツ協会会誌 / 会誌編集専門委員会 編",
+      "volume": null,
+      "number": "259",
+      "startingPage": "20",
+      "publicationDate": "2013-04",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "地芝居の現在とその課題",
+      "authors": [
+        "舘野 太朗"
+      ],
+      "publisher": "筑波大学人文社会科学研究科 国際地域研究専攻",
+      "publicationName": "筑波大学地域研究",
+      "volume": "34",
+      "number": null,
+      "startingPage": "181",
+      "publicationDate": "2013-03-31",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "徳島県からの北海道移住者と「勇足歌舞伎」 : 移住者と演劇活動の関連について",
+      "authors": [
+        "高橋, 克依",
+        "Takahashi, Katsuyori"
+      ],
+      "publisher": "札幌 : 北星学園大学",
+      "publicationName": "北星学園大学文学部北星論集",
+      "volume": "50",
+      "number": null,
+      "startingPage": "69",
+      "publicationDate": "2013-03",
+      "keywords": [
+        "北海道",
+        "本別町",
+        "移住者",
+        "農村歌舞伎",
+        "浄瑠璃"
+      ],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "地芝居考 : 江戸時代元禄期の地芝居・地役者をめぐって",
+      "authors": [
+        "中村 規"
+      ],
+      "publisher": "名古屋 : まつり同好会",
+      "publicationName": "まつり = Festival",
+      "volume": null,
+      "number": "75",
+      "startingPage": "5",
+      "publicationDate": "2013",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "神奈川県における地芝居の「復活」について",
+      "authors": [
+        "舘野 太朗"
+      ],
+      "publisher": "名古屋 : まつり同好会",
+      "publicationName": "まつり = Festival",
+      "volume": null,
+      "number": "75",
+      "startingPage": "33",
+      "publicationDate": "2013",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "道と地芝居の担い手たち : 三遠南信と東濃を結ぶ街道筋から",
+      "authors": [
+        "蒲池 卓巳"
+      ],
+      "publisher": "名古屋 : まつり同好会",
+      "publicationName": "まつり = Festival",
+      "volume": null,
+      "number": "75",
+      "startingPage": "53",
+      "publicationDate": "2013",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "竹本巴妙(はしょう)聞き書き : 伊那谷で祖父は地芝居を",
+      "authors": [
+        "小池 美津貴"
+      ],
+      "publisher": "[飯田] : 飯田市教育委員会",
+      "publicationName": "飯田市歴史研究所年報 / 飯田市歴史研究所 編",
+      "volume": null,
+      "number": "11",
+      "startingPage": "89",
+      "publicationDate": "2013",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "イラストSCOPE 檜枝岐歌舞伎 : 暮らしの中で育み、伝えられてきた地芝居の耀き",
+      "authors": [
+        "奈良部 和美"
+      ],
+      "publisher": "東京 : 地域創造",
+      "publicationName": "地域創造 : 町づくりアートを応援します",
+      "volume": "34",
+      "number": null,
+      "startingPage": "59",
+      "publicationDate": "2013",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "竹本巴妙聞き書き",
+      "authors": [
+        "小池 美津貴"
+      ],
+      "publisher": "飯田市歴史研究所",
+      "publicationName": "飯田市歴史研究所年報",
+      "volume": "11",
+      "number": "0",
+      "startingPage": "89",
+      "publicationDate": "2013",
+      "keywords": [],
+      "url": null,
+      "doi": "10.57299/iihrab.11.0_89",
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "竹本巴妙聞き書き : 伊那谷で祖父は地芝居を",
+      "authors": [
+        "小池 美津貴"
+      ],
+      "publisher": "飯田市歴史研究所",
+      "publicationName": "飯田市歴史研究所年報",
+      "volume": "11",
+      "number": null,
+      "startingPage": "89",
+      "publicationDate": "2013",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "沖縄のスーマチ(1)南西諸島のサークル・ダンス",
+      "authors": [
+        "坂本 要"
+      ],
+      "publisher": "名古屋 : まつり同好会",
+      "publicationName": "まつり = Festival",
+      "volume": null,
+      "number": "75",
+      "startingPage": "69",
+      "publicationDate": "2013",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "貿易品としての南インド産絨毯 : 京都祇園祭と長浜曳山祭の絨毯を中心に",
+      "authors": [
+        "鎌田 由美子"
+      ],
+      "publisher": "東京 : 美術史學會",
+      "publicationName": "美術史 / 美術史學會 編",
+      "volume": "62",
+      "number": "1",
+      "startingPage": "102",
+      "publicationDate": "2012-10",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "9415 農村歌舞伎舞台の空間的性質に関する一考察 : 前郷日枝神社神楽殿(秋田県由利本荘市)の配置構成と断面構成(日本建築史:寺社(4),建築歴史・意匠,2012 年度大会(東海)学術講演会・建築デザイン発表会)",
+      "authors": [
+        "安部井 喬",
+        "崎山 俊雄"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "建築歴史・意匠",
+      "volume": null,
+      "number": "2012",
+      "startingPage": "829",
+      "publicationDate": "2012-09-12",
+      "keywords": [
+        "農村歌舞伎",
+        "農村舞台",
+        "境内",
+        "配置構成",
+        "断面構成"
+      ],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "5122 福島県に現存する歌舞伎の現在の運営と実態についての調査 : 東北地方に現存し歴史を持つ劇場空間の実態と役割についての研究 その2(劇場・ホール(2),建築計画,2012年度大会(東海)学術講演会・建築デザイン発表会)",
+      "authors": [
+        "沼尾 圭亮",
+        "浦部 智義",
+        "渡邉 洋一"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "建築計画",
+      "volume": null,
+      "number": "2012",
+      "startingPage": "285",
+      "publicationDate": "2012-09-12",
+      "keywords": [
+        "野外舞台",
+        "芝居小屋",
+        "歌舞伎",
+        "農山漁村集落",
+        "自治組織・コミュニティー",
+        "ヒアリング調査"
+      ],
+      "url": null,
+      "matchedQuery": "芝居小屋 歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "A-26 農村歌舞伎舞台の空間的特質に関する一考察 : 前郷日枝神社神楽殿の配置構成と断面構成(計画V)",
+      "authors": [
+        "石塚 真央",
+        "安部井 喬",
+        "崎山 俊雄"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "日本建築学会東北支部研究報告集. 計画系",
+      "volume": null,
+      "number": "75",
+      "startingPage": "101",
+      "publicationDate": "2012-06-16",
+      "keywords": [
+        "農村歌舞伎",
+        "農村舞台",
+        "野舞台",
+        "境内",
+        "配置構成",
+        "断面構成"
+      ],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "三〇〇余年前から村人の暮らしの大事な核として受け継がれてきた大鹿歌舞伎",
+      "authors": [],
+      "publisher": "大阪 : 大阪福祉事業財団 ; 2000-",
+      "publicationName": "福祉のひろば / 総合社会福祉研究所 編",
+      "volume": "147",
+      "number": null,
+      "startingPage": "1",
+      "publicationDate": "2012-06",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "大鹿歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "村年代記・祭礼帳に見る地操・地芝居・地からくりについての資料",
+      "authors": [
+        "加納 克己"
+      ],
+      "publisher": "神戸 : 神戸女子大学古典芸能研究センター",
+      "publicationName": "神戸女子大学古典芸能研究センター紀要 / 神戸女子大学古典芸能研究センター 編",
+      "volume": null,
+      "number": "5",
+      "startingPage": "98",
+      "publicationDate": "2012-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "第四章芸能第一節古典芸能三 歌舞伎及び第四節民俗芸能三地芝居",
+      "authors": [
+        "安田 徳子"
+      ],
+      "publisher": null,
+      "publicationName": "愛知県史資料編 35 近代12 文化",
+      "volume": null,
+      "number": null,
+      "startingPage": null,
+      "publicationDate": "2012",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "第四章芸能第一節古典芸能三歌舞伎、第四節民俗芸能三地芝居",
+      "authors": [
+        "安田 徳子"
+      ],
+      "publisher": null,
+      "publicationName": "愛知県史資料編35近代12文化",
+      "volume": null,
+      "number": null,
+      "startingPage": null,
+      "publicationDate": "2012",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "木造芝居小屋の音響特性",
+      "authors": [
+        "藪下 満",
+        "寺尾 道仁",
+        "関根 秀久"
+      ],
+      "publisher": "一般社団法人 日本建築学会",
+      "publicationName": "日本建築学会技術報告集",
+      "volume": "18",
+      "number": "38",
+      "startingPage": "229",
+      "publicationDate": "2012",
+      "keywords": [
+        "芝居小屋",
+        "音響特性",
+        "歌舞伎",
+        "邦楽",
+        "インパルス応答"
+      ],
+      "url": null,
+      "doi": "10.3130/aijt.18.229",
+      "matchedQuery": "芝居小屋 歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "江戸時代より続く、農村歌舞伎の継承・上演",
+      "authors": [
+        "佐伯,有一"
+      ],
+      "publisher": "福武学術文化振興財団",
+      "publicationName": "瀬戸内海文化研究・活動支援助成報告書",
+      "volume": "平成22年度",
+      "number": null,
+      "startingPage": "54",
+      "publicationDate": "2011-05-21",
+      "keywords": [],
+      "url": null,
+      "doi": "10.24484/sitereports.123699-77098",
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "市民による文化活動成立の文化的要因 : 飯田市の人形劇フェスタを事例に",
+      "authors": [
+        "松崎, 行代"
+      ],
+      "publisher": "京都女子大学",
+      "publicationName": "現代社会研究科論集 : 京都女子大学大学院現代社会研究科博士後期課程研究紀要",
+      "volume": "5",
+      "number": null,
+      "startingPage": "63",
+      "publicationDate": "2011-03-31",
+      "keywords": [
+        "市民文化活動",
+        "伝統芸能",
+        "人形芝居(人形浄瑠璃)",
+        "歌舞伎(地芝居)",
+        "獅子舞",
+        "いいだ人形劇フェスタ"
+      ],
+      "url": null,
+      "matchedQuery": "下條歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "村落社会と農村芝居--京都府福知山市北部地域を中心に",
+      "authors": [
+        "斉藤 利彦"
+      ],
+      "publisher": "佐倉 : 国立歴史民俗博物館",
+      "publicationName": "国立歴史民俗博物館研究報告 = Bulletin of the National Museum of Japanese History",
+      "volume": "161",
+      "number": null,
+      "startingPage": "225",
+      "publicationDate": "2011-03",
+      "keywords": [
+        "農村歌舞伎",
+        "村芝居",
+        "紫宸殿田楽",
+        "三岳山",
+        "天座",
+        "Rural kabuki",
+        "Village play",
+        "Shishinden dengaku",
+        "Mount Mitake",
+        "Amaza"
+      ],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "村落社会と農村芝居-京都府福知山市北部地域を中心に-",
+      "authors": [
+        "斉藤 利彦"
+      ],
+      "publisher": null,
+      "publicationName": "国立歴史民俗博物館研究報告",
+      "volume": "161巻",
+      "number": null,
+      "startingPage": "50",
+      "publicationDate": "2011",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "村芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "〈講演〉地芝居における義太夫の重み",
+      "authors": [
+        "安田 徳子"
+      ],
+      "publisher": "日本歌謡学会",
+      "publicationName": "日本歌謡研究",
+      "volume": "50",
+      "number": "0",
+      "startingPage": "1",
+      "publicationDate": "2010-12-30",
+      "keywords": [],
+      "url": null,
+      "doi": "10.34421/kayo.50.0_1",
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "あの播州歌舞伎が網干の興浜にやって来た",
+      "authors": [
+        "田中 早春"
+      ],
+      "publisher": "神戸 : 神戸史学会",
+      "publicationName": "歴史と神戸 : 神戸を中心とした兵庫県郷土研究誌 / 神戸史学会 編",
+      "volume": "49",
+      "number": "6",
+      "startingPage": "39",
+      "publicationDate": "2010-12",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "播州歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "40170 木造芝居小屋の音響特性 : その3 康楽館,ながめ余興場,相生座,村国座,呉服座,旧広瀬座の例(音環境調査・設計,環境工学I)",
+      "authors": [
+        "藪下 満",
+        "寺尾 道仁",
+        "関根 秀久"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "学術講演梗概集. D-1, 環境工学I, 室内音響・音環境, 騒音・固体音, 環境振動, 光・色, 給排水・水環境, 都市設備・環境管理, 環境心理生理, 環境設計, 電磁環境",
+      "volume": null,
+      "number": "2010",
+      "startingPage": "355",
+      "publicationDate": "2010-07-20",
+      "keywords": [
+        "芝居小屋",
+        "音響特性",
+        "邦楽",
+        "歌舞伎",
+        "インパルス応答",
+        "ダミーヘッド"
+      ],
+      "url": null,
+      "matchedQuery": "芝居小屋 歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "美濃・飛騨における地芝居保存会の系譜3",
+      "authors": [
+        "丸山 幸太郎"
+      ],
+      "publisher": "岐阜女子大学",
+      "publicationName": "岐阜女子大学地域文化研究",
+      "volume": "27",
+      "number": null,
+      "startingPage": "1",
+      "publicationDate": "2010-03-31",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "劇場経営としての明治座の研究",
+      "authors": [
+        "五藤 寿樹"
+      ],
+      "publisher": "日本橋学館大学",
+      "publicationName": "日本橋学研究",
+      "volume": "3",
+      "number": "1",
+      "startingPage": "55",
+      "publicationDate": "2010-03-31",
+      "keywords": [
+        "明治座",
+        "劇場",
+        "芝居小屋",
+        "劇場経営",
+        "江戸三座",
+        "東京十座"
+      ],
+      "url": null,
+      "matchedQuery": "芝居小屋 歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "檜枝岐歌舞伎を教育資源とした高等学校総合的な学習の時間における学校・博物館・フィールドの連携--地理教師のはたす役割",
+      "authors": [
+        "小関 勇次"
+      ],
+      "publisher": "東京 : 全国地理教育学会学会事務局",
+      "publicationName": "地理教育研究 / 全国地理教育学会学会事務局 編",
+      "volume": null,
+      "number": "6",
+      "startingPage": "25",
+      "publicationDate": "2010-03",
+      "keywords": [
+        "檜枝岐歌舞伎",
+        "博学連携",
+        "民俗学",
+        "フィールドワーク"
+      ],
+      "url": null,
+      "matchedQuery": "檜枝岐歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "地芝居における義太夫の重み",
+      "authors": [
+        "安田 徳子"
+      ],
+      "publisher": null,
+      "publicationName": "日本歌謡研究",
+      "volume": "50号",
+      "number": null,
+      "startingPage": "1",
+      "publicationDate": "2010",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "讃岐の地芝居--聞書から見た地芝居の諸相",
+      "authors": [
+        "水野 一典"
+      ],
+      "publisher": "[高松] : 四国民俗学会",
+      "publicationName": "四国民俗",
+      "volume": null,
+      "number": "42",
+      "startingPage": "31",
+      "publicationDate": "2009-12",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "阿波の地芝居--これまでの研究・調査報告から窺える地芝居の存在",
+      "authors": [
+        "庄武 憲子"
+      ],
+      "publisher": "[高松] : 四国民俗学会",
+      "publicationName": "四国民俗",
+      "volume": null,
+      "number": "42",
+      "startingPage": "9",
+      "publicationDate": "2009-12",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "伊予の地芝居--文楽(人形浄瑠璃)",
+      "authors": [
+        "大本 敬久"
+      ],
+      "publisher": "[高松] : 四国民俗学会",
+      "publicationName": "四国民俗",
+      "volume": null,
+      "number": "42",
+      "startingPage": "1",
+      "publicationDate": "2009-12",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "村芝居の展開と組織構造(下)越後魚沼郡塩沢地域を中心に",
+      "authors": [
+        "滝沢 繁"
+      ],
+      "publisher": "新潟 : 新潟史学会",
+      "publicationName": "新潟史学 / 新潟史学会 [編]",
+      "volume": null,
+      "number": "61",
+      "startingPage": "21",
+      "publicationDate": "2009-08",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "村芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "40152 木造芝居小屋の音響特性 : その2 旧金毘羅大芝居金丸座,内子座,嘉穂劇場,八千代座,永楽館の例(室内音響調査・評価,環境工学I)",
+      "authors": [
+        "藪下 満",
+        "寺尾 道仁",
+        "関根 秀久"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "学術講演梗概集. D-1, 環境工学I, 室内音響・音環境, 騒音・固体音, 環境振動, 光・色, 給排水・水環境, 都市設備・環境管理, 環境心理生理, 環境設計, 電磁環境",
+      "volume": null,
+      "number": "2009",
+      "startingPage": "331",
+      "publicationDate": "2009-07-20",
+      "keywords": [
+        "木造芝居小屋",
+        "音響特性",
+        "邦楽",
+        "歌舞伎",
+        "インパルス応答",
+        "ダミーヘッド"
+      ],
+      "url": null,
+      "matchedQuery": "芝居小屋 歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "美濃・飛騨における地芝居保存会の系譜2",
+      "authors": [
+        "丸山 幸太郎"
+      ],
+      "publisher": "岐阜女子大学",
+      "publicationName": "岐阜女子大学地域文化研究",
+      "volume": "26",
+      "number": null,
+      "startingPage": "1",
+      "publicationDate": "2009-03-31",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "市町村史に見る北海道の演劇活動の記録 (2) : 道南・道央編",
+      "authors": [
+        "高橋, 克依",
+        "Takahashi, Katsuyori"
+      ],
+      "publisher": "札幌 : 北星学園大学",
+      "publicationName": "北星学園大学文学部北星論集",
+      "volume": "46",
+      "number": "2",
+      "startingPage": "75",
+      "publicationDate": "2009-03",
+      "keywords": [
+        "北海道",
+        "演劇",
+        "地芝居",
+        "地方劇場",
+        "地域研究"
+      ],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "地芝居の世話狂言--「八百屋献立」「寿門松」",
+      "authors": [
+        "安田, 徳子"
+      ],
+      "publisher": "岐阜聖徳学園大学国語国文学会",
+      "publicationName": "岐阜聖徳学園大学国語国文学",
+      "volume": "28",
+      "number": null,
+      "startingPage": "11",
+      "publicationDate": "2009-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "英国ルネッサンス演劇と日本の農村歌舞伎における異性装をめぐって",
+      "authors": [
+        "藤井 健夫",
+        "田中 敦子"
+      ],
+      "publisher": "枚方 : 関西英語英米文学会",
+      "publicationName": "Kwansai review",
+      "volume": null,
+      "number": "25・26",
+      "startingPage": "85",
+      "publicationDate": "2009-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "開化期の旧御蔵入領における芸能興行の存立環境--若松県冑村の村芝居観客を中心に",
+      "authors": [
+        "橋本 今祐"
+      ],
+      "publisher": "東京 : 吉川弘文館",
+      "publicationName": "日本歴史 / 日本歴史学会 編",
+      "volume": null,
+      "number": "730",
+      "startingPage": "58",
+      "publicationDate": "2009-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "村芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "地芝居に生きる",
+      "authors": [],
+      "publisher": null,
+      "publicationName": "岐阜女子大学地域文化研究所「岐阜県地芝居ガイドブック",
+      "volume": null,
+      "number": null,
+      "startingPage": "104",
+      "publicationDate": "2009",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "美濃人の心魂-地芝居を育む人の心",
+      "authors": [],
+      "publisher": null,
+      "publicationName": "村国座平成の大修理",
+      "volume": null,
+      "number": null,
+      "startingPage": "159",
+      "publicationDate": "2009",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "美濃(ぎふ)人の心魂-地芝居を育む人のこころ-",
+      "authors": [],
+      "publisher": null,
+      "publicationName": "岐阜新聞社岐阜県各務原市教育委員会「村国座平成の大修理」",
+      "volume": null,
+      "number": null,
+      "startingPage": "159",
+      "publicationDate": "2009",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "劇場という名の文明(18)明治座",
+      "authors": [
+        "北村 純一",
+        "大堀 久美子"
+      ],
+      "publisher": "東京 : 日本劇団協議会",
+      "publicationName": "Join : 公益社団法人日本劇団協議会機関誌 / 日本劇団協議会 編",
+      "volume": null,
+      "number": "63",
+      "startingPage": "42",
+      "publicationDate": "2008-12",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "村芝居の展開と組織構造(上)越後魚沼郡塩沢地域を中心に",
+      "authors": [
+        "滝沢 繁"
+      ],
+      "publisher": "新潟 : 新潟史学会",
+      "publicationName": "新潟史学 / 新潟史学会 [編]",
+      "volume": null,
+      "number": "60",
+      "startingPage": "15",
+      "publicationDate": "2008-11",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "村芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "40185 木造芝居小屋の音響特性 : 岐阜県の鳳凰座・白雲座・常盤座・明治座の例(室内音響設計(2),環境工学I)",
+      "authors": [
+        "藪下 満",
+        "寺尾 道仁",
+        "関根 秀久"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "学術講演梗概集. D-1, 環境工学I, 室内音響・音環境, 騒音・固体音, 環境振動, 光・色, 給排水・水環境, 都市設備・環境管理, 環境心理生理, 環境設計, 電磁環境",
+      "volume": null,
+      "number": "2008",
+      "startingPage": "401",
+      "publicationDate": "2008-07-20",
+      "keywords": [
+        "木造芝居小屋",
+        "音響特性",
+        "邦楽",
+        "歌舞伎"
+      ],
+      "url": null,
+      "matchedQuery": "芝居小屋 歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "開化期の若松県における村芝居の存立環境--村中・若衆中の奉納行動をめぐって",
+      "authors": [
+        "橋本 今祐"
+      ],
+      "publisher": "京都 : 藝能史研究會",
+      "publicationName": "藝能史研究 = History of the performing arts",
+      "volume": null,
+      "number": "182",
+      "startingPage": "16",
+      "publicationDate": "2008-07",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "村芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "福島の祭り(第19回)檜枝岐歌舞伎",
+      "authors": [
+        "懸田 弘訓"
+      ],
+      "publisher": "福島 : とうほう地域総合研究所",
+      "publicationName": "福島の進路",
+      "volume": null,
+      "number": "309",
+      "startingPage": "45",
+      "publicationDate": "2008-05",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "檜枝岐歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "三重の「農村舞台」と地芝居について その演劇史的試み",
+      "authors": [
+        "谷口,晃"
+      ],
+      "publisher": "三重県",
+      "publicationName": "三重県史研究",
+      "volume": "23",
+      "number": null,
+      "startingPage": "121",
+      "publicationDate": "2008-03-31",
+      "keywords": [],
+      "url": null,
+      "doi": "10.24484/sitereports.120535-54026",
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "美濃飛騨における地芝居保存会の系譜 1",
+      "authors": [
+        "丸山 幸太郎"
+      ],
+      "publisher": "岐阜女子大学",
+      "publicationName": "岐阜女子大学地域文化研究",
+      "volume": "25",
+      "number": null,
+      "startingPage": "13",
+      "publicationDate": "2008-03-31",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "地芝居の曾我狂言",
+      "authors": [
+        "安田 徳子",
+        "岐阜成徳学園大学"
+      ],
+      "publisher": null,
+      "publicationName": "岐阜聖徳学園大学国語国文学",
+      "volume": null,
+      "number": "27",
+      "startingPage": "1",
+      "publicationDate": "2008-03-15",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "「地芝居としての子供歌舞伎」",
+      "authors": [
+        "北河, 直子"
+      ],
+      "publisher": "成城大学",
+      "publicationName": "常民文化",
+      "volume": null,
+      "number": "31",
+      "startingPage": "93",
+      "publicationDate": "2008-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "市町村史に見る北海道の演劇活動の記録 : 道東・道北編",
+      "authors": [
+        "高橋, 克依",
+        "Takahashi, Katsuyori"
+      ],
+      "publisher": "札幌 : 北星学園大学",
+      "publicationName": "北星学園大学文学部北星論集",
+      "volume": "45",
+      "number": "2",
+      "startingPage": "121",
+      "publicationDate": "2008-03",
+      "keywords": [
+        "北海道",
+        "演劇",
+        "地芝居",
+        "地方劇場",
+        "地域研究"
+      ],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "「近畿地方の農村芝居と村-福知山市北部地域を中心に-」",
+      "authors": [
+        "斉藤 利彦"
+      ],
+      "publisher": null,
+      "publicationName": "『国立歴史民俗博物館研究報告書』 (印刷中)",
+      "volume": null,
+      "number": null,
+      "startingPage": null,
+      "publicationDate": "2008",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "村芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "2E7 文化財・地域文化等のデジタル・アーキビスト用教材の整備 : 岐阜県の地芝居を育む人と風土調査研究(デジタルアーカイブ,日本教育情報学会第23回年会)",
+      "authors": [
+        "持田,宗周",
+        "三宅,茜巳"
+      ],
+      "publisher": "日本教育情報学会",
+      "publicationName": "年会論文集",
+      "volume": "(23)",
+      "number": null,
+      "startingPage": "216",
+      "publicationDate": "2007-08-20",
+      "keywords": [
+        "古老",
+        "子供歌舞伎",
+        "芝居小屋",
+        "三味あわせ",
+        "舞台"
+      ],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "近世美濃・飛騨における操・地芝居の興隆過程 3",
+      "authors": [
+        "丸山 幸太郎"
+      ],
+      "publisher": "岐阜女子大学",
+      "publicationName": "岐阜女子大学地域文化研究",
+      "volume": "24",
+      "number": null,
+      "startingPage": "1",
+      "publicationDate": "2007-03-28",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "江戸芝居小屋の明かり(自然光)の中の歌舞伎衣装の生地と色および刺繍",
+      "authors": [
+        "西角井 正大"
+      ],
+      "publisher": "名古屋 : 衣の民俗館",
+      "publicationName": "民俗と風俗 / 「民俗と風俗」編集委員会 編",
+      "volume": null,
+      "number": "17",
+      "startingPage": "1",
+      "publicationDate": "2007-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "芝居小屋 歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "地芝居の風景",
+      "authors": [
+        "原 一平"
+      ],
+      "publisher": "東京 : 學燈社",
+      "publicationName": "國文學 : 解釈と教材の研究 / 學燈社 [編]",
+      "volume": "52",
+      "number": "1",
+      "startingPage": "149",
+      "publicationDate": "2007-01",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "平成の大幕完成と西塩子の回り舞台公演",
+      "authors": [
+        "石井 聖子"
+      ],
+      "publisher": "京都 : 染織と生活社",
+      "publicationName": "月刊染織α : 染めと織りを楽しむ人の生活情報誌",
+      "volume": null,
+      "number": "310",
+      "startingPage": "52",
+      "publicationDate": "2007-01",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "西塩子の回り舞台",
+      "source": "cinii"
+    },
+    {
+      "title": "文化財・地域文化等のデジタル・アーキビスト用教材の整備-岐阜県の地芝居を育む人と風土調査研究-",
+      "authors": [],
+      "publisher": null,
+      "publicationName": "日本教育情報学会第23回年会論文集 23",
+      "volume": null,
+      "number": null,
+      "startingPage": "216",
+      "publicationDate": "2007",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "イラストSCOPE 土佐絵金歌舞伎の拠点となる芝居小屋・弁天座がオープン",
+      "authors": [
+        "奈良部 和美"
+      ],
+      "publisher": "東京 : 地域創造",
+      "publicationName": "地域創造 : 町づくりアートを応援します",
+      "volume": "22",
+      "number": null,
+      "startingPage": "43",
+      "publicationDate": "2007",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "芝居小屋 歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "パパとコドモでオヤコラボ 娘と演じる小鹿野歌舞伎",
+      "authors": [
+        "吉田 智彦"
+      ],
+      "publisher": "東京 : 婦人之友社",
+      "publicationName": "かぞくのじかん",
+      "volume": "1",
+      "number": null,
+      "startingPage": "90",
+      "publicationDate": "2007",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "小鹿野歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "長浜曳山祭と子ども歌舞伎",
+      "authors": [
+        "長谷川 嘉和"
+      ],
+      "publisher": "東京 : 日本教育会",
+      "publicationName": "日本教育 / 日本教育会 編",
+      "volume": null,
+      "number": "351",
+      "startingPage": "15",
+      "publicationDate": "2006-11",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "曳山 歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "鮭川歌舞伎について(2)",
+      "authors": [
+        "大友 義助"
+      ],
+      "publisher": "山形 : 山形県民俗研究協議会",
+      "publicationName": "山形民俗",
+      "volume": null,
+      "number": "20",
+      "startingPage": "25",
+      "publicationDate": "2006-10",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "鮭川歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "小鹿野歌舞伎の現在",
+      "authors": [
+        "平野井 ちえ子",
+        "HIRANOI Chieko"
+      ],
+      "publisher": "法政大学人間環境学会",
+      "publicationName": "人間環境論集",
+      "volume": "6",
+      "number": "2",
+      "startingPage": "23",
+      "publicationDate": "2006-03-31",
+      "keywords": [],
+      "url": null,
+      "doi": "10.15002/00004499",
+      "matchedQuery": "小鹿野歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "近世美濃・飛騨における操・地芝居の興隆過程 2",
+      "authors": [
+        "丸山 幸太郎"
+      ],
+      "publisher": "岐阜女子大学",
+      "publicationName": "岐阜女子大学地域文化研究",
+      "volume": "23",
+      "number": null,
+      "startingPage": "1",
+      "publicationDate": "2006-03-27",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "播州歌舞伎と寿式三番叟",
+      "authors": [
+        "西角井 正大"
+      ],
+      "publisher": "東京 : 日本青年館公益事業部",
+      "publicationName": "民俗芸能 / 日本青年館公益事業部 編",
+      "volume": null,
+      "number": "87",
+      "startingPage": "6",
+      "publicationDate": "2006",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "播州歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "幕末の宮地芝居",
+      "authors": [
+        "佐藤 かつら"
+      ],
+      "publisher": "東京 : ぎょうせい",
+      "publicationName": "国文学 : 解釈と鑑賞 / 至文堂 編",
+      "volume": "70",
+      "number": "12",
+      "startingPage": "138",
+      "publicationDate": "2005-12",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "二〇世紀の村芝居と樹木文化--山・漁村生業の構造と時代性",
+      "authors": [
+        "森山 軍治郎"
+      ],
+      "publisher": "美唄 : 専修大学北海道短期大学",
+      "publicationName": "専修大学北海道短期大学紀要. 人文・社会科学編 / 専修大学北海道短期大学 編",
+      "volume": null,
+      "number": "38",
+      "startingPage": "298",
+      "publicationDate": "2005-12",
+      "keywords": [
+        "山村"
+      ],
+      "url": null,
+      "matchedQuery": "村芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "鮭川歌舞伎について(1)",
+      "authors": [
+        "大友 義助"
+      ],
+      "publisher": "山形 : 山形県民俗研究協議会",
+      "publicationName": "山形民俗",
+      "volume": null,
+      "number": "19",
+      "startingPage": "18",
+      "publicationDate": "2005-11",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "鮭川歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "近世美濃・飛騨における操・地芝居の興隆過程 1",
+      "authors": [
+        "丸山 幸太郎"
+      ],
+      "publisher": "岐阜女子大学",
+      "publicationName": "岐阜女子大学地域文化研究",
+      "volume": "22",
+      "number": null,
+      "startingPage": "1",
+      "publicationDate": "2005-03-31",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "景清物と地芝居 : 景清像の変遷を通して",
+      "authors": [
+        "安田 徳子",
+        "岐阜聖徳学園大学"
+      ],
+      "publisher": null,
+      "publicationName": "岐阜聖徳学園大学国語国文学",
+      "volume": null,
+      "number": "24",
+      "startingPage": "54",
+      "publicationDate": "2005-03-15",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "栃木県安蘇郡地方の地芝居と吉澤人形",
+      "authors": [
+        "津布久 貞夫"
+      ],
+      "publisher": "東京 : 民俗芸能学会",
+      "publicationName": "民俗芸能研究 / 民俗芸能学会編集委員会 編",
+      "volume": null,
+      "number": "38",
+      "startingPage": "87",
+      "publicationDate": "2005-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "地域に支えられる「小鹿野歌舞伎」--かけがえのない財産、地芝居の保存と活用",
+      "authors": [
+        "山本 正実"
+      ],
+      "publisher": "東京 : 日本交通公社",
+      "publicationName": "観光文化 = Tourism culture : 機関誌",
+      "volume": "29",
+      "number": "2",
+      "startingPage": "18",
+      "publicationDate": "2005-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "篠路村烈々布素人芝居の特異性をめぐる考察 : その草創期を中心として",
+      "authors": [
+        "高橋, 克依",
+        "Takahashi, Katsuyori"
+      ],
+      "publisher": "札幌 : 北星学園大学",
+      "publicationName": "北星学園大学文学部北星論集",
+      "volume": "42",
+      "number": "2",
+      "startingPage": "25",
+      "publicationDate": "2005-03",
+      "keywords": [
+        "日本演劇",
+        "北海道",
+        "村芝居"
+      ],
+      "url": null,
+      "matchedQuery": "村芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "学科だより 研修日誌 小豆島 農村歌舞伎小屋実測調査(2004年7月28日～7月31日)",
+      "authors": [
+        "川本ゼミ"
+      ],
+      "publisher": "京都 : 京都女子大学生活造形学科",
+      "publicationName": "生活造形",
+      "volume": "50",
+      "number": null,
+      "startingPage": "27",
+      "publicationDate": "2005-02",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "非農林業における家族経営について",
+      "authors": [
+        "坂口, 桂子",
+        "Sakaguchi, Keiko"
+      ],
+      "publisher": null,
+      "publicationName": "大分県立芸術文化短期大学研究紀要",
+      "volume": "42",
+      "number": null,
+      "startingPage": "47",
+      "publicationDate": "2005-01-31",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "芝居小屋 歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "1012 上三河農村舞台の回り舞台の回転機構の実地調査による考察(S91-3 機械技術史・工学史(3),S91 機械技術史・工学史)",
+      "authors": [
+        "坪井 珍彦",
+        "西角井 正大",
+        "吉田 光男"
+      ],
+      "publisher": "一般社団法人 日本機械学会",
+      "publicationName": "年次大会講演論文集",
+      "volume": "2005.5",
+      "number": "0",
+      "startingPage": "69",
+      "publicationDate": "2005",
+      "keywords": [
+        "Revolving Stage",
+        "Rural Theater",
+        "Rolling Mechanism",
+        "Rolling Bearing",
+        "Frictional Torque"
+      ],
+      "url": null,
+      "doi": "10.1299/jsmemecjo.2005.5.0_69",
+      "matchedQuery": "回り舞台 農村",
+      "source": "cinii"
+    },
+    {
+      "title": "信州 伊那の長谷村に中尾歌舞伎あり",
+      "authors": [
+        "久保田誼"
+      ],
+      "publisher": null,
+      "publicationName": "伊那路",
+      "volume": "49",
+      "number": "5",
+      "startingPage": "186",
+      "publicationDate": "2005",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "中尾歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "音楽文化とまちおこし(10)小鹿野歌舞伎 : 町じゅうが役者「歌舞伎のまち・おがの」",
+      "authors": [
+        "山本 正実"
+      ],
+      "publisher": "東京 : 音楽文化創造",
+      "publicationName": "音楽文化の創造 : cmc : 音楽文化と生涯学習の総合情報・研究誌",
+      "volume": "38",
+      "number": null,
+      "startingPage": "58",
+      "publicationDate": "2005",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "小鹿野歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "幕末期の上州農村の地芝居について その上演と諸経費を中心に",
+      "authors": [
+        "田畑,勉"
+      ],
+      "publisher": "群馬県立文書館",
+      "publicationName": "ぐんま史料研究",
+      "volume": "22",
+      "number": null,
+      "startingPage": "101",
+      "publicationDate": "2004-09-30",
+      "keywords": [
+        "江戸",
+        "歴史資料",
+        "文献史学",
+        "資料紹介",
+        "流通・経済史",
+        "幕末期",
+        "上州農村",
+        "地芝居",
+        "上演経費"
+      ],
+      "url": null,
+      "doi": "10.24484/sitereports.116160-27759",
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "能登七尾の芝居小屋「デカ小屋」について : 七尾市の歴史的市街地に関する調査報告(3)(計画系)",
+      "authors": [
+        "市川 秀和"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "日本建築学会北陸支部研究報告集",
+      "volume": null,
+      "number": "47",
+      "startingPage": "300",
+      "publicationDate": "2004-07-17",
+      "keywords": [
+        "七尾市",
+        "歴史的市街地",
+        "芝居小屋",
+        "デカ小屋",
+        "まちづくり"
+      ],
+      "url": null,
+      "matchedQuery": "芝居小屋 歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "地芝居の演目 : 美濃・三河地域の場合",
+      "authors": [
+        "安田, 徳子"
+      ],
+      "publisher": "岐阜 : 岐阜聖徳学園大学国語国文学会",
+      "publicationName": "岐阜聖徳学園大学国語国文学",
+      "volume": "23",
+      "number": null,
+      "startingPage": "100",
+      "publicationDate": "2004-03-15",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "都市文化と芸能興行 : 大坂を中心として (&lt;シンポジウム&gt;都市文化と芸能興行)",
+      "authors": [
+        "神田 由築"
+      ],
+      "publisher": "大阪市立大学大学院文学研究科 : 都市文化研究センター",
+      "publicationName": "都市文化研究",
+      "volume": "3",
+      "number": null,
+      "startingPage": "138",
+      "publicationDate": "2004-03",
+      "keywords": [
+        "芸能",
+        "浄瑠璃",
+        "宮地芝居",
+        "説教者",
+        "天保改革"
+      ],
+      "url": null,
+      "doi": "10.24544/ocu.20171213-216",
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "L・NETワーカーズ通信(843)地域で始める国際協力 区民大学講座(東京都大田区) 村芝居!演じて感じるバングラデシュ",
+      "authors": [
+        "河野 知美"
+      ],
+      "publisher": "東京 : 日本青年館「社会教育」編集部",
+      "publicationName": "社会教育",
+      "volume": "59",
+      "number": "2",
+      "startingPage": "60",
+      "publicationDate": "2004-02",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "村芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "寛永年間の芝居小屋(江戸)の形態的研究--絵画的史料に見る歌舞伎劇場の空間表現(その6)",
+      "authors": [
+        "山田 智稔"
+      ],
+      "publisher": "相模原 : 相模女子大学",
+      "publicationName": "相模女子大学紀要. A, 人文・社会系 / 相模女子大学研究委員会 編",
+      "volume": "68B",
+      "number": null,
+      "startingPage": "103",
+      "publicationDate": "2004",
+      "keywords": [
+        "KABUKI",
+        "theater",
+        "KNA-EI era",
+        "KOBIKI-CHO district",
+        "the folding screen of &quot;Famous VIews in Edo&quot;",
+        "木挽町",
+        "江戸名所図屏風"
+      ],
+      "url": null,
+      "matchedQuery": "芝居小屋 歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "日本の芝居小屋(4)白雲座 : 国指定重要有形民俗文化財 岐阜県下呂町",
+      "authors": [
+        "今井 正和"
+      ],
+      "publisher": "東京 : 音楽文化創造",
+      "publicationName": "音楽文化の創造 : cmc : 音楽文化と生涯学習の総合情報・研究誌",
+      "volume": "32",
+      "number": null,
+      "startingPage": "2",
+      "publicationDate": "2004",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "白雲座",
+      "source": "cinii"
+    },
+    {
+      "title": "「土佐絵金歌舞伎」この10年を振り返って--高知県赤岡町",
+      "authors": [
+        "横矢 佐代"
+      ],
+      "publisher": "東京 : 簡保資金振興センター",
+      "publicationName": "かんぽ資金 / 簡保資金振興センター 編",
+      "volume": null,
+      "number": "306",
+      "startingPage": "44",
+      "publicationDate": "2003-11",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "土佐絵金歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "播州歌舞伎神崎氏の出自と終焉",
+      "authors": [
+        "今井 登子"
+      ],
+      "publisher": "八王子 : 女性民俗学研究会",
+      "publicationName": "女性と経験",
+      "volume": null,
+      "number": "28",
+      "startingPage": "94",
+      "publicationDate": "2003-09",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "播州歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "地芝居の上演と振付師 : 三河・美濃の地芝居資料と台本の検討から",
+      "authors": [
+        "安田, 徳子"
+      ],
+      "publisher": "岐阜 : 岐阜聖徳学園大学国語国文学会",
+      "publicationName": "岐阜聖徳学園大学国語国文学",
+      "volume": "22",
+      "number": null,
+      "startingPage": "1",
+      "publicationDate": "2003-03-15",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "木造芝居小屋の歌舞伎の科白・衣裳等に及ぼした影響の研究--自然光照明照度編",
+      "authors": [
+        "西角井 正大"
+      ],
+      "publisher": "川崎 : 藝能学会",
+      "publicationName": "藝能 / 藝能学会編集委員会 編",
+      "volume": null,
+      "number": "9",
+      "startingPage": "75",
+      "publicationDate": "2003-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "芝居小屋 歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "播州歌舞伎と柳田國男--高室芝居の起源と歴史",
+      "authors": [
+        "沖浦 和光"
+      ],
+      "publisher": "神戸 : 兵庫県人権啓発協会",
+      "publicationName": "研究紀要 = Bulletin of the researches / 兵庫県人権啓発協会研究推進委員会 編",
+      "volume": "4",
+      "number": null,
+      "startingPage": "3",
+      "publicationDate": "2003-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "播州歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "Case Study 市民の手で再生された〈平成の農村歌舞伎〉--東京都あきる野市 秋川歌舞伎保存会/あきる野座ほか",
+      "authors": [],
+      "publisher": "東京 : 東京電力営業部",
+      "publicationName": "地域開発ニュース : 地開 : 地域の活性化と交流情報 / 東京電力株式会社営業部サービスグループ 編",
+      "volume": null,
+      "number": "277",
+      "startingPage": "16",
+      "publicationDate": "2003",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "長浜曳山祭の保存・伝承の支援拠点として--曳山博物館の活動と可能性",
+      "authors": [
+        "秀平 文忠"
+      ],
+      "publisher": "東京 : 第一法規",
+      "publicationName": "月刊文化財 / 文化庁 監修",
+      "volume": null,
+      "number": "467",
+      "startingPage": "39",
+      "publicationDate": "2002-08",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "農村歌舞伎舞台の室内音響特性(2002年度大会 (北陸) 学術講演梗概集)",
+      "authors": [
+        "藤井 弘義",
+        "堀池 哲生",
+        "森田 晃一",
+        "中村 茂生"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "学術講演梗概集. 計画系",
+      "volume": null,
+      "number": "1",
+      "startingPage": "67",
+      "publicationDate": "2002-06",
+      "keywords": [
+        "歌舞伎",
+        "舞台",
+        "室内音響",
+        "古典芸能",
+        "文化",
+        "村芝居"
+      ],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "伝えたい思い 日本の伝統芸能・行事(3)中尾歌舞伎(長野県・上伊那郡長谷村)長谷村伝統文化等保存伝習施設",
+      "authors": [
+        "宇井 眞紀子"
+      ],
+      "publisher": "東京 : 全国農業協同組合中央会",
+      "publicationName": "月刊JA",
+      "volume": "48",
+      "number": "6",
+      "startingPage": "2",
+      "publicationDate": "2002-06",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "中尾歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "近世上方演劇文化変容における下層劇団の歴史的役割 : 関蝉丸神社と説教讃語をめぐって",
+      "authors": [
+        "武内 恵美子"
+      ],
+      "publisher": "国際日本文化研究センター",
+      "publicationName": "日本研究 : 国際日本文化研究センター紀要",
+      "volume": "25",
+      "number": null,
+      "startingPage": "63",
+      "publicationDate": "2002-04-30",
+      "keywords": [
+        "関蝉丸神社",
+        "説教讃語",
+        "宮地芝居",
+        "大坂",
+        "寛政の改革",
+        "天保の改革",
+        "風俗統制",
+        "株仲間",
+        "乞胸",
+        "香具師",
+        "歌舞伎",
+        "人形浄瑠璃",
+        "江戸時代"
+      ],
+      "url": null,
+      "doi": "10.15055/00000675",
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "&lt;近世&gt;近世後期大坂の宮地芝居と三井寺〔含 質疑・討論〕",
+      "authors": [
+        "斉藤 利彦"
+      ],
+      "publisher": "大阪 : 大阪歴史学会",
+      "publicationName": "ヒストリア = Historia : journal of Osaka Historical Association / 大阪歴史学会 編",
+      "volume": null,
+      "number": "178",
+      "startingPage": "189",
+      "publicationDate": "2002-01",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "衣裳から見た黒森歌舞伎 : 地芝居研究への新たなアプローチ",
+      "authors": [
+        "佐治 ゆかり"
+      ],
+      "publisher": "東京 : 文化資源学会",
+      "publicationName": "文化資源学 = Cultural resources studies",
+      "volume": null,
+      "number": "1",
+      "startingPage": "53",
+      "publicationDate": "2002",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "幕末江戸の宮地芝居について",
+      "authors": [
+        "佐藤 かつら"
+      ],
+      "publisher": "日本近世文学会",
+      "publicationName": "近世文藝",
+      "volume": "75",
+      "number": "0",
+      "startingPage": "91",
+      "publicationDate": "2002",
+      "keywords": [],
+      "url": null,
+      "doi": "10.20815/kinseibungei.75.0_91",
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "イラストSCOPE 伝統的な地芝居を育て継承する試み 生糸の町に息づく小鹿野歌舞伎",
+      "authors": [
+        "奈良部 和美"
+      ],
+      "publisher": "東京 : 地域創造",
+      "publicationName": "地域創造 : 町づくりアートを応援します",
+      "volume": "12",
+      "number": null,
+      "startingPage": "57",
+      "publicationDate": "2002",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "「イソラコンの夕べ」 明治座で盛大に開催",
+      "authors": [
+        "ニチモウ"
+      ],
+      "publisher": "東京 : 水産社",
+      "publicationName": "水産週報 = The fishing &amp; food industry weekly",
+      "volume": null,
+      "number": "1562",
+      "startingPage": "8",
+      "publicationDate": "2001-11-25",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "会津駒ヶ岳と檜枝岐歌舞伎",
+      "authors": [
+        "森澤 堅次"
+      ],
+      "publisher": "大阪 : ネイチュアエンタープライズ",
+      "publicationName": "岳人",
+      "volume": null,
+      "number": "649",
+      "startingPage": "76",
+      "publicationDate": "2001-07",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "檜枝岐歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "近世・個人報告 近世後期大坂の宮地芝居と三井寺",
+      "authors": [
+        "斉藤 利彦"
+      ],
+      "publisher": "大阪 : 大阪歴史学会",
+      "publicationName": "ヒストリア = Historia : journal of Osaka Historical Association / 大阪歴史学会 編",
+      "volume": null,
+      "number": "175",
+      "startingPage": "83",
+      "publicationDate": "2001-06",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "雪中の芝居に見る祖先の心--黒森歌舞伎の村を訪ねて",
+      "authors": [
+        "服部 幸雄"
+      ],
+      "publisher": "東京 : 岩波書店",
+      "publicationName": "図書",
+      "volume": null,
+      "number": "615",
+      "startingPage": "14",
+      "publicationDate": "2000-07",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "黒森歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "教師・芝居屋と同和問題の半世紀(3)「村芝居」--わが演劇の原点",
+      "authors": [
+        "栗原 省"
+      ],
+      "publisher": "京都 : 部落問題研究所出版部",
+      "publicationName": "部落",
+      "volume": "52",
+      "number": "6",
+      "startingPage": "84",
+      "publicationDate": "2000-06",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "村芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "中原中也の東京(第13回)浅草區浅草公園六區常盤座",
+      "authors": [
+        "福島 泰樹"
+      ],
+      "publisher": "所沢 : 角川文化振興財団 ; 1954-",
+      "publicationName": "短歌",
+      "volume": "47",
+      "number": "5",
+      "startingPage": "106",
+      "publicationDate": "2000-04",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "常磐座",
+      "source": "cinii"
+    },
+    {
+      "title": "近世後期大阪の宮地芝居における演奏者--御霊・稲荷・座摩を中心に",
+      "authors": [
+        "武内 恵美子"
+      ],
+      "publisher": "京都 : 総合研究大学院大学文化科学研究科国際日本研究専攻",
+      "publicationName": "国際日本研究 / 総合研究大学院大学文化科学研究科国際日本研究専攻 編",
+      "volume": null,
+      "number": "1",
+      "startingPage": "64",
+      "publicationDate": "2000-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "天保年間大坂の歌舞伎興行について--北の新地芝居を中心にして",
+      "authors": [
+        "須山 章信"
+      ],
+      "publisher": "奈良 : 帝塚山大学人文科学部",
+      "publicationName": "帝塚山大学人文科学部紀要",
+      "volume": null,
+      "number": "4",
+      "startingPage": "1",
+      "publicationDate": "2000",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "村芝居の夜",
+      "authors": [
+        "荻野 アンナ"
+      ],
+      "publisher": "東京 : 中央公論新社",
+      "publicationName": "中央公論",
+      "volume": "114",
+      "number": "7",
+      "startingPage": "36",
+      "publicationDate": "1999-07",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "村芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "市村座という下町の芝居小屋",
+      "authors": [
+        "志野 葉太郎"
+      ],
+      "publisher": "東京 : 歌舞伎学会",
+      "publicationName": "歌舞伎 : 研究と批評 : 歌舞伎学会誌 / 歌舞伎学会 編",
+      "volume": null,
+      "number": "23",
+      "startingPage": "7",
+      "publicationDate": "1999-06",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "芝居小屋 歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "農村歌舞伎の発達と作州の地下芝居:底辺を支える民衆の芸能",
+      "authors": [
+        "天児, 直美"
+      ],
+      "publisher": "美作女子大学",
+      "publicationName": "美作女子大学・美作女子大学短期大学部紀要 / 美作女子大学, 美作女子大学短期大学部 編",
+      "volume": null,
+      "number": "44",
+      "startingPage": "110",
+      "publicationDate": "1999",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "入谷歌舞伎の再興",
+      "authors": [
+        "島村 利明",
+        "浅野 寛"
+      ],
+      "publisher": "横浜 : 神奈川県立図書館",
+      "publicationName": "郷土神奈川 / 神奈川県立図書館企画サービス部地域情報課 編",
+      "volume": null,
+      "number": "37",
+      "startingPage": "1",
+      "publicationDate": "1999",
+      "keywords": [
+        "座間市"
+      ],
+      "url": null,
+      "matchedQuery": "入谷歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "文化年間大坂中ゥ・小芝居の興行について : 北の新地芝居を中心にして",
+      "authors": [
+        "須山 章信"
+      ],
+      "publisher": "帝塚山大学",
+      "publicationName": "青須我波良",
+      "volume": "54",
+      "number": null,
+      "startingPage": "39",
+      "publicationDate": "1998-12-20",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "井戸端独白 村芝居の夜",
+      "authors": [
+        "荻野 アンナ"
+      ],
+      "publisher": "東京 : ティビーエス・ブリタニカ",
+      "publicationName": "季刊アステイオン / アステイオン編集部 編",
+      "volume": null,
+      "number": "49",
+      "startingPage": "101",
+      "publicationDate": "1998-07",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "村芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "村芝居と祭礼",
+      "authors": [
+        "宮崎 克則"
+      ],
+      "publisher": "大阪経済大学日本経済史研究所",
+      "publicationName": "経済史研究",
+      "volume": "2",
+      "number": "0",
+      "startingPage": "60",
+      "publicationDate": "1998-03-30",
+      "keywords": [],
+      "url": null,
+      "doi": "10.24712/keizaishikenkyu.2.0_60",
+      "matchedQuery": "村芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "和良村の農村歌舞伎舞台",
+      "authors": [
+        "小林, 広美/安田 徳子"
+      ],
+      "publisher": null,
+      "publicationName": "聖徳学園岐阜教育大学国語国文学",
+      "volume": "16",
+      "number": null,
+      "startingPage": "86",
+      "publicationDate": "1997-03-15",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "神明社舞台(龍江3区)-県内屈指の大規模舞台-、天満宮舞台(三穂伊豆木)-人形芝居と地芝居兼用の舞台-(飯田市の舞台建築史資料調査報告)",
+      "authors": [
+        "吉澤 政己"
+      ],
+      "publisher": "飯田市美術博物館",
+      "publicationName": "飯田市美術博物館 研究紀要",
+      "volume": "7",
+      "number": "0",
+      "startingPage": "75",
+      "publicationDate": "1997",
+      "keywords": [
+        "神明社舞台",
+        "龍江3区",
+        "大規模舞台",
+        "天満宮舞台",
+        "三穂伊豆木",
+        "人形芝居",
+        "地芝居",
+        "飯田市の舞台建築史"
+      ],
+      "url": null,
+      "doi": "10.20807/icmrb.7.0_75",
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "讃岐の地域特性を生かした音楽教育への提言 その2 : 中学生による農村歌舞伎の伝承",
+      "authors": [
+        "三浦 洋司"
+      ],
+      "publisher": "香川大学",
+      "publicationName": "香川大学教育実践研究",
+      "volume": "26",
+      "number": null,
+      "startingPage": "15",
+      "publicationDate": "1996-09",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "7113 都市における祭礼空間の研究 : 長浜曳山祭を事例として",
+      "authors": [
+        "金 演熙",
+        "上田 篤",
+        "田中 充子"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "学術講演梗概集. F-1, 都市計画, 建築経済・住宅問題",
+      "volume": null,
+      "number": "1996",
+      "startingPage": "225",
+      "publicationDate": "1996-07-30",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "享和年間大坂の歌舞伎興業について : 北ノ新地芝居を中心にして",
+      "authors": [
+        "須山 章信"
+      ],
+      "publisher": "帝塚山大学",
+      "publicationName": "青須我波良",
+      "volume": "51",
+      "number": null,
+      "startingPage": "19",
+      "publicationDate": "1996-07-10",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "長浜曳山祭りにみる子供歌舞伎の伝承",
+      "authors": [
+        "長谷川 嘉和"
+      ],
+      "publisher": "東京 : 青少年問題研究会",
+      "publicationName": "青少年問題",
+      "volume": "42",
+      "number": "11",
+      "startingPage": "p36",
+      "publicationDate": "1995-11",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "曳山 歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "元禄期上方歌舞伎の芝居小屋",
+      "authors": [
+        "藤田 実"
+      ],
+      "publisher": "京都 : 藝能史研究會",
+      "publicationName": "藝能史研究 = History of the performing arts",
+      "volume": null,
+      "number": "129",
+      "startingPage": "p1",
+      "publicationDate": "1995-04",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "芝居小屋 歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "父から子へ・受け継がれて260年--山形県の黒森歌舞伎",
+      "authors": [
+        "佐藤 三男治"
+      ],
+      "publisher": "東京 : 青少年問題研究会",
+      "publicationName": "青少年問題",
+      "volume": "41",
+      "number": "5",
+      "startingPage": "p44",
+      "publicationDate": "1994-05",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "黒森歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "江戸の宮地芝居と小芝居の小屋(パフォーマンス空間の伝統と現在)(&lt;特集&gt;魅力ある劇場空間のために)",
+      "authors": [
+        "グローマー ジェラルド"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "建築雑誌",
+      "volume": null,
+      "number": "1355",
+      "startingPage": "22",
+      "publicationDate": "1994-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "近代芝居小屋の成立と運営",
+      "authors": [
+        "徳永 高志"
+      ],
+      "publisher": "松山東雲女子大学・松山東雲短期大学",
+      "publicationName": "松山東雲女子大学人文学部紀要",
+      "volume": "2",
+      "number": null,
+      "startingPage": "77",
+      "publicationDate": "1994-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "芝居小屋 歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "小豆島農村歌舞伎舞台の木製旋回座軸受を訪ねて",
+      "authors": [
+        "稲毛文弘"
+      ],
+      "publisher": null,
+      "publicationName": "Koyo Engineering Journal",
+      "volume": "146",
+      "number": null,
+      "startingPage": "65",
+      "publicationDate": "1994",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "村芝居の舞台",
+      "authors": [
+        "景山 正隆"
+      ],
+      "publisher": "東京 : 芸能発行所",
+      "publicationName": "芸能 / 芸能学会 編",
+      "volume": "35",
+      "number": "7",
+      "startingPage": "p17",
+      "publicationDate": "1993-07",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "村芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "寛政年間大坂の歌舞伎興行について : 北新地芝居を中心にして",
+      "authors": [
+        "須山 章信"
+      ],
+      "publisher": "帝塚山大学",
+      "publicationName": "青須我波良",
+      "volume": "45",
+      "number": null,
+      "startingPage": "15",
+      "publicationDate": "1993-06",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "文化年間大坂の歌舞伎興行について : 稲荷・座摩芝居を中心にして : 付・他の宮地芝居",
+      "authors": [
+        "須山 章信"
+      ],
+      "publisher": "帝塚山大学",
+      "publicationName": "帝塚山短期大学紀要. 人文・社会科学編・自然科学編",
+      "volume": "28",
+      "number": null,
+      "startingPage": "1",
+      "publicationDate": "1991-02",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "看護教育学の研究方法の開発におけるGrounded Theory approachの適用(看護教育学研究におけるグランデッド・セオリー・アプローチの適用,パネル・ディスカッション,看護教育学研究の可能性を求めて,日本看護教育学学会 第1回学術集会)",
+      "authors": [
+        "安齋 由貴子"
+      ],
+      "publisher": "日本看護教育学学会",
+      "publicationName": "看護教育学研究",
+      "volume": "0",
+      "number": "1",
+      "startingPage": "23",
+      "publicationDate": "1991",
+      "keywords": [],
+      "url": null,
+      "doi": "10.3130/aijsaxx.57.2.0_513",
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "文化と地域--法勝寺歌舞伎をめぐって",
+      "authors": [
+        "大野 道邦"
+      ],
+      "publisher": "神戸 : 神戸大学「近代」発行会",
+      "publicationName": "近代 / 神戸大学「近代」発行会 編",
+      "volume": null,
+      "number": "66",
+      "startingPage": "p1",
+      "publicationDate": "1989-06",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "法勝寺歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "化政期の宮地芝居",
+      "authors": [
+        "守屋 毅"
+      ],
+      "publisher": "東京 : ぎょうせい",
+      "publicationName": "国文学 : 解釈と鑑賞 / 至文堂 編",
+      "volume": "54",
+      "number": "5",
+      "startingPage": "p139",
+      "publicationDate": "1989-05",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "海と山の村芝居--現代地芝居の民俗-下-",
+      "authors": [
+        "景山 正隆"
+      ],
+      "publisher": "東京 : 芸能発行所",
+      "publicationName": "芸能 / 芸能学会 編",
+      "volume": "30",
+      "number": "12",
+      "startingPage": "p8",
+      "publicationDate": "1988-12",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "海と山の村芝居--現代地芝居の民俗-上-",
+      "authors": [
+        "景山 正隆"
+      ],
+      "publisher": "東京 : 芸能発行所",
+      "publicationName": "芸能 / 芸能学会 編",
+      "volume": "30",
+      "number": "11",
+      "startingPage": "p8",
+      "publicationDate": "1988-11",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "播州歌舞伎(兵庫)",
+      "authors": [
+        "名生 昭雄"
+      ],
+      "publisher": "東京 : ぎょうせい",
+      "publicationName": "国文学 : 解釈と鑑賞 / 至文堂 編",
+      "volume": "53",
+      "number": "5",
+      "startingPage": "p108",
+      "publicationDate": "1988-05",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "播州歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "小鹿野歌舞伎の伝統は秩父人の魂のあらわれ(カラーグラビア・ルポ)",
+      "authors": [
+        "松倉 康之"
+      ],
+      "publisher": "東京 : 日本社会党中央本部機関紙局",
+      "publicationName": "月刊社会党",
+      "volume": null,
+      "number": "386",
+      "startingPage": null,
+      "publicationDate": "1988-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "小鹿野歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "信州大鹿歌舞伎--芝居をそだてて45年",
+      "authors": [
+        "片桐 登"
+      ],
+      "publisher": "東京 : 民俗芸能学会",
+      "publicationName": "民俗芸能研究 / 民俗芸能学会編集委員会 編",
+      "volume": null,
+      "number": "6",
+      "startingPage": "p73",
+      "publicationDate": "1987-11",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "大鹿歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "旧苗木藩領と裏木曽の村芝居--近世から近代へ",
+      "authors": [
+        "景山 正隆"
+      ],
+      "publisher": "東京 : 岩波書店",
+      "publicationName": "文学",
+      "volume": "55",
+      "number": "4",
+      "startingPage": "p228",
+      "publicationDate": "1987-04",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "村芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "082 一九八四年出土の木簡 滋賀・上永原遺跡",
+      "authors": [
+        "進藤,武"
+      ],
+      "publisher": "木簡学会",
+      "publicationName": "木簡研究",
+      "volume": "7",
+      "number": null,
+      "startingPage": "82",
+      "publicationDate": "1985-11-25",
+      "keywords": [
+        "上永原遺跡",
+        "進藤武"
+      ],
+      "url": null,
+      "doi": "10.24484/sitereports.90161-13795",
+      "matchedQuery": "芝居小屋 歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "ある女形の運命と地狂言",
+      "authors": [
+        "郡司 正勝"
+      ],
+      "publisher": "東京 : 早稲田大学文学部演劇研究室",
+      "publicationName": "演劇学 / 早稲田大学演劇学会 編",
+      "volume": null,
+      "number": "25",
+      "startingPage": "p446",
+      "publicationDate": "1984",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地狂言",
+      "source": "cinii"
+    },
+    {
+      "title": "傀儡考--山崎構成著「曳山の人形戯」に因んで",
+      "authors": [
+        "本田 安次"
+      ],
+      "publisher": "東京 : 芸能発行所",
+      "publicationName": "芸能 / 芸能学会 編",
+      "volume": "24",
+      "number": "8",
+      "startingPage": "p20",
+      "publicationDate": "1982-08",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "曳山 歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "村医者・寺子屋・村芝居--陸放翁田園詩ノートー1-",
+      "authors": [
+        "一海 知義"
+      ],
+      "publisher": "神戸 : 神戸大学「近代」発行会",
+      "publicationName": "近代 / 神戸大学「近代」発行会 編",
+      "volume": null,
+      "number": "57",
+      "startingPage": "p79",
+      "publicationDate": "1981-12",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "村芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "農村歌舞伎舞台特有の回り舞台",
+      "authors": [
+        "名生 昭雄"
+      ],
+      "publisher": "豊中 : 日本演劇学会",
+      "publicationName": "日本演劇学会紀要",
+      "volume": null,
+      "number": "17",
+      "startingPage": "p49",
+      "publicationDate": "1977",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "美濃歌舞伎博物館(美術館・博物館めぐり-102-)",
+      "authors": [
+        "高橋 秀雄"
+      ],
+      "publisher": "東京 : 第一法規",
+      "publicationName": "月刊文化財 / 文化庁 監修",
+      "volume": null,
+      "number": "157",
+      "startingPage": "p36",
+      "publicationDate": "1976-10",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "美濃歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "609 岐阜県明智町「常盤座」について(建築史・建築意匠)",
+      "authors": [
+        "桑原 三郎",
+        "伊藤 英昭"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "日本建築学会研究報告. 九州支部. 2, 計画系",
+      "volume": null,
+      "number": "22",
+      "startingPage": "329",
+      "publicationDate": "1976-02",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "常磐座",
+      "source": "cinii"
+    },
+    {
+      "title": "地芝居と若者仲間--文政取締改革と「かくれ芝居」",
+      "authors": [
+        "多仁 照広"
+      ],
+      "publisher": "東京 : 地方史研究協議会",
+      "publicationName": "地方史研究",
+      "volume": "24",
+      "number": "5",
+      "startingPage": "7",
+      "publicationDate": "1974-10",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "都会のなかの「村芝居」",
+      "authors": [
+        "大島 勉"
+      ],
+      "publisher": "東京 : 白水社",
+      "publicationName": "新劇 / 白水社 [編]",
+      "volume": "21",
+      "number": "2",
+      "startingPage": "24",
+      "publicationDate": "1974-02",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "村芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "郡司正勝著「地芝居と民俗」",
+      "authors": [
+        "守屋 毅"
+      ],
+      "publisher": "東京 : 早稲田大学文学部演劇研究室",
+      "publicationName": "演劇学 / 早稲田大学演劇学会 編",
+      "volume": null,
+      "number": "14",
+      "startingPage": "63",
+      "publicationDate": "1973-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "農村歌舞伎舞台の保存と活用",
+      "authors": [
+        "名生 照雄"
+      ],
+      "publisher": "神戸 : 兵庫史学会",
+      "publicationName": "兵庫史学",
+      "volume": null,
+      "number": "58・59",
+      "startingPage": "76",
+      "publicationDate": "1972-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "看声医語 村芝居",
+      "authors": [
+        "宇治 正美"
+      ],
+      "publisher": "株式会社医学書院",
+      "publicationName": "看護学雑誌",
+      "volume": "36",
+      "number": "2",
+      "startingPage": "189",
+      "publicationDate": "1972-02-01",
+      "keywords": [],
+      "url": null,
+      "doi": "10.11477/mf.1661916887",
+      "matchedQuery": "村芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "農村歌舞伎舞台",
+      "authors": [
+        "角田 一郎"
+      ],
+      "publisher": "東京 : 第一法規",
+      "publicationName": "月刊文化財 / 文化庁 監修",
+      "volume": null,
+      "number": "90",
+      "startingPage": "16",
+      "publicationDate": "1971-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "岐阜県東部の農村歌舞伎舞台",
+      "authors": [
+        "守屋 毅"
+      ],
+      "publisher": "京都 : 藝能史研究會",
+      "publicationName": "藝能史研究 = History of the performing arts",
+      "volume": null,
+      "number": "32",
+      "startingPage": "52",
+      "publicationDate": "1971-01",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "チロールとオーバーバイエルンの村芝居 : 調査リポート",
+      "authors": [
+        "永野, 藤夫"
+      ],
+      "publisher": "横浜国立大学",
+      "publicationName": "横浜国立大学人文紀要. 第二類, 語学・文学",
+      "volume": "17",
+      "number": null,
+      "startingPage": "57",
+      "publicationDate": "1970-12-25",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "村芝居",
+      "source": "cinii"
+    },
+    {
+      "title": "劇場桐座由緒書",
+      "authors": [
+        "石井,富之助"
+      ],
+      "publisher": "神奈川県企画調査部県史編集室",
+      "publicationName": "神奈川県史研究",
+      "volume": "9",
+      "number": null,
+      "startingPage": "48",
+      "publicationDate": "1970-12-25",
+      "keywords": [
+        "近世(細分不明)",
+        "資料紹介",
+        "芝居小屋",
+        "江戸の歌舞伎小屋",
+        "出世舞台"
+      ],
+      "url": null,
+      "doi": "10.24484/sitereports.123498-75729",
+      "matchedQuery": "芝居小屋 歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "絵金=幕末土佐地狂言怨念図譜(特集)",
+      "authors": [],
+      "publisher": "東京 : 美術出版社",
+      "publicationName": "みづゑ",
+      "volume": null,
+      "number": "789",
+      "startingPage": "1",
+      "publicationDate": "1970-10",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地狂言",
+      "source": "cinii"
+    },
+    {
+      "title": "前近代への嫌悪",
+      "authors": [
+        "横尾 忠則"
+      ],
+      "publisher": "東京 : 美術出版社",
+      "publicationName": "みづゑ",
+      "volume": null,
+      "number": "789",
+      "startingPage": "25",
+      "publicationDate": "1970-10",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地狂言",
+      "source": "cinii"
+    },
+    {
+      "title": "食いつく絵金の泥絵",
+      "authors": [
+        "浜口 富治"
+      ],
+      "publisher": "東京 : 美術出版社",
+      "publicationName": "みづゑ",
+      "volume": null,
+      "number": "789",
+      "startingPage": "33",
+      "publicationDate": "1970-10",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地狂言",
+      "source": "cinii"
+    },
+    {
+      "title": "邪霊送りの絵師,金蔵",
+      "authors": [
+        "藤村 欣市朗"
+      ],
+      "publisher": "東京 : 美術出版社",
+      "publicationName": "みづゑ",
+      "volume": null,
+      "number": "789",
+      "startingPage": "3",
+      "publicationDate": "1970-10",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地狂言",
+      "source": "cinii"
+    },
+    {
+      "title": "農村歌舞伎舞台の発展段階と舞台の認定 : 建築史・建築意匠",
+      "authors": [
+        "富山 博"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "大会学術講演梗概集. 計画系",
+      "volume": null,
+      "number": "45",
+      "startingPage": "813",
+      "publicationDate": "1970-08-20",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "642 九州における農村歌舞伎系舞台の概要",
+      "authors": [
+        "富山 博"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "東海支部研究報告集",
+      "volume": null,
+      "number": "6",
+      "startingPage": "163",
+      "publicationDate": "1968-06",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "農村かぶきの展開-下-赤城山麓における地狂言とその環境",
+      "authors": [
+        "守屋 タケシ"
+      ],
+      "publisher": "京都 : 藝能史研究會",
+      "publicationName": "藝能史研究 = History of the performing arts",
+      "volume": null,
+      "number": "21",
+      "startingPage": "37",
+      "publicationDate": "1968-04",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地狂言",
+      "source": "cinii"
+    },
+    {
+      "title": "農村歌舞伎研究の手引き",
+      "authors": [
+        "角田 一郎"
+      ],
+      "publisher": "京都 : 藝能史研究會",
+      "publicationName": "藝能史研究 = History of the performing arts",
+      "volume": null,
+      "number": "20",
+      "startingPage": "50",
+      "publicationDate": "1968-01",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "回り舞台の変遷について--農村歌舞伎舞台を資料として",
+      "authors": [
+        "名生 昭雄"
+      ],
+      "publisher": "京都 : 藝能史研究會",
+      "publicationName": "藝能史研究 = History of the performing arts",
+      "volume": null,
+      "number": "20",
+      "startingPage": "29",
+      "publicationDate": "1968-01",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "農村かぶきの展開-上-赤城山麓における地狂言とその環境",
+      "authors": [
+        "守屋 タケシ"
+      ],
+      "publisher": "京都 : 藝能史研究會",
+      "publicationName": "藝能史研究 = History of the performing arts",
+      "volume": null,
+      "number": "20",
+      "startingPage": "17",
+      "publicationDate": "1968-01",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "地狂言",
+      "source": "cinii"
+    },
+    {
+      "title": "劇（しばい）",
+      "authors": [
+        "名生 昭雄"
+      ],
+      "publisher": "日本演劇学会",
+      "publicationName": "演劇学論集 日本演劇学会紀要",
+      "volume": "9",
+      "number": "0",
+      "startingPage": "47",
+      "publicationDate": "1967-07-20",
+      "keywords": [],
+      "url": null,
+      "doi": "10.18935/jjstr.9.0_47",
+      "matchedQuery": "播州歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "劇(しばい)--播州歌舞伎",
+      "authors": [
+        "名生 昭雄"
+      ],
+      "publisher": "豊中 : 日本演劇学会",
+      "publicationName": "日本演劇学会紀要",
+      "volume": null,
+      "number": "9",
+      "startingPage": "47",
+      "publicationDate": "1967-07",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "播州歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "農村歌舞伎舞台の系列について",
+      "authors": [
+        "名生 昭雄"
+      ],
+      "publisher": "豊中 : 日本演劇学会",
+      "publicationName": "日本演劇学会紀要",
+      "volume": null,
+      "number": "8",
+      "startingPage": "1",
+      "publicationDate": "1966-06",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "養父郡における農村歌舞伎舞台",
+      "authors": [
+        "名生 昭雄"
+      ],
+      "publisher": "神戸 : 兵庫史学会",
+      "publicationName": "兵庫史学",
+      "volume": null,
+      "number": "42",
+      "startingPage": "????",
+      "publicationDate": "1965-11",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "兵庫県における農村歌舞伎舞台の概要",
+      "authors": [
+        "名生 昭雄"
+      ],
+      "publisher": "神戸 : 兵庫史学会",
+      "publicationName": "兵庫史学",
+      "volume": null,
+      "number": "41",
+      "startingPage": "40",
+      "publicationDate": "1965-06",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "農村歌舞台について",
+      "authors": [
+        "得平,謙三"
+      ],
+      "publisher": "西播史談會",
+      "publicationName": "播磨",
+      "volume": "62",
+      "number": null,
+      "startingPage": "22",
+      "publicationDate": "1965-04-20",
+      "keywords": [
+        "有形文化財",
+        "無形文化財",
+        "集落",
+        "民俗学",
+        "その他",
+        "文化系統",
+        "資料紹介",
+        "建築様式",
+        "農村歌舞台",
+        "農村歌舞伎"
+      ],
+      "url": null,
+      "doi": "10.24484/sitereports.126864-104022",
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "16.葛畑(かずらはた)(兵庫県)の民家型歌舞伎系農村廻り舞台(2-舞台のあらまし) : 農村舞台考 その89(第3部(歴史,意匠関係))",
+      "authors": [
+        "松崎 茂"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "研究発表会梗概集",
+      "volume": null,
+      "number": "3",
+      "startingPage": "61",
+      "publicationDate": "1964-05",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "回り舞台 農村",
+      "source": "cinii"
+    },
+    {
+      "title": "15.葛畑(かずらはた)(兵庫県)の民家型歌舞伎系農村廻り舞台(1-舞台のあゆみ) : 農村舞台考(その88)(第3部(歴史,意匠関係))",
+      "authors": [
+        "松崎 茂"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "研究発表会梗概集",
+      "volume": null,
+      "number": "3",
+      "startingPage": "57",
+      "publicationDate": "1964-05",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "回り舞台 農村",
+      "source": "cinii"
+    },
+    {
+      "title": "佐渡の歌舞伎系芸能空間と唯一の廻り舞台 : 1.農村舞台考 その79(32回,3部,p.1) (関東支部研究発表会報告集) (支部研究発表論文概梗)",
+      "authors": [
+        "松崎 茂"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "建築雑誌. 研究年報",
+      "volume": null,
+      "number": "63",
+      "startingPage": "380",
+      "publicationDate": "1963-11-20",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "回り舞台 農村",
+      "source": "cinii"
+    },
+    {
+      "title": "佐渡の歌舞伎系芸能空間と唯一の廻り舞台 : 11 農村舞台考 その80(32回,3部,p.5) (関東支部研究発表会報告集) (支部研究発表論文概梗)",
+      "authors": [
+        "松崎 茂"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "建築雑誌. 研究年報",
+      "volume": null,
+      "number": "63",
+      "startingPage": "380",
+      "publicationDate": "1963-11-20",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "回り舞台 農村",
+      "source": "cinii"
+    },
+    {
+      "title": "神戸市における農村歌舞伎舞台",
+      "authors": [
+        "名生 昭雄"
+      ],
+      "publisher": "神戸 : 兵庫史学会",
+      "publicationName": "兵庫史学",
+      "volume": null,
+      "number": "34・35",
+      "startingPage": "24",
+      "publicationDate": "1963-11",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "長浜曳山祭調査報告 第一～三集 : 滋賀県無形文化財(長浜曳山祭文化財保護委員会)",
+      "authors": [
+        "武田, 勝蔵"
+      ],
+      "publisher": "三田史学会",
+      "publicationName": "史学",
+      "volume": "36",
+      "number": "1",
+      "startingPage": "102",
+      "publicationDate": "1963-08",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "長浜曳山祭",
+      "source": "cinii"
+    },
+    {
+      "title": "2.佐渡の歌舞伎系芸能と唯一の廻り舞台(II) : 農村舞台考 その80",
+      "authors": [
+        "松崎 茂"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "研究発表会梗概集",
+      "volume": null,
+      "number": "3",
+      "startingPage": "5",
+      "publicationDate": "1962-06",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "回り舞台 農村",
+      "source": "cinii"
+    },
+    {
+      "title": "1.佐渡の歌舞伎系芸能空間と唯一の廻り舞台(I) : 農村舞台考 その79",
+      "authors": [
+        "松崎 茂"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "研究発表会梗概集",
+      "volume": null,
+      "number": "3",
+      "startingPage": "1",
+      "publicationDate": "1962-06",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "回り舞台 農村",
+      "source": "cinii"
+    },
+    {
+      "title": "19. 土佐の歌舞伎系廻り舞台 : 農村舞台考 その78(歴史・意匠関係)",
+      "authors": [
+        "松崎 茂"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "研究発表会梗概集",
+      "volume": null,
+      "number": "3",
+      "startingPage": "73",
+      "publicationDate": "1962-01-19",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "回り舞台 農村",
+      "source": "cinii"
+    },
+    {
+      "title": "19. 土佐の歌舞伎系廻り舞台 : 農村舞台考 その78",
+      "authors": [
+        "松崎 茂"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "日本建築學會研究報告",
+      "volume": null,
+      "number": "59",
+      "startingPage": "73",
+      "publicationDate": "1961-01",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "回り舞台 農村",
+      "source": "cinii"
+    },
+    {
+      "title": "23. 日本最北の農村歌舞伎舞台群(農村舞台考その48) : 福島県只見川上流地帯の舞台群(その1 分布と性格について)",
+      "authors": [
+        "松崎 茂"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "日本建築學會研究報告",
+      "volume": null,
+      "number": "48",
+      "startingPage": "89",
+      "publicationDate": "1959-06",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "24. 日本最北の農村歌舞伎舞台群(農村舞台考その49) : 福島県只見川上流地帯の舞台群(その2 敷地と客席構などについて)",
+      "authors": [
+        "松崎 茂"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "日本建築學會研究報告",
+      "volume": null,
+      "number": "48",
+      "startingPage": "93",
+      "publicationDate": "1959-06",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "25. 日本最北の農村歌舞伎舞台群(農村舞台考その50) : 福島県只見川上流地帯の舞台群(その3 舞台構、楽屋構、舞台機構について)",
+      "authors": [
+        "松崎 茂"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "日本建築學會研究報告",
+      "volume": null,
+      "number": "48",
+      "startingPage": "97",
+      "publicationDate": "1959-06",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "14. 今井の農村歌舞伎舞台(愛知)[1] : 舞台の存在意義 : 農村舞台考その33",
+      "authors": [
+        "松崎 茂"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "日本建築學會研究報告",
+      "volume": null,
+      "number": "44",
+      "startingPage": "53",
+      "publicationDate": "1958-12",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "17. 小原村地区(愛知)の主要農村歌舞伎舞台 : 農村舞台考その36",
+      "authors": [
+        "松崎 茂"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "日本建築學會研究報告",
+      "volume": null,
+      "number": "44",
+      "startingPage": "65",
+      "publicationDate": "1958-12",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "15. 今井の農村歌舞伎舞台(愛知)[2] : 舞台の建築と機構 : 農村舞台考その34",
+      "authors": [
+        "松崎 茂"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "日本建築學會研究報告",
+      "volume": null,
+      "number": "44",
+      "startingPage": "67",
+      "publicationDate": "1958-12",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "20. 日本農村歌舞伎の「場」が建築的となるまでの推論[II] : 農村舞台考その39",
+      "authors": [
+        "松崎 茂"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "日本建築學會研究報告",
+      "volume": null,
+      "number": "44",
+      "startingPage": "77",
+      "publicationDate": "1958-12",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "13. 天竜川上流地区の農村歌舞伎舞台(I)(農村舞台考 その30)",
+      "authors": [
+        "松崎 茂"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "日本建築學會研究報告",
+      "volume": null,
+      "number": "43",
+      "startingPage": "49",
+      "publicationDate": "1958-06",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "14. 天竜川上流地区の農村歌舞伎舞台(II)(農村舞台考 その31) : 特に上伊那郡, 下伊那郡を中心として",
+      "authors": [
+        "松崎 茂"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "日本建築學會研究報告",
+      "volume": null,
+      "number": "43",
+      "startingPage": "53",
+      "publicationDate": "1958-06",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "4. 日本農村歌舞伎舞台の下座の機構(農村舞台考 その22)",
+      "authors": [
+        "松崎 茂"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "日本建築學會研究報告",
+      "volume": null,
+      "number": "40",
+      "startingPage": "13",
+      "publicationDate": "1957-12",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "3. 日本農村歌舞伎舞台の機構について(農村舞台考 その21)",
+      "authors": [
+        "松崎 茂"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "日本建築學會研究報告",
+      "volume": null,
+      "number": "40",
+      "startingPage": "9",
+      "publicationDate": "1957-12",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "5. 日本農村歌舞伎の「場」が建築的となるまでの推論(I～II)(農村舞台 その23)",
+      "authors": [
+        "松崎 茂"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "日本建築學會研究報告",
+      "volume": null,
+      "number": "40",
+      "startingPage": "17",
+      "publicationDate": "1957-12",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "1. 静岡縣見高, 上都田, 井伊谷の農村歌舞伎舞台(農村舞台考 その19)",
+      "authors": [
+        "松崎 茂"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "日本建築學會研究報告",
+      "volume": null,
+      "number": "40",
+      "startingPage": "1",
+      "publicationDate": "1957-12",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "2. 長野県の農村歌舞伎舞台(農村舞台考 その20)-特に上田地区(小県郡地方)の舞台を中心として-",
+      "authors": [
+        "松崎 茂"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "日本建築學會研究報告",
+      "volume": null,
+      "number": "40",
+      "startingPage": "5",
+      "publicationDate": "1957-12",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "松崎 茂「農村歌舞伎舞台とその舞台機構」 (意匠・歴史) (北海道連合大会特集)",
+      "authors": [
+        "木村 徳国"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "建築雑誌",
+      "volume": null,
+      "number": "852",
+      "startingPage": "55",
+      "publicationDate": "1957-11",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "9. 千葉県の農村歌舞伎舞台(農村舞台考 その18)",
+      "authors": [
+        "松崎 茂"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "日本建築學會研究報告",
+      "volume": null,
+      "number": "39",
+      "startingPage": "33",
+      "publicationDate": "1957-08",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "8. 四国地方の農村歌舞伎舞台について(その2) : 舞台の機構と建築構造 (農村舞台考 その17)",
+      "authors": [
+        "松崎 茂"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "日本建築學會研究報告",
+      "volume": null,
+      "number": "39",
+      "startingPage": "29",
+      "publicationDate": "1957-08",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "7. 四国地方の農村歌舞伎舞台について(その1) : 分布、特色、配置、敷地環境 (農村舞台考 その16)",
+      "authors": [
+        "松崎 茂"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "日本建築學會研究報告",
+      "volume": null,
+      "number": "39",
+      "startingPage": "25",
+      "publicationDate": "1957-08",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "明治座火災の概要",
+      "authors": [],
+      "publisher": "東京 : 日本火災学会",
+      "publicationName": "火災 : 日本火災学会誌 / 日本火災学会 編",
+      "volume": "7",
+      "number": "2",
+      "startingPage": "93",
+      "publicationDate": "1957-08",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "2. 栃木県の農村歌舞伎組立舞台について : 植野の舞台を中心として(農村舞台考その10)",
+      "authors": [
+        "松崎 茂"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "日本建築學會研究報告",
+      "volume": null,
+      "number": "37",
+      "startingPage": "406",
+      "publicationDate": "1956-12",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "1. 神奈川県 林・七沢・中依知の舞台の特色 : 相模川中流地区の農村歌舞伎舞台(農村舞台考 その9)",
+      "authors": [
+        "松崎 茂"
+      ],
+      "publisher": "日本建築学会",
+      "publicationName": "日本建築學會研究報告",
+      "volume": null,
+      "number": "37",
+      "startingPage": "399",
+      "publicationDate": "1956-12",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "農村歌舞伎",
+      "source": "cinii"
+    },
+    {
+      "title": "明治座勝つ--九月関西在住歌舞伎評",
+      "authors": [
+        "戸部 銀作"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "11",
+      "number": "10",
+      "startingPage": "????",
+      "publicationDate": "1956-10",
+      "keywords": [
+        "批評"
+      ],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "新作に気を吐く新国劇--明治座十月興行",
+      "authors": [
+        "浜村 道哉"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "11",
+      "number": "11",
+      "startingPage": "????",
+      "publicationDate": "1956-10",
+      "keywords": [
+        "演劇批評"
+      ],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "芸術祭参加作品を中心に--明治座・十一月公演評",
+      "authors": [
+        "大木 豊"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "11",
+      "number": "12",
+      "startingPage": "????",
+      "publicationDate": "1956-10",
+      "keywords": [
+        "演劇批評"
+      ],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "「奇蹟」と「桐の雨」・他--明治座を観る",
+      "authors": [
+        "三宅 三郎"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "14",
+      "number": "9",
+      "startingPage": "59",
+      "publicationDate": "1956-08",
+      "keywords": [
+        "批評"
+      ],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "涼しい狂言立て--七月の明治座",
+      "authors": [
+        "加賀山 直三"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "11",
+      "number": "8",
+      "startingPage": "????",
+      "publicationDate": "1956-07",
+      "keywords": [
+        "批評"
+      ],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "歌右衛門と新派の合同--明治座八月公演",
+      "authors": [
+        "大鋸 時生"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "11",
+      "number": "9",
+      "startingPage": "????",
+      "publicationDate": "1956-07",
+      "keywords": [
+        "演劇批評"
+      ],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "明治座の吉右衛門劇団",
+      "authors": [
+        "浜村 米蔵"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "14",
+      "number": "4",
+      "startingPage": "????",
+      "publicationDate": "1956-07",
+      "keywords": [
+        "批評"
+      ],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "八つの芝居--明治座を観る",
+      "authors": [
+        "三宅 三郎"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "14",
+      "number": "6",
+      "startingPage": "????",
+      "publicationDate": "1956-07",
+      "keywords": [
+        "批評"
+      ],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "くすんだチーム・カラー--明治座・合同歌舞伎評",
+      "authors": [
+        "大木 豊"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "11",
+      "number": "6",
+      "startingPage": "????",
+      "publicationDate": "1956-06",
+      "keywords": [
+        "批評"
+      ],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "護る「関の扉」--明治座・昼の部",
+      "authors": [
+        "戸部 銀作"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "11",
+      "number": "4",
+      "startingPage": "????",
+      "publicationDate": "1956-04",
+      "keywords": [
+        "批評"
+      ],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "「忠臣蔵」個々の成長--明治座・菊五郎劇団評",
+      "authors": [
+        "大木 豊"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "11",
+      "number": "1",
+      "startingPage": "????",
+      "publicationDate": "1956-01",
+      "keywords": [
+        "批評"
+      ],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "四年ぶりの武蔵劇--明治座新国劇・二月公演",
+      "authors": [
+        "竹越 和夫"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "11",
+      "number": "3",
+      "startingPage": "????",
+      "publicationDate": "1956-01",
+      "keywords": [
+        "演劇批評"
+      ],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "新作四つと鏡花物--明治座の昼夜",
+      "authors": [
+        "三宅 三郎"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "10",
+      "number": "12",
+      "startingPage": "????",
+      "publicationDate": "1955-10",
+      "keywords": [
+        "演劇批評"
+      ],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "新派をみる明治座",
+      "authors": [
+        "尾崎 宏次"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "13",
+      "number": "6",
+      "startingPage": "????",
+      "publicationDate": "1955-06",
+      "keywords": [
+        "演劇批評"
+      ],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "関西歌舞伎完敗--四月明治座",
+      "authors": [
+        "大木 豊"
+      ],
+      "publisher": "大阪 : 演劇評論社",
+      "publicationName": "演劇評論",
+      "volume": "3",
+      "number": "6",
+      "startingPage": "53",
+      "publicationDate": "1955-06",
+      "keywords": [
+        "批評"
+      ],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "明治座三月興行",
+      "authors": [
+        "伊藤 寿二"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "10",
+      "number": "4",
+      "startingPage": "????",
+      "publicationDate": "1955-04",
+      "keywords": [
+        "批評"
+      ],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "明治座の関西歌舞伎",
+      "authors": [
+        "三宅 周太郎"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "10",
+      "number": "5",
+      "startingPage": "????",
+      "publicationDate": "1955-04",
+      "keywords": [
+        "批評"
+      ],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "明治座美術評",
+      "authors": [
+        "尾沢 勝三"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "13",
+      "number": "4",
+      "startingPage": "????",
+      "publicationDate": "1955-04",
+      "keywords": [
+        "舞台装置"
+      ],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "四つの狂言--明治座・第一部",
+      "authors": [
+        "三宅 三郎"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "13",
+      "number": "5",
+      "startingPage": "????",
+      "publicationDate": "1955-04",
+      "keywords": [
+        "批評"
+      ],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "お初かはいや--明治座・第一部",
+      "authors": [
+        "榎本 滋民"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "13",
+      "number": "4",
+      "startingPage": "????",
+      "publicationDate": "1955-04",
+      "keywords": [
+        "批評"
+      ],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "新派の純情--明治座",
+      "authors": [
+        "本地 盈輝"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "13",
+      "number": "3",
+      "startingPage": "????",
+      "publicationDate": "1955-03",
+      "keywords": [
+        "演劇批評"
+      ],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "二つの野心作--明治座",
+      "authors": [
+        "久住 良三"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "13",
+      "number": "2",
+      "startingPage": "????",
+      "publicationDate": "1955-02",
+      "keywords": [
+        "演劇批評"
+      ],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "二月の明治座の新派",
+      "authors": [
+        "岡田 八千代"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "10",
+      "number": "3",
+      "startingPage": "????",
+      "publicationDate": "1955-01",
+      "keywords": [
+        "演劇批評"
+      ],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "「冬の宿」その他--明治座",
+      "authors": [
+        "草壁 知止子"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "13",
+      "number": "1",
+      "startingPage": "66",
+      "publicationDate": "1955-01",
+      "keywords": [
+        "批評"
+      ],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "芸術祭参加の二作--明治座の新国劇",
+      "authors": [
+        "仁村 美津夫"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "9",
+      "number": "11",
+      "startingPage": "82",
+      "publicationDate": "1954-11",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "芸術祭現代劇と参加作品「霧の音」--十月の演舞場と明治座",
+      "authors": [
+        "大木 豊"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "9",
+      "number": "11",
+      "startingPage": "74",
+      "publicationDate": "1954-11",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "意気と意欲は別--明治座の菊五郎劇団",
+      "authors": [
+        "本山 荻舟"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "9",
+      "number": "10",
+      "startingPage": "78",
+      "publicationDate": "1954-10",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "河内山その他--明治座・第一部",
+      "authors": [
+        "三宅 三郎"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "12",
+      "number": "11",
+      "startingPage": "50",
+      "publicationDate": "1954-10",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "少女歌舞伎について--明治座",
+      "authors": [
+        "利倉 幸一"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "12",
+      "number": "9",
+      "startingPage": "57",
+      "publicationDate": "1954-09",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "半地方化した?明治座--明治座・第二部",
+      "authors": [
+        "加賀山 直三"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "12",
+      "number": "8",
+      "startingPage": "44",
+      "publicationDate": "1954-08",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "不幸な続篇--明治座・第一部",
+      "authors": [
+        "戸板 康二"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "12",
+      "number": "8",
+      "startingPage": "42",
+      "publicationDate": "1954-08",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "三つの近松劇--五月の明治座",
+      "authors": [
+        "戸部 葵"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "9",
+      "number": "6",
+      "startingPage": "74",
+      "publicationDate": "1954-06",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "「鉄火奉行」その他--明治座・第一部",
+      "authors": [
+        "大木 豊"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "12",
+      "number": "6",
+      "startingPage": "41",
+      "publicationDate": "1954-06",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "春の新派祭--明治座",
+      "authors": [
+        "仁村 美津夫"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "9",
+      "number": "5",
+      "startingPage": "84",
+      "publicationDate": "1954-05",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "新派詩意--明治座",
+      "authors": [
+        "青江 舜二郎"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "12",
+      "number": "5",
+      "startingPage": "43",
+      "publicationDate": "1954-05",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "体臭と個性--二月の明治座より",
+      "authors": [
+        "戸部 葵"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "9",
+      "number": "3",
+      "startingPage": "82",
+      "publicationDate": "1954-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "意気あがる新国劇--正月の明治座",
+      "authors": [
+        "浜村 道哉"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "9",
+      "number": "2",
+      "startingPage": "78",
+      "publicationDate": "1954-02",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "新国劇評判記--明治座",
+      "authors": [
+        "堀川 寛一"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "12",
+      "number": "2",
+      "startingPage": "53",
+      "publicationDate": "1954-02",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "「司法権」其他--明治座",
+      "authors": [
+        "西村 晋一"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "12",
+      "number": "12",
+      "startingPage": "47",
+      "publicationDate": "1954",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "秋の新派祭を観る--明治座",
+      "authors": [
+        "足立 直郎"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "12",
+      "number": "13",
+      "startingPage": "52",
+      "publicationDate": "1954",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "お祭りのご馳走--明治座",
+      "authors": [
+        "桑原 経重"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "11",
+      "number": "12",
+      "startingPage": "58",
+      "publicationDate": "1953-12",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "天下茶屋聚--明治座・第二部",
+      "authors": [
+        "三宅 三郎"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "11",
+      "number": "11",
+      "startingPage": "54",
+      "publicationDate": "1953-11",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "傑作・左団次の伊織--明治座の菊五郎劇団",
+      "authors": [
+        "大木 豊"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "8",
+      "number": "10",
+      "startingPage": "82",
+      "publicationDate": "1953-10",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "明治座の「浮舟」をみて",
+      "authors": [
+        "湯浅 芳子"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "8",
+      "number": "9",
+      "startingPage": "46",
+      "publicationDate": "1953-09",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "情緒漂う「むらさき」--明治座の八月興行",
+      "authors": [
+        "浜村 道哉"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "8",
+      "number": "9",
+      "startingPage": "95",
+      "publicationDate": "1953-09",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "新派短評--八月明治座昼夜",
+      "authors": [
+        "綛野 和子"
+      ],
+      "publisher": "大阪 : 演劇評論社",
+      "publicationName": "演劇評論",
+      "volume": null,
+      "number": "1",
+      "startingPage": "40",
+      "publicationDate": "1953-09",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "円満な三角関係--明治座の吉右衛門劇団",
+      "authors": [
+        "三宅 周太郎"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "8",
+      "number": "8",
+      "startingPage": "75",
+      "publicationDate": "1953-08",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "明治座--二つの空洞",
+      "authors": [
+        "大木 豊"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "11",
+      "number": "7",
+      "startingPage": "50",
+      "publicationDate": "1953-07",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "問題作「叛乱」--明治座の新国劇",
+      "authors": [
+        "浜村 道哉"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "8",
+      "number": "5",
+      "startingPage": "82",
+      "publicationDate": "1953-05",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "「叛乱」に就いて--明治座",
+      "authors": [
+        "利倉 幸一"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "11",
+      "number": "5",
+      "startingPage": "50",
+      "publicationDate": "1953-05",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "柳永二郎久しぶりの快演--三月の明治座",
+      "authors": [
+        "浜村 道哉"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "8",
+      "number": "4",
+      "startingPage": "46",
+      "publicationDate": "1953-04",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "在りし日の六代目を思う--明治座の菊五郎劇団",
+      "authors": [
+        "大木 豊"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "8",
+      "number": "3",
+      "startingPage": "74",
+      "publicationDate": "1953-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "「島ちどり」と「乗合船」--明治座",
+      "authors": [
+        "浜村 米蔵"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "11",
+      "number": "3",
+      "startingPage": "50",
+      "publicationDate": "1953-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "楽しめる「海猫とペテン師」--一月の明治座",
+      "authors": [
+        "浜村 道哉"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "8",
+      "number": "2",
+      "startingPage": "44",
+      "publicationDate": "1953-02",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "新作三本の新国劇--明治座",
+      "authors": [
+        "大木 豊"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "11",
+      "number": "2",
+      "startingPage": "62",
+      "publicationDate": "1953-02",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "新仮名遣忠臣蔵--明治座評",
+      "authors": [
+        "本山 荻舟"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "8",
+      "number": "1",
+      "startingPage": "98",
+      "publicationDate": "1953-01",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "秋の新派祭--明治座",
+      "authors": [
+        "竹越 和夫"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "11",
+      "number": "13",
+      "startingPage": "51",
+      "publicationDate": "1953",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "吉右衛門一座奮闘--明治座",
+      "authors": [
+        "利倉 幸一"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "11",
+      "number": "8",
+      "startingPage": "51",
+      "publicationDate": "1953",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "秋の新派祭を見て--十一月の明治座",
+      "authors": [
+        "浜村 道哉"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "7",
+      "number": "12",
+      "startingPage": "72",
+      "publicationDate": "1952-12",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "明治座の新派を見る",
+      "authors": [
+        "尾崎 宏次"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "10",
+      "number": "13",
+      "startingPage": "46",
+      "publicationDate": "1952-12",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "佗しい記念公演--明治座",
+      "authors": [
+        "大木 豊"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "10",
+      "number": "12",
+      "startingPage": "48",
+      "publicationDate": "1952-11",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "見たまま思うまま--明治座の九月興行",
+      "authors": [
+        "浜村 米蔵"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "7",
+      "number": "10",
+      "startingPage": "72",
+      "publicationDate": "1952-10",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "「堀川」その他--明治座・第二部",
+      "authors": [
+        "浜村 米蔵"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "10",
+      "number": "11",
+      "startingPage": "48",
+      "publicationDate": "1952-10",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "頑張る寿海・時蔵--八月の明治座",
+      "authors": [
+        "仁村 美津夫"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "7",
+      "number": "9",
+      "startingPage": "74",
+      "publicationDate": "1952-09",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "寿海を讃ふ--明治座・第二部",
+      "authors": [
+        "水村 貫一"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "10",
+      "number": "10",
+      "startingPage": "46",
+      "publicationDate": "1952-09",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "すべて低調--明治座・第一部",
+      "authors": [
+        "草壁 知止子"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "10",
+      "number": "10",
+      "startingPage": "43",
+      "publicationDate": "1952-09",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "「人生劇場」と「ミスター浦島」--明治座の新国劇",
+      "authors": [],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "7",
+      "number": "6",
+      "startingPage": "76",
+      "publicationDate": "1952-06",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "新国劇の財産--明治座",
+      "authors": [
+        "渡辺 義三郎"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "10",
+      "number": "6",
+      "startingPage": "46",
+      "publicationDate": "1952-05",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "黙阿弥六十年祭記念興行--明治座の菊五郎劇団",
+      "authors": [
+        "大木 豊"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "7",
+      "number": "4",
+      "startingPage": "78",
+      "publicationDate": "1952-04",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "天一坊の通し--明治座第1部",
+      "authors": [
+        "戸板 康二"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "10",
+      "number": "4",
+      "startingPage": "43",
+      "publicationDate": "1952-04",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "「宮本武蔵」評--明治座",
+      "authors": [
+        "萩原 雪夫"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "10",
+      "number": "3",
+      "startingPage": "37",
+      "publicationDate": "1952-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "通し狂言「白浪五人男」--明治座師走興行",
+      "authors": [
+        "浜村 道哉"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "7",
+      "number": "1",
+      "startingPage": "102",
+      "publicationDate": "1952-01",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "初日の海老蔵--明治座評",
+      "authors": [
+        "利倉 幸一"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "10",
+      "number": "1",
+      "startingPage": "52",
+      "publicationDate": "1952-01",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "新国劇--明治座評",
+      "authors": [
+        "大久保 康雄"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "9",
+      "number": "12",
+      "startingPage": "32",
+      "publicationDate": "1951-11",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "明治座・新国劇--花咲く港",
+      "authors": [
+        "国分 とも子"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "9",
+      "number": "12",
+      "startingPage": "41",
+      "publicationDate": "1951-11",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "明治座・新国劇--霧の音",
+      "authors": [
+        "国分 とも子"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "9",
+      "number": "12",
+      "startingPage": "40",
+      "publicationDate": "1951-11",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "明治座を見ていて",
+      "authors": [
+        "浜村 米蔵"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "6",
+      "number": "10",
+      "startingPage": "76",
+      "publicationDate": "1951-10",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "再演・三演・初演--七月の明治座",
+      "authors": [
+        "戸部 銀作"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "6",
+      "number": "8",
+      "startingPage": "76",
+      "publicationDate": "1951-08",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "明治座",
+      "authors": [],
+      "publisher": "日本建築学会",
+      "publicationName": "建築雑誌",
+      "volume": null,
+      "number": "776",
+      "startingPage": "18",
+      "publicationDate": "1951-07",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "新作「どろ」と旧作三本--六月の明治座・新国劇評",
+      "authors": [
+        "大木 豊"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "6",
+      "number": "7",
+      "startingPage": "70",
+      "publicationDate": "1951-07",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "宇野信夫作演出「さつき富士」--明治座五月上演・見たまゝの記",
+      "authors": [],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "6",
+      "number": "6",
+      "startingPage": "44",
+      "publicationDate": "1951-06",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "明治座の菊五郎劇団--男女蔵と松緑との交代提案",
+      "authors": [
+        "三宅 周太郎"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "6",
+      "number": "6",
+      "startingPage": "70",
+      "publicationDate": "1951-06",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "新派わるくなし--明治座",
+      "authors": [
+        "三宅 三郎"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "6",
+      "number": "5",
+      "startingPage": "86",
+      "publicationDate": "1951-05",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "「河庄」と「酒屋」--二月明治座の東西合同",
+      "authors": [
+        "戸部 銀作"
+      ],
+      "publisher": "京都 : 和敬書店",
+      "publicationName": "幕間",
+      "volume": "6",
+      "number": "3",
+      "startingPage": "60",
+      "publicationDate": "1951-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "紙治その他--明治座第一部",
+      "authors": [
+        "三宅 三郎"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "9",
+      "number": "3",
+      "startingPage": "42",
+      "publicationDate": "1951-03",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "六代目の遺産--明治座・第1部",
+      "authors": [
+        "渡辺 義三郎"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "9",
+      "number": "2",
+      "startingPage": "38",
+      "publicationDate": "1951-02",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "夜の部大いに振う--明治座・第2部",
+      "authors": [
+        "浜村 米蔵"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "9",
+      "number": "2",
+      "startingPage": "40",
+      "publicationDate": "1951-02",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "祖国明治座",
+      "authors": [
+        "木村 錦花"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "8",
+      "number": "7",
+      "startingPage": "25",
+      "publicationDate": "1950-12",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "近世の明治座",
+      "authors": [
+        "渥美 清太郎"
+      ],
+      "publisher": "東京 : 演劇出版社 ; 1943-2022",
+      "publicationName": "演劇界",
+      "volume": "8",
+      "number": "7",
+      "startingPage": "30",
+      "publicationDate": "1950-12",
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    },
+    {
+      "title": "明治座(浜町センタービル)",
+      "authors": [],
+      "publisher": null,
+      "publicationName": "新建築",
+      "volume": "9304",
+      "number": null,
+      "startingPage": null,
+      "publicationDate": null,
+      "keywords": [],
+      "url": null,
+      "matchedQuery": "明治座",
+      "source": "cinii"
+    }
+  ]
+}

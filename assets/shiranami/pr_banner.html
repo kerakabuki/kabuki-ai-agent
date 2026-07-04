@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1200px; height: 630px; overflow: hidden; }
+  .banner {
+    width: 1200px; height: 630px;
+    background: linear-gradient(135deg, #1a1410 0%, #2a2218 40%, #1a1410 100%);
+    position: relative;
+    font-family: "Noto Serif JP", "Yu Mincho", serif;
+    overflow: hidden;
+  }
+
+  /* 和柄パターン（薄く） */
+  .banner::before {
+    content: '';
+    position: absolute; inset: 0;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%23C5A255' stroke-width='1.2'%3E%3Cpath d='M0 20 L20 20 L20 0'/%3E%3Cpath d='M20 20 L20 40 L40 40'/%3E%3Cpath d='M40 40 L40 20 L60 20'/%3E%3Cpath d='M60 20 L60 0'/%3E%3Cpath d='M40 40 L40 60 L20 60'/%3E%3Cpath d='M20 60 L20 80'/%3E%3Cpath d='M60 20 L60 40 L80 40'/%3E%3Cpath d='M0 60 L20 60'/%3E%3Cpath d='M60 40 L60 60 L80 60'/%3E%3Cpath d='M40 60 L60 60 L60 80'/%3E%3Cpath d='M0 40 L20 40'/%3E%3Cpath d='M40 0 L40 20'/%3E%3Cpath d='M80 0 L80 20'/%3E%3Cpath d='M80 60 L80 80'/%3E%3Cpath d='M40 80 L40 60'/%3E%3Cpath d='M0 0 L0 20'/%3E%3Cpath d='M0 60 L0 80'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 80px 80px;
+  }
+
+  /* 上部の金色ライン */
+  .top-line {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, transparent 5%, #C5A255 30%, #E8D5A3 50%, #C5A255 70%, transparent 95%);
+  }
+
+  /* 下部の金色ライン */
+  .bottom-line {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, transparent 5%, #C5A255 30%, #E8D5A3 50%, #C5A255 70%, transparent 95%);
+  }
+
+  /* 左側：五人の画像 */
+  .characters {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 680px;
+    display: flex;
+    overflow: hidden;
+  }
+
+  .char-img-wrap {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .char-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 15%;
+    filter: brightness(0.75) contrast(1.1);
+  }
+  .char-img-wrap img[alt="赤星十三郎"] {
+    object-position: 30% 15%;
+  }
+
+  /* 画像の間に細い金色の線 */
+  .char-img-wrap + .char-img-wrap {
+    border-left: 1px solid rgba(197, 162, 85, 0.3);
+  }
+
+  /* 画像にグラデーションオーバーレイ（右側フェード） */
+  .characters::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0; bottom: 0;
+    width: 200px;
+    background: linear-gradient(90deg, transparent, #1a1410);
+    z-index: 2;
+  }
+
+  /* 下部グラデーション */
+  .characters::before {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 180px;
+    background: linear-gradient(0deg, #1a1410, transparent);
+    z-index: 1;
+  }
+
+  /* 右側：テキストエリア */
+  .text-area {
+    position: absolute;
+    right: 40px; top: 0; bottom: 0;
+    width: 480px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 10;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(197, 162, 85, 0.15);
+    border: 1px solid rgba(197, 162, 85, 0.4);
+    border-radius: 4px;
+    padding: 6px 16px;
+    margin-bottom: 20px;
+    width: fit-content;
+  }
+
+  .badge-icon {
+    font-size: 18px;
+  }
+
+  .badge-text {
+    font-size: 13px;
+    color: #C5A255;
+    letter-spacing: 3px;
+    font-weight: 600;
+  }
+
+  .main-title {
+    font-size: 42px;
+    font-weight: 700;
+    color: #F3EDE4;
+    line-height: 1.5;
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+    text-shadow: 0 2px 16px rgba(0,0,0,0.5);
+  }
+
+  .main-title .highlight {
+    color: #E8D5A3;
+    background: linear-gradient(0deg, rgba(197,162,85,0.2) 0%, transparent 60%);
+    padding: 0 4px;
+  }
+
+  .sub-title {
+    font-size: 16px;
+    color: #A89E93;
+    line-height: 2;
+    letter-spacing: 1px;
+    margin-bottom: 28px;
+  }
+
+  .feature-tags {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+
+  .feature-tag {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 13px;
+    color: #D8D0C4;
+    letter-spacing: 0.5px;
+  }
+
+  .feature-tag .tag-icon {
+    font-size: 15px;
+  }
+
+  /* 下部：ブランドロゴ + URL */
+  .footer-area {
+    position: absolute;
+    bottom: 24px; left: 40px; right: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    z-index: 10;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .brand-logo {
+    font-size: 28px;
+  }
+
+  .brand-text {
+    font-size: 16px;
+    color: #C5A255;
+    letter-spacing: 3px;
+    font-weight: 600;
+  }
+
+  .brand-sub {
+    font-size: 11px;
+    color: #7A6F63;
+    letter-spacing: 2px;
+    margin-top: 2px;
+  }
+
+  .url-text {
+    font-family: "Noto Sans JP", sans-serif;
+    font-size: 13px;
+    color: #7A6F63;
+    letter-spacing: 1px;
+  }
+
+  /* 名台詞の引用 */
+  .quote-area {
+    position: absolute;
+    bottom: 70px; left: 40px;
+    z-index: 10;
+  }
+
+  .quote {
+    font-size: 15px;
+    color: rgba(232, 213, 163, 0.6);
+    letter-spacing: 2px;
+    font-style: italic;
+    line-height: 1.8;
+  }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="banner">
+  <div class="top-line"></div>
+  <div class="bottom-line"></div>
+
+  <!-- 左：五人の写真 -->
+  <div class="characters">
+    <div class="char-img-wrap"><img src="dayemon.png" alt="日本駄右衛門"></div>
+    <div class="char-img-wrap"><img src="benten.png" alt="弁天小僧"></div>
+    <div class="char-img-wrap"><img src="tadanobu.png" alt="忠信利平"></div>
+    <div class="char-img-wrap"><img src="akaboshi.png" alt="赤星十三郎"></div>
+    <div class="char-img-wrap"><img src="nango.png" alt="南郷力丸"></div>
+  </div>
+
+  <!-- 右：テキスト -->
+  <div class="text-area">
+    <div class="badge">
+      <span class="badge-icon">🎭</span>
+      <span class="badge-text">KABUKI DOJO</span>
+    </div>
+
+    <div class="main-title">
+      台詞稽古<br>
+      <span class="highlight">白浪五人男</span><br>
+      全員揃いました。
+    </div>
+
+    <div class="sub-title">
+      稲瀬川勢揃いの場 ── 全5役の名台詞を<br>
+      動画に合わせて練習できます。
+    </div>
+
+    <div class="feature-tags">
+      <div class="feature-tag"><span class="tag-icon">🎬</span> YouTube連動</div>
+      <div class="feature-tag"><span class="tag-icon">✨</span> カラオケ字幕</div>
+      <div class="feature-tag"><span class="tag-icon">📱</span> スマホ対応</div>
+      <div class="feature-tag"><span class="tag-icon">🆓</span> 無料</div>
+    </div>
+  </div>
+
+  <!-- 左下：名台詞 -->
+  <div class="quote-area">
+    <div class="quote">「問われて名乗るもおこがましいが」</div>
+  </div>
+
+  <!-- 下部：ブランド -->
+  <div class="footer-area">
+    <div class="brand">
+      <span class="brand-logo">🎭</span>
+      <div>
+        <div class="brand-text">KABUKI PLUS+</div>
+        <div class="brand-sub">SERIFU PRACTICE MODE</div>
+      </div>
+    </div>
+    <div class="url-text">kabukiplus.com/kabuki/dojo/training/serifu</div>
+  </div>
+</div>
+</body>
+</html>

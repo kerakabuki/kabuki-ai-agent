@@ -1,0 +1,1766 @@
+{
+  "version": 1,
+  "updated": "2026-03-08",
+  "categories_en": {
+    "演技・演出": "Acting & Direction",
+    "役柄": "Roles & Characters",
+    "舞台": "Stage",
+    "音・裏方": "Music & Backstage",
+    "家の芸": "House Specialties",
+    "ジャンル": "Genres",
+    "鑑賞": "Theatergoing",
+    "衣装・小道具": "Costumes & Props"
+  },
+  "terms": [
+    {
+      "id": "aisozukashi",
+      "term": "愛想尽かし（あいそづかし）",
+      "term_en": "Aisozukashi",
+      "reading": "あいそづかし",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "「縁切物」と呼ばれる演目群の重要な場面。相思相愛の男女でありながら、大切な宝や大金を必要としている男の事情を助けるため、女性が真意を隠して心ならずも冷たく突き放す。男がこの真意を理解できず悲劇に至るのが典型的な展開。『伊勢音頭恋寝刃』『籠釣瓶花街酔醒』などが代表的。",
+      "desc_en": "A pivotal scene in 'enkiri-mono' (breakup plays). Despite being deeply in love, the woman coldly rejects the man — not from genuine hatred, but to secretly help him in his desperate circumstances (finding a lost treasure, raising money). The tragedy typically unfolds when the man fails to understand her true intentions. Representative works include Ise Ondo and Kagotsurubeé."
+    },
+    {
+      "term": "愛想づかし（あいそづかし）",
+      "reading": "あいそづかし",
+      "term_en": "Aiso-zukashi",
+      "desc": "【歌舞伎では】縁切物で、女性が愛する男を助けるためにわざと冷たく突き放す演技。【現代では】相手に対して冷たい態度をとること、愛想を尽かすこと。 ※「愛想尽かし」は歌舞伎の演技用語だが、日常語「愛想を尽かす」が歌舞伎由来かは諸説あり",
+      "desc_en": "[In Kabuki] In breakup plays, the woman coldly rejects the man she loves to secretly help him. [Today] To act cold toward someone; to lose patience or affection. *Note: 「愛想尽かし」は歌舞伎の演技用語だが、日常語「愛想を尽かす」が歌舞伎由来かは諸説あり",
+      "category": "由来語"
+    },
+    {
+      "id": "akattsuramen",
+      "term": "赤っ面（あかっつら）",
+      "term_en": "Akattsura",
+      "reading": "あかっつら",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "顔を赤く塗った端敵。粗暴で単純な悪役を示す。",
+      "desc_en": "A minor villain with a red-painted face, indicating a rough and simple-minded bad guy."
+    },
+    {
+      "id": "akahime",
+      "term": "赤姫（あかひめ）",
+      "term_en": "Akahime (Red Princess)",
+      "reading": "あかひめ",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "歌舞伎に登場するお姫様役の総称で、着ている衣裳の色が概ね赤なのでこう呼ばれる。役柄の名称であると同時に衣裳そのものの名称でもある。赤の色には美しさや高貴な身分、恋に燃える一途さ、時には激しい気性も込められている。",
+      "desc_en": "A general term for princess roles in kabuki, named after their predominantly red costumes. The red color symbolizes beauty, noble status, passionate devotion in love, and sometimes a fierce temperament."
+    },
+    {
+      "id": "akuba",
+      "term": "悪婆（あくば）",
+      "term_en": "Akuba (Wicked Woman)",
+      "reading": "あくば",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "江戸後期の文化文政期に台頭した女方の役柄。悪婆といっても年寄りではなく、ゆすりたかりなどの悪事を働く伝法肌の女性。「於染久松色読販」の土手のお六などが典型。立役の色悪は非情だが、悪婆は恋しい男に尽くす心柄を持っている。",
+      "desc_en": "A female role type that emerged in the late Edo period. Despite the name (literally 'wicked old woman'), she is not elderly but rather a bold, streetwise woman who engages in extortion and other crimes. Unlike male villains, she remains devoted to the man she loves."
+    },
+    {
+      "id": "a_maku",
+      "term": "揚幕（あげまく）",
+      "term_en": "Agemaku (Entrance Curtain)",
+      "reading": "あげまく",
+      "category": "舞台",
+      "category_en": "Stage",
+      "desc": "鳥屋口に掛かる出入り用の幕。",
+      "desc_en": "The curtain hung at the toya entrance used for actors' entries and exits on the hanamichi."
+    },
+    {
+      "id": "asa_maku",
+      "term": "浅葱幕（あさぎまく）",
+      "term_en": "Asagimaku (Light Blue Curtain)",
+      "reading": "あさぎまく",
+      "category": "舞台",
+      "category_en": "Stage",
+      "desc": "浅葱色の引幕。定式幕とは別の幕。",
+      "desc_en": "A light blue draw curtain, separate from the standard joshikimaku curtain."
+    },
+    {
+      "id": "ara_to",
+      "term": "荒事（あらごと）",
+      "term_en": "Aragoto (Rough Style)",
+      "reading": "あらごと",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "力強く誇張した型と声で見せる、豪快な演技・作風（主に江戸系）。",
+      "desc_en": "A bold, exaggerated acting style characterized by powerful movements and voice, primarily associated with the Edo kabuki tradition."
+    },
+    {
+      "id": "isina_nomie",
+      "term": "石投げの見得（いしなげのみえ）",
+      "term_en": "Ishinage no Mie (Stone-Throwing Pose)",
+      "reading": "いしなげのみえ",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "石を投げるような形で決まる見得。『勧進帳』の弁慶で有名。",
+      "desc_en": "A dramatic pose struck in a stone-throwing posture. Famous from Benkei in Kanjincho."
+    },
+    {
+      "term": "板につく（いたにつく）",
+      "reading": "いたにつく",
+      "term_en": "Ita ni tsuku",
+      "desc": "【歌舞伎では】役者の演技が舞台（板）にしっくり馴染むこと。経験を積んだ役者の芸を褒める表現。【現代では】地位や役割にふさわしい振る舞いが自然にできている様子。",
+      "desc_en": "[In Kabuki] When an actor's performance fits naturally on the stage (ita = boards). A compliment for a seasoned performer. [Today] To look natural and fitting in one's role or position.",
+      "category": "由来語"
+    },
+    {
+      "term": "一枚看板（いちまいかんばん）",
+      "reading": "いちまいかんばん",
+      "term_en": "Ichimai kanban",
+      "desc": "【歌舞伎では】芝居小屋の看板に名前が大きく書かれる一座の代表的な役者。【現代では】組織やチームの中心人物、看板的存在。",
+      "desc_en": "[In Kabuki] The star actor whose name appears largest on the theater's billboard. [Today] The face of an organization; the star player.",
+      "category": "由来語"
+    },
+    {
+      "term": "市松模様（いちまつもよう）",
+      "reading": "いちまつもよう",
+      "term_en": "Ichimatsu moyo",
+      "desc": "【歌舞伎では】江戸時代の人気役者・初代佐野川市松が舞台で着用した袴の柄が大流行したことから。【現代では】二色の正方形を交互に並べたチェッカー柄。東京2020五輪のエンブレムにも採用。",
+      "desc_en": "[In Kabuki] From the hakama pattern worn by the popular Edo-era actor Sanogawa Ichimatsu I, which became a huge trend. [Today] A checkerboard pattern — also featured in the Tokyo 2020 Olympics emblem.",
+      "category": "由来語"
+    },
+    {
+      "term": "糸にノル（いとにのる）",
+      "reading": "いとにのる",
+      "term_en": "Ito ni Noru (Riding the Shamisen)",
+      "desc": "義太夫狂言で、太夫の語りや三味線のリズムに合わせて役者が演技すること。義太夫の「糸（三味線の弦）」に「ノル（乗る）」という意味。役者と演奏者の呼吸が一体となることで、義太夫狂言独特の深い情感が生まれる。",
+      "desc_en": "In gidayu-kyogen, the technique of an actor synchronizing their performance with the gidayu chanter's narration and shamisen rhythm. Literally 'riding the strings (of the shamisen).' When actor and musicians breathe as one, it creates the uniquely deep emotional quality of gidayu-kyogen."
+    },
+    {
+      "id": "iroaku",
+      "term": "色悪（いろあく）",
+      "term_en": "Iroaku (Handsome Villain)",
+      "reading": "いろあく",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "美男子でありながら悪事を働く役。色気と残酷さを兼ね備えた魅力的な悪役。斧定九郎などが有名。",
+      "desc_en": "A handsome man who commits evil deeds — a charismatic villain combining sensuality with cruelty. Ono Sadakuro is a famous example."
+    },
+    {
+      "term": "裏方（うらかた）",
+      "reading": "うらかた",
+      "term_en": "Urakata",
+      "desc": "【歌舞伎では】舞台裏で大道具・小道具・衣裳・照明など、表に見えない仕事を担当する人。【現代では】表に出ず、陰で組織や仕事を支える人。",
+      "desc_en": "[In Kabuki] Backstage crew handling sets, props, costumes, and lighting — the unseen workers. [Today] A behind-the-scenes supporter; someone who works out of the spotlight.",
+      "category": "由来語"
+    },
+    {
+      "id": "enoujisshu",
+      "term": "猿翁十種（えんおうじゅっしゅ）",
+      "term_en": "Eno Jisshu (Ten Plays of Eno)",
+      "reading": "えんおうじゅっしゅ",
+      "category": "家の芸",
+      "category_en": "House Specialties",
+      "desc": "初代市川猿翁（2代目猿之助）が創作・復活した舞踊と舞踊劇を、一周忌にあたる昭和39年に孫の3代目猿之助（現・2代目猿翁）が家の芸として制定したもの。\n悪太郎、黒塚、高野物狂（こうやものぐるい）、小鍛冶（こかじ）、独楽（こま）、二人三番叟（ににんさんばそう）、蚤取男（のみとりおとこ）、花見奴、酔奴（よいやっこ）、吉野山。",
+      "desc_en": "Ten dances and dance dramas created or revived by Ichikawa Ennosuke II, designated as house specialties by Ennosuke III in 1964. Includes Kurozuka, Yoshinoyama, and others."
+    },
+    {
+      "id": "enkiri",
+      "term": "縁切り（えんきり）",
+      "term_en": "Enkiri (Breaking Up)",
+      "reading": "えんきり",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "男女の別れを描く場面の様式。愛想尽かしとも。女が男に冷たく当たって別れを告げる。",
+      "desc_en": "A stylized scene depicting a couple's breakup, where a woman coldly rejects a man. Also called aisozukashi."
+    },
+    {
+      "term": "お家芸（おいえげい）",
+      "reading": "おいえげい",
+      "term_en": "Oie-gei",
+      "desc": "【歌舞伎では】各俳優の家に代々伝わる得意な演目や演技。「成田屋」なら荒事、「音羽屋」なら世話物など。【現代では】その人や組織の得意技、代名詞的な強み。",
+      "desc_en": "[In Kabuki] Signature plays and styles passed down through each acting family. [Today] One's specialty or signature skill; something an organization is known for.",
+      "category": "由来語"
+    },
+    {
+      "term": "大喜利（おおぎり）",
+      "reading": "おおぎり",
+      "term_en": "Ogiri",
+      "desc": "【歌舞伎では】歌舞伎の一日の興行の最後の演目「大切（おおぎり）」から。お客を楽しませて送り出す締めくくり。【現代では】寄席やバラエティ番組で出演者が知恵を競う即興コーナー。 ※歌舞伎の「大切」が語源とされるが、寄席芸能から発展した説もあり",
+      "desc_en": "[In Kabuki] From 'ogiri,' the final play of a kabuki program — the entertaining send-off for the audience. [Today] An improvisational comedy segment where performers compete with wit. *Note: 歌舞伎の「大切」が語源とされるが、寄席芸能から発展した説もあり",
+      "category": "由来語"
+    },
+    {
+      "term": "大詰め（おおづめ）",
+      "reading": "おおづめ",
+      "term_en": "Oozume",
+      "desc": "【歌舞伎では】歌舞伎の最終幕。物語のクライマックスが展開される場面。【現代では】物事の最終段階、決着がつく場面。",
+      "desc_en": "[In Kabuki] The final act of a kabuki play, where the climax unfolds. [Today] The final stage of something; the climax.",
+      "category": "由来語"
+    },
+    {
+      "id": "oomukou",
+      "term": "大向う（おおむこう）",
+      "term_en": "Omuko (Gallery Shouts)",
+      "reading": "おおむこう",
+      "category": "鑑賞",
+      "category_en": "Theatergoing",
+      "desc": "劇場三階の後方席のこと。転じて、見得の瞬間などに「○○屋！」と掛け声をかける人や行為を指す。",
+      "desc_en": "Originally refers to the back rows of the third floor. Now refers to the practice of shouting actors' house names (yago) like 'Naritaya!' during dramatic poses."
+    },
+    {
+      "term": "大向こうを唸らせる（おおむこうをうならせる）",
+      "reading": "おおむこうをうならせる",
+      "term_en": "Oomuko wo unaraseru",
+      "desc": "【歌舞伎では】劇場の最上階にいる目の肥えた常連客（大向こう）をも感嘆させるほどの名演技。【現代では】専門家や玄人をも感心させる見事な腕前。",
+      "desc_en": "[In Kabuki] A performance so superb it impresses even the discerning regulars in the uppermost gallery seats. [Today] To impress even experts and connoisseurs with one's skill.",
+      "category": "由来語"
+    },
+    {
+      "id": "okurisann_u",
+      "term": "送り三重（おくりさんじゅう）",
+      "term_en": "Okuri Sanju",
+      "reading": "おくりさんじゅう",
+      "category": "音・裏方",
+      "category_en": "Music & Backstage",
+      "desc": "花道を入る／引っ込む場面で、花道付け際で立って弾く三味線の型。人物の足取りに合わせて畳みかけ、愁いなどの気分を高める。",
+      "desc_en": "A shamisen pattern played standing at the edge of the hanamichi as an actor enters or exits, building emotional intensity to match the character's footsteps."
+    },
+    {
+      "id": "otokodate",
+      "term": "男伊達（おとこだて）",
+      "term_en": "Otokodate (Chivalrous Commoner)",
+      "reading": "おとこだて",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "江戸の町で無頼横暴を繰り返す「旗本奴」に対抗して、町奴と呼ばれた侠客たちが「男を立てる」ことを競った人物像。「御所五郎蔵」は町奴と旗本奴の対決、「極付幡随長兵衛」の幡随院長兵衛も旗本奴との争いで命を落とす。「助六由縁江戸桜」の花川戸助六も男伊達を象徴的に描いた格別のヒーロー。「伊達」の表記は、華やかな仙台伊達藩の行列姿から転じたという説がよく知られている。",
+      "desc_en": "A chivalrous commoner who stands up against the arrogant samurai class. Sukeroku from Sukeroku Yukari no Edo Zakura is the quintessential otokodate hero."
+    },
+    {
+      "term": "十八番（おはこ）",
+      "reading": "おはこ",
+      "term_en": "Ohako / Juhachiban",
+      "desc": "【歌舞伎では】七代目市川團十郎が選んだ市川家の得意演目18本「歌舞伎十八番」。その台本を桐の箱（はこ）に保管したことから「おはこ」とも。【現代では】最も得意な技や芸。「カラオケの十八番」",
+      "desc_en": "[In Kabuki] The 18 signature plays of the Ichikawa family. Scripts were stored in paulownia boxes ('hako'), hence 'ohako.' [Today] One's specialty or go-to skill. 'My go-to karaoke song.'",
+      "category": "由来語"
+    },
+    {
+      "term": "おひねり",
+      "reading": "おひねり",
+      "term_en": "Ohineri (Money Toss)",
+      "desc": "紙に包んだ祝儀を舞台上の役者に向かって投げる風習。地歌舞伎では現在も行われており、観客が役者への声援と感謝を直接伝える参加型の伝統。気良歌舞伎でもおひねりが飛び交い、客席と舞台が一体となって盛り上がる。",
+      "desc_en": "The custom of tossing paper-wrapped money onto the stage for actors. Still practiced in regional kabuki (jikabuki) today, it is a participatory tradition where audiences directly express appreciation. At Kera Kabuki, ohineri fly through the air, uniting audience and stage in shared excitement."
+    },
+    {
+      "id": "omodakajisshu",
+      "term": "澤瀉十種（おもだかじゅっしゅ）",
+      "term_en": "Omodaka Jisshu (Ten Plays of Omodaka)",
+      "reading": "おもだかじゅっしゅ",
+      "category": "家の芸",
+      "category_en": "House Specialties",
+      "desc": "猿翁十種と同様、初代市川猿翁の創作・新演出による舞踊を、1975年の十三回忌に因んで3代目猿之助が制定したもの。\n浮世風呂、武悪（ぶあく）、釣狐、夕顔棚、三人片輪、連獅子、檜垣、二人知盛、すみだ川、猪八戒（ちょはっかい）。",
+      "desc_en": "Ten dances designated by Ennosuke III in 1975, created by Ichikawa Ennosuke II. Includes Renjishi (Paired Lions), Tsuri Gitsune (The Fox Trap), and others."
+    },
+    {
+      "id": "oyama",
+      "term": "女形／女方（おやま／おんながた）",
+      "term_en": "Onnagata (Female Role Player)",
+      "reading": "おやま／おんながた",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "男性が女性役を演じる役柄・役者。所作や声色で女性像を表す。",
+      "desc_en": "A male actor who plays female roles, expressing femininity through gesture, movement, and voice."
+    },
+    {
+      "term": "御曹司（おんぞうし）",
+      "reading": "おんぞうし",
+      "term_en": "Onzoshi",
+      "desc": "【歌舞伎では】歌舞伎役者の家の跡取り息子を指す。名門一門の若手として注目される存在。【現代では】名家や有力者の息子。裕福な家庭の若者。 ※元は武家の子息を指す語。歌舞伎界で広く使われ現代に定着",
+      "desc_en": "[In Kabuki] The heir of a kabuki acting family, closely watched as the next generation. [Today] The son of a wealthy or powerful family; a privileged young man. *Note: 元は武家の子息を指す語。歌舞伎界で広く使われ現代に定着",
+      "category": "由来語"
+    },
+    {
+      "term": "顔が売れる（かおがうれる）",
+      "reading": "かおがうれる",
+      "term_en": "Kao ga ureru",
+      "desc": "【歌舞伎では】顔見世興行で名前と顔を売り出すことから。【現代では】有名になること、広く知られるようになること。",
+      "desc_en": "[In Kabuki] From kaomise performances where actors promoted their name and face. [Today] To become well-known; to gain fame.",
+      "category": "由来語"
+    },
+    {
+      "term": "顔見世（かおみせ）",
+      "reading": "かおみせ",
+      "term_en": "Kaomise (Face-Showing Performance)",
+      "desc": "1年の始まりに俳優のお披露目をする興行。江戸時代、俳優が芝居小屋と1年契約を結んでいた名残。現在は11月の歌舞伎座「吉例顔見世大歌舞伎」や12月の南座「吉例顔見世興行」が代表的。",
+      "desc_en": "A season-opening performance where actors are formally presented to the audience. A tradition from the Edo period when actors signed annual contracts with theaters. Today, the most famous are Kabukiza's November and Minamiza's December kaomise productions."
+    },
+    {
+      "id": "kakegoe",
+      "term": "掛け声（かけごえ）",
+      "term_en": "Kakegoe (Shouts of Encouragement)",
+      "reading": "かけごえ",
+      "category": "鑑賞",
+      "category_en": "Theatergoing",
+      "desc": "役者の見得や決めの瞬間に客席から飛ぶ「成田屋！」「音羽屋！」などの屋号の声。大向うとも。",
+      "desc_en": "Shouts from the audience calling out actors' house names like 'Naritaya!' or 'Otowaya!' at dramatic moments such as mie poses. Also called omuko."
+    },
+    {
+      "id": "kakoushu",
+      "term": "可江集（かこうしゅう）",
+      "term_en": "Kako-shu (Collection of Kako)",
+      "reading": "かこうしゅう",
+      "category": "家の芸",
+      "category_en": "House Specialties",
+      "desc": "15代目市村羽左衛門の俳名「可江」に因んだ家の芸。美しく華のある二枚目役者で、爽やかな口跡でひときわ人気を博した羽左衛門が得意とした白塗りの立役・二枚目・若衆の当り役を集めたもの。\n時代物では近江源氏先陣館の盛綱、石切梶原の梶原、源平布引滝の実盛、勧進帳の富樫。世話物では御所五郎蔵、すし屋の権太、お祭佐七、助六、仮名手本忠臣蔵の勘平、直侍、切られ与三郎など。",
+      "desc_en": "House specialties of Ichimura Uzaemon XV, named after his pen name 'Kako.' A collection of handsome lead and young man roles he excelled in, including Moritsuna, Togashi in Kanjincho, Sukeroku, and Kirare Yosa."
+    },
+    {
+      "id": "kasumimaku",
+      "term": "霞幕（かすみまく）",
+      "term_en": "Kasumimaku (Mist Curtain)",
+      "reading": "かすみまく",
+      "category": "舞台",
+      "category_en": "Stage",
+      "desc": "演奏者の出入りなどを隠すための幕。",
+      "desc_en": "A curtain used to conceal the entry and exit of musicians."
+    },
+    {
+      "id": "kata",
+      "term": "型（かた）",
+      "term_en": "Kata (Form/Style)",
+      "reading": "かた",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "役の演じ方として代々受け継がれてきた所作や動きの決まりごと。同じ演目でも、家や流派によって型が異なることがある。",
+      "desc_en": "Established forms of movement and gesture passed down through generations for performing specific roles. Different acting families may have different kata for the same play."
+    },
+    {
+      "id": "kataokajunishu",
+      "term": "片岡十二集（かたおかじゅうにしゅう）",
+      "term_en": "Kataoka Junishu (Twelve Plays of Kataoka)",
+      "reading": "かたおかじゅうにしゅう",
+      "category": "家の芸",
+      "category_en": "House Specialties",
+      "desc": "11代目片岡仁左衛門が明治30年代頃に自身の創意を加えて演じた演目で、当初は「新古演劇十二集」と称していた。\n馬切り、石田局、赤垣源蔵、菅公、清水清玄、吃の又平、一条大蔵卿、桜鍔恨鮫鞘（さくらつばうらみのさめざや）〜鰻谷、近頃河原の達引、紙子仕立両面鑑（かみこじたてりょうめんかがみ）〜大文字屋、木村長門守〜血判取、和気清麿（わけのきよまろ）。",
+      "desc_en": "Twelve plays designated by Kataoka Nizaemon XI in the 1890s, originally called 'Shinko Engeki Junishu.' Features plays he performed with his own creative interpretations."
+    },
+    {
+      "term": "肩書（かたがき）",
+      "reading": "かたがき",
+      "term_en": "Katagaki",
+      "desc": "【歌舞伎では】番付（配役表）で役者の名前の右肩に、所属する座本（劇場責任者）の名を書いたこと。名前の「肩」に「書く」が由来。【現代では】名刺などに書く役職や地位。",
+      "desc_en": "[In Kabuki] On the banzuke, the zamoto's name was written at the 'shoulder' of each actor's name — literally 'shoulder writing.' [Today] A job title or position written on business cards.",
+      "category": "由来語"
+    },
+    {
+      "id": "katakiyaku",
+      "term": "敵役（かたきやく）",
+      "term_en": "Katakiyaku (Villain)",
+      "reading": "かたきやく",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "主人公側に立ちはだかる対立役・悪役。",
+      "desc_en": "An antagonist or villain who opposes the protagonist."
+    },
+    {
+      "id": "katahazushi",
+      "term": "片はずし（かたはずし）",
+      "term_en": "Katahazushi",
+      "reading": "かたはずし",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "本来は鬘の名称で、武士の女房や武家に仕える女性の役に用いられるもの。転じてこの鬘を用いる女性の役柄名にもなった。「伽羅先代萩」の政岡、「加賀見山旧錦絵」の尾上などが代表。いずれも男の武士に勝るとも劣らぬ勇気と気骨、判断力を備えた気丈な女性たち。",
+      "desc_en": "Originally a wig style used for samurai wives and women serving warrior households. Also refers to the role type itself — strong, courageous women with resolve equal to any warrior, like Masaoka in Meiboku Sendai Hagi."
+    },
+    {
+      "id": "kabukijuhachiban",
+      "term": "歌舞伎十八番（かぶきじゅうはちばん）",
+      "term_en": "Kabuki Juhachiban (Eighteen Great Plays)",
+      "reading": "かぶきじゅうはちばん",
+      "category": "家の芸",
+      "category_en": "House Specialties",
+      "desc": "7代目市川團十郎が1832年（天保3年）に定めた、市川團十郎家の代表的な18演目。初代から4代目までの團十郎が初演し得意とした作品を集めたもの。\n暫（しばらく）、矢の根（やのね）、鎌髭（かまひげ）、勧進帳（かんじんちょう）、不動（ふどう）、七つ面（ななつめん）、鳴神（なるかみ）、助六（すけろく）、蛇柳（じゃやなぎ）、象引（ぞうひき）、押戻（おしもどし）、解脱（げだつ）、毛抜（けぬき）、景清（かげきよ）、嫐（うわなり）、関羽（かんう）、不破（ふわ）、外郎売（ういろううり）。",
+      "desc_en": "Eighteen signature plays of the Ichikawa Danjuro family, designated by Danjuro VII in 1832. Includes Kanjincho, Sukeroku, Shibaraku, Narukami, and other masterpieces originally performed by Danjuro I through IV."
+    },
+    {
+      "id": "kamishimo",
+      "term": "裃（かみしも）",
+      "term_en": "Kamishimo (Formal Samurai Attire)",
+      "reading": "かみしも",
+      "category": "衣装・小道具",
+      "category_en": "Costumes & Props",
+      "desc": "武士の正装。肩衣（かたぎぬ）と袴のセット。時代物の武士が着用する。",
+      "desc_en": "Formal samurai attire consisting of a shoulder vest (kataginu) and hakama trousers. Worn by warriors in period plays."
+    },
+    {
+      "id": "kamite",
+      "term": "上手（かみて）",
+      "term_en": "Kamite (Stage Right)",
+      "reading": "かみて",
+      "category": "舞台",
+      "category_en": "Stage",
+      "desc": "客席から見て右側。",
+      "desc_en": "The right side of the stage as seen from the audience."
+    },
+    {
+      "term": "勘亭流（かんていりゅう）",
+      "reading": "かんていりゅう",
+      "term_en": "Kanteiryu (Kabuki Calligraphy)",
+      "desc": "歌舞伎の看板や番付に使われる独特の書体。1779年（安永8年）に書家の岡崎屋勘六が考案したとされる。太く丸みを帯びた筆致で隙間なく書くのが特徴で、「客席が隙間なく埋まるように」という願いが込められている。",
+      "desc_en": "The distinctive calligraphy style used on kabuki signboards and programs. Said to have been created by calligrapher Okazakiya Kanroku in 1779. Characterized by thick, rounded strokes with no gaps between characters — embodying the wish that 'every seat in the theater be filled.'"
+    },
+    {
+      "term": "楽屋落ち（がくやおち）",
+      "reading": "がくやおち",
+      "term_en": "Gakuya ochi",
+      "desc": "【歌舞伎では】楽屋（控え室）の内輪だけがわかるネタや冗談。【現代では】内輪にしか通じない話やギャグ。",
+      "desc_en": "[In Kabuki] Inside jokes that only those in the dressing room (gakuya) would understand. [Today] An inside joke; humor that only insiders would get.",
+      "category": "由来語"
+    },
+    {
+      "id": "ra",
+      "term": "ガラ／柄（がら）",
+      "term_en": "Gara (Physical Presence)",
+      "reading": "がら",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "役者の体格・顔立ち・雰囲気など、役に説得力を与える「柄」。\n言い方：「ガラがいい」＝その役に向いている。",
+      "desc_en": "An actor's physique, looks, and aura that lend credibility to a role. 'Gara ga ii' means an actor is well-suited for a particular role."
+    },
+    {
+      "id": "ganjiroujunikyoku",
+      "term": "玩辞楼十二曲（がんじろうじゅうにきょく）",
+      "term_en": "Ganjiro Junikyoku (Twelve Plays of Ganjiro)",
+      "reading": "がんじろうじゅうにきょく",
+      "category": "家の芸",
+      "category_en": "House Specialties",
+      "desc": "初代中村鴈治郎の当り役を選んだもので、制定時期は大正10年頃。「玩辞楼」は鴈治郎をもじったもの。\n河庄（かわしょう）、時雨の炬燵（しぐれのこたつ）、封印切（ふういんきり）、恋の湖、敵討襤褸錦（かたきうちつづれのにしき）、あかね染、碁盤（ごばん）太平記、土屋主税（つちやちから）、椀久末松山（わんきゅうすえのまつやま）、藤十郎の恋、廓文章（くるわぶんしょう）、引窓（ひきまど）。",
+      "desc_en": "Twelve plays designated as the signature works of Nakamura Ganjiro I, established around 1921. Includes Kawasho, Fuuinkiri, and other Kamigata-style masterpieces."
+    },
+    {
+      "id": "ki",
+      "term": "拍子木／柝（き）",
+      "term_en": "Ki (Wooden Clappers)",
+      "reading": "き",
+      "category": "音・裏方",
+      "category_en": "Music & Backstage",
+      "desc": "開演や転換などの合図として打つ木の音。",
+      "desc_en": "Wooden clappers struck to signal the start of a performance, scene changes, and other cues."
+    },
+    {
+      "id": "ikioji",
+      "term": "勢い（きおい）",
+      "term_en": "Kioi (Spirited Man)",
+      "reading": "きおい",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "もとは「きほい」と表記し「競い」とも書いた。競うような激しい勢いの気風を持つ人を「勢い肌」と言い、略して「勢い」とも。歌舞伎では「盲長屋梅加賀鳶」「め組の喧嘩」などに登場する鳶職人や火消しのように、危険を顧みず命を賭して火の中・水の中に飛び込んでいく勇気ある男の役を指す。吉原の太夫の「張り」と「意気地」、深川の芸者の「鉄火」に通じる江戸の美意識。",
+      "desc_en": "A role type representing courageous, spirited men like firefighters and roofers who fearlessly rush into danger. Embodies the Edo aesthetic of bold masculine pride, seen in plays like Kaga Tobi and Me-gumi no Kenka."
+    },
+    {
+      "id": "ki_wamono",
+      "term": "生世話物（きぜわもの）",
+      "term_en": "Kizewamono (Raw Domestic Drama)",
+      "reading": "きぜわもの",
+      "category": "ジャンル",
+      "category_en": "Genres",
+      "desc": "世話物の中でも、より写実的な作風。",
+      "desc_en": "A subgenre of sewamono (domestic drama) with an even more realistic and gritty style."
+    },
+    {
+      "id": "kitunero_u",
+      "term": "狐六方（きつねろっぽう）",
+      "term_en": "Kitsune Roppo (Fox-Style Exit)",
+      "reading": "きつねろっぽう",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "狐らしいしぐさで花道を引っ込む六方。『義経千本桜』の源九郎狐などで有名。",
+      "desc_en": "A roppo (stylized exit along the hanamichi) performed with fox-like gestures. Famous from the fox Genkuro in Yoshitsune Senbon Zakura."
+    },
+    {
+      "id": "kyoukagikyokujisshu",
+      "term": "杏花戯曲十種（きょうかぎきょくじゅっしゅ）",
+      "term_en": "Kyoka Gikyoku Jisshu (Ten Plays of Kyoka)",
+      "reading": "きょうかぎきょくじゅっしゅ",
+      "category": "家の芸",
+      "category_en": "House Specialties",
+      "desc": "2代目市川左團次の俳名「杏花」に因んだ家の芸。「松莚戯曲十種」とも。左團次の当り芸には数々の新歌舞伎があり、十種の内6作が岡本綺堂の作。\n修禅寺物語、佐々木高綱、鳥辺山心中、番町皿屋敷、尾上伊太八、新宿夜話、今様薩摩歌、文覺。",
+      "desc_en": "House specialties of Ichikawa Sadanji II, named after his pen name 'Kyoka.' Six of the ten are by playwright Okamoto Kido, including Shuzenji Monogatari and Bancho Sarayashiki."
+    },
+    {
+      "id": "yuu",
+      "term": "義太夫（ぎだゆう）",
+      "term_en": "Gidayu (Narrative Chanting)",
+      "reading": "ぎだゆう",
+      "category": "音・裏方",
+      "category_en": "Music & Backstage",
+      "desc": "竹本義太夫が大成した語りと三味線による音楽形式。太夫（語り手）と三味線方の二人一組で物語を語り進める。人形浄瑠璃（文楽）から移入され、歌舞伎の時代物には欠かせない音楽。義太夫が入る歌舞伎を「義太夫狂言」「丸本物」と呼ぶ。",
+      "desc_en": "A narrative music form perfected by Takemoto Gidayu, performed by a chanter (tayu) and shamisen player as a duo. Originally from bunraku puppet theater, it became essential for kabuki period plays. Kabuki works featuring gidayu are called 'gidayu kyogen' or 'maruhon mono.'"
+    },
+    {
+      "id": "kudoki",
+      "term": "口説き（くどき）",
+      "term_en": "Kudoki (Lament)",
+      "reading": "くどき",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "女性が心の内を切々と訴える長い嘆きの場面。義太夫の節に乗せて演じる女形の見せ場。",
+      "desc_en": "A long, emotional lament where a woman pours out her innermost feelings. A showcase scene for onnagata, performed to gidayu chanting."
+    },
+    {
+      "id": "kunizuzshi",
+      "term": "国崩し（くにくずし）",
+      "term_en": "Kunikuzushi (Nation-Toppling Villain)",
+      "reading": "くにくずし",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "敵役の中でもとりわけ大物で、一国一城を揺るがし乗っ取りを企むお家騒動の首謀者の役柄。敵役とはいえ眼力などの凄みや立派さが求められ、座頭格や主役級の俳優が勤める。代表的な役は「祇園祭礼信仰記」の松永大膳、「伽羅先代萩」の仁木弾正など。鬘は「王子」や「燕手（えんで）」が主に用いられる。",
+      "desc_en": "The grandest villain type — a mastermind plotting to overthrow an entire domain. Despite being evil, the role demands commanding presence and is played by top-ranking actors. Nikki Danjo in Meiboku Sendai Hagi is a famous example."
+    },
+    {
+      "id": "kuma_ri",
+      "term": "隈取（くまどり）",
+      "term_en": "Kumadori (Face Painting)",
+      "reading": "くまどり",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "歌舞伎の特徴的な化粧法で、筋肉や血管の隆起を誇張して描く。「隈を描く」ではなく「隈を取る」と言う。色に意味があり、紅隈（赤）は正義・勇気・若さ、藍隈（青）は悪人・怨霊・冷酷さ、茶隈は鬼や精霊などの変化（へんげ）を表す。猿隈は滑稽味のある役に用いる特殊な隈。荒事の主人公や敵役に用いられる。",
+      "desc_en": "Kabuki's most distinctive face painting technique, exaggerating the lines of muscles and blood vessels. The term literally means 'taking shadows' (not 'drawing'). Colors carry specific meanings: beniguma (red) represents justice and heroism; aiguma (indigo/blue) represents villains and vengeful spirits; chaguma (brown) indicates demons and supernatural transformations; saruguma (monkey pattern) is used for comical roles. Primarily seen in aragoto-style performances."
+    },
+    {
+      "id": "kuro",
+      "term": "黒衣（くろご）",
+      "term_en": "Kurogo (Black-Clad Stagehand)",
+      "reading": "くろご",
+      "category": "音・裏方",
+      "category_en": "Music & Backstage",
+      "desc": "後見の一種で、黒色の衣裳で全身を包み俳優の演技を補助する役。歌舞伎では「黒は見えない」という約束事があり、観客からは存在しないものとして扱われる。衣裳替えや小道具の受け渡し、差金の操作などを行う。",
+      "desc_en": "A type of stage assistant dressed entirely in black who helps actors during performance. Under kabuki's convention that 'black is invisible,' the audience treats them as if they don't exist. They handle costume changes, prop handoffs, and puppet rod operations."
+    },
+    {
+      "term": "黒幕（くろまく）",
+      "reading": "くろまく",
+      "term_en": "Kuromaku",
+      "desc": "【歌舞伎では】夜の場面や場面転換で使う黒い幕。舞台の裏側で場面を操作する。【現代では】表に出ず、陰で人や組織を操る人物。",
+      "desc_en": "[In Kabuki] A black curtain used for night scenes or scene changes, controlling the stage from behind. [Today] A mastermind; someone pulling strings from behind the scenes.",
+      "category": "由来語"
+    },
+    {
+      "id": "kuromisu",
+      "term": "黒御簾（くろみす）",
+      "term_en": "Kuromisu (Music Room)",
+      "reading": "くろみす",
+      "category": "音・裏方",
+      "category_en": "Music & Backstage",
+      "desc": "下手側で音楽や効果音を演奏する場所。",
+      "desc_en": "A screened-off room on stage left where musicians play music and sound effects."
+    },
+    {
+      "id": "keisei",
+      "term": "傾城（けいせい）",
+      "term_en": "Keisei (Top-Rank Courtesan)",
+      "reading": "けいせい",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "最高位の遊女の役柄で、その美しさや賢さは群を抜き、当時の女性の理想像ともいえる存在。語源は漢の時代にさかのぼり、一国一城をも傾けるほどの美人の譬え。初代芳沢あやめは、女方は傾城の役が表現できればひとつの完成と述べており、女方芸の頂点とされた。初代坂田藤十郎の「夕霧名残の正月」以来「傾城買い狂言」が上方芝居の特徴となり、やがて和事という芸風が確立していった。江戸時代、上方の正月芝居には「傾城」の字が必ず入れられる約束だった。",
+      "desc_en": "The highest-ranking courtesan role, representing the pinnacle of feminine beauty and wisdom. The term literally means 'city-toppler' — a beauty so stunning she could bring down kingdoms. Mastering this role was considered the ultimate achievement for onnagata actors."
+    },
+    {
+      "id": "kesimaku",
+      "term": "消し幕（けしまく）",
+      "term_en": "Keshimaku (Vanishing Curtain)",
+      "reading": "けしまく",
+      "category": "舞台",
+      "category_en": "Stage",
+      "desc": "幕の開閉で人物や景を見えなくする演出。",
+      "desc_en": "A curtain technique that makes characters or scenery appear or disappear."
+    },
+    {
+      "id": "keren",
+      "term": "外連（けれん）",
+      "term_en": "Keren (Spectacular Tricks)",
+      "reading": "けれん",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "宙乗りや早替りなど、観客をあっと驚かせる仕掛けや演出のこと。",
+      "desc_en": "Spectacular theatrical tricks and effects designed to amaze the audience, such as flying through the air (chunori) or quick costume changes (hayagawari)."
+    },
+    {
+      "term": "ケレン味（けれんみ）",
+      "reading": "けれんみ",
+      "term_en": "Kerenmi",
+      "desc": "【歌舞伎では】宙乗り・早替わりなどの奇抜で大胆な演出。外連（けれん）は本来「ごまかし」の意味だが、歌舞伎ではエンタメ性の高い演出として肯定的に使われる。【現代では】はったりや虚飾。「ケレン味のない」は「実直で飾り気のない」の意。",
+      "desc_en": "[In Kabuki] Spectacular staging like flying or quick costume changes. Originally 'trickery,' in kabuki it's positive showmanship. [Today] Showmanship or bluff. 'Kerenmi no nai' means 'straightforward and unpretentious.'",
+      "category": "由来語"
+    },
+    {
+      "id": "下座",
+      "term": "下座／下座音楽（げざ）",
+      "term_en": "Geza (Offstage Music)",
+      "reading": "げざ",
+      "category": "音・裏方",
+      "category_en": "Music & Backstage",
+      "desc": "場面音楽や効果音の総称。",
+      "desc_en": "A general term for scene music and sound effects played from offstage."
+    },
+    {
+      "id": "nnrokumie",
+      "term": "元禄見得（げんろくみえ）",
+      "term_en": "Genroku Mie (Genroku-Style Pose)",
+      "reading": "げんろくみえ",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "右手を水平に伸ばし、左手を上にかざして左足を大きく踏み出す見得。歌舞伎十八番『暫』の鎌倉権五郎などで有名。",
+      "desc_en": "A dramatic pose with the right arm extended horizontally and the left hand raised overhead while stepping forward with the left foot. Famous from Kamakura Gongoro in Shibaraku."
+    },
+    {
+      "id": "koukajisshu",
+      "term": "高賀十種（こうがじゅっしゅ）",
+      "term_en": "Koga Jisshu (Ten Plays of Koga)",
+      "reading": "こうがじゅっしゅ",
+      "category": "家の芸",
+      "category_en": "House Specialties",
+      "desc": "7代目澤村宗十郎の俳名「高賀」に因んだ家の芸で、制定時期は1947年（昭和22年）頃。江戸の和事を得意とした5代目以来の味わいが生きる演目。\n苅萱道心（かるかやどうしん）、伊勢音頭、神霊矢口渡（しんれいやぐちのわたし）、鈴木主水（すずきもんど）、鶯塚（うぐいすづか）、八重桐廓話（やえぎりくるわばなし）、忠節女夫松（ちゅうせつめおとまつ）、蘭蝶（らんちょう）、紀国文左大尽舞（きのくにぶんざだいじんまい）。",
+      "desc_en": "House specialties of Sawamura Sojuro VII, named after his pen name 'Koga,' established around 1947. Features plays in the Edo wagoto style passed down from Sojuro V."
+    },
+    {
+      "term": "後見（こうけん）",
+      "reading": "こうけん",
+      "term_en": "Koken (Stage Assistant)",
+      "desc": "俳優の影のように動き、演技が滞りなく進むよう補助する役。小道具の受け渡し、衣裳替えの手伝い、差金の操作などを行う。裃姿の「裃後見」と黒装束の「黒衣」がある。",
+      "desc_en": "An on-stage assistant who moves like the actor's shadow, ensuring the performance runs smoothly. Handles prop handoffs, costume changes, and puppetry rod operations. Appears either in formal kamishimo attire or as a black-clad kurogo."
+    },
+    {
+      "id": "koujou",
+      "term": "口上（こうじょう）",
+      "term_en": "Kojo (Stage Address)",
+      "reading": "こうじょう",
+      "category": "鑑賞",
+      "category_en": "Theatergoing",
+      "desc": "せりふではなく、舞台上から役者が直接観客に向かって述べる挨拶。口上だけで一幕とすることもあり、芝居の途中で出演者が揃って客席に向いて述べるのを「劇中口上」と呼ぶ。最もおなじみなのは襲名や初舞台といった慶事の披露口上。「東西東西」に始まり「隅から隅までずずずい〜っと希い上げ奉りまする」と結ぶのが定型。幕切れで「まず今日はこれぎり」と述べるのを「切り口上」といい、日常会話にも取り入れられている。",
+      "desc_en": "A formal address where actors speak directly to the audience rather than in character. Most commonly seen at name succession ceremonies (shumei). The ritualized greeting begins with 'Tozai, tozai!' and ends with a humble request for the audience's continued patronage."
+    },
+    {
+      "term": "こけら落とし（こけらおとし）",
+      "reading": "こけらおとし",
+      "term_en": "Kokera otoshi",
+      "desc": "【歌舞伎では】新築の劇場で行う最初の興行。「こけら」は建築で出る木の削りくずで、完成時に落とすことから。【現代では】新しい施設の開業イベント。スタジアムや美術館にも使う。",
+      "desc_en": "[In Kabuki] The inaugural performance at a newly built theater. 'Kokera' means wood shavings brushed off at construction completion. [Today] An opening event for a new facility — used for stadiums, galleries, etc.",
+      "category": "由来語"
+    },
+    {
+      "id": "koroshiba",
+      "term": "殺し場（ころしば）",
+      "term_en": "Koroshiba (Murder Scene)",
+      "reading": "ころしば",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "人を殺める場面。世話物では凄惨に、時代物では様式的に演じられることが多い。",
+      "desc_en": "A scene depicting a killing. In sewamono it tends to be grimly realistic; in jidaimono it is more stylized."
+    },
+    {
+      "term": "差金（さしがね）",
+      "reading": "さしがね",
+      "term_en": "Sashigane (Puppetry Rod)",
+      "desc": "竹棒の先に蝶や鳥、人魂などをつけて操る歌舞伎独特の小道具。『鏡獅子』では蝶が獅子のまわりを飛ぶ様子を表現する。後見が操作する。",
+      "desc_en": "A unique kabuki prop consisting of a bamboo rod with butterflies, birds, or spirit flames attached to the tip. In Kagami Jishi, it creates the illusion of butterflies fluttering around the lion. Operated by a koken stage assistant."
+    },
+    {
+      "term": "差し金（さしがね）",
+      "reading": "さしがね",
+      "term_en": "Sashigane",
+      "desc": "【歌舞伎では】竹の棒の先に蝶や鳥をつけて操る小道具。後見が裏から操作する。【現代では】裏で人を操ること。「あいつの差し金だろう」のように使う。",
+      "desc_en": "[In Kabuki] A prop — a bamboo rod with a butterfly or bird attached, manipulated from behind by a stage assistant. [Today] To manipulate someone behind the scenes. 'It must be his doing.'",
+      "category": "由来語"
+    },
+    {
+      "term": "桟敷（さじき）",
+      "reading": "さじき",
+      "term_en": "Sajiki (Box Seats)",
+      "desc": "歌舞伎座や南座などにある、客席の左右に位置する一段高い特別席。掘りごたつ式でゆったりと観劇できる。江戸時代から続く伝統的な客席形式。",
+      "desc_en": "Elevated box seats located on either side of the auditorium in traditional kabuki theaters. Offering a spacious, relaxed viewing experience in a sunken-floor style, these prestigious seats date back to the Edo period."
+    },
+    {
+      "id": "sabakiyaku",
+      "term": "捌き役（さばきやく）",
+      "term_en": "Sabakiyaku (Problem Solver)",
+      "reading": "さばきやく",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "実事の中でもとりわけ思慮分別に富み人情に厚く、主に芝居の終盤に登場して颯爽と事件を解決する役。演じる側も観客も爽やかになれる得な役柄。「伽羅先代萩」の細川勝元、「阿古屋」の畠山重忠、「新薄雪物語」の葛城民部などが代表。",
+      "desc_en": "A wise and compassionate character who appears toward the end of a play to resolve conflicts with style and authority. A gratifying role for both actor and audience. Hosokawa Katsumoto in Meiboku Sendai Hagi is a classic example."
+    },
+    {
+      "term": "鞘当て（さやあて）",
+      "reading": "さやあて",
+      "term_en": "Sayaate",
+      "desc": "【歌舞伎では】二人の武士がすれ違う時に刀の鞘がぶつかり、争いになる場面。恋敵同士の対立を描くことが多い。【現代では】同じ相手をめぐって争うこと。恋愛の三角関係。",
+      "desc_en": "[In Kabuki] A scene where two samurai's scabbards collide as they pass, sparking a fight — often depicting romantic rivalry. [Today] A love triangle; rivalry over the same person.",
+      "category": "由来語"
+    },
+    {
+      "id": "sanbaba",
+      "term": "三婆（さんばばあ）",
+      "term_en": "Sanbaba (Three Great Old Women)",
+      "reading": "さんばばあ",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "老女役の中でもとりわけ演じどころが多く役作りが難しいとされる三つの大役。「菅原伝授手習鑑」の覚寿、「近江源氏先陣館」の微妙（みみょう）、「本朝廿四孝」の越路。いずれも武家社会においてお家の大望を背負った、気骨のある老女たち。",
+      "desc_en": "Three of the most challenging elderly woman roles in kabuki: Kakuju in Sugawara, Mimyo in Omi Genji, and Koshiji in Honcho Nijushiko. All are strong-willed women bearing the weight of their families' fates."
+    },
+    {
+      "id": "sanhime",
+      "term": "三姫（さんひめ）",
+      "term_en": "Sanhime (Three Great Princesses)",
+      "reading": "さんひめ",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "歌舞伎の中でも大役とされる三つの代表的なお姫様役。「本朝廿四孝」の八重垣姫、「鎌倉三代記」の時姫、「祇園祭礼信仰記」の雪姫。いずれも気高く美しく、厳しい状況の中で懸命に生き抜く情熱と奇跡を巻き起こす強さを発揮する。八重垣姫は狐の法力で湖上を羽ばたき、雪姫は足先で描いた鼠に魂が宿って救われるという幻想的な場面が展開する。",
+      "desc_en": "Three of kabuki's greatest princess roles: Yaegaki-hime, Toki-hime, and Yuki-hime. Each is noble, beautiful, and demonstrates extraordinary strength and passion in desperate situations, including fantastical scenes of supernatural rescue."
+    },
+    {
+      "id": "sanmaime",
+      "term": "三枚目（さんまいめ）",
+      "term_en": "Sanmaime (Comic Role)",
+      "reading": "さんまいめ",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "滑稽な役やコミカルな脇役のこと。番付の三枚目に道化役の名が載ったことが語源。",
+      "desc_en": "A comic or funny supporting role. The term originates from the comic actor's name appearing on the third sheet of the program (banzuke)."
+    },
+    {
+      "id": "zagashira",
+      "term": "座頭（ざがしら）",
+      "term_en": "Zagashira (Company Leader)",
+      "reading": "ざがしら",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "一座の中心となるトップの役者。公演全体の責任を担う。",
+      "desc_en": "The leading actor of a company, responsible for the entire production."
+    },
+    {
+      "id": "simote",
+      "term": "下手（しもて）",
+      "term_en": "Shimote (Stage Left)",
+      "reading": "しもて",
+      "category": "舞台",
+      "category_en": "Stage",
+      "desc": "客席から見て左側。",
+      "desc_en": "The left side of the stage as seen from the audience."
+    },
+    {
+      "id": "shuzanjisshu",
+      "term": "秀山十種（しゅうざんじゅっしゅ）",
+      "term_en": "Shuzan Jisshu (Ten Plays of Shuzan)",
+      "reading": "しゅうざんじゅっしゅ",
+      "category": "家の芸",
+      "category_en": "House Specialties",
+      "desc": "初代中村吉右衛門の俳名「秀山」に因んだ家の芸。「清正役者」と言われた初代吉右衛門ならではの特色が見られ、多くが加藤清正に因む演目で構成されている。「十種」と呼ばれながらも制定されているのは六演目。\n二条城の清正、蔚山城（うるさんじょう）の清正、熊本城の清正、弥作の鎌腹（やさくのかまばら）、清正誠忠録（きよまさせいちゅうろく）、松浦の太鼓。",
+      "desc_en": "House specialties of Nakamura Kichiemon I, named after his pen name 'Shuzan.' Known as the 'Kiyomasa actor,' most plays feature Kato Kiyomasa. Despite being called 'ten plays,' only six are officially designated."
+    },
+    {
+      "term": "愁嘆場（しゅうたんば）",
+      "reading": "しゅうたんば",
+      "term_en": "Shutanba (Grief Scene)",
+      "desc": "登場人物が悲しみや苦悩を表す嘆きの場面。親子の別れ、忠義と情の板挟みなど、義太夫狂言に多く見られる。観客の涙を誘う歌舞伎の見せ場のひとつ。『寺子屋』の松王丸の嘆き、『熊谷陣屋』の相模の嘆きなどが代表的。",
+      "desc_en": "A scene of grief and lamentation, where characters express deep sorrow. Common in gidayu-kyogen, depicting parent-child separations or agonizing conflicts between duty and emotion. One of kabuki's most moving scene types. Famous examples include Matsuomaru's grief in Terakoya and Sagami's lament in Kumagai Jinya."
+    },
+    {
+      "term": "襲名（しゅうめい）",
+      "reading": "しゅうめい",
+      "term_en": "Shumei (Name Succession)",
+      "desc": "俳優が先祖や父兄、師匠が名のっていた名前を受け継ぐこと。歌舞伎界最大の慶事のひとつで、披露口上を伴う襲名披露興行が行われる。名前だけでなく型や芸風も受け継がれていく。",
+      "desc_en": "The ceremony of an actor inheriting the stage name of an ancestor, parent, or master. One of kabuki's most celebrated traditions, marked by special performances featuring formal stage addresses. Not just names but artistic styles and kata are passed down."
+    },
+    {
+      "term": "修羅場（しゅらば）",
+      "reading": "しゅらば",
+      "term_en": "Shuraba",
+      "desc": "【歌舞伎では】能・歌舞伎で合戦の場面を描く「修羅物」から。仏教の阿修羅が戦う世界を再現する勇壮な演目。【現代では】激しい争いや混乱の場。「浮気がバレて修羅場に」のようにも使う。 ※元は仏教用語。能の「修羅物」を経て歌舞伎にも取り入れられた",
+      "desc_en": "[In Kabuki] From 'shura-mono' (battle plays) in noh and kabuki, depicting the fierce world of the Buddhist Ashura. [Today] A scene of fierce conflict or chaos. Also used for dramatic personal confrontations. *Note: 元は仏教用語。能の「修羅物」を経て歌舞伎にも取り入れられた",
+      "category": "由来語"
+    },
+    {
+      "term": "正念場（しょうねんば）",
+      "reading": "しょうねんば",
+      "term_en": "Shonenba",
+      "desc": "【歌舞伎では】役者が本当の実力を見せる最も重要な場面。「性根場」とも書き、役の本質を表現する箇所。【現代では】ここぞという大事な局面。「人生の正念場」",
+      "desc_en": "[In Kabuki] The crucial scene where an actor must show their true skill — revealing the character's essence. [Today] A crucial moment; the make-or-break point.",
+      "category": "由来語"
+    },
+    {
+      "term": "所作事（しょさごと）",
+      "reading": "しょさごと",
+      "term_en": "Shosagoto (Dance Piece)",
+      "desc": "舞踊を中心とした演目の総称。長唄・常磐津・清元などの音楽に合わせて踊る。物語性のあるものを「舞踊劇」、純粋な踊りを「素踊り」と区別することもある。『京鹿子娘道成寺』『藤娘』『鏡獅子』などが代表的。",
+      "desc_en": "A general term for dance-centered works, performed to nagauta, tokiwazu, kiyomoto, and other music. Narrative dances may be called 'buyo-geki' (dance drama) while pure dances are 'su-odori.' Representative works include Musume Dojoji, Fuji Musume, and Kagami Jishi."
+    },
+    {
+      "term": "初日（しょにち）",
+      "reading": "しょにち",
+      "term_en": "Shonichi (Opening Day)",
+      "desc": "公演の初日。初日の幕が開くことを「初日が明く」という。役者にとって最も緊張する日であり、楽屋には関係者から届く祝いの品が並ぶ。初日と千秋楽は特別な日として大切にされる。",
+      "desc_en": "The opening day of a performance run. The expression 'shonichi ga aku' (the first day opens) describes the curtain rising. The most nerve-wracking day for actors, with dressing rooms filled with congratulatory gifts. Along with closing night, it holds special significance."
+    },
+    {
+      "id": "shinkabukijuhachiban",
+      "term": "新歌舞伎十八番（しんかぶきじゅうはちばん）",
+      "term_en": "Shin Kabuki Juhachiban (New Eighteen)",
+      "reading": "しんかぶきじゅうはちばん",
+      "category": "家の芸",
+      "category_en": "House Specialties",
+      "desc": "7代目團十郎が「歌舞伎十八番」に続く新たな構想を立て、9代目團十郎が完結させた。多くが能に取材した舞踊劇と活歴劇で構成されている。「十八番」を得意芸と解釈しており、実際には三十二演目以上にのぼる。\n虎の巻、蓮生物語、地震加藤、釣狐、高時、船弁慶、鏡獅子、紅葉狩など。",
+      "desc_en": "A second set of signature plays for the Danjuro family, conceived by Danjuro VII and completed by Danjuro IX. Despite the name 'eighteen,' it actually contains over 32 plays, many adapted from Noh. Includes Kagami Jishi and Momijigari."
+    },
+    {
+      "id": "shinkoengeikjisshu",
+      "term": "新古演劇十種（しんこえんげきじゅっしゅ）",
+      "term_en": "Shinko Engeki Jisshu (Ten Plays of Onoe)",
+      "reading": "しんこえんげきじゅっしゅ",
+      "category": "家の芸",
+      "category_en": "House Specialties",
+      "desc": "5代目尾上菊五郎が制定した尾上菊五郎家の家の芸。團十郎家の歌舞伎十八番に対抗して定められた。代々の得意芸というより、5代目が創作初演した妖怪変化の舞踊劇で構成されており、最後に6代目菊五郎が加えた「身替座禅」だけが異なるテーマ。\n土蜘（つちぐも）、一つ家、羅漢（らかん）、刑部姫（おさかべひめ）、古寺（ふるでら）の猫、茨木（いばらき）、戻橋（もどりばし）、菊慈童（きくじどう）、羽衣（はごろも）、身替座禅（みがわりざぜん）。",
+      "desc_en": "House specialties of the Onoe Kikugoro family, established by Kikugoro V to rival the Danjuro family's Eighteen Great Plays. Composed mainly of supernatural dance dramas featuring ghosts and demons. Includes Tsuchigumo (The Ground Spider) and Ibaraki."
+    },
+    {
+      "id": "shinboutachiyaku",
+      "term": "辛抱立役（しんぼうたちやく）",
+      "term_en": "Shinbo Tachiyaku (Enduring Hero)",
+      "reading": "しんぼうたちやく",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "どんなに苦しくても耐え忍ぶ、我慢強い主人公の役柄。勘平や勝五郎などが代表的。",
+      "desc_en": "A male lead who endures suffering with patience and dignity, no matter how painful the circumstances. Kampei in Chushingura is a classic example."
+    },
+    {
+      "id": "imono",
+      "term": "時代物（じだいもの）",
+      "term_en": "Jidaimono (Period/Historical Play)",
+      "reading": "じだいもの",
+      "category": "ジャンル",
+      "category_en": "Genres",
+      "desc": "歴史上の人物や事件を題材にした作品。",
+      "desc_en": "Plays based on historical figures and events, typically set in the warrior class."
+    },
+    {
+      "id": "jitsuaku",
+      "term": "実悪（じつあく）",
+      "term_en": "Jitsuaku (True Villain)",
+      "reading": "じつあく",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "冷酷でスケールの大きい本格的な悪役。知性と威厳を備えた大物の悪人。仁木弾正などが代表格。",
+      "desc_en": "A full-scale villain of grand proportions — cold, calculating, yet commanding respect with intelligence and dignity. Nikki Danjo is the prime example."
+    },
+    {
+      "id": "jitsugoto",
+      "term": "実事（じつごと）",
+      "term_en": "Jitsugoto (Man of Substance)",
+      "reading": "じつごと",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "立役の代表的な役どころで、思慮分別に富みしっかりと肚のすわった立派な人物。姿も凛々しく理想的な男性像ともいえるが、芝居の中では苦悩する様も見せる。荒事の力強さや和事のやわらか味とは異なり、極めて常識的で比較的写実に近い演技。代表的な役は「仮名手本忠臣蔵」の大星由良之助、「実盛物語」の斎藤別当実盛など。",
+      "desc_en": "A dignified, sensible male lead who carries himself with gravity and good judgment. Unlike the power of aragoto or the softness of wagoto, jitsugoto acting is relatively realistic. Oboshi Yuranosuke in Chushingura is the classic example."
+    },
+    {
+      "id": "usikimaku",
+      "term": "定式幕（じょうしきまく）",
+      "term_en": "Joshikimaku (Standard Curtain)",
+      "reading": "じょうしきまく",
+      "category": "舞台",
+      "category_en": "Stage",
+      "desc": "三色の縦縞が特徴的な歌舞伎の象徴的な引幕。別名：狂言幕（きょうげんまく）。",
+      "desc_en": "The iconic kabuki draw curtain with three vertical stripes. Also called kyogenmaku."
+    },
+    {
+      "term": "助六寿司（すけろくずし）",
+      "reading": "すけろくずし",
+      "term_en": "Sukeroku-zushi",
+      "desc": "【歌舞伎では】歌舞伎十八番『助六由縁江戸桜』の登場人物に由来。助六の恋人「揚巻（あげまき）」の名前から、「揚げ」（稲荷寿司）と「巻き」（海苔巻き）を組み合わせた寿司。【現代では】稲荷寿司と海苔巻きの詰め合わせ。スーパーやコンビニでもおなじみ。",
+      "desc_en": "[In Kabuki] Named after the kabuki play Sukeroku. 'Agemaki' splits into 'age' (fried tofu sushi) and 'maki' (rolled sushi). [Today] An assortment of inari sushi and nori rolls — a staple at supermarkets and convenience stores.",
+      "category": "由来語"
+    },
+    {
+      "id": "sujigaki",
+      "term": "筋書き（すじがき）",
+      "term_en": "Sujigaki (Program/Playbill)",
+      "reading": "すじがき",
+      "category": "鑑賞",
+      "category_en": "Theatergoing",
+      "desc": "公演のプログラム（パンフレット）のこと。あらすじや配役が載っている。",
+      "desc_en": "A performance program (pamphlet) containing synopses and cast information."
+    },
+    {
+      "id": "su_nn",
+      "term": "すっぽん（すっぽん）",
+      "term_en": "Suppon (Trapdoor Lift)",
+      "reading": "すっぽん",
+      "category": "舞台",
+      "category_en": "Stage",
+      "desc": "花道途中にあるせり上がり装置。怪異などの登場に使われる。",
+      "desc_en": "A trapdoor lift mechanism on the hanamichi, used for supernatural appearances like ghosts and spirits."
+    },
+    {
+      "term": "捨て台詞（すてぜりふ）",
+      "reading": "すてぜりふ",
+      "term_en": "Sute-zerifu",
+      "desc": "【歌舞伎では】台本にない台詞のこと。場をつなぐためや、役者同士のアドリブの掛け合いで即興的に発せられる台詞。台本から外れた「捨てる」台詞の意。【現代では】去り際に吐く捨て台詞、脅し文句。",
+      "desc_en": "[In Kabuki] Lines not in the script — improvised dialogue to fill gaps or ad-libbed exchanges between actors. [Today] A parting shot; a threatening remark made when leaving.",
+      "category": "由来語"
+    },
+    {
+      "id": "seisatu",
+      "term": "制札（せいさつ）",
+      "term_en": "Seisatsu (Proclamation Board)",
+      "reading": "せいさつ",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "命令やおふれが書かれた札（立札）。",
+      "desc_en": "A placard or notice board bearing official orders or proclamations."
+    },
+    {
+      "id": "seisatunomie",
+      "term": "制札の見得（せいさつのみえ）",
+      "term_en": "Seisatsu no Mie (Proclamation Board Pose)",
+      "reading": "せいさつのみえ",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "『熊谷陣屋』の名場面として知られる言い方（熊谷陣屋の文脈で扱う）。",
+      "desc_en": "A famous dramatic pose associated with Kumagai Jinya, where the protagonist poses beside a proclamation board."
+    },
+    {
+      "id": "semeba",
+      "term": "責め場（せめば）",
+      "term_en": "Semeba (Torture Scene)",
+      "reading": "せめば",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "善人が悪人に追い詰められ、苦しめられる場面。観客の同情を誘う見せ場。",
+      "desc_en": "A scene where a good person is cornered and tormented by a villain, designed to arouse the audience's sympathy."
+    },
+    {
+      "id": "seri",
+      "term": "セリ（せり）",
+      "term_en": "Seri (Stage Lift)",
+      "reading": "せり",
+      "category": "舞台",
+      "category_en": "Stage",
+      "desc": "舞台の一部を上下させる仕掛けで、登場人物を舞台下からせり上げたり、場面転換に使う。花道の「すっぽん」もセリの一種。大セリは舞台中央の大型のもので、建物ごとせり上がる迫力ある演出が可能。",
+      "desc_en": "A mechanism that raises or lowers part of the stage floor, used for dramatic character entrances from below or scene changes. The 'suppon' on the hanamichi is a type of seri. The large 'oseri' at center stage can lift entire sets for spectacular effects."
+    },
+    {
+      "term": "世話女房（せわにょうぼう）",
+      "reading": "せわにょうぼう",
+      "term_en": "Sewa-nyobo",
+      "desc": "【歌舞伎では】世話物に登場する、夫の面倒をよく見る健気な女房役。【現代では】甲斐甲斐しく夫の世話を焼く妻。",
+      "desc_en": "[In Kabuki] A devoted wife character in sewamono plays, diligently caring for her husband. [Today] A doting, attentive wife who takes great care of her husband.",
+      "category": "由来語"
+    },
+    {
+      "id": "sewamono",
+      "term": "世話物（せわもの）",
+      "term_en": "Sewamono (Domestic Drama)",
+      "reading": "せわもの",
+      "category": "ジャンル",
+      "category_en": "Genres",
+      "desc": "町人の暮らしや人情を描く、現実に近い世界の作品。",
+      "desc_en": "Plays depicting the daily lives and emotions of townspeople in a realistic setting."
+    },
+    {
+      "term": "千秋楽（せんしゅうらく）",
+      "reading": "せんしゅうらく",
+      "term_en": "Senshuraku (Closing Night)",
+      "desc": "公演の最終日。もともとは雅楽の最後に演奏する曲名に由来する。千秋楽には特別なカーテンコールや挨拶が行われることもあり、普段とは違った雰囲気で盛り上がる。「楽日（らくび）」「楽（らく）」とも略される。",
+      "desc_en": "The final day of a performance run. The term originates from a gagaku (court music) piece traditionally played last. Closing nights often feature special curtain calls and farewell addresses, creating a uniquely festive atmosphere. Also abbreviated as 'rakubi' or simply 'raku.'"
+    },
+    {
+      "term": "千両役者（せんりょうやくしゃ）",
+      "reading": "せんりょうやくしゃ",
+      "term_en": "Senryo yakusha",
+      "desc": "【歌舞伎では】年俸が千両にも達するほどの超人気役者。江戸時代、千両は途方もない大金だった。【現代では】ここぞという場面で力を発揮する、頼りになる人物。",
+      "desc_en": "[In Kabuki] An actor earning a staggering annual salary of 1,000 ryo — an enormous sum in the Edo period. [Today] A star performer; someone who delivers when it counts the most.",
+      "category": "由来語"
+    },
+    {
+      "id": "tachimawari",
+      "term": "立回り（たちまわり）",
+      "term_en": "Tachimawari (Fight Scene)",
+      "reading": "たちまわり",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "殺陣（たて）のこと。様式的な振付で戦いの場面を見せる。とんぼ（宙返り）を含むことも。",
+      "desc_en": "Stylized stage combat with choreographed movements. May include tonbo (somersaults)."
+    },
+    {
+      "id": "tatiyaku",
+      "term": "立役（たちやく）",
+      "term_en": "Tachiyaku (Male Lead)",
+      "reading": "たちやく",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "主に男性役を演じる役者・役柄の総称。",
+      "desc_en": "A general term for actors and roles playing male characters."
+    },
+    {
+      "id": "tateoyama",
+      "term": "立女方（たておやま）",
+      "term_en": "Tateoyama (Leading Onnagata)",
+      "reading": "たておやま",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "女形の中で最も格の高い役者。一座の女形の筆頭。",
+      "desc_en": "The highest-ranking onnagata (female role actor) in a company."
+    },
+    {
+      "term": "大根役者（だいこんやくしゃ）",
+      "reading": "だいこんやくしゃ",
+      "term_en": "Daikon yakusha",
+      "desc": "【歌舞伎では】演技が下手な役者を指す蔑称。大根は食あたりしない（当たらない）ことから、「当たらない＝人気が出ない・うまくない」役者の意。【現代では】演技が下手な人。嘘や演技が見え透いている人にも使う。",
+      "desc_en": "[In Kabuki] A derogatory term for a bad actor. Daikon radish never causes food poisoning ('ataru'), so 'doesn't hit' = 'never a hit.' [Today] A bad actor. Also used for someone whose lies or pretense are transparently unconvincing.",
+      "category": "由来語"
+    },
+    {
+      "id": "danmari",
+      "term": "だんまり",
+      "term_en": "Danmari (Silent Scene)",
+      "reading": "だんまり",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "暗闇の中で複数の登場人物が無言のまま探り合い、すれ違う様式的な場面。宝物の争奪などを幻想的に見せる。",
+      "desc_en": "A stylized scene where multiple characters silently grope in darkness, brushing past each other. Often depicts a struggle over a precious object in a dreamlike atmosphere."
+    },
+    {
+      "id": "chari",
+      "term": "チャリ・道化（ちゃり）",
+      "term_en": "Chari (Clown/Buffoon)",
+      "reading": "ちゃり",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "滑稽な役やおどけた役の総称。三枚目と近い意味だが、チャリはより道化的で笑いに特化した役柄。場を和ませる重要な存在。",
+      "desc_en": "A comic or buffoon role. Similar to sanmaime but more focused on physical comedy and clowning. An important role for lightening the mood."
+    },
+    {
+      "id": "chunori",
+      "term": "宙乗り（ちゅうのり）",
+      "term_en": "Chunori (Flying)",
+      "reading": "ちゅうのり",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "役者がワイヤーで吊られて空中を移動する演出。客席の上を飛ぶ迫力ある見せ場。",
+      "desc_en": "A spectacular effect where an actor is suspended on wires and flies through the air, sometimes directly over the audience."
+    },
+    {
+      "id": "tuke",
+      "term": "ツケ／附け（つけ）",
+      "term_en": "Tsuke (Striking Sound Effect)",
+      "reading": "つけ",
+      "category": "音・裏方",
+      "category_en": "Music & Backstage",
+      "desc": "役者の動きに合わせて打つ効果音。",
+      "desc_en": "Sound effects created by striking wooden boards on the stage floor in time with actors' movements, emphasizing footsteps and dramatic actions."
+    },
+    {
+      "id": "tukeuti",
+      "term": "ツケ打ち（つけうち）",
+      "term_en": "Tsukeuchi (Tsuke Player)",
+      "reading": "つけうち",
+      "category": "音・裏方",
+      "category_en": "Music & Backstage",
+      "desc": "舞台の上手で、役者の動きに合わせてツケ板を叩く担当者。見得、足拍子、立回りなど、演技のタイミングに合わせて拍子木で板を打ち、動きに迫力と臨場感を加える。演者との呼吸が重要な職人技。",
+      "desc_en": "The person who strikes wooden clappers on a board at stage right, perfectly timed to actors' movements including mie poses, stomping, and fight scenes. Adds impact and immediacy to the performance. Requires expert timing and perfect synchronization with the actors."
+    },
+    {
+      "id": "tsukkorobashi",
+      "term": "つっころばし",
+      "term_en": "Tsukkorobashi (Pushover Dandy)",
+      "reading": "つっころばし",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "突けば転ぶほど気が弱く頼りない二枚目の若旦那。世間知らずのお坊ちゃま役。伊勢音頭の万次郎など。",
+      "desc_en": "A handsome but hopelessly weak and naive young gentleman — so timid he'd topple if pushed. A sheltered rich boy type. Manjiro in Ise Ondo is a typical example."
+    },
+    {
+      "id": "tsurane",
+      "term": "ツラネ",
+      "term_en": "Tsurane (Poetic Monologue)",
+      "reading": "つらね",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "荒事の主役が花道で長々と述べる、七五調のせりふ。歌舞伎独特の闘達な雄弁術とされる。歌舞伎十八番『暫』の鎌倉権五郎が最も代表的。冒頭に難解な美文が並ぶが、言葉の流れと勢いで観客を魅了する。『白浪五人男』のように複数人で分担する形は「渡りぜりふ」と呼ばれ、つらねの変形。『外郎売』の早口の言い立てもつらねの一種。",
+      "desc_en": "A long poetic monologue in 7-5 syllable rhythm, delivered by the aragoto hero on the hanamichi. Considered kabuki's distinctive form of bold oratory. Kamakura Gongoro in Shibaraku is the most representative example. The Shiranami Gonin Otoko version, split among multiple speakers, is called 'watari-zerifu' (relay dialogue) — a variation of tsurane. The rapid-fire speech in Uiro Uri is also a type of tsurane."
+    },
+    {
+      "id": "tedaigataki",
+      "term": "手代敵（てだいがたき）",
+      "term_en": "Tedai Gataki (Villainous Clerk)",
+      "reading": "てだいがたき",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "世話物に登場する敵役で、商家の悪い番頭といったところ。家を横領した上に娘に横恋慕し、手痛い反撃を食らうというやや滑稽な役もある。「法界坊」の番頭長九郎が代表例。",
+      "desc_en": "A villain in domestic plays, typically a corrupt shop manager who embezzles the business and lusts after the master's daughter, often meeting a comically fitting comeuppance."
+    },
+    {
+      "id": "tenntinomie",
+      "term": "天地の見得（てんちのみえ）",
+      "term_en": "Tenchi no Mie (Heaven-and-Earth Pose)",
+      "reading": "てんちのみえ",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "二人が同時に見得を切り、一人は高い場所、もう一人は低い場所で対照を作る見得。『楼門五三桐（山門）』などで知られる。",
+      "desc_en": "A dual dramatic pose where one actor poses high and another poses low, creating a striking contrast. Famous from the Sanmon scene in Kinmon Gosan no Kiri."
+    },
+    {
+      "term": "てんてこまい",
+      "reading": "てんてこまい",
+      "term_en": "Tentekomai",
+      "desc": "【歌舞伎では】小太鼓の音「てんてこ」に合わせてせわしなく踊りまわること。祭りや芝居の囃子で使われた。【現代では】忙しくて慌ただしい様子。「朝からてんてこまいだ」 ※歌舞伎に限らず芝居・祭りの囃子全般に由来",
+      "desc_en": "[In Kabuki] Frantic dancing to the small drum rhythm 'tenteko,' used in festival and theater music. [Today] Frantically busy; in a tizzy. *Note: 歌舞伎に限らず芝居・祭りの囃子全般に由来",
+      "category": "由来語"
+    },
+    {
+      "id": "tari",
+      "term": "出語り（でがたり）",
+      "term_en": "Degatari (Visible Musicians)",
+      "reading": "でがたり",
+      "category": "音・裏方",
+      "category_en": "Music & Backstage",
+      "desc": "演奏者が見える形で演奏すること。",
+      "desc_en": "A performance style where the musicians are visible to the audience, as opposed to playing behind screens."
+    },
+    {
+      "id": "tooshi_kyougen",
+      "term": "通し狂言（とおしきょうげん）",
+      "term_en": "Toshi Kyogen (Full-Length Production)",
+      "reading": "とおしきょうげん",
+      "category": "ジャンル",
+      "category_en": "Genres",
+      "desc": "一つの作品を最初から最後まで通して上演すること。忠臣蔵の通しなど。",
+      "desc_en": "Performing a single work from beginning to end, as opposed to the more common practice of selecting individual acts from different plays."
+    },
+    {
+      "term": "遠見（とおみ）",
+      "reading": "とおみ",
+      "term_en": "Tomi (Distant View)",
+      "desc": "二つの意味がある。一つは遠方の景色を舞台背景に描いたもの。もう一つは、登場人物と同じ扮装をした子役が登場することで、その人物が遠くにいるように見せる演出技法。",
+      "desc_en": "Has two meanings: (1) a painted backdrop depicting a distant landscape, and (2) a staging technique where a child actor in the same costume as the main character appears to create the illusion of the character being far away."
+    },
+    {
+      "term": "とちる",
+      "reading": "とちる",
+      "term_en": "Tochiru",
+      "desc": "【歌舞伎では】役者が台詞や演技を間違えること。歌舞伎座では、役者がとちっても目立ちにくい席を「とちり席」（7・8列目あたり）と呼び、通に人気の良席として知られる。【現代では】失敗する、しくじる。「プレゼンでとちった」 ※語源は「栃の実」説のほか「栃麺棒」説など諸説あり",
+      "desc_en": "[In Kabuki] When an actor flubs their lines. At Kabukiza, seats where mistakes are least noticeable (rows 7-8) are called 'tochiri-seki' — prized by connoisseurs. [Today] To mess up; to blunder. 'I flubbed the presentation.' *Note: 語源は「栃の実」説のほか「栃麺棒」説など諸説あり",
+      "category": "由来語"
+    },
+    {
+      "id": "to_ro_u",
+      "term": "飛び六方（とびろっぽう）",
+      "term_en": "Tobi Roppo (Flying Exit)",
+      "reading": "とびろっぽう",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "六方の代表的な型。片手を大きく振り、足を踏み鳴らして勢いよく花道を引っ込む。",
+      "desc_en": "The most representative roppo style — swinging one arm wide and stomping the feet while making an energetic exit along the hanamichi."
+    },
+    {
+      "id": "toya",
+      "term": "鳥屋（とや）",
+      "term_en": "Toya (Backstage Area)",
+      "reading": "とや",
+      "category": "舞台",
+      "category_en": "Stage",
+      "desc": "花道奥にある役者の出入り・待機場所。",
+      "desc_en": "The backstage area at the far end of the hanamichi where actors enter, exit, and wait."
+    },
+    {
+      "id": "toya_ti",
+      "term": "鳥屋口（とやぐち）",
+      "term_en": "Toyaguchi (Hanamichi Entrance)",
+      "reading": "とやぐち",
+      "category": "舞台",
+      "category_en": "Stage",
+      "desc": "花道が鳥屋へ通じる出入口。",
+      "desc_en": "The entrance connecting the hanamichi to the toya backstage area."
+    },
+    {
+      "id": "tonbo",
+      "term": "トンボ（とんぼ）",
+      "term_en": "Tonbo (Somersault)",
+      "reading": "とんぼ",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "立回りの場面で登場する前転宙返りの動作。斬られたり投げられたりした時にトンボを返ると「やられた」ということを表現する。立回りを演じる俳優にとって最も基本的で最も重要な技術。掛かられる主役の側にもその心得が必要で、自分がトンボを返れなければ相手にうまく返らせることができないとされる。",
+      "desc_en": "A somersault performed in fight scenes to express being struck or thrown. The most fundamental and essential technique for actors performing tachimawari. Even the lead actor being attacked needs to understand tonbo to help their opponents perform it properly."
+    },
+    {
+      "id": "u_maku",
+      "term": "道具幕（どうぐまく）",
+      "term_en": "Dogumaku (Scene-Change Curtain)",
+      "reading": "どうぐまく",
+      "category": "舞台",
+      "category_en": "Stage",
+      "desc": "場面転換中に舞台上を隠す幕。",
+      "desc_en": "A curtain used to conceal the stage during scene changes."
+    },
+    {
+      "term": "どさ回り（どさまわり）",
+      "reading": "どさまわり",
+      "term_en": "Dosamawari",
+      "desc": "【歌舞伎では】一座が地方を巡業すること。旅回りの一座の苦労を表す芸能用語。【現代では】地方を転々とすること。左遷や不遇を暗示することも。 ※「佐渡の逆さ読み」説は俗説。語源は未確定",
+      "desc_en": "[In Kabuki] A troupe's touring of rural areas — expressing the hardship of traveling troupes. [Today] Traveling around the provinces; sometimes implying a demotion or hardship. *Note: 「佐渡の逆さ読み」説は俗説。語源は未確定",
+      "category": "由来語"
+    },
+    {
+      "term": "泥仕合（どろじあい）",
+      "reading": "どろじあい",
+      "term_en": "Dorojiai",
+      "desc": "【歌舞伎では】泥棒同士が争う場面。互いの素性を暴露し合い、みっともない争いになる。【現代では】互いの欠点や秘密を暴露し合う醜い争い。 ※芝居由来とする説が有力だが、相撲由来説もあり",
+      "desc_en": "[In Kabuki] A scene of thieves fighting, exposing each other's secrets in an ugly quarrel. [Today] A mudslinging match; an ugly dispute where both sides expose each other's faults. *Note: 芝居由来とする説が有力だが、相撲由来説もあり",
+      "category": "由来語"
+    },
+    {
+      "term": "ドロン（どろん）",
+      "reading": "どろん",
+      "term_en": "Doron",
+      "desc": "【歌舞伎では】幽霊や妖怪が消える時に、大太鼓で「どろどろ」と鳴らす効果音。【現代では】こっそり姿を消すこと。「会議中にドロンした」",
+      "desc_en": "[In Kabuki] The drum sound effect — 'doro doro' — played when ghosts or spirits vanish. [Today] To slip away; to disappear quietly.",
+      "category": "由来語"
+    },
+    {
+      "term": "どんでん返し（どんでんがえし）",
+      "reading": "どんでんがえし",
+      "term_en": "Donden-gaeshi",
+      "desc": "【歌舞伎では】大道具の背景を豪快に倒して場面転換する技法。大太鼓が「どんでん」と鳴ることから。【現代では】物語や状況が最後に正反対にひっくり返ること。",
+      "desc_en": "[In Kabuki] A dramatic scene change where the set piece is flipped over, accompanied by booming drums. [Today] A plot twist; a complete reversal of the situation at the end.",
+      "category": "由来語"
+    },
+    {
+      "term": "なあなあ",
+      "reading": "なあなあ",
+      "term_en": "Naanaa",
+      "desc": "【歌舞伎では】舞台上で内緒話をする演技の時に、互いに「なあ、なあ」と口パクで呼びかけ合う仕草から。【現代では】馴れ合いで適当に済ませること。「なあなあで済ませる」",
+      "desc_en": "[In Kabuki] From mouthing 'naa, naa' to each other when acting out a whispered conversation on stage. [Today] To settle something loosely by mutual compromise; to be too chummy.",
+      "category": "由来語"
+    },
+    {
+      "id": "na_uta",
+      "term": "長唄（ながうた）",
+      "term_en": "Nagauta (Long Song)",
+      "reading": "ながうた",
+      "category": "音・裏方",
+      "category_en": "Music & Backstage",
+      "desc": "歌舞伎で用いられる代表的な三味線音楽。",
+      "desc_en": "The most representative form of shamisen music used in kabuki."
+    },
+    {
+      "term": "名乗り（なのり）",
+      "reading": "なのり",
+      "term_en": "Nanori (Self-Introduction)",
+      "desc": "登場人物が自らの素性や来歴を名乗る場面。「知らざあ言って聞かせやしょう」で始まる弁天小僧の名乗りが特に有名。正体を隠していた人物が本名を明かす劇的な瞬間でもあり、見顕しと結びつくことが多い。",
+      "desc_en": "A scene where a character formally announces their identity and background. Benten Kozo's famous speech beginning 'Shirazaa itte kikaseyasho' (If you don't know, let me tell you) is the most celebrated example. Often linked to 'miarawashi' (identity reveal), creating a dramatic moment of unmasking."
+    },
+    {
+      "id": "naraku",
+      "term": "奈落（ならく）",
+      "term_en": "Naraku (Below-Stage)",
+      "reading": "ならく",
+      "category": "舞台",
+      "category_en": "Stage",
+      "desc": "花道を含めた舞台の床下空間。セリなどの舞台機構が設置されている。昔は暗く環境が悪かったため、仏教の地獄を意味する「奈落」の名がついた。現在は通路や大道具の製作場所としても使われる。",
+      "desc_en": "The space beneath the stage and hanamichi floor, housing stage machinery like seri lifts. Named after the Buddhist concept of naraka (hell) because it was once a dark, harsh environment. Today it also serves as a corridor and workshop for building large props."
+    },
+    {
+      "id": "narimono",
+      "term": "鳴物（なりもの）",
+      "term_en": "Narimono (Percussion & Instruments)",
+      "reading": "なりもの",
+      "category": "音・裏方",
+      "category_en": "Music & Backstage",
+      "desc": "三味線以外の楽器全般。",
+      "desc_en": "All instruments other than the shamisen, including drums, flutes, and bells."
+    },
+    {
+      "id": "nimaime",
+      "term": "二枚目（にまいめ）",
+      "term_en": "Nimaime (Romantic Lead)",
+      "reading": "にまいめ",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "美男子の色男役。番付の二枚目に若い色男の名が載ったことが語源。和事の柔らかい二枚目から、凛々しい二枚目まで幅がある。",
+      "desc_en": "A handsome romantic male lead. The term originates from the handsome actor's name appearing on the second sheet of the program. Ranges from the soft wagoto style to more dignified types."
+    },
+    {
+      "id": "ninn",
+      "term": "ニン（にん）",
+      "term_en": "Nin (Natural Fit)",
+      "reading": "にん",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "役者の体つき・雰囲気・芸風が、その役に合っていること。\n言い方：「この役はニンに合う」＝適役。",
+      "desc_en": "When an actor's physique, aura, and artistic style naturally suit a particular role. 'Nin ni au' means an actor is a natural fit."
+    },
+    {
+      "id": "ningyouburi",
+      "term": "人形振り（にんぎょうぶり）",
+      "term_en": "Ningyoburi (Puppet-Style Acting)",
+      "reading": "にんぎょうぶり",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "義太夫狂言の劇中で役者が人形浄瑠璃の人形を模した動きで演じる特殊な演出法。まばたきや掌の返しなど人間的な動きを極力封印し、力が入っていないような滑らかな舞いを見せるなど極めて高度な技と熟練が要求される。数人の役者が黒装束の人形遣いに扮してさも操っているかのように演じる。「櫓のお七」の八百屋お七、「日高川入相花王」の清姫が代表的。「操り三番叟」は優れた応用例で、糸が絡んで動きが止まるリアルな演出で客席を沸かせる。",
+      "desc_en": "A special technique where actors mimic the movements of bunraku puppets — suppressing natural human gestures like blinking while other actors dressed in black pretend to manipulate them. Requires extraordinary skill and precision."
+    },
+    {
+      "term": "濡れ場（ぬれば）",
+      "reading": "ぬれば",
+      "term_en": "Nureba (Love Scene)",
+      "desc": "男女の恋愛や情事を描く場面。「濡れ事（ぬれごと）」とも。和事の柔らかい色気で演じられることが多い。初代坂田藤十郎が得意とした「傾城買い狂言」に由来し、上方歌舞伎の伝統的な見せ場。",
+      "desc_en": "A romantic or amorous scene between lovers. Also called 'nuregoto.' Typically performed in the soft, sensual wagoto style. Originating from the 'keisei-kai' (courtesan-buying) plays mastered by Sakata Tojuro I, it is a traditional highlight of Kamigata kabuki."
+    },
+    {
+      "term": "のべつ幕なし（のべつまくなし）",
+      "reading": "のべつまくなし",
+      "term_en": "Nobetsu makunashi",
+      "desc": "【歌舞伎では】幕が下りることなく、ずっと芝居が続くこと。通常は幕間に休憩があるが、それもなく上演し続ける。【現代では】ひっきりなしに続くこと。「のべつ幕なしにしゃべる」",
+      "desc_en": "[In Kabuki] Performing continuously without the curtain ever coming down — no intermissions. [Today] Non-stop; incessantly. 'Talking non-stop.'",
+      "category": "由来語"
+    },
+    {
+      "term": "ノリ（のり）",
+      "reading": "のり",
+      "term_en": "Nori",
+      "desc": "【歌舞伎では】役者がお囃子のリズムに合わせて台詞を言ったり動いたりすること。音楽と一体化する演技技法。【現代では】リズム感、調子のよさ。「ノリがいい」「ノリノリ」",
+      "desc_en": "[In Kabuki] An actor matching their dialogue and movement to the rhythm of the musical ensemble. [Today] Rhythm, groove, vibe. 'Good vibes,' 'getting into it.'",
+      "category": "由来語"
+    },
+    {
+      "id": "hagataki",
+      "term": "端敵（はがたき）",
+      "term_en": "Hagataki (Minor Villain)",
+      "reading": "はがたき",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "主要な敵役の手下や、小物の悪役。物語の中で主人公に立ちはだかる脇の敵。",
+      "desc_en": "A minor villain or henchman of the main antagonist. A secondary enemy who obstructs the protagonist."
+    },
+    {
+      "id": "hasiramakinomie",
+      "term": "柱巻きの見得（はしらまきのみえ）",
+      "term_en": "Hashiramaki no Mie (Pillar-Wrapping Pose)",
+      "reading": "はしらまきのみえ",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "柱や長刀（なぎなた）などの長いものに、手足を巻きつける見得。『鳴神』の鳴神上人などで知られる。",
+      "desc_en": "A dramatic pose where the actor wraps their limbs around a pillar or long weapon. Known from the priest Narukami in the play Narukami."
+    },
+    {
+      "term": "花形（はながた）",
+      "reading": "はながた",
+      "term_en": "Hanagata",
+      "desc": "【歌舞伎では】人気のある若手の花形役者。華やかな存在感で舞台の花となる俳優。【現代では】人気者、スター。「チームの花形選手」",
+      "desc_en": "[In Kabuki] A popular young star actor who blooms like a flower on stage. [Today] A star; the leading figure.",
+      "category": "由来語"
+    },
+    {
+      "id": "hanamiti",
+      "term": "花道（はなみち）",
+      "term_en": "Hanamichi (Runway Stage)",
+      "reading": "はなみち",
+      "category": "舞台",
+      "category_en": "Stage",
+      "desc": "舞台から客席を貫いて伸びる通路で、登退場や見せ場に使う歌舞伎独特の舞台装置。舞台から三分（約3割）の位置を「七三（しちさん）」と呼び、ここで見得を切ったり名乗りを述べたりする重要なポイント。途中に「すっぽん」というせり上がり装置がある。",
+      "desc_en": "A raised walkway extending from the stage through the audience. The spot about 30% from the stage end is called 'shichisan' (seven-three), a crucial point where actors strike poses and deliver speeches. Contains the 'suppon' trapdoor lift for supernatural appearances."
+    },
+    {
+      "id": "hayagawari",
+      "term": "早替り（はやがわり）",
+      "term_en": "Hayagawari (Quick Change)",
+      "reading": "はやがわり",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "一人の役者が複数の役を演じ分け、素早く衣装や姿を変える演出。",
+      "desc_en": "A technique where a single actor plays multiple roles, rapidly changing costumes and appearance between characters."
+    },
+    {
+      "id": "hayasikata",
+      "term": "囃子方（はやしかた）",
+      "term_en": "Hayashikata (Ensemble Musicians)",
+      "reading": "はやしかた",
+      "category": "音・裏方",
+      "category_en": "Music & Backstage",
+      "desc": "鳴物を担当する演奏者。",
+      "desc_en": "Musicians responsible for playing the narimono (percussion and wind instruments)."
+    },
+    {
+      "id": "handougataki",
+      "term": "半道敵（はんどうがたき）",
+      "term_en": "Hando Gataki (Comic Villain)",
+      "reading": "はんどうがたき",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "コミカルな演技で客席を和ませる悪役。強い悪人ではなく、どこか間が抜けていて憎めない敵。",
+      "desc_en": "A comically inept villain who amuses the audience. Not truly threatening, but bumbling and oddly lovable."
+    },
+    {
+      "id": "banzuke",
+      "term": "番附（ばんづけ）",
+      "term_en": "Banzuke (Cast Ranking Board)",
+      "reading": "ばんづけ",
+      "category": "鑑賞",
+      "category_en": "Theatergoing",
+      "desc": "公演の配役表。元は一枚刷りの上演案内で、役者の格順に名前が並ぶ。",
+      "desc_en": "A printed cast listing for a performance, with actors' names arranged by rank. Originally a single-sheet playbill."
+    },
+    {
+      "id": "hiki_nuki",
+      "term": "引抜き（ひきぬき）",
+      "term_en": "Hikinuki (Costume Reveal)",
+      "reading": "ひきぬき",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "衣裳の仕掛けの代表的なもので、重ね着した衣裳のしつけ糸を引くと一瞬にして下に着込んだ衣裳が現れる。舞踊などで大変な視覚的効果がある。「京鹿子娘道成寺」では数種の衣裳を引き抜いて、女性が変身し成長してゆく様を鮮やかに表現する。後見がこれを実行するが、舞踊の段取りを飲み込んだ上で演者との呼吸も合わせ素早く行うため熟練を要する。「鷺娘」で鷺の精が町娘の姿に変わる引抜きも鮮やか。",
+      "desc_en": "A signature costume trick where pulling threads instantly reveals a different costume layered underneath, creating a stunning visual transformation. In Musume Dojoji, multiple hikinuki reveal the heroine's emotional evolution through changing outfits."
+    },
+    {
+      "id": "hikimaku",
+      "term": "引幕（ひきまく）",
+      "term_en": "Hikimaku (Draw Curtain)",
+      "reading": "ひきまく",
+      "category": "舞台",
+      "category_en": "Stage",
+      "desc": "舞台前面で開閉する幕の総称。",
+      "desc_en": "A general term for curtains that open and close horizontally across the front of the stage."
+    },
+    {
+      "term": "引込み（ひっこみ）",
+      "reading": "ひっこみ",
+      "term_en": "Hikkomi (Stage Exit)",
+      "desc": "俳優が退場すること。特に花道を使った退場を指すことが多い。幕を閉めた後も花道に残った俳優が演技を続けて去る「幕外の引込み」は、強い余韻を残す名演出。",
+      "desc_en": "An actor's exit from the stage, especially via the hanamichi. The most memorable form is makusoto no hikkomi, where the actor remains on the hanamichi after the curtain closes, continuing to perform before departing."
+    },
+    {
+      "term": "一幕見（ひとまくみ）",
+      "reading": "ひとまくみ",
+      "term_en": "Hitomakumi (Single-Act Ticket)",
+      "desc": "全幕ではなく一幕だけを観ること、またはそのための客席。比較的安価に観たい幕だけを楽しめるため、歌舞伎初心者や時間のない人にもおすすめ。歌舞伎座4階に専用席がある。",
+      "desc_en": "Watching just one act rather than the full program, or the designated seating for this. A budget-friendly option perfect for beginners or those short on time. Kabukiza has dedicated seats on the 4th floor."
+    },
+    {
+      "term": "檜舞台（ひのきぶたい）",
+      "reading": "ひのきぶたい",
+      "term_en": "Hinoki butai",
+      "desc": "【歌舞伎では】最高級の檜（ひのき）で作られた格式ある舞台。能舞台や一流の劇場に使われた。【現代では】実力を発揮する晴れの場。「檜舞台に立つ」＝大舞台で活躍する。",
+      "desc_en": "[In Kabuki] A stage made of premium hinoki cypress — used for the finest theaters and noh stages. [Today] A grand stage to showcase one's abilities.",
+      "category": "由来語"
+    },
+    {
+      "id": "himousen",
+      "term": "緋毛氈（ひもうせん）",
+      "term_en": "Himosen (Red Felt Cloth)",
+      "reading": "ひもうせん",
+      "category": "衣装・小道具",
+      "category_en": "Costumes & Props",
+      "desc": "赤い敷物。舞台上で床几（しょうぎ）に掛けたり、格式の高い場面で使われる。",
+      "desc_en": "A red felt cloth used to drape over benches or as floor covering in ceremonial and high-status scenes."
+    },
+    {
+      "id": "hirayamamie",
+      "term": "平山見得（ひらやまみえ）",
+      "term_en": "Hirayama Mie",
+      "reading": "ひらやまみえ",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "『熊谷陣屋』で熊谷が切る名場面として知られる見得。型や演出で見せ方が変わることがある。",
+      "desc_en": "A famous dramatic pose from Kumagai Jinya, struck by the warrior Kumagai. The exact form varies by acting tradition."
+    },
+    {
+      "id": "pintokona",
+      "term": "ぴんとこな",
+      "term_en": "Pintokona (Quiet Tough Guy)",
+      "reading": "ぴんとこな",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "一見優男だが芯は強い二枚目。普段は柔らかいが、いざという時にきりっとした強さを見せる。伊勢音頭の貢など。",
+      "desc_en": "A handsome, gentle-seeming man who reveals inner steel when it counts. Soft on the surface but sharp and decisive in a crisis. Mitsugi in Ise Ondo is a typical example."
+    },
+    {
+      "id": "fukeyaku",
+      "term": "老け（ふけ）",
+      "term_en": "Fuke (Elderly Role)",
+      "reading": "ふけ",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "老人の役柄。狭義では男女を問わず主に善人の役で、老練で腕の立つ役者が演じるべきもの。「野崎村」の久作、「賀の祝」の白太夫、「新口村」の孫右衛門など、親子の別れの中に様々な思いや温もりが感じられ、演技力ばかりでなく役者の人柄も映し出されていく。",
+      "desc_en": "Elderly character roles, typically kind-hearted, requiring veteran actors of great skill. These roles in parent-child farewell scenes reveal not just acting ability but the actor's own humanity."
+    },
+    {
+      "id": "hu_unomie",
+      "term": "不動の見得（ふどうのみえ）",
+      "term_en": "Fudo no Mie (Immovable Deity Pose)",
+      "reading": "ふどうのみえ",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "不動明王（ふどうみょうおう）の姿を思わせる見得。『勧進帳』の弁慶や『鳴神』などで見られる。",
+      "desc_en": "A dramatic pose evoking the Buddhist deity Fudo Myo-o (the Immovable King). Seen in Benkei's poses in Kanjincho and in Narukami."
+    },
+    {
+      "id": "bukkaeri",
+      "term": "ぶっ返り（ぶっかえり）",
+      "term_en": "Bukkaeri (Costume Flip)",
+      "reading": "ぶっかえり",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "衣裳の仕掛けで引抜きの一種。衣裳全体ではなく上半分がひっくり返って垂れ下がるように下半分を覆う。仮の姿から本性を顕したり、妖怪変化が正体を顕す場面など、姿や内面の大きな変化を視覚的に訴える。「一条大蔵譚」の大蔵卿は作り阿呆から真の姿へ、「関の扉」の関守関兵衛は大伴黒主の本性を顕す時にぶっ返りになる。",
+      "desc_en": "A costume trick where the upper half of a garment flips down to cover the lower half, revealing a completely different appearance. Used when characters reveal their true nature — from disguise to reality, or when supernatural beings show their real form."
+    },
+    {
+      "id": "you_ki",
+      "term": "舞踊劇（ぶようげき）",
+      "term_en": "Buyogeki (Dance Drama)",
+      "reading": "ぶようげき",
+      "category": "ジャンル",
+      "category_en": "Genres",
+      "desc": "踊りを中心に物語や情景を見せる作品。",
+      "desc_en": "Works that tell stories or depict scenes primarily through dance."
+    },
+    {
+      "id": "honmizu",
+      "term": "本水（ほんみず）",
+      "term_en": "Honmizu (Real Water)",
+      "reading": "ほんみず",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "舞台上で本物の水を使い、雨を降らせたり川や池の中で立回りを演じる演出。江戸時代の夏芝居から怪談や早替りと共に涼味を呼ぶ演出として親しまれてきた。近年は巨大な水槽での水中大立回りや舞台に滝が出現する演出も。「名月八幡祭」の幕切れ近くに本格的な雨を降らせるのは「本雨」と呼ばれる。「助六」の「水入り」では天水桶に助六が全身を沈めて隠れ、舞台に水をあふれさせる名場面がある。",
+      "desc_en": "Using real water on stage — creating rain, waterfalls, or pools for dramatic fight scenes. A beloved tradition since Edo-era summer productions. In Sukeroku, the hero hides by submerging himself in a rain barrel, flooding the stage."
+    },
+    {
+      "id": "makuai",
+      "term": "幕間（まくあい）",
+      "term_en": "Makuai (Intermission)",
+      "reading": "まくあい",
+      "category": "鑑賞",
+      "category_en": "Theatergoing",
+      "desc": "演目と演目の間の休憩時間。食事をとったりお土産を見たりする。",
+      "desc_en": "The intermission between acts, when audience members eat meals and browse souvenir shops."
+    },
+    {
+      "id": "makugire",
+      "term": "幕切（まくぎれ）",
+      "term_en": "Makugire (Curtain Close)",
+      "reading": "まくぎれ",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "歌舞伎では、場面の終わりに幕を引いて締めるのが基本。幕切ならではの「決め」の演出で強い印象を残す。",
+      "desc_en": "The closing of a scene or act by drawing the curtain, often featuring a powerful final tableau that leaves a lasting impression."
+    },
+    {
+      "term": "幕切れ（まくぎれ）",
+      "reading": "まくぎれ",
+      "term_en": "Makugire",
+      "desc": "【歌舞伎では】引き幕が閉まり、一幕が終わること。【現代では】物事の終わり、決着。「事件の幕切れ」",
+      "desc_en": "[In Kabuki] The closing of the draw curtain, ending an act. [Today] The end of something; a conclusion.",
+      "category": "由来語"
+    },
+    {
+      "id": "makusotono_hikomi",
+      "term": "幕外の引込み（まくそとのひっこみ）",
+      "term_en": "Makusoto no Hikkomi (Post-Curtain Exit)",
+      "reading": "まくそとのひっこみ",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "幕が引かれた後も役者が花道に残り、余韻を持たせて退場する演出。",
+      "desc_en": "An exit technique where the actor remains on the hanamichi after the curtain closes, lingering to extend the emotional atmosphere before departing."
+    },
+    {
+      "term": "幕の内弁当（まくのうちべんとう）",
+      "reading": "まくのうちべんとう",
+      "term_en": "Makunouchi Bento (Intermission Lunchbox)",
+      "desc": "幕間に食べる弁当が由来の言葉で、現在は多種のおかずを詰め合わせた弁当の一般名称となっている。歌舞伎観劇では幕間に食事をとる文化があり、劇場内の食堂や持参の弁当で食事を楽しむのも観劇の醍醐味のひとつ。",
+      "desc_en": "A lunchbox originally eaten during kabuki intermissions, now a common term for any multi-dish boxed lunch. Eating during intermission is an integral part of the kabuki-going experience — whether dining at the theater's restaurant or bringing your own bento. A delicious tradition that enhances the enjoyment of a full day at the theater."
+    },
+    {
+      "term": "幕を引く（まくをひく）",
+      "reading": "まくをひく",
+      "term_en": "Maku wo hiku",
+      "desc": "【歌舞伎では】引き幕を引いて一幕を終わりにすること。【現代では】物事を終わらせること。「この問題に幕を引く」",
+      "desc_en": "[In Kabuki] To draw the curtain, ending an act. [Today] To bring something to an end.",
+      "category": "由来語"
+    },
+    {
+      "id": "matu_memono",
+      "term": "松羽目物（まつばめもの）",
+      "term_en": "Matsubamemono (Pine-Board Play)",
+      "reading": "まつばめもの",
+      "category": "ジャンル",
+      "category_en": "Genres",
+      "desc": "能舞台風の松羽目を背景に演じる形式。",
+      "desc_en": "Plays performed against a painted pine tree backdrop mimicking a Noh stage, typically adapted from Noh plays."
+    },
+    {
+      "term": "まねき看板（まねきかんばん）",
+      "reading": "まねきかんばん",
+      "term_en": "Maneki Kanban (Invitation Signboard)",
+      "desc": "劇場正面に掲げる宣伝看板で、勘亭流という独特の書体で俳優の紋と名前を記す。「招く」（大勢の客を招く）という意味が込められている。京都・南座の顔見世で掲げられるものが特に有名。",
+      "desc_en": "Promotional signboards displayed at theater entrances, featuring actors' crests and names in the distinctive kanteiryu calligraphy style. The ones at Kyoto's Minamiza during kaomise are especially famous."
+    },
+    {
+      "id": "mawari_tai",
+      "term": "廻り舞台（まわりぶたい）",
+      "term_en": "Mawari Butai (Revolving Stage)",
+      "reading": "まわりぶたい",
+      "category": "舞台",
+      "category_en": "Stage",
+      "desc": "舞台中央が回転する仕掛け。",
+      "desc_en": "A revolving section at the center of the stage, allowing quick scene changes."
+    },
+    {
+      "term": "見顕し（みあらわし）",
+      "reading": "みあらわし",
+      "term_en": "Miarawashi (Identity Reveal)",
+      "desc": "変装や偽りの姿で登場していた人物が正体を現す場面。衣裳のぶっ返りや引抜きを伴うことが多く、視覚的にも劇的な転換点となる。『弁天娘女男白浪』の浜松屋の場で、女装の弁天小僧が正体を現す場面が代表的。",
+      "desc_en": "A scene where a disguised character reveals their true identity. Often accompanied by bukkaeri (costume flip) or hikinuki (costume reveal), creating a visually dramatic turning point. The most famous example is Benten Kozo revealing his true identity at Hamamatsuya in Benten Musume."
+    },
+    {
+      "id": "mie",
+      "term": "見得（みえ）",
+      "term_en": "Mie (Dramatic Pose)",
+      "reading": "みえ",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "歌舞伎の代表的な演技法。頭を回しながら腕や足を大きく動かした後、一瞬動きを止めて印象的なポーズで決める。ツケの音が加わり、感情や決意を強く印象づける。代表的な型に「元禄見得」（『暫』）、「石投げの見得」（『勧進帳』）、「柱巻きの見得」（『鳴神』）がある。複数人物が同時に一枚の絵のように決まる「引っ張りの見得」（絵面の見得）は幕切れの名場面で、『寿曽我対面』が典型。",
+      "desc_en": "One of kabuki's most iconic acting techniques. After swinging the head while moving arms and legs dynamically, the actor freezes in a powerful pose, punctuated by tsuke beats. Famous types include Genroku Mie (Shibaraku), Ishinage no Mie (Kanjincho), and Hashiramaki no Mie (Narukami). The 'hippari no mie' (or 'ezura no mie') features multiple characters freezing simultaneously like a living painting — a spectacular curtain-closing tableau, with Kotobuki Soga no Taimen as the classic example."
+    },
+    {
+      "term": "見得を切る（みえをきる）",
+      "reading": "みえをきる",
+      "term_en": "Mie wo kiru",
+      "desc": "【歌舞伎では】動きを止めて決めポーズを取り、首を振って目をぐっと見開く歌舞伎の代表的な演技。【現代では】大げさな態度で自信を示すこと。「強気に見得を切る」",
+      "desc_en": "[In Kabuki] Kabuki's iconic pose — freezing in position, swinging the head, and opening the eyes wide. [Today] To show off or bluff with exaggerated confidence.",
+      "category": "由来語"
+    },
+    {
+      "id": "misuuti",
+      "term": "御簾内（みすうち）",
+      "term_en": "Misuuchi (Behind the Blinds)",
+      "reading": "みすうち",
+      "category": "音・裏方",
+      "category_en": "Music & Backstage",
+      "desc": "演奏者を隠して演奏すること。",
+      "desc_en": "Playing music from behind bamboo blinds, keeping the musicians hidden from the audience."
+    },
+    {
+      "term": "見せ場（みせば）",
+      "reading": "みせば",
+      "term_en": "Miseba",
+      "desc": "【歌舞伎では】芝居の中で最も見応えのある場面。役者が技を披露する最大の見どころ。【現代では】最も注目される場面や瞬間。「プレゼンの見せ場」",
+      "desc_en": "[In Kabuki] The most impressive scene in a play — the showpiece where actors display their greatest skill. [Today] The highlight or most impressive moment.",
+      "category": "由来語"
+    },
+    {
+      "id": "mitori_kyougen",
+      "term": "見取り狂言（みとりきょうげん）",
+      "term_en": "Midori Kyogen (Selected Highlights)",
+      "reading": "みとりきょうげん",
+      "category": "ジャンル",
+      "category_en": "Genres",
+      "desc": "複数の作品から見どころの場面を選んで組み合わせる上演形式。現在の歌舞伎公演で最も一般的。",
+      "desc_en": "The most common format in modern kabuki — a program composed of highlight scenes selected from different plays."
+    },
+    {
+      "term": "めりはり",
+      "reading": "めりはり",
+      "term_en": "Merihari",
+      "desc": "【歌舞伎では】義太夫節や長唄で、音の高低・強弱の変化をつけること。「減り（めり）」と「張り（はり）」の合成語。【現代では】物事に起伏や変化をつけること。「めりはりのある生活」",
+      "desc_en": "[In Kabuki] In gidayu and nagauta music, the contrast of pitch and volume — 'meri' (lowering) and 'hari' (projecting). [Today] To add variation and contrast.",
+      "category": "由来語"
+    },
+    {
+      "id": "modori",
+      "term": "もどり",
+      "term_en": "Modori (Surprise Reveal)",
+      "reading": "もどり",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "悪人に見えていた人物が、実は深い事情を背負った善人だったと明かす劇的な展開。多くは腹を切るか刺されて死ぬ間際に本心が明かされる。最後のどんでん返しが眼目のため、途中で本心を見せる「底を割る」演技は古くから戒められている。『義経千本桜』の権太、『実盛物語』の瀬尾十郎、『摂州合邦辻』の玉手御前が代表的。",
+      "desc_en": "A dramatic twist where a character believed to be a villain reveals they were actually good all along, typically confessing their true motives while dying from a wound. Since the surprise reversal is the whole point, actors are traditionally warned never to 'break the bottom' (soko wo waru) — showing the character's true nature too early. Famous examples include Gonta in Yoshitsune Senbon Zakura, Seo in Sanemori Monogatari, and Tamategozen in Sesshu Gappo ga Tsuji."
+    },
+    {
+      "term": "屋号（やごう）",
+      "reading": "やごう",
+      "term_en": "Yago (House Name)",
+      "desc": "歌舞伎俳優の家ごとに伝わる称号。「成田屋」（市川團十郎家）、「音羽屋」（尾上菊五郎家）、「中村屋」（中村勘三郎家）など。大向うからの掛け声で屋号が飛ぶのは歌舞伎ならではの風景。",
+      "desc_en": "Hereditary house names for kabuki acting families, such as 'Naritaya' (Ichikawa Danjuro), 'Otowaya' (Onoe Kikugoro), and 'Nakamuraya' (Nakamura Kanzaburo). Audience members shout these names during dramatic moments."
+    },
+    {
+      "id": "yuka",
+      "term": "床（ゆか）",
+      "term_en": "Yuka (Narrator's Platform)",
+      "reading": "ゆか",
+      "category": "音・裏方",
+      "category_en": "Music & Backstage",
+      "desc": "義太夫など語り物を演奏する場所。",
+      "desc_en": "The elevated platform where gidayu narrators and shamisen players perform."
+    },
+    {
+      "id": "yoten",
+      "term": "四天（よてん）",
+      "term_en": "Yoten (Stage Fighters)",
+      "reading": "よてん",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "元来は裾の両側に切れ目が入った独特な衣裳の名称だが、転じてその衣裳を着た捕手や軍兵など、主に立回りを演じる役柄の呼称。黒い衣裳の「黒四天」は「寺子屋」「白浪五人男」に登場。立涌柄などの明るい衣裳で桜の枝を持って立回りを演じるのが「花四天」で、最もおなじみ。「盛綱陣屋」の信楽太郎など時代物の「伊達四天」は主に御注進の役柄に使われる。",
+      "desc_en": "Originally the name of a distinctive costume with slits, now refers to roles wearing such costumes — typically soldiers and pursuers who perform fight scenes. 'Kuro yoten' (black) appear in Terakoya; 'Hana yoten' (flower) perform fights carrying cherry branches."
+    },
+    {
+      "id": "yodogimishu",
+      "term": "淀君集（よどぎみしゅう）",
+      "term_en": "Yodogimi-shu (Collection of Yodogimi)",
+      "reading": "よどぎみしゅう",
+      "category": "家の芸",
+      "category_en": "House Specialties",
+      "desc": "5代目中村歌右衛門の家の芸。坪内逍遥の「桐一葉」「沓手鳥孤城落月（ほととぎすこじょうのらくげつ）」で淀君を演じて絶賛を浴び、「淀君役者」の名を強く印象付けた。\n桐一葉、沓手鳥孤城落月、淀君、醍醐の春、大坂城、淀君小田原陣。",
+      "desc_en": "House specialties of Nakamura Utaemon V, who earned the title 'Yodogimi actor' for his acclaimed portrayals of Lady Yodo in Tsubouchi Shoyo's plays."
+    },
+    {
+      "id": "ro_u",
+      "term": "六方（ろっぽう）",
+      "term_en": "Roppo (Stylized Exit Walk)",
+      "reading": "ろっぽう",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "花道を通って引っ込むときに演じる、ダイナミックな歩き方（型）。代表的な型に「飛び六方」や「狐六方」がある。",
+      "desc_en": "A dynamic, stylized walking pattern performed when exiting along the hanamichi. Representative forms include tobi roppo (flying) and kitsune roppo (fox-style)."
+    },
+    {
+      "id": "wakaoyama",
+      "term": "若女形（わかおやま）",
+      "term_en": "Waka Oyama (Young Female Role)",
+      "reading": "わかおやま",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "女方の中でも若く美しい役およびその役者を指す。江戸時代は女方が若女形と年配の花車方（かしゃがた）に大きく分類され、若女形には姫・傾城・娘などがあり、花車方には茶屋女房・奥方・世話女房などがある。「若女形」と表記した場合は通常「わかおやま」と読む。",
+      "desc_en": "Young and beautiful female roles and the actors who play them, including princesses, courtesans, and young women. Distinguished from older female roles (kashagata) like wives and matrons."
+    },
+    {
+      "id": "wakashu",
+      "term": "若衆（わかしゅ）",
+      "term_en": "Wakashu (Young Man)",
+      "reading": "わかしゅ",
+      "category": "役柄",
+      "category_en": "Roles & Characters",
+      "desc": "前髪のある元服前の若い男性、すなわち少年の役どころ。か弱さやほのかな色気も感じさせる美少年として描かれる。着物の襟を女性のような「抜き衣紋」の形に着るのも特徴。「仮名手本忠臣蔵」の大星力弥、「妹背山婦女庭訓」の久我之助などが代表。「菅原伝授手習鑑」の桜丸は妻帯者だが、役柄としては前髪の若衆で演じられる。",
+      "desc_en": "A pre-coming-of-age youth role, depicted as a beautiful boy with forelocks (maegami). Portrayed with delicacy and a hint of allure, wearing the collar in a feminine style. Rikiya in Chushingura is a representative example."
+    },
+    {
+      "id": "wa_to",
+      "term": "和事（わごと）",
+      "term_en": "Wagoto (Soft Style)",
+      "reading": "わごと",
+      "category": "演技・演出",
+      "category_en": "Acting & Direction",
+      "desc": "やわらかい口調や所作で、情や恋心を繊細に表す演技・作風（上方系に多い）。",
+      "desc_en": "A gentle, soft acting style expressing love and emotion through delicate speech and refined movements, primarily associated with the Kamigata (Osaka/Kyoto) kabuki tradition. The counterpart of aragoto."
+    },
+    {
+      "term": "渡りぜりふ（わたりぜりふ）",
+      "reading": "わたりぜりふ",
+      "term_en": "Watari Zerifu (Relay Dialogue)",
+      "desc": "つらねを複数の役者で分担して順番に述べる形式。『白浪五人男』の稲瀬川勢揃いの場で五人の盗賊が順に名乗りを述べる場面が最も有名。リズミカルなつなぎが見事で、歌舞伎屈指の名場面として知られる。",
+      "desc_en": "A form of tsurane (poetic monologue) split among multiple actors who deliver it in sequence. The most famous example is the lineup scene at Inasegawa in Shiranami Gonin Otoko, where five thieves introduce themselves one by one. The rhythmic relay is considered one of kabuki's greatest scenes."
+    }
+  ]
+}

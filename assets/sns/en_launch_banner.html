@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Noto+Sans:wght@300;400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { width: 1200px; height: 630px; overflow: hidden; }
+
+  .banner {
+    width: 1200px; height: 630px;
+    background: linear-gradient(135deg, #1a1410 0%, #2a2218 40%, #1a1410 100%);
+    position: relative;
+    font-family: "Noto Sans", sans-serif;
+    overflow: hidden;
+  }
+
+  .banner::before {
+    content: '';
+    position: absolute; inset: 0;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%23C5A255' stroke-width='1.2'%3E%3Cpath d='M0 20 L20 20 L20 0'/%3E%3Cpath d='M20 20 L20 40 L40 40'/%3E%3Cpath d='M40 40 L40 20 L60 20'/%3E%3Cpath d='M60 20 L60 0'/%3E%3Cpath d='M40 40 L40 60 L20 60'/%3E%3Cpath d='M20 60 L20 80'/%3E%3Cpath d='M60 20 L60 40 L80 40'/%3E%3Cpath d='M0 60 L20 60'/%3E%3Cpath d='M60 40 L60 60 L80 60'/%3E%3Cpath d='M40 60 L60 60 L60 80'/%3E%3Cpath d='M0 40 L20 40'/%3E%3Cpath d='M40 0 L40 20'/%3E%3Cpath d='M80 0 L80 20'/%3E%3Cpath d='M80 60 L80 80'/%3E%3Cpath d='M40 80 L40 60'/%3E%3Cpath d='M0 0 L0 20'/%3E%3Cpath d='M0 60 L0 80'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 80px 80px;
+  }
+
+  .top-line {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, transparent 5%, #C5A255 30%, #E8D5A3 50%, #C5A255 70%, transparent 95%);
+  }
+
+  .bottom-line {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, transparent 5%, #C5A255 30%, #E8D5A3 50%, #C5A255 70%, transparent 95%);
+  }
+
+  .left-area {
+    position: absolute;
+    left: 60px; top: 0; bottom: 0;
+    width: 520px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 10;
+  }
+
+  .new-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #C5A255, #8B6914);
+    border-radius: 6px;
+    padding: 8px 20px;
+    margin-bottom: 24px;
+    width: fit-content;
+  }
+
+  .new-badge-text {
+    font-size: 14px;
+    color: #fff;
+    letter-spacing: 3px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .main-title {
+    font-family: "Noto Serif", serif;
+    font-size: 46px;
+    font-weight: 700;
+    color: #F3EDE4;
+    line-height: 1.35;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+    text-shadow: 0 2px 16px rgba(0,0,0,0.5);
+  }
+
+  .main-title .highlight {
+    color: #E8D5A3;
+    background: linear-gradient(0deg, rgba(197,162,85,0.2) 0%, transparent 60%);
+    padding: 0 4px;
+  }
+
+  .sub-title {
+    font-size: 17px;
+    color: #A89E93;
+    line-height: 1.8;
+    letter-spacing: 0.5px;
+    margin-bottom: 32px;
+  }
+
+  .feature-tags {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .feature-tag {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 13px;
+    color: #D8D0C4;
+    letter-spacing: 0.5px;
+  }
+
+  .feature-tag .tag-icon {
+    font-size: 16px;
+  }
+
+  .right-area {
+    position: absolute;
+    right: 40px; top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+  }
+
+  .phone-preview {
+    width: 260px;
+    height: 460px;
+    background: #FAF8F5;
+    border-radius: 28px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 2px #444;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .preview-header {
+    background: linear-gradient(135deg, #2C1810, #1A0F0A);
+    padding: 16px 14px 10px;
+    text-align: center;
+  }
+
+  .preview-header-title {
+    font-family: "Noto Serif", serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #E8D5A3;
+    letter-spacing: 1px;
+  }
+
+  .preview-header-sub {
+    font-size: 9px;
+    color: #C5A255;
+    opacity: 0.7;
+    margin-top: 2px;
+  }
+
+  .preview-body {
+    flex: 1;
+    padding: 12px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .preview-welcome {
+    text-align: center;
+    padding: 8px 0;
+  }
+
+  .preview-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #E8D5A3;
+    margin: 0 auto 6px;
+    display: block;
+    object-fit: cover;
+  }
+
+  .preview-name {
+    font-family: "Noto Serif", serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: #1A1A1A;
+  }
+
+  .preview-desc {
+    font-size: 9px;
+    color: #888;
+    line-height: 1.5;
+    margin-top: 2px;
+  }
+
+  .p-bubble-user {
+    align-self: flex-end;
+    background: linear-gradient(135deg, #C5A255, #8B6914);
+    color: #fff;
+    max-width: 80%;
+    padding: 7px 10px;
+    border-radius: 12px;
+    border-bottom-right-radius: 3px;
+    font-size: 10px;
+    line-height: 1.5;
+  }
+
+  .p-bubble-ai-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    align-self: flex-start;
+    max-width: 88%;
+  }
+
+  .p-ai-avatar {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1.5px solid #E8D5A3;
+    flex-shrink: 0;
+    object-fit: cover;
+    margin-top: 1px;
+  }
+
+  .p-bubble-ai {
+    background: #fff;
+    border: 1px solid #F0EDE8;
+    border-radius: 12px;
+    border-bottom-left-radius: 3px;
+    padding: 7px 10px;
+    font-size: 10px;
+    line-height: 1.6;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+
+  .p-ai-label {
+    font-size: 8px;
+    font-weight: 600;
+    color: #8B6914;
+    margin-bottom: 2px;
+    letter-spacing: 0.3px;
+  }
+
+  .preview-brand {
+    background: linear-gradient(135deg, #2C1810, #1A0F0A);
+    padding: 5px 0;
+    text-align: center;
+    font-size: 7px;
+    color: #C5A255;
+    letter-spacing: 2px;
+    font-weight: 600;
+  }
+
+  .footer-area {
+    position: absolute;
+    bottom: 28px; left: 60px; right: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    z-index: 10;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .brand-logo {
+    font-size: 28px;
+  }
+
+  .brand-text {
+    font-size: 16px;
+    color: #C5A255;
+    letter-spacing: 3px;
+    font-weight: 600;
+  }
+
+  .brand-sub {
+    font-size: 11px;
+    color: #7A6F63;
+    letter-spacing: 2px;
+    margin-top: 2px;
+  }
+
+  .url-text {
+    font-size: 13px;
+    color: #7A6F63;
+    letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+<div class="banner">
+  <div class="top-line"></div>
+  <div class="bottom-line"></div>
+
+  <div class="left-area">
+    <div class="new-badge">
+      <span style="font-size:16px">🌐</span>
+      <span class="new-badge-text">Now in English</span>
+    </div>
+
+    <div class="main-title">
+      Discover <span class="highlight">Kabuki</span><br>
+      with AI
+    </div>
+
+    <div class="sub-title">
+      Your personal Kabuki guide is now available in English.<br>
+      Explore plays, learn terms, and find performances.
+    </div>
+
+    <div class="feature-tags">
+      <div class="feature-tag"><span class="tag-icon">🎭</span> Play Guides</div>
+      <div class="feature-tag"><span class="tag-icon">📖</span> Glossary</div>
+      <div class="feature-tag"><span class="tag-icon">💬</span> AI Chat</div>
+      <div class="feature-tag"><span class="tag-icon">🆓</span> Free</div>
+    </div>
+  </div>
+
+  <div class="right-area">
+    <div class="phone-preview">
+      <div class="preview-header">
+        <div class="preview-header-title">Ask Keranosuke</div>
+        <div class="preview-header-sub">Kabuki AI Assistant</div>
+      </div>
+      <div class="preview-body">
+        <div class="preview-welcome">
+          <img src="https://kabukiplus.com/assets/keranosukelogo.png" alt="" class="preview-avatar" width="40" height="40">
+          <div class="preview-name">Keranosuke</div>
+          <div class="preview-desc">Ask me anything about Kabuki!</div>
+        </div>
+        <div class="p-bubble-user">What's a good play for beginners?</div>
+        <div class="p-bubble-ai-row">
+          <img src="https://kabukiplus.com/assets/keranosukelogo.png" alt="" class="p-ai-avatar" width="22" height="22">
+          <div class="p-bubble-ai">
+            <div class="p-ai-label">Keranosuke</div>
+            Try Shiranami Gonin Otoko! Gorgeous costumes, dramatic poses, and a fast-paced story.
+          </div>
+        </div>
+        <div class="p-bubble-user">How do I get tickets?</div>
+        <div class="p-bubble-ai-row">
+          <img src="https://kabukiplus.com/assets/keranosukelogo.png" alt="" class="p-ai-avatar" width="22" height="22">
+          <div class="p-bubble-ai">
+            <div class="p-ai-label">Keranosuke</div>
+            Single-act tickets at Kabukiza start at &yen;1,000 &mdash; perfect for first-timers!
+          </div>
+        </div>
+      </div>
+      <div class="preview-brand">KABUKI PLUS+</div>
+    </div>
+  </div>
+
+  <div class="footer-area">
+    <div class="brand">
+      <span class="brand-logo">🎭</span>
+      <div>
+        <div class="brand-text">KABUKI PLUS+</div>
+        <div class="brand-sub">Kabuki, even more exciting.</div>
+      </div>
+    </div>
+    <div class="url-text">kabukiplus.com</div>
+  </div>
+</div>
+</body>
+</html>
