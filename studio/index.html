@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>歌舞伎ナビ スタジオ</title>
+<style>
+  :root {
+    --bg: #16181d; --panel: #1f232b; --panel2: #262b34; --line: #333a45;
+    --txt: #e6e8ec; --muted: #9aa3af; --accent: #d4a24a; --danger: #d15b5b;
+    --ok: #4a9d6b; --blue: #4a7fd1;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--txt);
+    font-family: "Meiryo", "Hiragino Sans", system-ui, sans-serif; font-size: 14px;
+  }
+  a { color: var(--blue); }
+  button {
+    background: var(--panel2); color: var(--txt); border: 1px solid var(--line);
+    border-radius: 6px; padding: 6px 12px; cursor: pointer; font-size: 13px;
+  }
+  button:hover { border-color: var(--accent); }
+  button.primary { background: var(--accent); color: #1a1a1a; border-color: var(--accent); font-weight: bold; }
+  button.danger { border-color: var(--danger); color: #f0b8b8; }
+  input, textarea, select {
+    background: #14161a; color: var(--txt); border: 1px solid var(--line);
+    border-radius: 5px; padding: 5px 8px; font-family: inherit; font-size: 13px;
+  }
+  textarea { width: 100%; resize: vertical; line-height: 1.6; }
+  audio { height: 30px; vertical-align: middle; }
+
+  /* 上部バー */
+  header {
+    position: sticky; top: 0; z-index: 10; background: #12141a;
+    border-bottom: 1px solid var(--line); padding: 10px 16px;
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  }
+  header .title { font-weight: bold; color: var(--accent); font-size: 16px; }
+  header .spacer { flex: 1; }
+  .badge-unsaved { color: var(--danger); font-weight: bold; }
+  .badge-saved { color: var(--muted); }
+
+  .tabs { display: flex; gap: 6px; padding: 8px 16px 0; }
+  .tabs button { border-bottom: none; border-radius: 6px 6px 0 0; }
+  .tabs button.active { background: var(--panel); border-color: var(--line); color: var(--accent); }
+
+  main { padding: 16px; max-width: 1100px; margin: 0 auto; }
+
+  /* ビルドログ */
+  #logWrap { padding: 0 16px; }
+  #buildLog {
+    background: #0c0e12; border: 1px solid var(--line); border-radius: 6px;
+    padding: 10px; font-family: "Consolas", monospace; font-size: 12px;
+    white-space: pre-wrap; max-height: 260px; overflow: auto; color: #cfd4dc;
+  }
+
+  /* ブロックカード */
+  .card {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+    padding: 14px; margin-bottom: 16px;
+  }
+  .card h3 { margin: 0 0 10px; font-size: 15px; }
+  .card .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+  .field { margin-bottom: 10px; }
+  .field label { display: block; color: var(--muted); font-size: 12px; margin-bottom: 3px; }
+  .dur { color: var(--accent); font-size: 12px; }
+
+  /* スライド行 */
+  .slide-row, .cap-row, .se-row {
+    display: flex; gap: 8px; align-items: center; margin-bottom: 6px;
+    background: var(--panel2); padding: 6px; border-radius: 6px; flex-wrap: wrap;
+  }
+  .slide-row img { width: 64px; height: 36px; object-fit: cover; border-radius: 3px; background: #000; }
+  .slide-row select, .cap-row input, .se-row input, .se-row select { flex: 1; min-width: 120px; }
+  .w-input { width: 70px !important; flex: none !important; }
+  .subhead { color: var(--muted); font-size: 12px; margin: 10px 0 4px; border-top: 1px solid var(--line); padding-top: 8px; }
+
+  /* 素材タブ */
+  .asset-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+  .asset-grid figure { margin: 0; background: var(--panel2); border-radius: 6px; padding: 6px; }
+  .asset-grid img { width: 100%; height: 80px; object-fit: cover; border-radius: 4px; background: #000; }
+  .asset-grid figcaption { font-size: 11px; color: var(--muted); margin-top: 4px; word-break: break-all; }
+  .audio-list div { display: flex; align-items: center; gap: 10px; padding: 5px 0; border-bottom: 1px solid var(--line); }
+  .audio-list .nm { min-width: 220px; word-break: break-all; }
+
+  .hidden { display: none; }
+  .hint { color: var(--muted); font-size: 12px; }
+  .sec { margin-bottom: 24px; }
+  .sec > h2 { font-size: 15px; color: var(--accent); border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+</style>
+</head>
+<body>
+<header>
+  <span class="title">🎬 歌舞伎ナビ スタジオ</span>
+  <span id="epTitle" class="hint"></span>
+  <span class="spacer"></span>
+  <span id="saveState" class="badge-saved">保存済み</span>
+  <button id="btnSave" class="primary">保存</button>
+  <button id="btnBuildAll">全体ビルド</button>
+  <button id="btnBuildSel">選択ブロックをビルド</button>
+  <button id="btnToggleLog">ログ表示</button>
+</header>
+
+<div id="logWrap" class="hidden">
+  <div style="padding:8px 0;color:var(--muted)" id="logStatus">ビルド未実行</div>
+  <div id="buildLog"></div>
+</div>
+
+<div class="tabs">
+  <button id="tabBlocks" class="active">ブロック編集</button>
+  <button id="tabAssets">素材</button>
+</div>
+
+<main>
+  <div id="viewBlocks"></div>
+  <div id="viewAssets" class="hidden"></div>
+</main>
+
+<script>
+"use strict";
+
+// ---- 状態 -----------------------------------------------------------------
+let config = null;      // メモリ上の編集中設定
+let assets = null;      // 素材一覧
+let dirty = false;      // 未保存フラグ
+let selected = new Set(); // ビルド対象に選択したブロックID
+let pollTimer = null;
+
+const $ = (sel) => document.querySelector(sel);
+const el = (tag, props = {}, children = []) => {
+  const e = document.createElement(tag);
+  Object.assign(e, props);
+  for (const c of [].concat(children)) if (c != null) e.append(c);
+  return e;
+};
+const fileUrl = (p) => p ? '/file?p=' + encodeURIComponent(p) : '';
+
+function setDirty(v) {
+  dirty = v;
+  $('#saveState').textContent = v ? '未保存' : '保存済み';
+  $('#saveState').className = v ? 'badge-unsaved' : 'badge-saved';
+}
+
+// ---- 読み込み --------------------------------------------------------------
+async function loadAll() {
+  config = await (await fetch('/api/episode')).json();
+  assets = await (await fetch('/api/assets')).json();
+  $('#epTitle').textContent = config.episode.title || '';
+  document.title = (config.episode.title || '歌舞伎ナビ') + ' — スタジオ';
+  renderBlocks();
+  renderAssets();
+}
+
+// 画像セレクト用の選択肢（gen: と photo:）
+function imageOptions() {
+  const opts = [];
+  for (const g of (assets.images.gen || [])) opts.push(g.path);
+  for (const p of (assets.images.photo || [])) opts.push(p.path);
+  // common: の画像類も候補に（タイトル/背景など）
+  return opts;
+}
+function seOptions() {
+  return (assets.se || []).map(s => s.path);
+}
+
+// ---- ブロック編集ビュー ----------------------------------------------------
+function renderBlocks() {
+  const root = $('#viewBlocks');
+  root.textContent = '';
+  root.append(settingsCard());
+  config.blocks.forEach((b, bi) => root.append(blockCard(b, bi)));
+}
+
+// 字幕スタイル設定カード（スマホ視聴向けサイズ調整）
+function settingsCard() {
+  const s = config.settings;
+  const card = el('div', { className: 'card' });
+  card.append(el('h3', { textContent: '字幕スタイル設定' }));
+  card.append(el('div', { className: 'hint', textContent: 'スマホ視聴で読みやすいサイズに（変更後は全体ビルドで反映）' }));
+  const mk = (label, key, def) => {
+    const wrap = el('span', { className: 'hint', style: 'margin-right:16px' }, [label + ' ']);
+    const inp = el('input', { type: 'number', value: (s[key] ?? def), className: 'w-input' });
+    inp.addEventListener('input', () => { s[key] = parseInt(inp.value, 10); setDirty(true); });
+    wrap.append(inp);
+    return wrap;
+  };
+  card.append(el('div', { className: 'row' }, [
+    mk('字幕サイズ subFontSize', 'subFontSize', 52),
+    mk('キャプション capFontSize', 'capFontSize', 42),
+    mk('折返し文字数 wrapMax', 'wrapMax', 30),
+  ]));
+  return card;
+}
+
+function blockCard(b, bi) {
+  const card = el('div', { className: 'card' });
+
+  // ① ヘッダ: 選択チェック + ID + 音声プレーヤ + 秒数
+  const voice = (assets.voices || []).find(v => v.path === b.audio);
+  const sec = voice && voice.seconds != null ? voice.seconds.toFixed(1) + '秒' : '（未取得）';
+  const chk = el('input', { type: 'checkbox', checked: selected.has(b.id) });
+  chk.addEventListener('change', () => { chk.checked ? selected.add(b.id) : selected.delete(b.id); });
+  const player = el('audio', { controls: true, src: fileUrl(b.audio) });
+  card.append(el('div', { className: 'row' }, [
+    el('label', {}, [chk, ' 選択']),
+    el('h3', { style: 'margin:0;flex:1', textContent: 'ブロック ' + b.id }),
+    el('span', { className: 'dur', textContent: sec }),
+  ]));
+  card.append(el('div', { className: 'row' }, [player]));
+
+  // ② styleTag
+  card.append(field('styleTag（音声スタイルタグ）', textInput(b.styleTag || '', v => { b.styleTag = v; setDirty(true); })));
+
+  // ③ ttsText
+  card.append(field('ttsText（音声生成用・カナ置換済み）',
+    textArea(b.ttsText || '', 3, v => { b.ttsText = v; setDirty(true); })));
+
+  // ④ 音声を再生成
+  const regenBtn = el('button', { textContent: '🎙 音声を再生成' });
+  const regenMsg = el('span', { className: 'hint' });
+  regenBtn.addEventListener('click', async () => {
+    if (!confirm('ElevenLabsクレジットを消費します。ブロック' + b.id + 'の音声を再生成しますか？')) return;
+    regenBtn.disabled = true; regenMsg.textContent = '生成中...';
+    try {
+      const r = await fetch('/api/tts', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ blockId: b.id }) });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.error || 'エラー');
+      // プレーヤとキャッシュを更新
+      const idx = (assets.voices || []).findIndex(v => v.path === b.audio);
+      if (idx >= 0) assets.voices[idx].seconds = j.seconds; else assets.voices.push({ path: b.audio, seconds: j.seconds });
+      player.src = fileUrl(b.audio) + '&t=' + Date.now();
+      regenMsg.textContent = '完了: ' + (j.seconds != null ? j.seconds.toFixed(1) + '秒' : '') ;
+      renderBlocks();
+    } catch (e) { regenMsg.textContent = '失敗: ' + e.message; }
+    finally { regenBtn.disabled = false; }
+  });
+  card.append(el('div', { className: 'row' }, [regenBtn, regenMsg]));
+
+  // ⑤ subtitleText
+  card.append(field('subtitleText（字幕用・漢字表記）',
+    textArea(b.subtitleText || '', 3, v => { b.subtitleText = v; setDirty(true); })));
+
+  // ⑥ slides / slidesBySent
+  if (b.slides) {
+    card.append(el('div', { className: 'subhead', textContent: 'スライド（slides）' }));
+    const list = el('div');
+    const rerender = () => { list.textContent = ''; b.slides.forEach((s, i) => list.append(slideRow(b, i, rerender))); };
+    rerender();
+    card.append(list);
+    const addBtn = el('button', { textContent: '＋ スライド追加' });
+    addBtn.addEventListener('click', () => { b.slides.push({ img: imageOptions()[0] || '', weight: 0.5 }); setDirty(true); rerender(); });
+    card.append(el('div', { className: 'row' }, [addBtn]));
+  } else if (b.slidesBySent) {
+    card.append(el('div', { className: 'subhead', textContent: 'スライド（文単位・slidesBySent／自動的に重み計算）' }));
+    b.slidesBySent.forEach((s, i) => card.append(slideBySentRow(b, i)));
+  }
+
+  // ⑦ captions
+  if (b.captions) {
+    card.append(el('div', { className: 'subhead', textContent: 'テロップ（captions）' }));
+    b.captions.forEach((c, i) => card.append(captionRow(c)));
+  } else if (b.captionsBySent) {
+    card.append(el('div', { className: 'subhead', textContent: 'テロップ（文単位・captionsBySent）' }));
+    b.captionsBySent.forEach((c, i) => card.append(captionRow(c)));
+  }
+
+  // ⑦ 効果音 se
+  if (b.se) {
+    card.append(el('div', { className: 'subhead', textContent: '効果音（se）' }));
+    b.se.forEach((s, i) => card.append(seRow(s)));
+  } else if (b.seBySent) {
+    card.append(el('div', { className: 'subhead', textContent: '効果音（文単位・seBySent）' }));
+    b.seBySent.forEach((s, i) => card.append(seRow(s)));
+  }
+
+  return card;
+}
+
+function field(labelText, inputEl) {
+  return el('div', { className: 'field' }, [el('label', { textContent: labelText }), inputEl]);
+}
+function textInput(val, onChange) {
+  const e = el('input', { type: 'text', value: val, style: 'width:100%' });
+  e.addEventListener('input', () => onChange(e.value));
+  return e;
+}
+function textArea(val, rows, onChange) {
+  const e = el('textarea', { value: val, rows });
+  e.addEventListener('input', () => onChange(e.value));
+  return e;
+}
+
+// スライド1行: サムネ + 画像セレクト + weight
+function slideRow(b, i, rerender) {
+  const s = b.slides[i];
+  const row = el('div', { className: 'slide-row' });
+  const img = el('img', { src: fileUrl(s.img) });
+  const sel = el('select');
+  const opts = imageOptions();
+  if (s.img && !opts.includes(s.img)) opts.unshift(s.img); // 現行値がcommon:等で候補外でも保持
+  for (const o of opts) sel.append(el('option', { value: o, textContent: o, selected: o === s.img }));
+  sel.addEventListener('change', () => { s.img = sel.value; img.src = fileUrl(s.img); setDirty(true); });
+  const w = el('input', { type: 'number', step: '0.01', min: '0', value: s.weight, className: 'w-input' });
+  w.addEventListener('input', () => { s.weight = parseFloat(w.value); setDirty(true); });
+  const del = el('button', { className: 'danger', textContent: '×' });
+  del.addEventListener('click', () => { b.slides.splice(i, 1); setDirty(true); rerender(); });
+  row.append(img, sel, el('span', { className: 'hint', textContent: '比率' }), w, del);
+  return row;
+}
+
+// slidesBySent 1行（読み取り・画像とsentFrom/sentToのみ簡易編集）
+function slideBySentRow(b, i) {
+  const s = b.slidesBySent[i];
+  const row = el('div', { className: 'slide-row' });
+  const img = el('img', { src: fileUrl(s.img) });
+  const sel = el('select');
+  const opts = imageOptions();
+  if (s.img && !opts.includes(s.img)) opts.unshift(s.img);
+  for (const o of opts) sel.append(el('option', { value: o, textContent: o, selected: o === s.img }));
+  sel.addEventListener('change', () => { s.img = sel.value; img.src = fileUrl(s.img); setDirty(true); });
+  const from = numField('文From', s.sentFrom, v => { s.sentFrom = v; setDirty(true); });
+  const to = numField('文To', s.sentTo, v => { s.sentTo = v; setDirty(true); });
+  row.append(img, sel, from, to);
+  return row;
+}
+
+function numField(label, val, onChange) {
+  const wrap = el('span', { className: 'hint' }, [label + ' ']);
+  const e = el('input', { type: 'number', value: val, className: 'w-input' });
+  e.addEventListener('input', () => onChange(parseInt(e.value, 10)));
+  wrap.append(e);
+  return wrap;
+}
+
+// テロップ1行
+function captionRow(c) {
+  const row = el('div', { className: 'cap-row' });
+  const t = el('input', { type: 'text', value: c.text || '' });
+  t.addEventListener('input', () => { c.text = t.value; setDirty(true); });
+  row.append(el('span', { className: 'hint', textContent: 'テキスト' }), t);
+  if (c.frac) {
+    row.append(el('span', { className: 'hint', textContent: 'frac ' + JSON.stringify(c.frac) }));
+  }
+  if (c.sentFrom != null) {
+    row.append(numField('From', c.sentFrom, v => { c.sentFrom = v; setDirty(true); }));
+    row.append(numField('To', c.sentTo, v => { c.sentTo = v; setDirty(true); }));
+  }
+  return row;
+}
+
+// 効果音1行
+function seRow(s) {
+  const row = el('div', { className: 'se-row' });
+  const sel = el('select');
+  const opts = seOptions();
+  if (s.file && !opts.includes(s.file)) opts.unshift(s.file);
+  for (const o of opts) sel.append(el('option', { value: o, textContent: o, selected: o === s.file }));
+  sel.addEventListener('change', () => { s.file = sel.value; setDirty(true); });
+  row.append(el('span', { className: 'hint', textContent: 'ファイル' }), sel);
+  // タイミング（at / frac / sent のいずれか）
+  if (s.at != null) row.append(numFloatField('at秒', s.at, v => { s.at = v; setDirty(true); }));
+  if (s.frac != null) row.append(numFloatField('frac', s.frac, v => { s.frac = v; setDirty(true); }));
+  if (s.sent != null) row.append(numField('文', s.sent, v => { s.sent = v; setDirty(true); }));
+  row.append(numFloatField('音量', s.vol, v => { s.vol = v; setDirty(true); }));
+  const play = el('audio', { controls: true, src: fileUrl(s.file) });
+  row.append(play);
+  return row;
+}
+function numFloatField(label, val, onChange) {
+  const wrap = el('span', { className: 'hint' }, [label + ' ']);
+  const e = el('input', { type: 'number', step: '0.01', value: val, className: 'w-input' });
+  e.addEventListener('input', () => onChange(parseFloat(e.value)));
+  wrap.append(e);
+  return wrap;
+}
+
+// ---- 素材ビュー ------------------------------------------------------------
+function renderAssets() {
+  const root = $('#viewAssets');
+  root.textContent = '';
+
+  // BGM
+  const bgmSec = el('div', { className: 'sec' }, [el('h2', { textContent: 'BGM' })]);
+  const bgmList = el('div', { className: 'audio-list' });
+  for (const a of (assets.bgm || [])) {
+    bgmList.append(el('div', {}, [
+      el('span', { className: 'nm', textContent: a.name }),
+      el('audio', { controls: true, src: fileUrl(a.path) }),
+    ]));
+  }
+  bgmSec.append(bgmList);
+  root.append(bgmSec);
+
+  // 効果音
+  const seSec = el('div', { className: 'sec' }, [el('h2', { textContent: '効果音' })]);
+  const seList = el('div', { className: 'audio-list' });
+  for (const a of (assets.se || [])) {
+    seList.append(el('div', {}, [
+      el('span', { className: 'nm', textContent: a.name }),
+      el('audio', { controls: true, src: fileUrl(a.path) }),
+    ]));
+  }
+  seSec.append(seList);
+  root.append(seSec);
+
+  // 音声（ナレーション）
+  const vSec = el('div', { className: 'sec' }, [el('h2', { textContent: 'ナレーション音声' })]);
+  const vList = el('div', { className: 'audio-list' });
+  for (const a of (assets.voices || [])) {
+    vList.append(el('div', {}, [
+      el('span', { className: 'nm', textContent: a.name + (a.seconds != null ? '（' + a.seconds.toFixed(1) + '秒）' : '') }),
+      el('audio', { controls: true, src: fileUrl(a.path) }),
+    ]));
+  }
+  vSec.append(vList);
+  root.append(vSec);
+
+  // 画像グリッド
+  const imgSec = el('div', { className: 'sec' }, [el('h2', { textContent: '画像素材' })]);
+  const grid = el('div', { className: 'asset-grid' });
+  for (const g of [...(assets.images.gen || []), ...(assets.images.photo || [])]) {
+    grid.append(el('figure', {}, [
+      el('img', { src: fileUrl(g.path), loading: 'lazy' }),
+      el('figcaption', { textContent: g.path }),
+    ]));
+  }
+  imgSec.append(grid);
+  root.append(imgSec);
+
+  // BGM生成フォーム
+  const genSec = el('div', { className: 'sec' }, [el('h2', { textContent: 'BGM生成（Eleven Music）' })]);
+  const promptIn = el('textarea', { rows: 2, placeholder: '曲の指示文（英語/日本語）' });
+  const secsIn = el('input', { type: 'number', value: 60, className: 'w-input' });
+  const nameIn = el('input', { type: 'text', placeholder: 'ファイル名（例: 道行.mp3）' });
+  const genBtn = el('button', { className: 'primary', textContent: '🎵 生成' });
+  const genMsg = el('span', { className: 'hint' });
+  genBtn.addEventListener('click', async () => {
+    if (!promptIn.value || !nameIn.value) { genMsg.textContent = 'プロンプトとファイル名は必須'; return; }
+    if (!confirm('音楽生成はTTSより大幅にクレジットを消費します。生成しますか？')) return;
+    genBtn.disabled = true; genMsg.textContent = '生成中...';
+    try {
+      const r = await fetch('/api/music', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: promptIn.value, seconds: Number(secsIn.value), filename: nameIn.value }) });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.error || 'エラー');
+      genMsg.textContent = '完了: ' + j.filename + '（' + (j.seconds != null ? j.seconds.toFixed(1) + '秒' : '') + '）';
+      assets = await (await fetch('/api/assets')).json();
+      renderAssets();
+    } catch (e) { genMsg.textContent = '失敗: ' + e.message; }
+    finally { genBtn.disabled = false; }
+  });
+  genSec.append(
+    field('プロンプト', promptIn),
+    el('div', { className: 'row' }, [
+      el('span', { className: 'hint', textContent: '秒数' }), secsIn,
+      el('span', { className: 'hint', textContent: 'ファイル名' }), nameIn,
+      genBtn, genMsg,
+    ]),
+  );
+  root.append(genSec);
+}
+
+// ---- 保存・ビルド ----------------------------------------------------------
+async function save() {
+  const r = await fetch('/api/episode', { method: 'PUT', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(config) });
+  if (!r.ok) { const j = await r.json().catch(() => ({})); alert('保存失敗: ' + (j.error || r.status)); return false; }
+  setDirty(false);
+  return true;
+}
+
+async function build(blocks) {
+  // ビルド前に自動保存
+  if (dirty) { if (!await save()) return; }
+  showLog(true);
+  $('#logStatus').textContent = 'ビルド起動中...';
+  $('#buildLog').textContent = '';
+  const r = await fetch('/api/build', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ blocks: blocks || null }) });
+  const j = await r.json();
+  pollBuild(j.jobId);
+}
+
+function pollBuild(jobId) {
+  if (pollTimer) clearInterval(pollTimer);
+  pollTimer = setInterval(async () => {
+    const r = await fetch('/api/build/' + jobId);
+    const j = await r.json();
+    $('#buildLog').textContent = j.log || '';
+    $('#buildLog').scrollTop = $('#buildLog').scrollHeight;
+    $('#logStatus').textContent = j.running ? '実行中...' : ('完了（終了コード ' + j.exitCode + '）');
+    if (!j.running) { clearInterval(pollTimer); pollTimer = null; }
+  }, 1000);
+}
+
+function showLog(v) {
+  $('#logWrap').classList.toggle('hidden', !v);
+}
+
+// ---- イベント --------------------------------------------------------------
+$('#btnSave').addEventListener('click', save);
+$('#btnBuildAll').addEventListener('click', () => build(null));
+$('#btnBuildSel').addEventListener('click', () => {
+  if (selected.size === 0) { alert('ビルドするブロックを選択してください'); return; }
+  build([...selected].join(','));
+});
+$('#btnToggleLog').addEventListener('click', () => showLog($('#logWrap').classList.contains('hidden')));
+
+$('#tabBlocks').addEventListener('click', () => switchTab('Blocks'));
+$('#tabAssets').addEventListener('click', () => switchTab('Assets'));
+function switchTab(name) {
+  $('#viewBlocks').classList.toggle('hidden', name !== 'Blocks');
+  $('#viewAssets').classList.toggle('hidden', name !== 'Assets');
+  $('#tabBlocks').classList.toggle('active', name === 'Blocks');
+  $('#tabAssets').classList.toggle('active', name === 'Assets');
+}
+
+window.addEventListener('beforeunload', (e) => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+loadAll().catch(e => alert('読み込み失敗: ' + e.message));
+</script>
+</body>
+</html>
