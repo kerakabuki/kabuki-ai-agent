@@ -291,11 +291,22 @@ run(['-f', 'concat', '-safe', '0', '-i', 'final.txt',
 
 // 8) チャプター出力（概要欄用）
 const opDur = probeDur(join(WORK, 'op.mp4'));
+const totalStr = fmtChap(opDur + bodyDur + edDur);
 console.log('\n=== 完成 ===');
 console.log(FINAL);
-console.log(`総尺: ${fmtChap(opDur + bodyDur + edDur)}`);
+console.log(`総尺: ${totalStr}`);
 console.log('\n--- 概要欄チャプター（実測） ---');
-console.log(`0:00 オープニング`);
+
+// チャプター行を組み立て（先頭は必ずオープニング）
+const chapterList = [{ time: '0:00', title: 'オープニング' }];
 for (const ch of config.chapters) {
-  console.log(`${fmtChap(opDur + starts[ch.block])} ${ch.label}`);
+  chapterList.push({ time: fmtChap(opDur + starts[ch.block]), title: ch.label });
 }
+for (const ch of chapterList) {
+  console.log(`${ch.time} ${ch.title}`);
+}
+
+// 実測値を出力フォルダに永続化（スタジオの「公開情報」タブが読み込む）
+const chaptersJson = { total: totalStr, generatedAt: new Date().toISOString(), chapters: chapterList };
+writeFileSync(join(OUT, 'chapters.json'), JSON.stringify(chaptersJson, null, 2) + '\n', 'utf8');
+console.log(`\nチャプター実測値を保存: ${join(OUT, 'chapters.json')}`);

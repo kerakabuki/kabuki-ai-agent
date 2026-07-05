@@ -11,9 +11,11 @@
 //   POST /api/music {prompt,seconds,filename} … BGM生成（Eleven Music）
 //   POST /api/build {blocks}   … ビルド起動 → {jobId}
 //   GET  /api/build/:jobId     … {running, log, exitCode}
+//   GET  /api/publish          … YouTube公開情報（採用値・実測チャプター・完成プレビュー）
+//   POST /api/publish-draft    … Gemini でタイトル/概要欄/固定コメントの叩き台を生成（保存しない）
 //   GET  /file?p=<プレフィックスパス> … 素材ファイルをストリーム返却
 //
-// 注意: ELEVENLABS_API_KEY の値はログ・レスポンスに一切出力しない。
+// 注意: ELEVENLABS_API_KEY / GEMINI_API_KEY の値はログ・レスポンスに一切出力しない。
 
 import http from 'node:http';
 import { readFileSync, writeFileSync, copyFileSync, existsSync, createReadStream, statSync, mkdirSync } from 'node:fs';
@@ -27,7 +29,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO = join(__dirname, '..');
 const CONFIG_PATH = join(__dirname, 'episodes', 'sonezaki05.json');
 const HOST = '127.0.0.1';
-const PORT = 3555;
+// 通常は3555。環境変数 STUDIO_PORT で上書き可（検証用に別ポートで並行起動するため）
+const PORT = Number(process.env.STUDIO_PORT) || 3555;
 
 // ---- ユーティリティ --------------------------------------------------------
 
@@ -47,6 +50,15 @@ function loadEnv(envPath) {
 const ENV = loadEnv(join(REPO, '.env'));
 function apiKey() {
   return process.env.ELEVENLABS_API_KEY || ENV.ELEVENLABS_API_KEY || '';
+}
+
+// Gemini APIキー: 環境変数 → .env → リポジトリ直下の .gemini_api_key ファイル の順（画像生成スクリプトと同じ探索順）
+function geminiApiKey() {
+  if (process.env.GEMINI_API_KEY) return process.env.GEMINI_API_KEY;
+  if (ENV.GEMINI_API_KEY) return ENV.GEMINI_API_KEY;
+  const keyFile = join(REPO, '.gemini_api_key');
+  if (existsSync(keyFile)) return readFileSync(keyFile, 'utf8').trim();
+  return '';
 }
 
 function loadConfig() {
@@ -205,6 +217,121 @@ async function generateMusic({ prompt, seconds, filename }) {
   return { filename: finalName, seconds: dur, bytes: buf.length };
 }
 
+// ---- YouTube 公開情報 ------------------------------------------------------
+
+// 出力フォルダの chapters.json（ビルド時に build スクリプトが書き出した実測値）を読む。無ければ null。
+function loadChapters() {
+  const P = currentPaths();
+  const file = join(P.OUT, 'chapters.json');
+  if (!existsSync(file)) return null;
+  try {
+    return JSON.parse(readFileSync(file, 'utf8'));
+  } catch {
+    return null;
+  }
+}
+
+// 概要欄テンプレの {{chapters}} を実測チャプター行に置換して完成文を返す。
+// chapters が無い場合は案内文に置換する。
+function renderDescription(template, chapters) {
+  const tpl = template || '';
+  let block;
+  if (chapters && Array.isArray(chapters.chapters) && chapters.chapters.length) {
+    block = chapters.chapters.map(c => `${c.time} ${c.title}`).join('\n');
+  } else {
+    block = '（全体ビルド後に自動挿入されます）';
+  }
+  return tpl.replace(/\{\{chapters\}\}/g, block);
+}
+
+// コードフェンス等を剥がして最初のJSONオブジェクトを取り出す（Gemini応答の耐性処理）
+function extractJson(text) {
+  let s = String(text || '').trim();
+  // ```json ... ``` / ``` ... ``` を除去
+  s = s.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+  // 素のテキストに紛れた最初の { ... } を拾う
+  const start = s.indexOf('{');
+  const end = s.lastIndexOf('}');
+  if (start >= 0 && end > start) s = s.slice(start, end + 1);
+  return JSON.parse(s);
+}
+
+// Gemini でタイトル案・概要欄下書き・固定コメント案を生成（保存はしない）
+async function generatePublishDraft() {
+  const key = geminiApiKey();
+  if (!key) { const e = new Error('.gemini_api_key が見つかりません'); e.code = 'NO_KEY'; throw e; }
+  const config = loadConfig();
+  const yt = config.youtube || {};
+
+  // 入力コンテキスト: エピソードtitle・全ブロックのsubtitleText・既存タイトル案
+  const blocksText = (config.blocks || [])
+    .map(b => `【ブロック${b.id}】${b.subtitleText || ''}`)
+    .join('\n');
+  const existingTitles = (yt.titleCandidates || []).map((t, i) => `${i + 1}. ${t}`).join('\n');
+
+  const prompt = `あなたはYouTube動画の公開情報（メタデータ）を作るアシスタントです。
+以下は歌舞伎の演目解説動画「${config.episode.title}」のナレーション全文です。この内容をもとに、YouTube向けの公開情報の叩き台を作ってください。
+
+# ナレーション本文（ブロックごと）
+${blocksText}
+
+# 既存のタイトル案（参考・踏襲してよい）
+${existingTitles}
+
+# 要件
+- タイトル案は3つ。日本語。検索性を重視し「曽根崎心中」「歌舞伎」「国宝」「近松門左衛門」などのキーワードを自然に含める。シリーズ名「【超訳！歌舞伎ナビ】」を頭に付ける
+- 概要欄（description）は本文の要約＋見どころ。冒頭の1〜2文だけナビゲーター「けらのすけ」の口調（語尾「〜だよ」「〜だね」、明るく親しみやすい）で書き、それ以降は落ち着いた通常の説明文にする。チャプター一覧や公演告知は含めなくてよい（別テンプレで挿入するため）
+- 固定コメント（pinnedComment）は視聴者への一言。1〜3文程度、けらのすけの口調でよい
+- 出力は必ず次のJSON形式のみ（前後に説明文やコードフェンスを付けない）:
+{"titles":["案1","案2","案3"],"description":"概要欄本文","pinnedComment":"固定コメント"}`;
+
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`;
+  const body = {
+    contents: [{ role: 'user', parts: [{ text: prompt }] }],
+    generationConfig: {
+      temperature: 0.7,
+      maxOutputTokens: 4000,
+      responseMimeType: 'application/json',
+      // 思考トークンで出力上限を食い潰してJSONが途中で切れるのを防ぐ（worker.js callGeminiVision 準拠）
+      thinkingConfig: { thinkingBudget: 0 },
+    },
+  };
+
+  const controller = new AbortController();
+  const timerId = setTimeout(() => controller.abort(), 30000);
+  let res;
+  try {
+    res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timerId);
+  }
+  if (!res.ok) {
+    const bodyText = await res.text().catch(() => '');
+    // レスポンス本文にキーは含まれない（URLクエリのみ）ので本文の先頭のみ通知
+    throw new Error(`Gemini 生成失敗 (HTTP ${res.status}): ${bodyText.slice(0, 300)}`);
+  }
+  const json = await res.json();
+  const textPart = json.candidates?.[0]?.content?.parts?.find(p => p.text);
+  if (!textPart) throw new Error('Gemini応答が空でした');
+
+  let parsed;
+  try {
+    parsed = extractJson(textPart.text);
+  } catch {
+    throw new Error('Gemini応答をJSONとして解釈できませんでした');
+  }
+  return {
+    titles: Array.isArray(parsed.titles) ? parsed.titles.slice(0, 3) : [],
+    description: typeof parsed.description === 'string' ? parsed.description : '',
+    pinnedComment: typeof parsed.pinnedComment === 'string' ? parsed.pinnedComment : '',
+  };
+}
+
 // ---- ルーティング ----------------------------------------------------------
 
 const server = http.createServer(async (req, res) => {
@@ -303,6 +430,29 @@ const server = http.createServer(async (req, res) => {
       const job = jobs.get(jobId);
       if (!job) return sendJSON(res, 404, { error: 'ジョブが見つかりません' });
       return sendJSON(res, 200, { running: job.running, log: job.log, exitCode: job.exitCode });
+    }
+
+    // YouTube公開情報の取得（採用値・実測チャプター・完成プレビュー）
+    if (req.method === 'GET' && path === '/api/publish') {
+      const config = loadConfig();
+      const yt = config.youtube || {};
+      const chapters = loadChapters();
+      return sendJSON(res, 200, {
+        youtube: yt,
+        chapters,
+        rendered: { description: renderDescription(yt.description, chapters) },
+      });
+    }
+
+    // YouTube公開情報の叩き台をGeminiで生成（保存はしない）
+    if (req.method === 'POST' && path === '/api/publish-draft') {
+      try {
+        const result = await generatePublishDraft();
+        return sendJSON(res, 200, result);
+      } catch (e) {
+        if (e.code === 'NO_KEY') return sendJSON(res, 501, { error: e.message });
+        return sendJSON(res, 500, { error: e.message });
+      }
     }
 
     // 素材ファイル配信

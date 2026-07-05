@@ -88,6 +88,26 @@
   .hint { color: var(--muted); font-size: 12px; }
   .sec { margin-bottom: 24px; }
   .sec > h2 { font-size: 15px; color: var(--accent); border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+
+  /* 公開情報タブ */
+  .pub-field { margin-bottom: 22px; }
+  .pub-field > label { display: block; color: var(--accent); font-size: 13px; font-weight: bold; margin-bottom: 6px; }
+  .pub-preview {
+    background: #0c0e12; border: 1px solid var(--line); border-radius: 6px;
+    padding: 10px; white-space: pre-wrap; line-height: 1.7; color: #cfd4dc;
+    font-size: 13px; max-height: 360px; overflow: auto;
+  }
+  .cand-row { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; }
+  .cand-row input { flex: 1; }
+  .copy-ok { color: var(--ok); font-size: 12px; }
+  .draft-box {
+    background: var(--panel2); border: 1px solid var(--line); border-radius: 8px;
+    padding: 12px; margin-top: 10px;
+  }
+  .draft-box h4 { margin: 0 0 6px; color: var(--accent); font-size: 13px; }
+  .draft-item { border-top: 1px solid var(--line); padding: 8px 0; }
+  .draft-item:first-of-type { border-top: none; }
+  .draft-item .txt { white-space: pre-wrap; line-height: 1.6; margin: 4px 0; }
 </style>
 </head>
 <body>
@@ -110,11 +130,13 @@
 <div class="tabs">
   <button id="tabBlocks" class="active">ブロック編集</button>
   <button id="tabAssets">素材</button>
+  <button id="tabPublish">公開情報</button>
 </div>
 
 <main>
   <div id="viewBlocks"></div>
   <div id="viewAssets" class="hidden"></div>
+  <div id="viewPublish" class="hidden"></div>
 </main>
 
 <script>
@@ -126,6 +148,7 @@ let assets = null;      // 素材一覧
 let dirty = false;      // 未保存フラグ
 let selected = new Set(); // ビルド対象に選択したブロックID
 let pollTimer = null;
+let publishData = null; // /api/publish の結果（実測チャプター・完成プレビュー）
 
 const $ = (sel) => document.querySelector(sel);
 const el = (tag, props = {}, children = []) => {
@@ -146,10 +169,13 @@ function setDirty(v) {
 async function loadAll() {
   config = await (await fetch('/api/episode')).json();
   assets = await (await fetch('/api/assets')).json();
+  publishData = await (await fetch('/api/publish')).json();
+  if (!config.youtube) config.youtube = { titleCandidates: [], tags: [] };
   $('#epTitle').textContent = config.episode.title || '';
   document.title = (config.episode.title || '歌舞伎ナビ') + ' — スタジオ';
   renderBlocks();
   renderAssets();
+  renderPublish();
 }
 
 // 画像セレクト用の選択肢（gen: と photo:）
@@ -462,6 +488,189 @@ function renderAssets() {
   root.append(genSec);
 }
 
+// ---- 公開情報ビュー --------------------------------------------------------
+
+// クリップボードにコピーし、隣のメッセージ要素に「✓コピーしました」を2秒表示
+async function copyToClipboard(text, msgEl) {
+  try {
+    await navigator.clipboard.writeText(text || '');
+    msgEl.textContent = '✓コピーしました';
+    msgEl.className = 'copy-ok';
+    setTimeout(() => { msgEl.textContent = ''; }, 2000);
+  } catch (e) {
+    msgEl.textContent = 'コピー失敗: ' + e.message;
+    msgEl.className = 'hint';
+  }
+}
+
+// 「概要欄テンプレ」の {{chapters}} を実測チャプターで埋めた完成文を組み立て（プレビュー即時更新用）
+function renderDescLocal(template) {
+  const chs = publishData && publishData.chapters;
+  let block;
+  if (chs && Array.isArray(chs.chapters) && chs.chapters.length) {
+    block = chs.chapters.map(c => c.time + ' ' + c.title).join('\n');
+  } else {
+    block = '（全体ビルド後に自動挿入されます）';
+  }
+  return (template || '').replace(/\{\{chapters\}\}/g, block);
+}
+
+function renderPublish() {
+  const root = $('#viewPublish');
+  root.textContent = '';
+  const yt = config.youtube = config.youtube || {};
+  yt.titleCandidates = yt.titleCandidates || [];
+  yt.tags = yt.tags || [];
+
+  // === タイトル ===
+  const titleSec = el('div', { className: 'pub-field' });
+  titleSec.append(el('label', { textContent: 'タイトル（採用）' }));
+  const titleMsg = el('span', { className: 'copy-ok' });
+  const titleIn = el('input', { type: 'text', value: yt.title || '', style: 'width:100%' });
+  titleIn.addEventListener('input', () => { yt.title = titleIn.value; setDirty(true); });
+  const titleCopy = el('button', { textContent: 'コピー' });
+  titleCopy.addEventListener('click', () => copyToClipboard(titleIn.value, titleMsg));
+  titleSec.append(el('div', { className: 'row' }, [titleIn]));
+  titleSec.append(el('div', { className: 'row' }, [titleCopy, titleMsg]));
+
+  // 候補リスト（クリックで採用欄へ・候補自体も編集可）
+  titleSec.append(el('div', { className: 'hint', style: 'margin:8px 0 4px', textContent: 'タイトル候補（テキストをクリックで採用欄に反映・編集も可）' }));
+  yt.titleCandidates.forEach((cand, i) => {
+    const row = el('div', { className: 'cand-row' });
+    const inp = el('input', { type: 'text', value: cand });
+    inp.addEventListener('input', () => { yt.titleCandidates[i] = inp.value; setDirty(true); });
+    const useBtn = el('button', { textContent: '採用' });
+    useBtn.addEventListener('click', () => { yt.title = inp.value; titleIn.value = inp.value; setDirty(true); });
+    row.append(inp, useBtn);
+    titleSec.append(row);
+  });
+  root.append(titleSec);
+
+  // === 概要欄 ===
+  const descSec = el('div', { className: 'pub-field' });
+  descSec.append(el('label', { textContent: '概要欄' }));
+  descSec.append(el('div', { className: 'hint', textContent: 'テンプレ編集用（チャプター挿入位置は {{chapters}} プレースホルダ）' }));
+  const descTa = el('textarea', { value: yt.description || '', rows: 12 });
+  const preview = el('div', { className: 'pub-preview' });
+  const refreshPreview = () => { preview.textContent = renderDescLocal(descTa.value); };
+  descTa.addEventListener('input', () => { yt.description = descTa.value; setDirty(true); refreshPreview(); });
+  descSec.append(descTa);
+
+  // 完成プレビュー（実測チャプター挿入済み・読み取り専用）
+  descSec.append(el('div', { className: 'hint', style: 'margin:10px 0 4px' }, ['完成プレビュー（実測チャプター挿入済み・読み取り専用）']));
+  const chs = publishData && publishData.chapters;
+  if (chs && chs.generatedAt) {
+    const dt = new Date(chs.generatedAt);
+    descSec.append(el('div', { className: 'hint', textContent: 'チャプター実測値: ' + dt.toLocaleString('ja-JP') + ' のビルド（古い場合は再ビルドで更新）' }));
+  } else {
+    descSec.append(el('div', { className: 'hint', textContent: 'チャプター実測値なし（全体ビルド後に反映されます）' }));
+  }
+  refreshPreview();
+  descSec.append(preview);
+  const descMsg = el('span', { className: 'copy-ok' });
+  const descCopy = el('button', { textContent: '完成版をコピー' });
+  descCopy.addEventListener('click', () => copyToClipboard(renderDescLocal(descTa.value), descMsg));
+  descSec.append(el('div', { className: 'row', style: 'margin-top:6px' }, [descCopy, descMsg]));
+  root.append(descSec);
+
+  // === 固定コメント ===
+  const pinSec = el('div', { className: 'pub-field' });
+  pinSec.append(el('label', { textContent: '固定コメント' }));
+  const pinTa = el('textarea', { value: yt.pinnedComment || '', rows: 4 });
+  pinTa.addEventListener('input', () => { yt.pinnedComment = pinTa.value; setDirty(true); });
+  pinSec.append(pinTa);
+  const pinMsg = el('span', { className: 'copy-ok' });
+  const pinCopy = el('button', { textContent: 'コピー' });
+  pinCopy.addEventListener('click', () => copyToClipboard(pinTa.value, pinMsg));
+  pinSec.append(el('div', { className: 'row', style: 'margin-top:6px' }, [pinCopy, pinMsg]));
+  root.append(pinSec);
+
+  // === タグ ===
+  const tagSec = el('div', { className: 'pub-field' });
+  tagSec.append(el('label', { textContent: 'タグ（カンマ区切り）' }));
+  const tagIn = el('input', { type: 'text', value: (yt.tags || []).join(', '), style: 'width:100%' });
+  tagIn.addEventListener('input', () => {
+    yt.tags = tagIn.value.split(',').map(s => s.trim()).filter(Boolean);
+    setDirty(true);
+  });
+  tagSec.append(el('div', { className: 'row' }, [tagIn]));
+  const tagMsg = el('span', { className: 'copy-ok' });
+  const tagCopy = el('button', { textContent: 'コピー' });
+  tagCopy.addEventListener('click', () => copyToClipboard((yt.tags || []).join(', '), tagMsg));
+  tagSec.append(el('div', { className: 'row' }, [tagCopy, tagMsg]));
+  root.append(tagSec);
+
+  // === AIで叩き台を生成 ===
+  const aiSec = el('div', { className: 'pub-field' });
+  aiSec.append(el('label', { textContent: 'AIで叩き台を生成（Gemini）' }));
+  aiSec.append(el('div', { className: 'hint', textContent: 'ナレーション本文から公開情報の案を生成します。編集欄への反映は各項目の「採用」ボタンで行います（自動上書きはしません）。' }));
+  const aiBtn = el('button', { className: 'primary', textContent: '🤖 AIで叩き台を生成' });
+  const aiMsg = el('span', { className: 'hint' });
+  const draftWrap = el('div');
+  aiBtn.addEventListener('click', async () => {
+    aiBtn.disabled = true; const orig = aiBtn.textContent; aiBtn.textContent = '生成中…'; aiMsg.textContent = '';
+    try {
+      const r = await fetch('/api/publish-draft', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.error || ('HTTP ' + r.status));
+      renderDraft(draftWrap, j, { titleIn, descTa, pinTa, refreshPreview });
+    } catch (e) {
+      alert('AI生成に失敗しました: ' + e.message);
+    } finally {
+      aiBtn.disabled = false; aiBtn.textContent = orig;
+    }
+  });
+  aiSec.append(el('div', { className: 'row' }, [aiBtn, aiMsg]));
+  aiSec.append(draftWrap);
+  root.append(aiSec);
+}
+
+// AI生成結果を表示し、項目ごとに「採用」ボタンで編集欄へ反映（無条件上書きしない）
+function renderDraft(wrap, draft, refs) {
+  wrap.textContent = '';
+  const box = el('div', { className: 'draft-box' });
+  box.append(el('h4', { textContent: 'AI生成結果（採用ボタンで各欄に反映）' }));
+
+  // タイトル案（複数）
+  (draft.titles || []).forEach((t, i) => {
+    const item = el('div', { className: 'draft-item' });
+    item.append(el('div', { className: 'txt', textContent: 'タイトル案' + (i + 1) + ': ' + t }));
+    const btn = el('button', { textContent: '採用（採用タイトルへ）' });
+    btn.addEventListener('click', () => {
+      config.youtube.title = t; refs.titleIn.value = t; setDirty(true);
+    });
+    item.append(btn);
+    box.append(item);
+  });
+
+  // 概要欄案
+  if (draft.description) {
+    const item = el('div', { className: 'draft-item' });
+    item.append(el('div', { className: 'txt', textContent: '概要欄案:\n' + draft.description }));
+    const btn = el('button', { textContent: '採用（概要欄テンプレへ）' });
+    btn.addEventListener('click', () => {
+      config.youtube.description = draft.description; refs.descTa.value = draft.description;
+      setDirty(true); refs.refreshPreview();
+    });
+    item.append(btn);
+    box.append(item);
+  }
+
+  // 固定コメント案
+  if (draft.pinnedComment) {
+    const item = el('div', { className: 'draft-item' });
+    item.append(el('div', { className: 'txt', textContent: '固定コメント案:\n' + draft.pinnedComment }));
+    const btn = el('button', { textContent: '採用（固定コメントへ）' });
+    btn.addEventListener('click', () => {
+      config.youtube.pinnedComment = draft.pinnedComment; refs.pinTa.value = draft.pinnedComment; setDirty(true);
+    });
+    item.append(btn);
+    box.append(item);
+  }
+
+  wrap.append(box);
+}
+
 // ---- 保存・ビルド ----------------------------------------------------------
 async function save() {
   try {
@@ -539,11 +748,14 @@ $('#btnToggleLog').addEventListener('click', () => showLog($('#logWrap').classLi
 
 $('#tabBlocks').addEventListener('click', () => switchTab('Blocks'));
 $('#tabAssets').addEventListener('click', () => switchTab('Assets'));
+$('#tabPublish').addEventListener('click', () => switchTab('Publish'));
 function switchTab(name) {
   $('#viewBlocks').classList.toggle('hidden', name !== 'Blocks');
   $('#viewAssets').classList.toggle('hidden', name !== 'Assets');
+  $('#viewPublish').classList.toggle('hidden', name !== 'Publish');
   $('#tabBlocks').classList.toggle('active', name === 'Blocks');
   $('#tabAssets').classList.toggle('active', name === 'Assets');
+  $('#tabPublish').classList.toggle('active', name === 'Publish');
 }
 
 window.addEventListener('beforeunload', (e) => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
