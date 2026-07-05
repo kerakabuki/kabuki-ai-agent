@@ -38,7 +38,7 @@ function truncateToGraphemes(text: string, limit: number): string {
 
 export async function postToBluesky(
   config: BlueskyConfig,
-  imageData: Uint8Array,
+  imageData: Uint8Array | null,
   text: string,
 ): Promise<PostResult> {
   try {
@@ -51,10 +51,22 @@ export async function postToBluesky(
       return { success: false, error: 'Bluesky authentication failed' };
     }
 
-    // Step 2: Upload image as blob
-    const blobRef = await uploadBlob(session, imageData, 'image/jpeg');
-    if (!blobRef) {
-      return { success: false, error: 'Bluesky blob upload failed' };
+    // Step 2: Upload image as blob (imageDataがnullなら本文のみで投稿)
+    let embed: Record<string, unknown> | null = null;
+    if (imageData) {
+      const blobRef = await uploadBlob(session, imageData, 'image/jpeg');
+      if (!blobRef) {
+        return { success: false, error: 'Bluesky blob upload failed' };
+      }
+      embed = {
+        $type: 'app.bsky.embed.images',
+        images: [
+          {
+            alt: text.slice(0, 300),
+            image: blobRef,
+          },
+        ],
+      };
     }
 
     // Step 3: Parse facets (URLs and hashtags)
@@ -66,16 +78,10 @@ export async function postToBluesky(
       $type: 'app.bsky.feed.post',
       text,
       createdAt: now,
-      embed: {
-        $type: 'app.bsky.embed.images',
-        images: [
-          {
-            alt: text.slice(0, 300),
-            image: blobRef,
-          },
-        ],
-      },
     };
+    if (embed) {
+      record.embed = embed;
+    }
     if (facets.length > 0) {
       record.facets = facets;
     }

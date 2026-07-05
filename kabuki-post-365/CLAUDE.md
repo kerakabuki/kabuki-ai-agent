@@ -35,7 +35,7 @@ Manual triggers: `POST /api/v1/auto-post/daily-run` (full pipeline), `GET /api/v
 ## Platform-specific rules (hard-won; do not regress)
 
 - **X:** posts with URLs in the body get downranked — URLs and quiz answers go into an auto-reply instead. Japanese chars count double (110 char limit in prompt). X is currently **disabled** via settings (`disabled_platforms = 'x'`) because API credits are depleted (402 CreditsDepleted since 2026-03); re-enable only after buying credits. The live source of truth is the `settings` table in D1.
-- **Bluesky:** 300 grapheme limit (truncation implemented), image blob ≤ ~950KB (falls back to `sns/x` etc. R2 variants).
+- **Bluesky:** 300 grapheme limit (truncation implemented). Image blob hard limit is 2MB; if the original exceeds ~950KB the code falls back to `sns/x` etc. R2 variants, and if still over ~1.9MB it posts text-only rather than failing. R2 variants exist only for images uploaded via `scripts/generate-variants.mjs` (manual, needs sharp + API token) — images put into R2 by other routes have no variants.
 - **Instagram/Facebook:** no URLs in body ("プロフィールのリンクから" instead); image required for Instagram.
 - **All platforms:** generated text must not contain markdown (`#`, `##`, `**`, `-`) — enforced in prompts.
 

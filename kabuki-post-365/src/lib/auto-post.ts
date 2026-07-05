@@ -132,6 +132,15 @@ export async function executeAutoPost(
         }
       }
     }
+    // Blueskyのblob上限は2MB（2026-07の実エラー "maximum 2000000" で確認）。
+    // 変種が無く超過したままなら本文のみで投稿する（投稿自体を落とさない）。
+    // 画像取得の一時失敗など他のnull経路は従来通りスキップさせるため、明示フラグで区別する。
+    let blueskyTextOnly = false;
+    if (blueskyImageData && blueskyImageData.byteLength > 1_900_000) {
+      console.warn(`[auto-post] Bluesky image too large (${blueskyImageData.byteLength} bytes, no small variant for ${post.r2_key}); posting text-only`);
+      blueskyImageData = null;
+      blueskyTextOnly = true;
+    }
 
     // ── Instagram ──
     platforms.push(disabled.has('instagram')
@@ -151,7 +160,7 @@ export async function executeAutoPost(
     // ── Bluesky ──
     platforms.push(disabled.has('bluesky')
       ? { platform: 'bluesky', success: false, skipped: true }
-      : await processBluesky(env, bskyConfig, post, blueskyImageData));
+      : await processBluesky(env, bskyConfig, post, blueskyImageData, blueskyTextOnly));
 
     // Check if all platforms are now posted
     await updatePostStatus(env, post.id);
@@ -269,9 +278,11 @@ async function processBluesky(
   config: BlueskyConfig | null,
   post: PostRow,
   imageData: Uint8Array | null,
+  allowTextOnly = false,
 ): Promise<PlatformResult> {
   if (post.bluesky_posted) return { platform: 'bluesky', success: true, skipped: true };
-  if (!config || !imageData) {
+  // allowTextOnly はサイズ超過フォールバック専用。画像取得失敗・未割当は従来通りスキップ
+  if (!config || (!imageData && !allowTextOnly)) {
     return { platform: 'bluesky', success: false, skipped: true };
   }
 
@@ -428,7 +439,7 @@ export async function postSinglePlatform(
 
   let imageData: Uint8Array | null = null;
   if (post.r2_key) {
-    // For Bluesky (1MB limit), try SNS variant first, then compress original
+    // For Bluesky (blob hard limit 2MB; keep ≤950KB variants preferred), try SNS variant first
     if (platform === 'bluesky') {
       const snsKey = post.r2_key.replace(/^originals\//, 'sns/x/');
       if (snsKey !== post.r2_key) {
