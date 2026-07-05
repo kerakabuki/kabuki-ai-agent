@@ -464,11 +464,22 @@ function renderAssets() {
 
 // ---- 保存・ビルド ----------------------------------------------------------
 async function save() {
-  const r = await fetch('/api/episode', { method: 'PUT', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(config) });
-  if (!r.ok) { const j = await r.json().catch(() => ({})); alert('保存失敗: ' + (j.error || r.status)); return false; }
-  setDirty(false);
-  return true;
+  try {
+    const r = await fetch('/api/episode', { method: 'PUT', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(config) });
+    if (!r.ok) { const j = await r.json().catch(() => ({})); alert('保存失敗: ' + (j.error || r.status)); return false; }
+    setDirty(false);
+    return true;
+  } catch (e) {
+    alert('保存できません: サーバに接続できませんでした。\nサーバ（最小化ウィンドウ）が起動しているか確認して、ページを再読み込みしてください。\n\n' + e.message);
+    return false;
+  }
+}
+
+function setBuildButtons(enabled) {
+  $('#btnBuildAll').disabled = !enabled;
+  $('#btnBuildSel').disabled = !enabled;
+  $('#btnBuildAll').textContent = enabled ? '全体ビルド' : 'ビルド実行中…';
 }
 
 async function build(blocks) {
@@ -477,21 +488,39 @@ async function build(blocks) {
   showLog(true);
   $('#logStatus').textContent = 'ビルド起動中...';
   $('#buildLog').textContent = '';
-  const r = await fetch('/api/build', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ blocks: blocks || null }) });
-  const j = await r.json();
-  pollBuild(j.jobId);
+  try {
+    const r = await fetch('/api/build', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ blocks: blocks || null }) });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const j = await r.json();
+    setBuildButtons(false);
+    pollBuild(j.jobId);
+  } catch (e) {
+    $('#logStatus').textContent = 'ビルドを開始できませんでした';
+    alert('ビルドを開始できません: サーバに接続できませんでした。\nサーバ（最小化ウィンドウ）が起動しているか確認して、ページを再読み込みしてください。\n\n' + e.message);
+  }
 }
 
 function pollBuild(jobId) {
   if (pollTimer) clearInterval(pollTimer);
+  let failCount = 0;
   pollTimer = setInterval(async () => {
-    const r = await fetch('/api/build/' + jobId);
-    const j = await r.json();
-    $('#buildLog').textContent = j.log || '';
-    $('#buildLog').scrollTop = $('#buildLog').scrollHeight;
-    $('#logStatus').textContent = j.running ? '実行中...' : ('完了（終了コード ' + j.exitCode + '）');
-    if (!j.running) { clearInterval(pollTimer); pollTimer = null; }
+    try {
+      const r = await fetch('/api/build/' + jobId);
+      const j = await r.json();
+      failCount = 0;
+      $('#buildLog').textContent = j.log || '';
+      $('#buildLog').scrollTop = $('#buildLog').scrollHeight;
+      $('#logStatus').textContent = j.running ? '実行中...' : (j.exitCode === 0 ? '✅ ビルド完了' : '❌ ビルド失敗（終了コード ' + j.exitCode + '）— ログを確認してください');
+      if (!j.running) { clearInterval(pollTimer); pollTimer = null; setBuildButtons(true); }
+    } catch (e) {
+      // サーバ再起動等で一時的に失敗しても数回はリトライする
+      failCount++;
+      if (failCount >= 5) {
+        clearInterval(pollTimer); pollTimer = null; setBuildButtons(true);
+        $('#logStatus').textContent = '⚠️ サーバとの接続が切れました。サーバが再起動された場合、ビルドは中断されています。ページを再読み込みしてやり直してください。';
+      }
+    }
   }, 1000);
 }
 

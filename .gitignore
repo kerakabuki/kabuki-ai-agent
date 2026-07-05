@@ -15,3 +15,4 @@ travel-writer/
 .vscode/
 .claude/settings.local.json
 .gemini_api_key
+studio/episodes/*.bak
