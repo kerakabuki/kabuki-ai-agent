@@ -51,6 +51,7 @@ export interface ImageRecord {
   navi_caption: string | null;
   navi_visible: number;
   is_primary: number;
+  verified: number; // 人間が写真チェックで確認済みなら1（本文生成のキャラ文脈に使える）
   created_at: string;
   updated_at: string;
 }

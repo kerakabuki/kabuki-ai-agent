@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, Image, FileText, CheckCircle, Clock, Edit3, Sparkles, Download, Users, HelpCircle, ChevronRight } from 'lucide-react';
+import { Calendar, Image, FileText, CheckCircle, Clock, Edit3, Sparkles, Download, Users, HelpCircle, ChevronRight, ShieldCheck } from 'lucide-react';
 import { api } from '../lib/api';
 
 interface Stats {
@@ -59,17 +59,21 @@ const STEPS = [
 export default function DashboardPage() {
   const [stats, setStats] = useState<Stats>({ total: 0, draft: 0, approved: 0, posted: 0, images: 0, characters: 0, quizzes: 0 });
   const [todayPost, setTodayPost] = useState<any>(null);
+  const [unverifiedCount, setUnverifiedCount] = useState(0); // 未チェックの写真件数
   const [loading, setLoading] = useState(true);
   const [showGuide, setShowGuide] = useState(true);
 
   useEffect(() => {
     async function load() {
       try {
-        const [posts, images, quizzes] = await Promise.all([
+        const [posts, images, quizzes, unverified] = await Promise.all([
           api.posts.list(),
           api.images.list(),
           api.quiz.list(),
+          // 検品カウントの失敗で統計全体を巻き添えにしない
+          api.images.list({ verified: '0' }).catch(() => []),
         ]);
+        setUnverifiedCount(unverified.length);
         const total = posts.length;
         const draft = posts.filter((p: any) => p.status === 'draft').length;
         const approved = posts.filter((p: any) => p.status === 'approved').length;
@@ -111,6 +115,25 @@ export default function DashboardPage() {
     <div>
       <h2 className="text-2xl font-bold text-gray-900 mb-1">ダッシュボード</h2>
       <p className="text-sm text-gray-500 mb-6">KABUKI POST 365 — SNS投稿管理システム</p>
+
+      {/* 未チェックの写真アラート（0件なら非表示） */}
+      {unverifiedCount > 0 && (
+        <Link
+          to="/verify"
+          className="flex items-center gap-3 p-4 mb-6 bg-amber-50 border border-amber-300 rounded-xl hover:border-amber-400 transition-colors"
+        >
+          <ShieldCheck size={24} className="text-amber-600 flex-shrink-0" />
+          <div className="flex-1 min-w-0">
+            <div className="font-medium text-amber-800">
+              ⚠️ 未チェックの写真が {unverifiedCount}件あります
+            </div>
+            <div className="text-sm text-amber-700">
+              確認するまで、その写真はキャラクター説明に使われません → 写真チェックへ
+            </div>
+          </div>
+          <ChevronRight size={18} className="text-amber-500 flex-shrink-0" />
+        </Link>
+      )}
 
       {/* How to use guide */}
       <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-xl border border-red-200 p-5 mb-8">

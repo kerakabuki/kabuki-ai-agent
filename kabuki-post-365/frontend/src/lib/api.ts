@@ -64,6 +64,8 @@ export const api = {
     analyze: (formData: FormData) => request<any>('/images/analyze', { method: 'POST', body: formData }),
     update: (id: number, data: any) => request<any>(`/images/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
     setPrimary: (id: number) => request<any>(`/images/${id}/primary`, { method: 'PUT' }),
+    verify: (id: number, data?: { character_id?: number | null; play_name?: string | null }) =>
+      request<{ success: boolean }>(`/images/${id}/verify`, { method: 'POST', body: JSON.stringify(data || {}) }),
     delete: (id: number) => request<any>(`/images/${id}`, { method: 'DELETE' }),
     generate: (formData: FormData) => request<any>('/images/generate', { method: 'POST', body: formData }),
   },

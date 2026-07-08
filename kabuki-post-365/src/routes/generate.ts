@@ -16,7 +16,7 @@ generateRoutes.post('/batch', async (c) => {
                qp.correct_answer as quiz_correct_answer, qp.explanation as quiz_explanation
                FROM posts p
                LEFT JOIN images i ON p.image_id = i.id
-               LEFT JOIN characters c ON c.id = i.character_id
+               LEFT JOIN characters c ON c.id = i.character_id AND i.verified = 1
                LEFT JOIN quiz_posts qp ON qp.post_id = p.id
                WHERE p.status = 'draft' AND p.instagram_text IS NULL`;
   const params: string[] = [];
@@ -81,7 +81,7 @@ generateRoutes.post('/single/:postId', async (c) => {
      c.personality_tags, i.visual_features, i.scene_type,
      qp.question as quiz_question, qp.options as quiz_options,
      qp.correct_answer as quiz_correct_answer, qp.explanation as quiz_explanation
-     FROM posts p LEFT JOIN images i ON p.image_id = i.id LEFT JOIN characters c ON c.id = i.character_id
+     FROM posts p LEFT JOIN images i ON p.image_id = i.id LEFT JOIN characters c ON c.id = i.character_id AND i.verified = 1
      LEFT JOIN quiz_posts qp ON qp.post_id = p.id
      WHERE p.id = ?`
   ).bind(postId).first();
@@ -132,7 +132,7 @@ generateRoutes.post('/single/:postId/:platform', async (c) => {
      c.personality_tags, i.visual_features, i.scene_type,
      qp.question as quiz_question, qp.options as quiz_options,
      qp.correct_answer as quiz_correct_answer, qp.explanation as quiz_explanation
-     FROM posts p LEFT JOIN images i ON p.image_id = i.id LEFT JOIN characters c ON c.id = i.character_id
+     FROM posts p LEFT JOIN images i ON p.image_id = i.id LEFT JOIN characters c ON c.id = i.character_id AND i.verified = 1
      LEFT JOIN quiz_posts qp ON qp.post_id = p.id
      WHERE p.id = ?`
   ).bind(postId).first();

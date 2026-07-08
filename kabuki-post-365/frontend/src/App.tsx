@@ -5,6 +5,7 @@ import DashboardPage from './pages/DashboardPage';
 import CalendarPage from './pages/CalendarPage';
 import PostEditPage from './pages/PostEditPage';
 import ImagesPage from './pages/ImagesPage';
+import VerifyPage from './pages/VerifyPage';
 import CharactersPage from './pages/CharactersPage';
 import QuizPage from './pages/QuizPage';
 import ExportPage from './pages/ExportPage';
@@ -91,6 +92,7 @@ export default function App() {
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/posts/:id" element={<PostEditPage />} />
           <Route path="/images" element={<ImagesPage />} />
+          <Route path="/verify" element={<VerifyPage />} />
           <Route path="/characters" element={<CharactersPage />} />
           <Route path="/quiz" element={<QuizPage />} />
           <Route path="/export" element={<ExportPage />} />

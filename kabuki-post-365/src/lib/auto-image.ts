@@ -24,6 +24,7 @@ interface TargetPost {
 interface ImageRow {
   id: number;
   character_id: number | null;
+  verified: number; // 検品済みなら1。未検品(0)のキャラは投稿に伝播させない
 }
 
 /**
@@ -59,11 +60,13 @@ export async function ensureImages(env: Env, date: string): Promise<ImageAssignR
         continue;
       }
 
+      // 検品済み画像のキャラだけを投稿に伝播させる（未検品はGemini Visionの誤判定の可能性があるため無視）
+      const propagatedCharacterId = image.verified ? image.character_id : null;
       await env.DB.batch([
         // 画像に人物が紐づいていれば投稿のキャラクターも画像側に合わせる（本文生成は画像のキャラクターを使うため、管理画面の表示も揃える）
         env.DB.prepare(
           `UPDATE posts SET image_id = ?, character_id = COALESCE(?, character_id), updated_at = datetime('now') WHERE id = ?`,
-        ).bind(image.id, image.character_id, post.id),
+        ).bind(image.id, propagatedCharacterId, post.id),
         env.DB.prepare(
           `UPDATE images SET usage_count = usage_count + 1, updated_at = datetime('now') WHERE id = ?`,
         ).bind(image.id),
@@ -85,7 +88,7 @@ async function pickLibraryImage(env: Env, season: string, date: string): Promise
 
   // 1. 季節一致 or 通年、直近未使用
   let row = await env.DB.prepare(
-    `SELECT id, character_id FROM images
+    `SELECT id, character_id, verified FROM images
      WHERE id NOT IN (${recentlyUsed}) AND season_tag IN (?, '通年')
      ORDER BY usage_count ASC, RANDOM() LIMIT 1`,
   ).bind(date, date, season).first<ImageRow>();
@@ -93,7 +96,7 @@ async function pickLibraryImage(env: Env, season: string, date: string): Promise
 
   // 2. 直近未使用ならなんでも
   row = await env.DB.prepare(
-    `SELECT id, character_id FROM images
+    `SELECT id, character_id, verified FROM images
      WHERE id NOT IN (${recentlyUsed})
      ORDER BY usage_count ASC, RANDOM() LIMIT 1`,
   ).bind(date, date).first<ImageRow>();
@@ -101,7 +104,7 @@ async function pickLibraryImage(env: Env, season: string, date: string): Promise
 
   // 3. 全部使用済みなら使用回数最少をローテーション再利用
   row = await env.DB.prepare(
-    `SELECT id, character_id FROM images
+    `SELECT id, character_id, verified FROM images
      ORDER BY usage_count ASC, RANDOM() LIMIT 1`,
   ).first<ImageRow>();
   return row || null;
@@ -142,7 +145,7 @@ async function generateAndRegisterImage(
      VALUES (?, ?, 'AI生成', ?, '通年')`,
   ).bind(filename, r2Key, `AI生成画像（テーマ: ${post.theme}）`).run();
 
-  return { id: dbResult.meta.last_row_id as number, character_id: null };
+  return { id: dbResult.meta.last_row_id as number, character_id: null, verified: 0 };
 }
 
 function buildImagePrompt(theme: string, date: string): string {

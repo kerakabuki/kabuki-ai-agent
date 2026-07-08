@@ -98,6 +98,7 @@ imagesRoutes.post('/analyze', async (c) => {
 imagesRoutes.get('/', async (c) => {
   const characterId = c.req.query('character_id');
   const seasonTag = c.req.query('season_tag');
+  const verified = c.req.query('verified'); // '0'（未検品）or '1'（検品済み）
 
   let query = 'SELECT * FROM images WHERE 1=1';
   const params: (string | number)[] = [];
@@ -109,6 +110,10 @@ imagesRoutes.get('/', async (c) => {
   if (seasonTag) {
     query += ' AND season_tag = ?';
     params.push(seasonTag);
+  }
+  if (verified === '0' || verified === '1') {
+    query += ' AND verified = ?';
+    params.push(Number(verified));
   }
 
   query += ' ORDER BY created_at DESC';
@@ -186,10 +191,40 @@ imagesRoutes.put('/:id', async (c) => {
   const id = c.req.param('id');
   const body = await c.req.json();
   const { character_id, play_name, scene_type, visual_features, season_tag, navi_caption, navi_display_order, navi_visible } = body;
+  // verified は body で渡された時だけ更新（既存の全カラム上書き方式を壊さないよう COALESCE）
   await c.env.DB.prepare(
-    `UPDATE images SET character_id=?, play_name=?, scene_type=?, visual_features=?, season_tag=?, navi_caption=?, navi_display_order=?, navi_visible=?, updated_at=datetime('now')
+    `UPDATE images SET character_id=?, play_name=?, scene_type=?, visual_features=?, season_tag=?, navi_caption=?, navi_display_order=?, navi_visible=?, verified=COALESCE(?, verified), updated_at=datetime('now')
      WHERE id=?`
-  ).bind(character_id, play_name, scene_type, visual_features, season_tag, navi_caption, navi_display_order, navi_visible ?? 1, id).run();
+  ).bind(character_id, play_name, scene_type, visual_features, season_tag, navi_caption, navi_display_order, navi_visible ?? 1, body.verified ?? null, id).run();
+  return c.json({ success: true });
+});
+
+// 写真チェック（検品）: 人間が確認した画像を verified=1 にする。
+// character_id / play_name は body にキーが存在する場合のみ明示上書き（NULL 設定も可能）。
+imagesRoutes.post('/:id/verify', async (c) => {
+  const id = c.req.param('id');
+  const body = (await c.req.json().catch(() => null)) ?? ({} as Record<string, unknown>);
+
+  const existing = await c.env.DB.prepare('SELECT id FROM images WHERE id = ?').bind(id).first();
+  if (!existing) return c.json({ error: 'Not found' }, 404);
+
+  const sets: string[] = ['verified = 1', "updated_at = datetime('now')"];
+  const params: (string | number | null)[] = [];
+
+  if (Object.prototype.hasOwnProperty.call(body, 'character_id')) {
+    sets.push('character_id = ?');
+    params.push((body.character_id as number | null) ?? null);
+  }
+  if (Object.prototype.hasOwnProperty.call(body, 'play_name')) {
+    sets.push('play_name = ?');
+    params.push((body.play_name as string | null) ?? null);
+  }
+
+  params.push(id);
+  await c.env.DB.prepare(
+    `UPDATE images SET ${sets.join(', ')} WHERE id = ?`
+  ).bind(...params).run();
+
   return c.json({ success: true });
 });
 

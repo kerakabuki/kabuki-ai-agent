@@ -1,6 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom';
 import {
-  LayoutDashboard, Calendar, Image, Users, HelpCircle, Download, Settings, Menu, X, LogOut
+  LayoutDashboard, Calendar, Image, ShieldCheck, Users, HelpCircle, Download, Settings, Menu, X, LogOut
 } from 'lucide-react';
 import { useState } from 'react';
 import { clearAuthToken } from '../lib/api';
@@ -9,6 +9,7 @@ const navItems = [
   { to: '/', icon: LayoutDashboard, label: 'ダッシュボード' },
   { to: '/calendar', icon: Calendar, label: 'カレンダー' },
   { to: '/images', icon: Image, label: '画像管理' },
+  { to: '/verify', icon: ShieldCheck, label: '写真チェック' },
   { to: '/characters', icon: Users, label: 'キャラクター' },
   { to: '/quiz', icon: HelpCircle, label: 'クイズ' },
   { to: '/export', icon: Download, label: 'エクスポート' },
