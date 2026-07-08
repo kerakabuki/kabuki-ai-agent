@@ -60,9 +60,9 @@ export async function ensureImages(env: Env, date: string): Promise<ImageAssignR
       }
 
       await env.DB.batch([
-        // 画像に人物が紐づいていれば投稿にも反映（本文生成でキャラクター文脈が使われる）
+        // 画像に人物が紐づいていれば投稿のキャラクターも画像側に合わせる（本文生成は画像のキャラクターを使うため、管理画面の表示も揃える）
         env.DB.prepare(
-          `UPDATE posts SET image_id = ?, character_id = COALESCE(character_id, ?), updated_at = datetime('now') WHERE id = ?`,
+          `UPDATE posts SET image_id = ?, character_id = COALESCE(?, character_id), updated_at = datetime('now') WHERE id = ?`,
         ).bind(image.id, image.character_id, post.id),
         env.DB.prepare(
           `UPDATE images SET usage_count = usage_count + 1, updated_at = datetime('now') WHERE id = ?`,

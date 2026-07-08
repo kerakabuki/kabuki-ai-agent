@@ -20,7 +20,8 @@ export async function generatePostText(
   platform?: string,
   customPrompt?: string,
 ): Promise<GeneratedTexts> {
-  const characterName = post.character_name as string || '（キャラクター未設定）';
+  // character_name は添付画像に紐づくキャラクターのみ（JOIN側で保証）。無ければ空
+  const characterName = post.character_name as string || '';
   const characterDesc = post.character_description as string || '';
   const personalityTags = post.personality_tags as string || '';
   const visualFeatures = post.visual_features as string || '';
@@ -88,6 +89,11 @@ export async function generatePostText(
 - フォロワーに話しかけるように、対話を意識する（問いかけ、共感、感想の共有）
 - 歌舞伎に詳しくない人にも楽しんでもらえるよう、わかりやすく
 - 「自分も好きだから語りたい」という温度感で
+
+【事実に関するルール（最重要）】
+- 与えられた情報に書かれていないことを事実として書かない。演目のあらすじや人物設定を自分の知識で補完しない
+- 気良歌舞伎が特定の演目を上演した・稽古している、といった活動実績は、情報として与えられない限り書かない
+- 添付画像について、与えられた説明（キャラクター情報・画像の特徴）以外の断定をしない
 
 【公式SNSアカウント】
 ${snsAccounts}
@@ -169,7 +175,8 @@ X・Blueskyの本文末尾に追記するクイズの正解と解説を書いて
 【テーマ】${theme}
 ${specialDay && theme !== '機能紹介' ? `【特別な日】${specialDay}` : ''}
 ${featureContext}${quizContext}
-${theme !== '機能紹介' ? `【キャラクター/演目】${characterName}` : ''}
+${theme !== '機能紹介' && characterName ? `【添付画像のキャラクター/演目】${characterName}` : ''}
+${theme !== '機能紹介' && !characterName ? `【注意】添付画像に特定の登場人物は紐づいていません。画像と結びつけて特定の演目の登場人物を語らないでください。この注意がある場合、自分から特定の登場人物名を持ち出さず、テーマに沿った一般的な内容にしてください（クイズ問題など与えられた情報に人物名が含まれる場合は、そのまま使って構いません）。` : ''}
 ${characterDesc ? `【キャラクター説明】${characterDesc}` : ''}
 ${personalityTags ? `【性格タグ】${personalityTags}` : ''}
 ${visualFeatures ? `【画像の特徴】${visualFeatures}` : ''}

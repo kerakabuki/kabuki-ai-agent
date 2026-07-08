@@ -84,8 +84,9 @@ export async function generateMissingTexts(env: Env, date: string): Promise<Gene
      qp.question as quiz_question, qp.options as quiz_options,
      qp.correct_answer as quiz_correct_answer, qp.explanation as quiz_explanation
      FROM posts p
-     LEFT JOIN characters c ON p.character_id = c.id
      LEFT JOIN images i ON p.image_id = i.id
+     -- キャラクター情報は添付画像に紐づくものだけ使う（画像と無関係なキャラ名で本文が生成されるのを防ぐ）
+     LEFT JOIN characters c ON c.id = i.character_id
      LEFT JOIN quiz_posts qp ON qp.post_id = p.id
      WHERE p.post_date = ? AND p.status IN ('draft', 'approved')
        AND p.instagram_text IS NULL`,

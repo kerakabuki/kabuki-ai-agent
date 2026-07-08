@@ -26,7 +26,7 @@ Cron fires every 15 min in the JST 6:00–11:45 window (`*/15 21-23 * * *` + `*/
 Pipeline order (all in `runDailyPipeline()`):
 
 1. **Image auto-assign** (`src/lib/auto-image.ts`) — library rotation first (season-tag match, unused in last 60 days, lowest usage_count), Gemini image generation (`src/lib/image-gen.ts`) only as fallback. ~164 library images available (count grows; check the `images` table for the current number).
-2. **Text generation** (`src/lib/claude.ts` — actually Gemini 2.5 Flash) — per-platform texts; only for posts where `instagram_text IS NULL`.
+2. **Text generation** (`src/lib/claude.ts` — actually Gemini 2.5 Flash) — per-platform texts; only for posts where `instagram_text IS NULL`. **Character context comes from the attached image** (`images.character_id`), never from `posts.character_id` — a post whose image has no linked character must not name individual play characters (hallucination guard, 2026-07). All text-gen queries join `characters` via `images.character_id`; keep it that way.
 3. **Auto-post** (`src/lib/auto-post.ts`) — Instagram/Facebook (Meta Graph API), Bluesky, X.
 4. **LINE notification** (`src/lib/line-notify.ts`) — summary + errors to admin; silently skipped unless secrets `LINE_CHANNEL_ACCESS_TOKEN` and `LINE_ADMIN_USER_ID` are set.
 
