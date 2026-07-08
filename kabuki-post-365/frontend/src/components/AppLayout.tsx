@@ -1,12 +1,13 @@
 import { NavLink, Outlet } from 'react-router-dom';
 import {
-  LayoutDashboard, Calendar, Image, ShieldCheck, Users, HelpCircle, Download, Settings, Menu, X, LogOut
+  LayoutDashboard, Calendar, Image, ShieldCheck, Users, HelpCircle, Download, Settings, Menu, X, LogOut, Camera
 } from 'lucide-react';
 import { useState } from 'react';
 import { clearAuthToken } from '../lib/api';
 
 const navItems = [
   { to: '/', icon: LayoutDashboard, label: 'ダッシュボード' },
+  { to: '/quick', icon: Camera, label: 'クイック投稿' },
   { to: '/calendar', icon: Calendar, label: 'カレンダー' },
   { to: '/images', icon: Image, label: '画像管理' },
   { to: '/verify', icon: ShieldCheck, label: '写真チェック' },

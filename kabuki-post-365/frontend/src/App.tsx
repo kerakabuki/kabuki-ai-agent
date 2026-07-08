@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import AppLayout from './components/AppLayout';
 import DashboardPage from './pages/DashboardPage';
+import QuickPostPage from './pages/QuickPostPage';
 import CalendarPage from './pages/CalendarPage';
 import PostEditPage from './pages/PostEditPage';
 import ImagesPage from './pages/ImagesPage';
@@ -89,6 +90,7 @@ export default function App() {
       <Routes>
         <Route element={<AppLayout />}>
           <Route path="/" element={<DashboardPage />} />
+          <Route path="/quick" element={<QuickPostPage />} />
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/posts/:id" element={<PostEditPage />} />
           <Route path="/images" element={<ImagesPage />} />

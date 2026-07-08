@@ -1,19 +1,20 @@
 const BASE = '/api/v1';
 
+// トークンは localStorage に保存（スマホでブラウザを閉じてもログインを維持するため）
 function getAuthToken(): string | null {
-  return sessionStorage.getItem('kp365_token');
+  return localStorage.getItem('kp365_token');
 }
 
 export function setAuthToken(token: string) {
-  sessionStorage.setItem('kp365_token', token);
+  localStorage.setItem('kp365_token', token);
 }
 
 export function clearAuthToken() {
-  sessionStorage.removeItem('kp365_token');
+  localStorage.removeItem('kp365_token');
 }
 
 export function hasAuthToken(): boolean {
-  return !!sessionStorage.getItem('kp365_token');
+  return !!localStorage.getItem('kp365_token');
 }
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {

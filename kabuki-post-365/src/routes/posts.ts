@@ -76,6 +76,7 @@ postsRoutes.put('/:id', async (c) => {
        instagram_text=?, instagram_hashtags=?,
        x_text=?, x_hashtags=?,
        facebook_text=?, facebook_hashtags=?,
+       bluesky_text=?,
        cta_type=?, cta_url=?, quiz_answer_comment=?, status=?,
        x_posted=?, instagram_posted=?, facebook_posted=?, bluesky_posted=?,
        updated_at=datetime('now')
@@ -86,6 +87,7 @@ postsRoutes.put('/:id', async (c) => {
     body.instagram_text || null, body.instagram_hashtags || null,
     body.x_text || null, body.x_hashtags || null,
     body.facebook_text || null, body.facebook_hashtags || null,
+    body.bluesky_text || null,
     body.cta_type || null, body.cta_url || null, body.quiz_answer_comment || null,
     body.status || 'draft',
     body.x_posted || 0, body.instagram_posted || 0, body.facebook_posted || 0, body.bluesky_posted || 0,
