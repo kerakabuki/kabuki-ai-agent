@@ -1,6 +1,6 @@
 // 超訳！歌舞伎ナビ05「曽根崎心中」動画自動組み立て
-// 台本: docs/youtube-script-sonezaki-kaisetsu.md の構成表に対応
-// 使い方: node scripts/build_sonezaki_video.mjs [--config <json>] [--blocks 1,5]（部分再生成）
+// 台本: docs/youtube/youtube-script-sonezaki-kaisetsu.md の構成表に対応
+// 使い方: node scripts/video/build_sonezaki_video.mjs [--config <json>] [--blocks 1,5]（部分再生成）
 //   --config 省略時は studio/episodes/sonezaki05.json を読み込む
 //   ブロック定義・定数はすべて設定JSONから読み込む（挙動は従来のBLOCKSハードコード版と同一）
 //
@@ -13,7 +13,7 @@
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { makePaths, resolveAsset } from '../studio/paths.mjs';
+import { makePaths, resolveAsset } from '../../studio/paths.mjs';
 
 // ---- 引数 ------------------------------------------------------------------
 function argVal(name) {
@@ -40,7 +40,7 @@ const WRAP_MAX = S.wrapMax ?? 30;       // 1行の折返し文字数
 
 // アバター定義: videos をプレフィックスパスから解決
 const AVATAR = {};
-for (const [k, v] of Object.entries(config.avatar)) {
+for (const [k, v] of Object.entries(config.avatar ?? {})) {
   AVATAR[k] = { h: v.h, videos: v.videos.map(asset) };
 }
 
@@ -50,7 +50,8 @@ for (const [k, v] of Object.entries(config.avatar)) {
 // subtitleText（字幕用・漢字）を従来の text として使う。img/file/audio はプレフィックス解決。
 const BLOCKS = config.blocks.map(raw => {
   const b = { ...raw };
-  b.audio = asset(raw.audio);
+  // 音声なしブロック（テキストカード＋BGMのみのPV等）は audio を持たない → null
+  b.audio = raw.audio ? asset(raw.audio) : null;
   b.text = raw.subtitleText;
   if (raw.slides) b.slides = raw.slides.map(s => ({ ...s, img: asset(s.img) }));
   if (raw.slidesBySent) b.slidesBySent = raw.slidesBySent.map(s => ({ ...s, img: asset(s.img) }));
@@ -68,7 +69,8 @@ function probeDur(file) {
   return parseFloat(out.toString().trim());
 }
 function splitSentences(text) {
-  return text.match(/[^。！？]+[。！？]?/g).map(s => s.trim()).filter(Boolean);
+  const m = (text ?? '').match(/[^。！？]+[。！？]?/g);
+  return m ? m.map(s => s.trim()).filter(Boolean) : [];
 }
 // 長い字幕を句読点付近で2行に折る（libassのCJK自動折返しが効かないため）
 function wrapLine(s, max = WRAP_MAX) {
@@ -116,7 +118,7 @@ WrapStyle: 0
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
 Style: Sub,Meiryo,${SUB_FONT},&H00FFFFFF,&H00FFFFFF,&H00201830,&H90000000,1,0,0,0,100,100,0,0,1,3,2,2,80,80,50,1
 Style: Cap,Meiryo,${CAP_FONT},&H00FFFFFF,&H00FFFFFF,&H00000000,&H70000000,1,0,0,0,100,100,0,0,3,2,0,7,50,50,40,1
-
+Style: Title,Yu Mincho,${S.titleFontSize ?? 72},&H00FFFFFF,&H00FFFFFF,&H00101020,&HA0000000,1,0,0,0,100,100,2,0,1,2,3,5,120,120,60,1
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 `;
@@ -131,9 +133,17 @@ const only = (() => {
 
 // 1) 各ブロックの長さを確定
 for (const b of BLOCKS) {
-  b.narrDur = probeDur(b.audio);
-  b.dur = LEAD + b.narrDur + (b.tail ?? TAIL);
-  b.sents = sentenceTimes(b, b.narrDur);
+  if (b.audio) {
+    // 音声ありブロック: ナレーション尺を実測 → LEAD/tail を足して総尺
+    b.narrDur = probeDur(b.audio);
+    b.dur = LEAD + b.narrDur + (b.tail ?? TAIL);
+  } else {
+    // 音声なしブロック: 総尺 dur を直接指定（LEAD/tail込み）→ frac系タイミング計算用に narrDur を逆算
+    // b.dur は raw.dur を展開済み（そのまま総尺として使う）
+    b.narrDur = b.dur - LEAD - (b.tail ?? TAIL);
+  }
+  // 字幕テキストが無いブロックは文分割しない（captions のみで構成）
+  b.sents = b.text ? sentenceTimes(b, b.narrDur) : [];
   // slidesBySent → weight 換算
   if (b.slidesBySent) {
     b.slides = b.slidesBySent.map(s => {
@@ -164,7 +174,7 @@ for (const b of BLOCKS) {
   for (const c of (b.captions ?? [])) {
     const start = c.start ?? (c.frac ? LEAD + c.frac[0] * b.narrDur : 0.2);
     const end = c.end ?? (c.frac ? LEAD + c.frac[1] * b.narrDur : b.dur);
-    ass += `Dialogue: 1,${fmtAss(start)},${fmtAss(end)},Cap,,0,0,0,,${c.text}\n`;
+    ass += `Dialogue: 1,${fmtAss(start)},${fmtAss(end)},${c.style ?? 'Cap'},,0,0,0,,${c.text}\n`;
   }
   const assName = `block${b.id}.ass`;
   writeFileSync(join(WORK, assName), '﻿' + ass, 'utf8');
@@ -185,7 +195,12 @@ for (const b of BLOCKS) {
     args.push('-stream_loop', '-1', '-i', v);
   }
   const naIdx = avIdx >= 0 ? avIdx + 1 : nSlides;
-  args.push('-i', b.audio);
+  if (b.audio) {
+    args.push('-i', b.audio);
+  } else {
+    // 音声なしブロック: 無音ソースを流し込む（naIdx の位置は変えない）
+    args.push('-f', 'lavfi', '-t', b.dur.toFixed(3), '-i', 'anullsrc=r=48000:cl=stereo');
+  }
 
   // filtergraph
   let fg = '';
@@ -203,7 +218,9 @@ for (const b of BLOCKS) {
     fg += `[${vlast}][avk]overlay=x=W-w-70:y=H-h[ov];`;
     vlast = 'ov';
   }
-  fg += `[${vlast}]subtitles=${assName}[vsub];`;
+  // fade:true のブロックは字幕ごとフェードさせるため subtitles の後にフェードを連結
+  const blockFade = b.fade ? `,fade=t=in:d=0.8,fade=t=out:st=${(b.dur - 0.8).toFixed(2)}:d=0.8` : '';
+  fg += `[${vlast}]subtitles=${assName}${blockFade}[vsub];`;
   fg += `[${naIdx}:a]adelay=${Math.round(LEAD * 1000)}:all=1,apad,aresample=48000,aformat=channel_layouts=stereo[aout]`;
 
   run([
@@ -227,7 +244,10 @@ const bodyDur = BLOCKS.reduce((a, b) => a + b.dur, 0);
 let t = 0;
 const starts = {};
 for (const b of BLOCKS) { starts[b.id] = t; t += b.dur; }
-const quietStart = starts[S.quietFromBlock], quietEnd = starts[S.quietToBlock];
+// 静音区間はオプション。未指定なら常時通常音量（starts[undefined] で NaN になるのを防ぐ）
+const hasQuiet = S.quietFromBlock != null && S.quietToBlock != null;
+const quietStart = hasQuiet ? starts[S.quietFromBlock] : null;
+const quietEnd = hasQuiet ? starts[S.quietToBlock] : null;
 
 const mixInputs = ['-i', 'body.mp4', '-stream_loop', '-1', '-i', asset(S.bgm)];
 const seList = [];
@@ -239,8 +259,11 @@ for (const b of BLOCKS) {
 seList.forEach(s => mixInputs.push('-i', s.file));
 
 // BGM: 通常0.13 → 静かなパート0.045、端でフェード
+const bgmVolExpr = hasQuiet
+  ? `volume='if(between(t,${quietStart.toFixed(2)},${quietEnd.toFixed(2)}),${S.bgmVolQuiet},${S.bgmVolNormal})':eval=frame`
+  : `volume=${S.bgmVolNormal}`;
 let fg2 = `[1:a]aresample=48000,aformat=channel_layouts=stereo,`
-  + `volume='if(between(t,${quietStart.toFixed(2)},${quietEnd.toFixed(2)}),${S.bgmVolQuiet},${S.bgmVolNormal})':eval=frame,`
+  + `${bgmVolExpr},`
   + `afade=t=in:d=1.5,afade=t=out:st=${(bodyDur - 3).toFixed(2)}:d=3,atrim=0:${bodyDur.toFixed(2)}[bgm];`;
 const mixLabels = ['[0:a]', '[bgm]'];
 seList.forEach((s, i) => {
@@ -254,34 +277,48 @@ seList.forEach((s, i) => {
 fg2 += mixLabels.join('') + `amix=inputs=${mixLabels.length}:normalize=0:duration=first[mix]`;
 run([...mixInputs, '-filter_complex', fg2, '-map', '0:v', '-map', '[mix]', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '192k', 'body_mix.mp4']);
 
-// 5) OP正規化
-console.log('--- OP');
-run(['-i', asset(S.op),
-  '-vf', `scale=${W}:${H},setsar=1,fps=${FPS},format=yuv420p`,
-  '-c:v', 'libx264', '-crf', CRF, '-preset', 'medium',
-  '-af', 'aresample=48000,aformat=channel_layouts=stereo', '-c:a', 'aac', '-b:a', '192k',
-  'op.mp4']);
+// 5) OP正規化（S.op が無ければスキップ）
+let hasOp = false;
+if (S.op) {
+  console.log('--- OP');
+  run(['-i', asset(S.op),
+    '-vf', `scale=${W}:${H},setsar=1,fps=${FPS},format=yuv420p`,
+    '-c:v', 'libx264', '-crf', CRF, '-preset', 'medium',
+    '-af', 'aresample=48000,aformat=channel_layouts=stereo', '-c:a', 'aac', '-b:a', '192k',
+    'op.mp4']);
+  hasOp = true;
+}
 
 // 6) ED再構築（歌舞伎ナビED.movはffmpeg非対応DNxHDのため、けらのすけED.mp4を背景合成で再現）
-console.log('--- ED');
-const edSrc = asset(S.edSrc);
-const edDur = probeDur(edSrc);
-run([
-  '-loop', '1', '-framerate', String(FPS), '-t', edDur.toFixed(3), '-i', asset(S.edBackground),
-  '-i', edSrc,
-  '-filter_complex',
-  `[0:v]scale=${W}:${H}:force_original_aspect_ratio=increase,crop=${W}:${H},setsar=1[bg];`
-  + `[1:v]scale=-1:1020,format=rgba,colorkey=0x00FF00:0.30:0.10,despill=type=green[av];`
-  + `[bg][av]overlay=x=W-w-160:y=H-h,fps=${FPS},format=yuv420p[v];`
-  + `[1:a]aresample=48000,aformat=channel_layouts=stereo[a]`,
-  '-map', '[v]', '-map', '[a]', '-t', edDur.toFixed(3),
-  '-c:v', 'libx264', '-crf', CRF, '-preset', 'medium',
-  '-c:a', 'aac', '-b:a', '192k',
-  'ed.mp4']);
+// S.edSrc が無ければスキップ
+let hasEd = false;
+let edDur = 0;
+if (S.edSrc) {
+  console.log('--- ED');
+  const edSrc = asset(S.edSrc);
+  edDur = probeDur(edSrc);
+  run([
+    '-loop', '1', '-framerate', String(FPS), '-t', edDur.toFixed(3), '-i', asset(S.edBackground),
+    '-i', edSrc,
+    '-filter_complex',
+    `[0:v]scale=${W}:${H}:force_original_aspect_ratio=increase,crop=${W}:${H},setsar=1[bg];`
+    + `[1:v]scale=-1:1020,format=rgba,colorkey=0x00FF00:0.30:0.10,despill=type=green[av];`
+    + `[bg][av]overlay=x=W-w-160:y=H-h,fps=${FPS},format=yuv420p[v];`
+    + `[1:a]aresample=48000,aformat=channel_layouts=stereo[a]`,
+    '-map', '[v]', '-map', '[a]', '-t', edDur.toFixed(3),
+    '-c:v', 'libx264', '-crf', CRF, '-preset', 'medium',
+    '-c:a', 'aac', '-b:a', '192k',
+    'ed.mp4']);
+  hasEd = true;
+}
 
-// 7) 最終連結
+// 7) 最終連結（存在するパーツだけ連結）
 console.log('--- 最終連結');
-writeFileSync(join(WORK, 'final.txt'), ['op.mp4', 'body_mix.mp4', 'ed.mp4'].map(f => `file '${f}'`).join('\n'), 'utf8');
+const finalParts = [];
+if (hasOp) finalParts.push('op.mp4');
+finalParts.push('body_mix.mp4');
+if (hasEd) finalParts.push('ed.mp4');
+writeFileSync(join(WORK, 'final.txt'), finalParts.map(f => `file '${f}'`).join('\n'), 'utf8');
 const FINAL = `${OUT}/${config.episode.outputName}`;
 run(['-f', 'concat', '-safe', '0', '-i', 'final.txt',
   '-c:v', 'libx264', '-crf', CRF, '-preset', 'medium', '-pix_fmt', 'yuv420p', '-r', String(FPS),
@@ -290,7 +327,7 @@ run(['-f', 'concat', '-safe', '0', '-i', 'final.txt',
   FINAL]);
 
 // 8) チャプター出力（概要欄用）
-const opDur = probeDur(join(WORK, 'op.mp4'));
+const opDur = hasOp ? probeDur(join(WORK, 'op.mp4')) : 0;
 const totalStr = fmtChap(opDur + bodyDur + edDur);
 console.log('\n=== 完成 ===');
 console.log(FINAL);
@@ -299,7 +336,7 @@ console.log('\n--- 概要欄チャプター（実測） ---');
 
 // チャプター行を組み立て（先頭は必ずオープニング）
 const chapterList = [{ time: '0:00', title: 'オープニング' }];
-for (const ch of config.chapters) {
+for (const ch of (config.chapters ?? [])) {
   chapterList.push({ time: fmtChap(opDur + starts[ch.block]), title: ch.label });
 }
 for (const ch of chapterList) {

@@ -1,0 +1,108 @@
+{
+  "episode": {
+    "title": "気良歌舞伎 令和8年公演『曽根崎心中』PV",
+    "epDir": "PV曽根崎心中R8",
+    "outputName": "PV_曽根崎心中_R8_draft_v1.mp4",
+    "voiceId": "xOKkuQfZt5N7XfbFdn9W",
+    "ttsModel": "eleven_v3",
+    "ttsOutputFormat": "mp3_44100_128"
+  },
+  "settings": {
+    "W": 1920,
+    "H": 1080,
+    "FPS": 24,
+    "LEAD": 0.4,
+    "TAIL": 0.8,
+    "CRF": "18",
+    "subFontSize": 66,
+    "capFontSize": 48,
+    "titleFontSize": 76,
+    "wrapMax": 24,
+    "bgm": "bgm:道行.mp3",
+    "bgmVolNormal": 0.9
+  },
+  "avatar": {},
+  "blocks": [
+    {
+      "id": "1",
+      "dur": 7,
+      "fade": true,
+      "slides": [
+        { "img": "gen:07_天神の森.png", "weight": 1 }
+      ],
+      "captions": [
+        { "style": "Title", "text": "この世のなごり　夜もなごり" }
+      ],
+      "se": [
+        { "file": "common:効果音/拍子木1.mp3", "at": 0.2, "vol": 0.5 }
+      ]
+    },
+    {
+      "id": "2",
+      "dur": 6,
+      "fade": true,
+      "slides": [
+        { "img": "gen:06_道行シルエット.png", "weight": 1 }
+      ],
+      "captions": [
+        { "style": "Title", "text": "近松門左衛門『曽根崎心中』" }
+      ]
+    },
+    {
+      "id": "3",
+      "dur": 6,
+      "fade": true,
+      "slides": [
+        { "img": "gen:05_天満屋の夜.png", "weight": 1 }
+      ],
+      "captions": [
+        { "style": "Title", "text": "映画『国宝』で描かれた\\Nあの演目" }
+      ]
+    },
+    {
+      "id": "4",
+      "dur": 6,
+      "fade": true,
+      "slides": [
+        { "img": "gen:04_生玉社前.png", "weight": 1 }
+      ],
+      "captions": [
+        { "style": "Title", "text": "{\\an8\\c&H302018&\\3c&HD8E8F0&}気良歌舞伎、初めての挑戦" }
+      ]
+    },
+    {
+      "id": "5",
+      "dur": 7,
+      "fade": true,
+      "slides": [
+        { "img": "gen:01_お初カード.png", "weight": 1 }
+      ],
+      "captions": [
+        { "style": "Title", "text": "{\\an4\\pos(150,500)\\fs62\\c&H302018&\\3c&HD8E8F0&}お初と徳兵衛は、\\N二組。" }
+      ]
+    },
+    {
+      "id": "6",
+      "dur": 7,
+      "fade": true,
+      "slides": [
+        { "img": "gen:02_徳兵衛カード.png", "weight": 1 }
+      ],
+      "captions": [
+        { "style": "Title", "text": "{\\an6\\pos(1770,500)\\fs62\\c&H302018&\\3c&HD8E8F0&}結末の第三場は、\\N若手が初めて挑みます。" }
+      ]
+    },
+    {
+      "id": "7",
+      "dur": 10,
+      "fade": true,
+      "tail": 1.6,
+      "slides": [
+        { "img": "gen:08_サムネ背景.png", "weight": 1 }
+      ],
+      "captions": [
+        { "style": "Title", "text": "{\\an4}令和8年 気良歌舞伎公演\\N『曽根崎心中』\\N\\N9月26日（土）18時開演\\N気良座（旧明方小学校講堂）" }
+      ]
+    }
+  ]
+}
