@@ -1,0 +1,155 @@
+{
+  "episode": {
+    "title": "【縦ショート】配役リレー — 令和8年 気良歌舞伎『曽根崎心中』",
+    "epDir": "PV曽根崎心中R8",
+    "workName": "work_short",
+    "outputName": "SHORT_配役リレー_v1.mp4",
+    "voiceId": "xOKkuQfZt5N7XfbFdn9W",
+    "ttsModel": "eleven_v3",
+    "ttsOutputFormat": "mp3_44100_128"
+  },
+  "settings": {
+    "W": 1080,
+    "H": 1920,
+    "FPS": 30,
+    "LEAD": 0.3,
+    "TAIL": 0.3,
+    "CRF": "19",
+    "slideFit": "cover",
+    "kenburns": 0.08,
+    "blurSigma": 40,
+    "fadeDur": 0.3,
+    "bandFontSize": 62,
+    "bandMarginV": 150,
+    "titleFontSize": 62,
+    "subFontSize": 56,
+    "capFontSize": 44,
+    "wrapMax": 14,
+    "bgm": "bgm:道行.mp3",
+    "bgmVolNormal": 0.9
+  },
+  "avatar": {},
+  "blocks": [
+    {
+      "id": "1",
+      "dur": 3.4,
+      "fade": true,
+      "slides": [
+        {
+          "img": "gen:06_道行シルエット.png",
+          "weight": 1,
+          "cropX": 0.5
+        }
+      ],
+      "captions": [
+        {
+          "style": "Band",
+          "text": "一つの役を、\\N二人で演じます。"
+        }
+      ],
+      "se": [
+        {
+          "file": "common:効果音/拍子木1.mp3",
+          "at": 0.0,
+          "vol": 0.6
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "dur": 3.2,
+      "fade": true,
+      "slides": [
+        {
+          "img": "gen:01_お初カード.png",
+          "weight": 1
+        }
+      ],
+      "captions": [
+        {
+          "style": "Band",
+          "text": "前半のお初と、\\N後半のお初。"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "dur": 3.2,
+      "fade": true,
+      "slides": [
+        {
+          "img": "gen:02_徳兵衛カード.png",
+          "weight": 1
+        }
+      ],
+      "captions": [
+        {
+          "style": "Band",
+          "text": "前半の徳兵衛と、\\N後半の徳兵衛。"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "dur": 3.6,
+      "fade": true,
+      "slides": [
+        {
+          "img": "gen:05_天満屋の夜.png",
+          "weight": 1,
+          "cropX": 0.42
+        }
+      ],
+      "captions": [
+        {
+          "style": "Band",
+          "text": "芝居の途中で、\\N演者が入れ替わる。"
+        }
+      ],
+      "se": [
+        {
+          "file": "common:効果音/小鼓（こつづみ）.mp3",
+          "at": 0.1,
+          "vol": 0.5
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "dur": 4.2,
+      "fade": true,
+      "slides": [
+        {
+          "img": "gen:07_天神の森.png",
+          "weight": 1,
+          "cropX": 0.35
+        }
+      ],
+      "captions": [
+        {
+          "style": "Band",
+          "text": "結末の第三場は、\\N若手が初めて挑みます。"
+        }
+      ]
+    },
+    {
+      "id": "6",
+      "dur": 6.6,
+      "fade": true,
+      "tail": 1.2,
+      "slides": [
+        {
+          "img": "gen:08_サムネ背景.png",
+          "weight": 1,
+          "cropX": 0.68
+        }
+      ],
+      "captions": [
+        {
+          "style": "Band",
+          "text": "{\\fs52}令和8年 気良歌舞伎公演\\N『曽根崎心中』\\N9月26日（土）18時開演\\N気良座（旧明方小学校講堂）"
+        }
+      ]
+    }
+  ]
+}

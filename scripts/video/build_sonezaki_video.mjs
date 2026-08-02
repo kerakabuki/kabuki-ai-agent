@@ -25,7 +25,10 @@ const config = JSON.parse(readFileSync(CONFIG_PATH, 'utf8'));
 
 // ---- 設定JSON → 定数展開 ---------------------------------------------------
 const P = makePaths(config.episode.epDir);
-const { COMMON, VOICE, OUT, WORK } = P;
+const { COMMON, VOICE, OUT } = P;
+// 同じエピソードの素材を使う別成果物（縦ショート等）が中間ファイルを潰し合わないよう、
+// workName を指定すると work ディレクトリを分けられる。
+const WORK = config.episode.workName ? join(P.OUT, config.episode.workName) : P.WORK;
 const asset = (p) => resolveAsset(p, P);  // プレフィックスパス → 絶対パス
 
 const S = config.settings;
@@ -37,6 +40,15 @@ const CRF = S.CRF;
 const SUB_FONT = S.subFontSize ?? 52;   // ナレーション字幕サイズ
 const CAP_FONT = S.capFontSize ?? 42;   // 場面キャプションサイズ
 const WRAP_MAX = S.wrapMax ?? 30;       // 1行の折返し文字数
+// スライドの収め方（縦動画対応）
+//   cover   : 画面いっぱいにセンタークロップ（従来動作・既定）
+//   blurpad : 元のアスペクトのまま中央に置き、余白は同じ画のぼかしで埋める
+// slides[].fit で個別に上書きできる。16:9素材を9:16に流用するとき、
+// 主役が中央にある絵は cover、端に寄っている絵は blurpad が向く。
+const SLIDE_FIT = S.slideFit ?? 'cover';
+const KENBURNS = S.kenburns ?? 0;       // スロー ズーム量（0.08 で最終8%拡大・0で無効）
+const BLUR_SIGMA = S.blurSigma ?? 40;   // blurpad の余白のぼかし強さ
+const FADE_DUR = S.fadeDur ?? 0.8;      // ブロックの In/Out フェード秒
 
 // アバター定義: videos をプレフィックスパスから解決
 const AVATAR = {};
@@ -67,6 +79,18 @@ function run(args, opts = {}) {
 function probeDur(file) {
   const out = execFileSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', file]);
   return parseFloat(out.toString().trim());
+}
+function probeSize(file) {
+  const out = execFileSync('ffprobe', ['-v', 'error', '-select_streams', 'v:0',
+    '-show_entries', 'stream=width,height', '-of', 'csv=p=0', file]);
+  const [w, h] = out.toString().trim().split(',').map(Number);
+  return { w, h };
+}
+// 静止画のスローズーム。入力は -loop 1 で複数フレーム化済みなので d=1
+// （d>1 だと入力フレーム数×d に増殖する）。事前に2倍へ拡大して粗さを抑える。
+function zoomChain(frames, outW, outH) {
+  return `zoompan=z='1+${KENBURNS}*on/${frames}':d=1`
+    + `:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s=${outW}x${outH}:fps=${FPS}`;
 }
 function splitSentences(text) {
   const m = (text ?? '').match(/[^。！？]+[。！？]?/g);
@@ -119,6 +143,8 @@ Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour,
 Style: Sub,Meiryo,${SUB_FONT},&H00FFFFFF,&H00FFFFFF,&H00201830,&H90000000,1,0,0,0,100,100,0,0,1,3,2,2,80,80,50,1
 Style: Cap,Meiryo,${CAP_FONT},&H00FFFFFF,&H00FFFFFF,&H00000000,&H70000000,1,0,0,0,100,100,0,0,3,2,0,7,50,50,40,1
 Style: Title,Yu Mincho,${S.titleFontSize ?? 72},&H00FFFFFF,&H00FFFFFF,&H00101020,&HA0000000,1,0,0,0,100,100,2,0,1,2,3,5,120,120,60,1
+Style: Band,Yu Mincho,${S.bandFontSize ?? 62},&H00FFFFFF,&H00FFFFFF,&H00000000,&HB8201810,1,0,0,0,100,100,2,0,3,16,0,2,100,100,${S.bandMarginV ?? 150},1
+
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 `;
@@ -205,11 +231,35 @@ for (const b of BLOCKS) {
   // filtergraph
   let fg = '';
   for (let i = 0; i < nSlides; i++) {
-    // ゆかりの地の4:3実写は上寄りクロップ（鳥居・像の頭が切れないように）
-    const crop = b.slides[i].img.includes('ゆかりの地')
-      ? `crop=${W}:${H}:(iw-${W})/2:(ih-${H})*0.15`
-      : `crop=${W}:${H}`;
-    fg += `[${i}:v]scale=${W}:${H}:force_original_aspect_ratio=increase,${crop},setsar=1,fps=${FPS}[s${i}];`;
+    const slide = b.slides[i];
+    const fit = slide.fit ?? SLIDE_FIT;
+    const frames = Math.max(2, Math.round(slideDurs[i] * FPS));
+    // ズーム時は先に2倍で組み立て、zoompan で等倍に落とす
+    const z = KENBURNS > 0 ? 2 : 1;
+
+    if (fit === 'blurpad') {
+      // 元画像を幅いっぱいの帯として中央に置き、上下の余白は同じ画のぼかしで埋める
+      const src = probeSize(slide.img);
+      const bandH = Math.round(W * src.h / src.w / 2) * 2;
+      fg += `[${i}:v]split=2[bgi${i}][fgi${i}];`;
+      fg += `[bgi${i}]scale=${W}:${H}:force_original_aspect_ratio=increase,crop=${W}:${H},`
+          + `gblur=sigma=${BLUR_SIGMA},format=yuv420p,setsar=1[bgb${i}];`;
+      fg += `[fgi${i}]scale=${W * z}:${bandH * z},format=yuv420p,`
+          + (KENBURNS > 0 ? `${zoomChain(frames, W, bandH)},` : '')
+          + `setsar=1[fgb${i}];`;
+      fg += `[bgb${i}][fgb${i}]overlay=(W-w)/2:(H-h)/2,fps=${FPS}[s${i}];`;
+    } else {
+      // クロップの注視点（0〜1）。16:9素材を9:16に流用するとき、
+      // 被写体が端に寄っている絵は cropX でそこを残す。
+      // 既定はセンター。ゆかりの地の4:3実写だけ上寄せ（鳥居・像の頭が切れないように）。
+      const cw = W * z, ch = H * z;
+      const cx = slide.cropX ?? 0.5;
+      const cy = slide.cropY ?? (slide.img.includes('ゆかりの地') ? 0.15 : 0.5);
+      const crop = `crop=${cw}:${ch}:(iw-${cw})*${cx}:(ih-${ch})*${cy}`;
+      fg += `[${i}:v]scale=${cw}:${ch}:force_original_aspect_ratio=increase,${crop},`
+          + (KENBURNS > 0 ? `format=yuv420p,${zoomChain(frames, W, H)},` : '')
+          + `setsar=1,fps=${FPS}[s${i}];`;
+    }
   }
   fg += b.slides.map((_, i) => `[s${i}]`).join('') + `concat=n=${nSlides}:v=1:a=0[base];`;
   let vlast = 'base';
@@ -219,7 +269,9 @@ for (const b of BLOCKS) {
     vlast = 'ov';
   }
   // fade:true のブロックは字幕ごとフェードさせるため subtitles の後にフェードを連結
-  const blockFade = b.fade ? `,fade=t=in:d=0.8,fade=t=out:st=${(b.dur - 0.8).toFixed(2)}:d=0.8` : '';
+  const blockFade = b.fade
+    ? `,fade=t=in:d=${FADE_DUR},fade=t=out:st=${(b.dur - FADE_DUR).toFixed(2)}:d=${FADE_DUR}`
+    : '';
   fg += `[${vlast}]subtitles=${assName}${blockFade}[vsub];`;
   fg += `[${naIdx}:a]adelay=${Math.round(LEAD * 1000)}:all=1,apad,aresample=48000,aformat=channel_layouts=stereo[aout]`;
 
@@ -345,5 +397,7 @@ for (const ch of chapterList) {
 
 // 実測値を出力フォルダに永続化（スタジオの「公開情報」タブが読み込む）
 const chaptersJson = { total: totalStr, generatedAt: new Date().toISOString(), chapters: chapterList };
-writeFileSync(join(OUT, 'chapters.json'), JSON.stringify(chaptersJson, null, 2) + '\n', 'utf8');
-console.log(`\nチャプター実測値を保存: ${join(OUT, 'chapters.json')}`);
+// workName 指定時（同一エピソードの別成果物）は本編の chapters.json を上書きしない
+const chaptersPath = join(OUT, config.episode.workName ? `chapters_${config.episode.workName}.json` : 'chapters.json');
+writeFileSync(chaptersPath, JSON.stringify(chaptersJson, null, 2) + '\n', 'utf8');
+console.log(`\nチャプター実測値を保存: ${chaptersPath}`);
