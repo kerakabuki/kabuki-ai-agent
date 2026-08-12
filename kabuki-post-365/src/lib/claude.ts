@@ -1,5 +1,6 @@
 import type { Env } from '../types';
 import { buildCtaText } from './cta';
+import { pickCompositionStyle, fetchRecentOpenings, buildVariationPrompt } from './post-style';
 
 interface GeneratedTexts {
   instagram_text: string;
@@ -39,8 +40,8 @@ export async function generatePostText(
   const platformSpecs: Record<string, string> = {
     instagram: `Instagram投稿文（最大2200文字、改行自由、ハッシュタグは本文とは別に出力）
 - 親しみやすく丁寧な口調
-- 絵文字を適度に使用
-- 改行と絵文字で読みやすく（マークダウン記法「#」「##」「**」「-」は絶対に使わない。SNSでは記号がそのまま表示される）
+- 文字数と絵文字の個数は「今日の構成」の指定に従う（指定が無い場合のみ400〜600字・絵文字3個以内）
+- 改行で読みやすく（マークダウン記法「#」「##」「**」「-」は絶対に使わない。SNSでは記号がそのまま表示される）
 - URLリンクは本文に含めないこと（アルゴリズム的にリーチが下がるため）
 - 誘導したい場合は「プロフィールのリンクから」と案内`,
     x: `X（旧Twitter）投稿文
@@ -54,9 +55,10 @@ export async function generatePostText(
     facebook: `Facebook投稿文（最大500文字程度）
 - 丁寧で落ち着いた口調
 - 詳しい解説を含めてOK
-- コミュニティ感のある呼びかけ
+- Instagram投稿文の要約や言い換えにしない。同じ写真でも取り上げる点を変え、書き出しも別のものにする
 - マークダウン記法（「#」「##」「**」「-」）は絶対に使わない（SNSでは記号がそのまま表示される）
 - URLリンクは本文に含めないこと（アルゴリズム的にリーチが下がるため）
+- ハッシュタグは付けない（Facebookはハッシュタグの発見経路が無く、機械投稿感が出るだけのため）
 - 誘導したい場合は「プロフィールのリンクから」と案内`,
     bluesky: `Bluesky投稿文（最大300文字、ハッシュタグは本文中に含める）
 - カジュアルで親しみやすい口調
@@ -78,17 +80,20 @@ export async function generatePostText(
   const systemPrompt = `あなたは「${accountName}」の歌舞伎が大好きなSNS担当です。
 フォロワーと一緒に歌舞伎を楽しんでいる一人として、自分の言葉で語ってください。
 
-【気良歌舞伎の活動について】
+【気良歌舞伎の活動について（事実誤認を防ぐための背景情報。毎回の投稿に盛り込む材料ではない）】
 - 衣装は貸衣装を利用している
 - 化粧は専門の方にお願いしている
 - 大道具・小道具は座員が自分たちで手作りしている
-- 義太夫・三味線は他の団体の方にお願いしている
+- 義太夫・三味線の体制は公演ごとに異なるため、投稿では義太夫・三味線に触れない
+※この4点は「触れるなら事実はこうだ」という確認用。話の流れで必要になったときだけ書き、毎回の投稿に定型段落として貼り付けないこと。
 
 【トーン指針】
 - 「ぜひチェック」「お見逃しなく」「必見」などの売り込み表現は使わない
-- フォロワーに話しかけるように、対話を意識する（問いかけ、共感、感想の共有）
+- 「皆さん、こんにちは！」「今日の投稿は〜です」のような定型あいさつ・前置きで書き始めない（毎日同じ書き出しは機械投稿の指紋になる）
 - 歌舞伎に詳しくない人にも楽しんでもらえるよう、わかりやすく
 - 「自分も好きだから語りたい」という温度感で
+- 感嘆と共感だけで字数を埋めない。書けることが少ない日は、無理に長くせず短く終える方がよい
+- 毎回同じ調子にしない。共感を求める文、問いかけ、描写、言い切りのどれで進めるかは「今日の構成」の指定に従う
 
 【事実に関するルール（最重要）】
 - 与えられた情報に書かれていないことを事実として書かない。演目のあらすじや人物設定を自分の知識で補完しない
@@ -169,6 +174,12 @@ X・Blueskyの本文末尾に追記するクイズの正解と解説を書いて
 【注意】このクイズ投稿にはクイズデータが紐づいていません。クイズ問題は作成せず、歌舞伎の豆知識として投稿文を作成してください。`;
   }
 
+  // 文章のパターン化対策: 日替わりの構成型 + 直近の書き出し回避 + 使い古された表現の禁止
+  const style = pickCompositionStyle(postDate, theme, !!characterName, !!(visualFeatures || sceneType));
+  const recentOpenings = await fetchRecentOpenings(env);
+  const variationPrompt = buildVariationPrompt(style, recentOpenings);
+  console.log(`Composition style for ${postDate} (${theme}): ${style ? style.id : 'none (fixed-format theme)'}`);
+
   const userPrompt = `以下の情報をもとに、SNS投稿文を作成してください。
 
 【投稿日】${postDate}
@@ -187,7 +198,9 @@ ${cta ? `【CTA】${cta}` : '【CTA】なし（CTAは入れず、読者への問
 - Xでは誘導先URLは自動でリプライに投稿されるため、本文で無理に触れなくてよい
 - Facebook・Instagramでは「プロフィールのリンクから」と案内してください` : ''}
 【共通ハッシュタグ】${commonHashtags}
-${customPrompt ? `\n【追加指示】${customPrompt}` : ''}
+
+${variationPrompt}
+${customPrompt ? `\n【追加指示（構成指示と食い違う場合はこちらを優先）】${customPrompt}` : ''}
 以下の各プラットフォーム用の投稿文を作成してください：
 
 ${promptParts}
@@ -199,7 +212,6 @@ ${promptParts}
   "x_text": "...",
   "x_hashtags": "...",
   "facebook_text": "...",
-  "facebook_hashtags": "...",
   "bluesky_text": "..."${theme === 'クイズ' && quizQuestion ? `,
   "comment_x": "...",
   "comment_bluesky": "..."` : ''}
@@ -211,9 +223,10 @@ ${promptParts}
     contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
     systemInstruction: { parts: [{ text: systemPrompt }] },
     generationConfig: {
-      temperature: 0.7,
+      // 文体が固定化しやすいので温度は高め（0.7だと毎回ほぼ同じ言い回しに収束した）
+      temperature: 1.0,
       maxOutputTokens: 8192,
-      topP: 0.9,
+      topP: 0.95,
     },
   });
   console.log('Gemini request URL:', url.replace(/key=.*/, 'key=***'));
@@ -292,7 +305,9 @@ ${promptParts}
     x_text: parsed.x_text || '',
     x_hashtags: parsed.x_hashtags || commonHashtags,
     facebook_text: parsed.facebook_text || '',
-    facebook_hashtags: parsed.facebook_hashtags || commonHashtags,
+    // FBはハッシュタグ無し運用（2026-07〜）。手動で付けたい場合は管理画面でfacebook_hashtagsを編集すれば、
+    // auto-post側が従来通り本文末尾に連結する
+    facebook_hashtags: '',
     bluesky_text: parsed.bluesky_text || '',
     cta_url: (post.cta_url as string) || null,
     quiz_answer_comment: (parsed.comment_x || parsed.comment_bluesky)
