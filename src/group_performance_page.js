@@ -25,6 +25,7 @@ export function groupPerformancePageHTML(group) {
       <div class="gp-next-badge">NEXT</div>
       <h2 class="gp-next-title">${escHTML(nextPerf.title || "次回公演")}</h2>
       <div class="gp-next-details">
+        ${nextPerf.play ? `<div class="gp-next-row"><span class="gp-next-label">🎭 演目</span><span class="gp-next-value">${escHTML(nextPerf.play)}</span></div>` : ""}
         ${nextPerf.date ? `<div class="gp-next-row"><span class="gp-next-label">📅 日時</span><span class="gp-next-value">${escHTML(nextPerf.date)}</span></div>` : ""}
         ${nextPerf.venue ? `<div class="gp-next-row"><span class="gp-next-label">📍 場所</span><span class="gp-next-value">${escHTML(nextPerf.venue)}</span></div>` : ""}
       </div>

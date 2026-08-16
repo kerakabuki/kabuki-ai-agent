@@ -117,18 +117,26 @@ export function gatePageHTML(group, extraData = {}) {
   const np = g.next_performance;
 
   let perfInner = "";
-  if (np && np.date) {
+  // 日程未定でも演目・タイトルが入っていればカードを出す（日付だけを条件にすると全部消える）
+  if (np && (np.date || np.play || np.title)) {
+    // 演目ガイド（NAVI）への予習導線。enmoku_id が設定されているときだけ出す
+    const guideHTML = np.enmoku_id ? `
+        <div class="gate-perf-guide">
+          <a class="gate-perf-guide-link" href="/kabuki/navi/enmoku/${encodeURIComponent(np.enmoku_id)}">📖 演目を予習する${np.play ? `（${escHTML(np.play)}）` : ""}</a>
+        </div>` : "";
     perfInner = `
       <h3 class="section-title">次回公演</h3>
       <div class="gate-perf-card" id="gate-next-perf">
         ${np.image ? `<div class="gate-perf-img"><img src="${escHTML(np.image)}" alt="${np.title ? escHTML(np.title) : "公演告知"}" loading="lazy"></div>` : ""}
         ${np.title ? `<div class="gate-perf-title">${escHTML(np.title)}</div>` : ""}
+        ${np.play ? `<div class="gate-perf-play">🎭 ${escHTML(np.play)}</div>` : ""}
         <div class="gate-perf-meta">
-          <span>📅 ${escHTML(np.date)}</span>
+          <span>📅 ${np.date ? escHTML(np.date) : "日程調整中"}</span>
           ${np.venue ? `<span>📍 ${escHTML(np.venue)}</span>` : ""}
         </div>
         <div class="gate-perf-badge" id="gate-perf-badge"></div>
         ${np.note ? `<p class="gate-perf-note">${escHTML(np.note)}</p>` : ""}
+        ${guideHTML}
       </div>`;
   } else {
     perfInner = `
@@ -832,25 +840,46 @@ const GATE_CSS = `
   width: 100%; max-height: 260px; object-fit: cover; display: block;
 }
 .gate-perf-card .gate-perf-title,
+.gate-perf-card .gate-perf-play,
 .gate-perf-card .gate-perf-meta,
 .gate-perf-card .gate-perf-badge,
 .gate-perf-card .gate-perf-note,
+.gate-perf-card .gate-perf-guide,
 .gate-perf-card .gate-perf-na,
 .gate-perf-card .gate-perf-cta { padding-left: 1.4rem; padding-right: 1.4rem; }
 .gate-perf-card .gate-perf-title { padding-top: 1.1rem; }
+.gate-perf-card .gate-perf-play:first-child { padding-top: 1.1rem; }
 .gate-perf-card .gate-perf-badge:last-child,
 .gate-perf-card .gate-perf-meta:last-child,
+.gate-perf-card .gate-perf-note:last-child,
+.gate-perf-card .gate-perf-guide:last-child,
 .gate-perf-card .gate-perf-cta:last-child { padding-bottom: 1.2rem; }
 .gate-perf-card-empty { text-align: center; padding: 1.2rem 1.4rem; }
 .gate-perf-title {
   font-family: 'Noto Serif JP', serif;
   font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem;
 }
+.gate-perf-play {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 1.15rem; font-weight: 700;
+  color: var(--gold-dark); margin-bottom: 0.55rem;
+  letter-spacing: 0.02em;
+}
 .gate-perf-meta {
   display: flex; flex-wrap: wrap; gap: 0.4rem 1rem;
   font-size: 0.9rem; color: var(--text-secondary);
 }
 .gate-perf-badge { margin-top: 0.5rem; }
+.gate-perf-guide { margin-top: 0.9rem; }
+.gate-perf-guide-link {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  padding: 0.55rem 1.1rem;
+  border: 1px solid var(--gold-dark); border-radius: var(--radius-md);
+  font-size: 0.88rem; font-weight: 600;
+  color: var(--gold-dark); text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+.gate-perf-guide-link:hover { background: var(--gold-dark); color: #fff; }
 .gate-countdown-card {
   display: flex; align-items: baseline; gap: 0.5rem;
   background: linear-gradient(135deg, #e8f5e9 0%, #f1f8f4 100%);

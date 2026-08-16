@@ -26,6 +26,10 @@ export function infoEventsPageHTML() {
         </div>
       </div>
       <div class="ie-kera-details">
+        <div class="ie-detail-row" id="ie-kera-play-row" style="display:none">
+          <span class="ie-detail-label">演目</span>
+          <span class="ie-detail-value" id="ie-kera-play"></span>
+        </div>
         <div class="ie-detail-row">
           <span class="ie-detail-label">日時</span>
           <span class="ie-detail-value" id="ie-kera-date">--</span>
@@ -89,6 +93,12 @@ export function infoEventsPageHTML() {
           if (titleEl) titleEl.textContent = np.title || '次回公演';
           if (dateEl) dateEl.textContent = np.date || '未定';
           if (venueEl) venueEl.textContent = np.venue || '未定';
+          var playEl = document.getElementById('ie-kera-play');
+          var playRow = document.getElementById('ie-kera-play-row');
+          if (np.play && playEl && playRow) {
+            playEl.textContent = np.play;
+            playRow.style.display = '';
+          }
           if (np.note && noteEl) {
             noteEl.textContent = np.note;
             noteRow.style.display = '';

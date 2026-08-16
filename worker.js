@@ -253,8 +253,10 @@ const DEFAULT_GROUPS = {
     ],
     next_performance: {
       title: "令和8年 気良歌舞伎公演（予定）",
+      play: "曽根崎心中",
       date: "令和8年9月26日（土） 18:00 開演",
       venue: "気良座（旧明方小学校講堂）",
+      enmoku_id: "sonezakisinju",
       note: "詳細は決まり次第お知らせします。最新情報はInstagramでもご確認いただけます。"
     },
     created_at: "2024-01-01T00:00:00Z",
@@ -2565,14 +2567,19 @@ ${phraseReport}
                     const dayNames = ["日","月","火","水","木","金","土"];
                     dateStr = `${dt.getFullYear()}年${dt.getMonth()+1}月${dt.getDate()}日(${dayNames[dt.getDay()]})`;
                   }
-                  const playsStr = (goal.plays && goal.plays.length) ? " / " + goal.plays.map(p => typeof p === "string" ? p : (p.name || "")).filter(Boolean).join("・") : "";
-                  const dateLine = (dateStr + playsStr) || "";
+                  const prevNp = group.next_performance || {};
+                  // 演目は date に混ぜず play として持つ（GATE の演目表示・演目ガイド導線で使う）
+                  const playsStr = (goal.plays && goal.plays.length) ? goal.plays.map(p => typeof p === "string" ? p : (p.name || "")).filter(Boolean).join("・") : "";
                   group.next_performance = {
                     title: goal.title || "",
-                    date: dateLine,
+                    // plays キーがあれば公演目標側を正とする（全削除で消せるように）。無ければGATE編集値を維持
+                    play: ("plays" in goal) ? playsStr : (prevNp.play || ""),
+                    date: dateStr || "",
                     venue: goal.venue || "",
+                    // enmoku_id / image は公演目標側に無い項目なので GATE 編集画面の値を引き継ぐ
+                    enmoku_id: prevNp.enmoku_id || "",
                     note: goal.note || "",
-                    image: (group.next_performance && group.next_performance.image) || ""
+                    image: prevNp.image || ""
                   };
                 } else {
                   group.next_performance = null;

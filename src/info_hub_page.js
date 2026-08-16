@@ -212,9 +212,9 @@ export function infoHubPageHTML({} = {}) {
             var gdata = gid ? dataByGid[gid] : null;
             var np = gdata && gdata.next_performance;
 
-            if (np && np.date) {
-              /* 状態1：次回公演情報あり */
-              var cd = countdown(np.date);
+            if (np && (np.date || np.play || np.title)) {
+              /* 状態1：次回公演情報あり（日程未定でも演目・タイトルがあれば出す） */
+              var cd = np.date ? countdown(np.date) : null;
               var badge = cd ? '<span class="perf-badge ' + cd.cls + '">' + esc(cd.label) + '</span>' : '';
               var detailHref = np.url || '/jikabuki/gate/kera/performance';
               return '<a href="' + esc(detailHref) + '" class="perf-card perf-card-active">'
@@ -223,7 +223,8 @@ export function infoHubPageHTML({} = {}) {
                 +   badge
                 + '</div>'
                 + '<div class="perf-card-info">'
-                +   '<span class="perf-card-date">📅 ' + esc(np.date) + '</span>'
+                +   (np.play ? '<span class="perf-card-play">📜 ' + esc(np.play) + '</span>' : '')
+                +   '<span class="perf-card-date">📅 ' + esc(np.date || '日程調整中') + '</span>'
                 +   (np.venue ? '<span class="perf-card-venue">📍 ' + esc(np.venue) + '</span>' : '')
                 +   (np.title ? '<span class="perf-card-title-text">🎬 ' + esc(np.title) + '</span>' : '')
                 + '</div>'

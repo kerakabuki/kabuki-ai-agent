@@ -100,12 +100,21 @@ export function gateEditorPageHTML(groupId, mode) {
           <input type="text" id="ge-np-title" placeholder="例: 令和8年 気良歌舞伎公演">
         </div>
         <div class="ge-field">
+          <label>演目</label>
+          <input type="text" id="ge-np-play" placeholder="例: 曽根崎心中">
+        </div>
+        <div class="ge-field">
           <label>日時</label>
-          <input type="text" id="ge-np-date" placeholder="例: 令和8年9月26日（土） 17:00 開演">
+          <input type="text" id="ge-np-date" placeholder="例: 令和8年9月26日（土） 18:00 開演">
         </div>
         <div class="ge-field">
           <label>会場</label>
           <input type="text" id="ge-np-venue" placeholder="例: 気良座">
+        </div>
+        <div class="ge-field">
+          <label>演目ID（任意）</label>
+          <input type="text" id="ge-np-enmoku_id" placeholder="例: sonezakisinju">
+          <p class="ge-hint">入力すると「演目を予習する」ボタンが公演カードに出て、KABUKI PLUS+ の演目ガイドへ繋がります。IDは演目ガイドのURL末尾（/kabuki/navi/enmoku/<b>ここ</b>）です。</p>
         </div>
         <div class="ge-field">
           <label>備考</label>
@@ -301,8 +310,10 @@ export function gateEditorPageHTML(groupId, mode) {
 
         var np = d.next_performance || {};
         setValue('ge-np-title', np.title);
+        setValue('ge-np-play', np.play);
         setValue('ge-np-date', np.date);
         setValue('ge-np-venue', np.venue);
+        setValue('ge-np-enmoku_id', np.enmoku_id);
         setValue('ge-np-note', np.note);
         setValue('ge-next-perf-image', np.image);
         if (np.image) previewUrl('ge-next-perf-image', 'ge-next-perf-preview');
@@ -504,12 +515,14 @@ export function gateEditorPageHTML(groupId, mode) {
         var npImage = getValue('ge-next-perf-image');
         var np = {
           title: getValue('ge-np-title'),
+          play: getValue('ge-np-play') || undefined,
           date: getValue('ge-np-date'),
           venue: getValue('ge-np-venue'),
+          enmoku_id: getValue('ge-np-enmoku_id') || undefined,
           note: getValue('ge-np-note'),
           image: npImage || undefined,
         };
-        var hasNp = np.title || np.date || np.venue || np.note || np.image;
+        var hasNp = np.title || np.play || np.date || np.venue || np.enmoku_id || np.note || np.image;
 
         var contact = {};
         var cFields = ['website','youtube','instagram','x','facebook','tiktok','email'];
