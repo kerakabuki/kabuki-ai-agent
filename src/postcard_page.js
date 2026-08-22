@@ -12,12 +12,14 @@ export function postcardPageHTML() {
 
   // ── 宿泊（気良・明宝エリア）──
   // TODO: 電話番号は座で確認のうえ tel を埋める（空文字なら電話ボタン非表示）
+  // ※ 気良地区の宿は小規模。祭礼と重なるため、当年の案内では期待値を上げすぎないこと
   const STAYS = [
-    { name: "料理旅館みずかみ", area: "気良",     note: "気良地区の料理旅館",         tel: "" },
-    { name: "旅館くご",         area: "気良",     note: "気良地区の旅館",             tel: "" },
-    { name: "民宿しもだ",       area: "気良",     note: "気良地区の民宿",             tel: "" },
-    { name: "明宝温泉 湯星館",  area: "明宝",     note: "天然温泉。日帰り入浴も可",   tel: "" },
-    { name: "郡上八幡エリア",   area: "車で30分", note: "ホテル・旅館が多数",         tel: "" },
+    { name: "料理旅館みずかみ", area: "気良",     note: "気良地区の料理旅館。小規模です", tel: "" },
+    { name: "旅館くご",         area: "気良",     note: "気良地区の旅館。小規模です",     tel: "" },
+    { name: "民宿しもだ",       area: "気良",     note: "気良地区の民宿。小規模です",     tel: "" },
+    { name: "明宝温泉 湯星館",  area: "明宝",     note: "天然温泉。日帰り入浴もできます", tel: "" },
+    { name: "郡上八幡エリア",   area: "車で30分", note: "ホテル・旅館が多く、部屋数に余裕があります", tel: "" },
+    { name: "白鳥・高鷲エリア", area: "車で40分", note: "スキー場周辺に宿泊施設が多数",   tel: "" },
   ];
 
   const FAQ = [
@@ -124,27 +126,40 @@ export function postcardPageHTML() {
   </p>
 </section>
 
-<!-- ═══════ ② 一泊のすすめ ═══════ -->
+<!-- ═══════ ② お帰りの計画 ═══════ -->
 <section class="pc-section pc-section-accent" id="stay">
-  <h2 class="pc-h2">一泊して、郡上を味わう</h2>
+  <h2 class="pc-h2">お帰りの計画</h2>
   <p class="pc-lead pc-reveal">
-    終演は21時ごろ。<strong>終演後の路線バスはありません。</strong><br>
-    だからこそ、明宝の温泉に浸かって、鶏ちゃんを食べて帰る一日にしませんか。
+    終演は21時ごろです。<strong>終演後の路線バスはありません。</strong><br>
+    ほとんどのお客さまは<strong>お車で日帰り</strong>されています。
   </p>
 
-  <h3 class="pc-h3 pc-reveal">泊まる</h3>
+  <div class="pc-card pc-reveal" style="margin-bottom:1.2rem;">
+    <h3 class="pc-card-title">🚗 日帰りの目安</h3>
+    <ul>
+      <li>気良座から東海北陸自動車道 <strong>郡上八幡IC まで約30分</strong></li>
+      <li>21:00終演 → 21:30ごろIC → そのまま高速でお帰りいただけます</li>
+      <li>夜間の山道になります。ライトと足元にお気をつけて</li>
+    </ul>
+  </div>
+
+  <h3 class="pc-h3 pc-reveal">ゆっくりされたい方へ（宿泊）</h3>
+  <p class="pc-dim pc-reveal" style="margin-bottom:0.8rem;font-size:0.86rem;">
+    <strong style="color:#e8c96a;">気良地区の宿は小規模で、9月第4土曜は白山神社の祭礼とも重なります。</strong>
+    満室のことが多いため、お早めにお問い合わせいただくか、部屋数に余裕のある郡上八幡エリアもあわせてご検討ください。
+  </p>
   <div class="pc-stays">${stayCards}</div>
-  <p class="pc-dim pc-reveal" style="margin-top:0.9rem;font-size:0.82rem;">
-    ※ 9月第4土曜は白山神社の祭礼と重なります。お早めのご予約をおすすめします。
-  </p>
 
-  <h3 class="pc-h3 pc-reveal">味わう</h3>
+  <h3 class="pc-h3 pc-reveal">立ち寄る</h3>
   <ul class="pc-list pc-reveal">
-    <li><strong>明宝ハム</strong> — 地元の豚肉を使った手作りハム。お土産にも</li>
+    <li><strong>明宝温泉 湯星館</strong> — 日帰り入浴ができます。公演前のひと風呂もおすすめ</li>
     <li><strong>鶏ちゃん（けいちゃん）</strong> — 郡上の郷土料理。味噌や醤油で味付けした鶏肉を野菜と焼く</li>
+    <li><strong>明宝ハム</strong> — 地元の豚肉を使った手作りハム。お土産にも</li>
     <li><strong>明宝トマトケチャップ</strong> — 完熟トマト100%</li>
-    <li><strong>明宝温泉 湯星館</strong> — 日帰り入浴もできます</li>
   </ul>
+  <p class="pc-dim pc-reveal" style="margin-top:0.8rem;font-size:0.82rem;">
+    ※ 公演は18:00開演です。日中に立ち寄られると、ゆったりお過ごしいただけます。
+  </p>
 </section>
 
 <!-- ═══════ ③ アクセス ═══════ -->
