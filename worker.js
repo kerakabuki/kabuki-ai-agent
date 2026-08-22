@@ -125,6 +125,7 @@ import { storyPageHTML } from "./src/story_page.js";
 import { keraOfficialPageHTML } from "./src/kera_official_page.js";
 import { pressPageHTML } from "./src/press_page.js";
 import { keraGuidePageHTML } from "./src/kera_guide_page.js";
+import { postcardPageHTML } from "./src/postcard_page.js";
 import { keraArchivePageHTML } from "./src/kera_archive_page.js";
 import { mypagePageHTML, recoProfilePageHTML } from "./src/mypage_page.js";
 import { naviPageHTML } from "./src/navi_page.js";
@@ -1072,6 +1073,11 @@ ${glossaryI18nPairs.map(g => `  <url>
     if (path === "/kerakabuki/kawaraban" || path === "/jikabuki/gate/kera/kawaraban") return new Response(null, { status: 301, headers: { "Location": "/kerakabuki/press#kawaraban" } });
     if (path === "/kerakabuki/press" || path === "/jikabuki/gate/kera/press") return new Response(pressPageHTML(), { headers: HTML_HEADERS });
     if (path === "/kerakabuki/guide" || path === "/jikabuki/gate/kera/guide") return new Response(keraGuidePageHTML(), { headers: HTML_HEADERS });
+    // ポストカードQRの着地ページ（/pc は短縮パス。スキャン数の計測を兼ねる）
+    if (path === "/kerakabuki/pc") {
+      try { await bumpPcVisit(env, ctx); } catch (e) { console.error("pc visit count:", e); }
+      return new Response(postcardPageHTML(), { headers: { ...HTML_HEADERS, "Cache-Control": "public, max-age=300" } });
+    }
     if (path === "/kerakabuki/archive" || path === "/jikabuki/gate/kera/archive") return new Response(keraArchivePageHTML(), { headers: HTML_HEADERS });
     if (path === "/kerakabuki/nft" || path === "/jikabuki/gate/kera/nft") return new Response(nftGuidePageHTML(), { headers: HTML_HEADERS });
     if (path === "/jikabuki/gate/kera/performance") return new Response(null, { status: 302, headers: { "Location": "/jikabuki/gate/kera" } });
@@ -1611,6 +1617,19 @@ ${glossaryI18nPairs.map(g => `  <url>
       } catch (e) {
         return corsResponse(request, jsonResponse({ ok: true }));
       }
+    }
+
+    // 気良歌舞伎 案内方法の登録（ポストカード着地ページ / 芳名帳QR から）
+    if (path === "/api/kera/notify" && request.method === "POST") {
+      return corsResponse(request, await registerKeraNotify(request, env, ctx));
+    }
+    if (path === "/api/kera/notify/list" && request.method === "GET") {
+      const session = await getSession(request, env);
+      if (!session) return corsResponse(request, jsonResponse({ error: "Unauthorized" }, 401));
+      if (!(await checkIsMaster(env, session.userId))) {
+        return corsResponse(request, jsonResponse({ error: "マスター権限が必要です" }, 403));
+      }
+      return corsResponse(request, jsonResponse(await listKeraNotify(env)));
     }
 
     // エディター権限 API
@@ -4460,6 +4479,158 @@ function jsonResponse(obj, status = 200) {
 }
 
 /* =========================================================
+   気良歌舞伎 案内方法の登録（KV: kera_notify:*）
+   ポストカードQR・芳名帳QR・LINE から集約する
+========================================================= */
+
+// ポストカードQRのスキャン数を日別に数える（アナリティクス代わり）
+async function bumpPcVisit(env, ctx) {
+  const day = new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10); // JST
+  const key = `pc_visit:${day}`;
+  const inc = async () => {
+    const cur = parseInt((await env.CHAT_HISTORY.get(key)) || "0", 10) || 0;
+    // 90日で自然に消える
+    await env.CHAT_HISTORY.put(key, String(cur + 1), { expirationTtl: 60 * 60 * 24 * 90 });
+  };
+  if (ctx && ctx.waitUntil) ctx.waitUntil(inc()); else await inc();
+}
+
+const KERA_NOTIFY_PREFIX = "kera_notify:";
+
+async function registerKeraNotify(request, env, ctx) {
+  let body;
+  try {
+    body = await request.json();
+  } catch (e) {
+    return jsonResponse({ ok: false, error: "リクエストの形式が正しくありません。" }, 400);
+  }
+
+  const clip = (v, n) => String(v ?? "").trim().slice(0, n);
+  const name = clip(body.name, 60);
+  const email = clip(body.email, 200).toLowerCase();
+  const channel = ["email", "postal_stop", "line"].includes(body.channel) ? body.channel : "email";
+  const postal = body.postal === "keep" ? "keep" : "stop";
+  const source = clip(body.source, 40) || "web";
+
+  if (!name) return jsonResponse({ ok: false, error: "お名前をご記入ください。" }, 400);
+  if (channel === "email") {
+    if (!email) return jsonResponse({ ok: false, error: "メールアドレスをご記入ください。" }, 400);
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      return jsonResponse({ ok: false, error: "メールアドレスをご確認ください。" }, 400);
+    }
+  }
+
+  // 同じメールアドレスの二重登録は上書き（キーに正規化した値を使う）
+  const id = channel === "email" && email
+    ? `mail_${await sha1Hex(email)}`
+    : `${channel}_${await sha1Hex(name + "|" + source)}`;
+
+  const record = {
+    id, channel, name, email: channel === "email" ? email : "",
+    postal, source,
+    created_at: new Date().toISOString(),
+  };
+
+  try {
+    const existing = await env.CHAT_HISTORY.get(KERA_NOTIFY_PREFIX + id, "json");
+    if (existing?.created_at) record.created_at = existing.created_at;
+    record.updated_at = new Date().toISOString();
+    await env.CHAT_HISTORY.put(KERA_NOTIFY_PREFIX + id, JSON.stringify(record));
+  } catch (e) {
+    console.error("kera_notify put error:", e);
+    return jsonResponse({ ok: false, error: "保存できませんでした。時間をおいてお試しください。" }, 500);
+  }
+
+  // 座への通知メール（任意・失敗しても登録は成立させる）
+  if (env.RESEND_API_KEY && ctx?.waitUntil) {
+    const label = channel === "postal_stop" ? "郵送停止のお申し出" : "メール案内の登録";
+    ctx.waitUntil(
+      fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${env.RESEND_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: "onboarding@resend.dev",
+          to: ["kerakabuki@gmail.com"],
+          subject: `【気良歌舞伎】${label} — ${name} 様`,
+          html: `
+            <h2>${label}</h2>
+            <table style="border-collapse:collapse;font-size:14px;">
+              <tr><td style="padding:4px 12px 4px 0;color:#666;">お名前</td><td><strong>${escapeHtml(name)}</strong></td></tr>
+              <tr><td style="padding:4px 12px 4px 0;color:#666;">メール</td><td>${escapeHtml(record.email) || "（なし）"}</td></tr>
+              <tr><td style="padding:4px 12px 4px 0;color:#666;">郵送</td><td>${postal === "keep" ? "今後も希望" : "停止を希望"}</td></tr>
+              <tr><td style="padding:4px 12px 4px 0;color:#666;">経路</td><td>${escapeHtml(source)}</td></tr>
+              <tr><td style="padding:4px 12px 4px 0;color:#666;">日時</td><td>${new Date().toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" })}</td></tr>
+            </table>
+          `,
+        }),
+      }).then(r => r.json()).then(j => console.log("Resend kera_notify:", JSON.stringify(j)))
+        .catch(e => console.error("Resend kera_notify error:", e))
+    );
+  }
+
+  return jsonResponse({ ok: true });
+}
+
+async function listKeraNotify(env) {
+  const out = [];
+  let cursor;
+  do {
+    const res = await env.CHAT_HISTORY.list({ prefix: KERA_NOTIFY_PREFIX, cursor });
+    for (const k of res.keys) {
+      const rec = await env.CHAT_HISTORY.get(k.name, "json");
+      if (rec) out.push(rec);
+    }
+    cursor = res.list_complete ? null : res.cursor;
+  } while (cursor);
+  out.sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
+
+  // ポストカードQRの訪問数（直近30日）
+  const visits = {};
+  const vres = await env.CHAT_HISTORY.list({ prefix: "pc_visit:" });
+  for (const k of vres.keys) {
+    visits[k.name.replace("pc_visit:", "")] = parseInt((await env.CHAT_HISTORY.get(k.name)) || "0", 10) || 0;
+  }
+  return { count: out.length, records: out, pcVisits: visits };
+}
+
+// LINE から届いた登録を、Webフォームと同じ形で保存する
+async function saveKeraLineOptin(env, { sourceKey, userId, name, postal, source }) {
+  try {
+    const id = `line_${await sha1Hex(userId || sourceKey)}`;
+    const key = KERA_NOTIFY_PREFIX + id;
+    const prev = (await env.CHAT_HISTORY.get(key, "json")) || {};
+    const record = {
+      id,
+      channel: "line",
+      name: (name || prev.name || "").slice(0, 60),
+      email: "",
+      line_user_id: userId || "",
+      postal: postal || prev.postal || "keep",
+      source: source || "line",
+      created_at: prev.created_at || new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+    await env.CHAT_HISTORY.put(key, JSON.stringify(record));
+  } catch (e) {
+    console.error("saveKeraLineOptin error:", e);
+  }
+}
+
+async function sha1Hex(str) {
+  const buf = await crypto.subtle.digest("SHA-1", new TextEncoder().encode(str));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("").slice(0, 16);
+}
+
+function escapeHtml(s) {
+  return String(s ?? "").replace(/[&<>"']/g, c => (
+    { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
+  ));
+}
+
+/* =========================================================
    LINE handler
 ========================================================= */
 async function handleEvent(event, env, ctx) {
@@ -4780,6 +4951,29 @@ async function handleEvent(event, env, ctx) {
 
     const text = (event.message?.text || "").trim();
     console.log("IN:", { sourceKey, userId, destId, text, mode });
+
+    // ★ 公演案内のLINE登録（はがき・芳名帳のQRから来た人）
+    const optinKey = `kera_optin:${sourceKey}`;
+    if (/^(はがき|ハガキ|葉書)$/.test(text)) {
+      await env.CHAT_HISTORY.put(optinKey, "await_name", { expirationTtl: 600 });
+      await respondLine(env, replyToken, destId,
+        "ありがとうございます！\n来年からの公演案内を、LINEでお届けします。\n\nはがきの宛名になっている**お名前**を送ってください。\n（例：気良 太郎）".replace(/\*\*/g, ""));
+      return;
+    }
+    if (/^(郵送停止|郵送をとめる|郵送を止める)$/.test(text)) {
+      await saveKeraLineOptin(env, { sourceKey, userId, name: "", postal: "stop", source: "line_stop" });
+      await respondLine(env, replyToken, destId,
+        "承知しました。次回からの郵送を止めるよう手配します。\nお名前がまだの場合は「はがき」と送っていただけると、名簿と照合できます。");
+      return;
+    }
+    if ((await env.CHAT_HISTORY.get(optinKey)) === "await_name") {
+      await env.CHAT_HISTORY.delete(optinKey);
+      const optinName = text.slice(0, 60);
+      await saveKeraLineOptin(env, { sourceKey, userId, name: optinName, postal: "keep", source: "line_postcard" });
+      await respondLine(env, replyToken, destId,
+        `${optinName} 様、登録しました。\n来年の公演案内はLINEでお届けします。\n\n・はがきの郵送も続けてよろしければ、このままで結構です\n・郵送は不要でしたら「郵送停止」と送ってください\n\n今年の公演は9月26日（土）17:00開場・18:00開演です。お待ちしています。`);
+      return;
+    }
 
     // ★ BASE連携コマンド（LINEグループ専用）
     const baseLinkMatch = text.match(/^BASE連携\s+([a-zA-Z0-9_-]+)$/);
