@@ -6,9 +6,6 @@
 // ダークテーマ・CSSプレフィックス: pc-
 // =========================================================
 
-// トーク画面を開き、入力欄に「はがき」を自動で入れる。利用者は送信を押すだけ
-const LINE_ADD_URL = "https://line.me/R/oaMessage/@117oizby/?" + encodeURIComponent("はがき");
-
 export function postcardPageHTML() {
 
   // ── 宿泊（気良・明宝エリア）──
@@ -204,31 +201,6 @@ export function postcardPageHTML() {
   <p class="pc-more pc-reveal"><a href="/kerakabuki/guide">観劇ガイドをもっと見る →</a></p>
 </section>
 
-<!-- ═══════ ⑤ 次回からの案内 ═══════ -->
-<section class="pc-section pc-section-optin" id="optin">
-  <h2 class="pc-h2">次回からのご案内</h2>
-  <p class="pc-lead pc-reveal">
-    来年の公演案内を、<strong>受け取りやすい方法でお届け</strong>します。<br>
-    今まで通り郵送をご希望の方は、そのままで結構です。
-  </p>
-
-  <a href="${LINE_ADD_URL}" target="_blank" rel="noopener" class="pc-line-btn pc-reveal" id="pc-line-btn">
-    <span class="pc-line-icon">💬</span>
-    <span class="pc-line-text">
-      <strong>LINEで受け取る</strong>
-      <small>タップ → 送信を押すだけ。入力は要りません</small>
-    </span>
-  </a>
-
-  <a href="/kerakabuki/annai" class="pc-alt-link pc-reveal">
-    <span>メール・郵送をご希望の方はこちら</span>
-    <span class="pc-alt-arrow">→</span>
-  </a>
-  <p class="pc-dim pc-reveal" style="font-size:0.8rem;margin-top:0.7rem;">
-    いただいた連絡先は、気良歌舞伎の公演案内にのみ使用します。停止・変更はいつでも承ります。
-  </p>
-</section>
-
 <!-- ═══════ FOOTER ═══════ -->
 <footer class="pc-footer">
   <p class="pc-footer-name">気良歌舞伎一座</p>
@@ -309,8 +281,6 @@ img { max-width: 100%; display: block; }
 .pc-section { padding: 2.8rem 1.4rem; max-width: 720px; margin: 0 auto; }
 .pc-section-accent { background: rgba(197,162,85,0.045); max-width: none; }
 .pc-section-accent > * { max-width: 720px; margin-left: auto; margin-right: auto; }
-.pc-section-optin { background: linear-gradient(180deg, #0a0a0f 0%, #14121e 100%); max-width: none; }
-.pc-section-optin > * { max-width: 720px; margin-left: auto; margin-right: auto; }
 .pc-h2 {
   font-family: "Noto Serif JP", serif;
   font-size: 1.28rem; font-weight: 600; color: #c5a255;
@@ -393,16 +363,6 @@ img { max-width: 100%; display: block; }
 .pc-more { margin-top: 1.1rem; font-size: 0.88rem; }
 .pc-more a { color: #e8c96a; text-decoration: none; }
 
-/* ── オプトイン ── */
-.pc-line-btn {
-  display: flex; align-items: center; gap: 0.9rem;
-  background: #06C755; color: #fff; text-decoration: none;
-  border-radius: 12px; padding: 1rem 1.2rem; margin-bottom: 0.9rem;
-  box-shadow: 0 4px 18px rgba(6,199,85,0.22);
-}
-.pc-line-icon { font-size: 1.5rem; }
-.pc-line-text strong { display: block; font-size: 1.02rem; font-weight: 700; }
-.pc-line-text small { display: block; font-size: 0.78rem; opacity: 0.9; line-height: 1.6; }
 .pc-alt-link {
   display: flex; align-items: center; justify-content: space-between; gap: 0.8rem;
   background: rgba(18,18,28,0.7); border: 1px solid rgba(197,162,85,0.3);
@@ -410,48 +370,6 @@ img { max-width: 100%; display: block; }
   color: #e8e4dc; text-decoration: none; font-size: 0.95rem;
 }
 .pc-alt-arrow { color: #c5a255; font-size: 1.1rem; }
-.pc-optin-alt {
-  background: rgba(18,18,28,0.7); border: 1px solid rgba(197,162,85,0.16);
-  border-radius: 10px; margin-bottom: 0.6rem; overflow: hidden;
-}
-.pc-optin-alt summary {
-  cursor: pointer; list-style: none; padding: 0.85rem 1.1rem;
-  font-size: 0.93rem; color: #e8e4dc;
-  display: flex; justify-content: space-between; align-items: center;
-}
-.pc-optin-alt summary::-webkit-details-marker { display: none; }
-.pc-optin-alt summary::after { content: "＋"; color: #c5a255; }
-.pc-optin-alt[open] summary::after { content: "−"; }
-
-/* ── フォーム ── */
-.pc-form { padding: 0 1.1rem 1.1rem; display: grid; gap: 0.9rem; }
-.pc-field { display: grid; gap: 0.35rem; border: none; }
-.pc-field > span, .pc-field legend {
-  font-size: 0.82rem; color: #b8a88a; letter-spacing: 0.06em;
-}
-.pc-field input[type="text"], .pc-field input[type="email"] {
-  width: 100%; padding: 0.75rem 0.9rem; font-size: 1rem;
-  background: #0a0a0f; color: #e8e4dc;
-  border: 1px solid rgba(197,162,85,0.3); border-radius: 8px;
-  font-family: inherit;
-}
-.pc-field input:focus { outline: 2px solid #c5a255; outline-offset: 1px; }
-.pc-radios { display: grid; gap: 0.45rem; }
-.pc-radios label {
-  display: flex; align-items: center; gap: 0.55rem;
-  font-size: 0.9rem; color: #cfc7b8; cursor: pointer;
-}
-.pc-submit {
-  padding: 0.85rem 1rem; font-size: 1rem; font-weight: 600;
-  background: #c5a255; color: #16130c; border: none; border-radius: 8px;
-  cursor: pointer; font-family: inherit; letter-spacing: 0.08em;
-}
-.pc-submit:disabled { opacity: 0.5; cursor: default; }
-.pc-submit-quiet { background: transparent; color: #b8a88a; border: 1px solid rgba(197,162,85,0.35); }
-.pc-form-msg { font-size: 0.86rem; min-height: 1.2em; }
-.pc-ok { color: #6fd08c; }
-.pc-ng { color: #e88b7d; }
-
 /* ── FOOTER ── */
 .pc-footer {
   padding: 2.4rem 1.4rem 3rem; text-align: center;
