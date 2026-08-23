@@ -127,6 +127,7 @@ import { pressPageHTML } from "./src/press_page.js";
 import { keraGuidePageHTML } from "./src/kera_guide_page.js";
 import { postcardPageHTML } from "./src/postcard_page.js";
 import { annaiPageHTML } from "./src/annai_page.js";
+import { kaisetsuMessages, isKaisetsuRequest } from "./src/kera_kaisetsu.js";
 import { keraArchivePageHTML } from "./src/kera_archive_page.js";
 import { mypagePageHTML, recoProfilePageHTML } from "./src/mypage_page.js";
 import { naviPageHTML } from "./src/navi_page.js";
@@ -4701,6 +4702,20 @@ async function handleEvent(event, env, ctx) {
       }
 
       // step=kera_* : 気良歌舞伎の公演案内オプトイン（入力ゼロで完了させる）
+      if (p.step === "kera_from_kaisetsu") {
+        const kName = await fetchLineDisplayName(env, userId);
+        await respondLineMessages(env, replyToken, destId, [{
+          type: "text",
+          text: kName
+            ? `ありがとうございます。\n来年の公演案内をLINEでお届けします。\n\nはがきの名簿と照合したいので、お名前を確認させてください。\n「${kName}」でよろしいですか？`
+            : "ありがとうございます。\nはがきの宛名になっているお名前を送ってください。",
+          quickReply: { items: [
+            ...(kName ? [{ type: "action", action: { type: "postback", label: "はい、これで登録", data: "step=kera_ok", displayText: "はい" } }] : []),
+            { type: "action", action: { type: "postback", label: "別の名前にする", data: "step=kera_rename", displayText: "名前を入力する" } },
+          ]}
+        }]);
+        return;
+      }
       if (p.step === "kera_ok" || p.step === "kera_rename" || p.step === "kera_cancel" || p.step === "kera_mail") {
         const keraOptinKey = `kera_optin:${sourceKey}`;
         if (p.step === "kera_cancel") {
@@ -5009,6 +5024,12 @@ async function handleEvent(event, env, ctx) {
 
     const text = (event.message?.text || "").trim();
     console.log("IN:", { sourceKey, userId, destId, text, mode });
+
+    // ★ 当日の演目解説（AIを通さない固定応答。Geminiのレート制限を受けない）
+    if (isKaisetsuRequest(text)) {
+      await respondLineMessages(env, replyToken, destId, kaisetsuMessages());
+      return;
+    }
 
     // ★ 公演案内のLINE登録（はがき・芳名帳のQRから来た人）
     const optinKey = `kera_optin:${sourceKey}`;
