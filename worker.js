@@ -125,6 +125,9 @@ import { storyPageHTML } from "./src/story_page.js";
 import { keraOfficialPageHTML } from "./src/kera_official_page.js";
 import { pressPageHTML } from "./src/press_page.js";
 import { keraGuidePageHTML } from "./src/kera_guide_page.js";
+import { postcardPageHTML } from "./src/postcard_page.js";
+import { annaiPageHTML } from "./src/annai_page.js";
+import { kaisetsuPageHTML } from "./src/kaisetsu_page.js";
 import { keraArchivePageHTML } from "./src/kera_archive_page.js";
 import { mypagePageHTML, recoProfilePageHTML } from "./src/mypage_page.js";
 import { naviPageHTML } from "./src/navi_page.js";
@@ -1072,6 +1075,19 @@ ${glossaryI18nPairs.map(g => `  <url>
     if (path === "/kerakabuki/kawaraban" || path === "/jikabuki/gate/kera/kawaraban") return new Response(null, { status: 301, headers: { "Location": "/kerakabuki/press#kawaraban" } });
     if (path === "/kerakabuki/press" || path === "/jikabuki/gate/kera/press") return new Response(pressPageHTML(), { headers: HTML_HEADERS });
     if (path === "/kerakabuki/guide" || path === "/jikabuki/gate/kera/guide") return new Response(keraGuidePageHTML(), { headers: HTML_HEADERS });
+    // 当日の演目解説。登録も何も要らずに読める（当日QRの飛び先）
+    if (path === "/kerakabuki/kaisetsu" || path === "/jikabuki/gate/kera/kaisetsu") {
+      return new Response(kaisetsuPageHTML(), { headers: HTML_HEADERS });
+    }
+    // 公演案内の受け取り方法（登録専用・恒久ページ）。はがき・芳名帳・受付の共通導線
+    if (path === "/kerakabuki/annai" || path === "/jikabuki/gate/kera/annai") {
+      return new Response(annaiPageHTML(), { headers: HTML_HEADERS });
+    }
+    // ポストカードQRの着地ページ（/pc は短縮パス。スキャン数の計測を兼ねる）
+    if (path === "/kerakabuki/pc") {
+      try { await bumpPcVisit(env, ctx); } catch (e) { console.error("pc visit count:", e); }
+      return new Response(postcardPageHTML(), { headers: { ...HTML_HEADERS, "Cache-Control": "public, max-age=300" } });
+    }
     if (path === "/kerakabuki/archive" || path === "/jikabuki/gate/kera/archive") return new Response(keraArchivePageHTML(), { headers: HTML_HEADERS });
     if (path === "/kerakabuki/nft" || path === "/jikabuki/gate/kera/nft") return new Response(nftGuidePageHTML(), { headers: HTML_HEADERS });
     if (path === "/jikabuki/gate/kera/performance") return new Response(null, { status: 302, headers: { "Location": "/jikabuki/gate/kera" } });
@@ -1611,6 +1627,19 @@ ${glossaryI18nPairs.map(g => `  <url>
       } catch (e) {
         return corsResponse(request, jsonResponse({ ok: true }));
       }
+    }
+
+    // 気良歌舞伎 案内方法の登録（ポストカード着地ページ / 芳名帳QR から）
+    if (path === "/api/kera/notify" && request.method === "POST") {
+      return corsResponse(request, await registerKeraNotify(request, env, ctx));
+    }
+    if (path === "/api/kera/notify/list" && request.method === "GET") {
+      const session = await getSession(request, env);
+      if (!session) return corsResponse(request, jsonResponse({ error: "Unauthorized" }, 401));
+      if (!(await checkIsMaster(env, session.userId))) {
+        return corsResponse(request, jsonResponse({ error: "マスター権限が必要です" }, 403));
+      }
+      return corsResponse(request, jsonResponse(await listKeraNotify(env)));
     }
 
     // エディター権限 API
@@ -4457,6 +4486,173 @@ function jsonResponse(obj, status = 200) {
     status,
     headers: { "Content-Type": "application/json; charset=utf-8" }
   });
+}
+
+/* =========================================================
+   気良歌舞伎 案内方法の登録（KV: kera_notify:*）
+   ポストカードQR・芳名帳QR・LINE から集約する
+========================================================= */
+
+// ポストカードQRのスキャン数を日別に数える（アナリティクス代わり）
+async function bumpPcVisit(env, ctx) {
+  const day = new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10); // JST
+  const key = `pc_visit:${day}`;
+  const inc = async () => {
+    const cur = parseInt((await env.CHAT_HISTORY.get(key)) || "0", 10) || 0;
+    // 90日で自然に消える
+    await env.CHAT_HISTORY.put(key, String(cur + 1), { expirationTtl: 60 * 60 * 24 * 90 });
+  };
+  if (ctx && ctx.waitUntil) ctx.waitUntil(inc()); else await inc();
+}
+
+const KERA_NOTIFY_PREFIX = "kera_notify:";
+
+// 登録APIのレート制限（KV: kera_reg:{時}:{IPのハッシュ}）
+// 認証なし・CORS開放のうえ1回ごとにメールを送るので、無制限だと
+// 受信箱とKVの書き込み枠を潰される。IPは生で持たずハッシュで保存する
+async function checkKeraNotifyRate(request, env) {
+  try {
+    const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+    const hour = Math.floor(Date.now() / 3600000);
+    const key = `kera_reg:${hour}:${await sha1Hex(ip)}`;
+    const count = parseInt(await env.CHAT_HISTORY.get(key) || "0", 10) || 0;
+    if (count >= 5) return false;
+    await env.CHAT_HISTORY.put(key, String(count + 1), { expirationTtl: 7200 });
+    return true;
+  } catch {
+    return true; // KVエラーで登録を止めない
+  }
+}
+
+async function registerKeraNotify(request, env, ctx) {
+  if (!(await checkKeraNotifyRate(request, env))) {
+    return jsonResponse({ ok: false, error: "しばらく時間をおいてからお試しください。" }, 429);
+  }
+  let body;
+  try {
+    body = await request.json();
+  } catch (e) {
+    return jsonResponse({ ok: false, error: "リクエストの形式が正しくありません。" }, 400);
+  }
+
+  // 制御文字（改行含む）を落とす。メール件名やKVキーに混入させない
+  const clip = (v, n) => String(v ?? "").replace(/\p{Cc}/gu, " ").trim().slice(0, n);
+  const name = clip(body.name, 60);
+  const email = clip(body.email, 200).toLowerCase();
+  const channel = ["email", "postal", "postal_stop"].includes(body.channel) ? body.channel : "email";
+  // 郵送の新規申し込みは常に「継続」
+  const postal = channel === "postal" ? "keep" : (body.postal === "keep" ? "keep" : "stop");
+  const source = clip(body.source, 40) || "web";
+  const zip = clip(body.zip, 8);
+  const address = clip(body.address, 200);
+
+  if (!name) return jsonResponse({ ok: false, error: "お名前をご記入ください。" }, 400);
+  if (channel === "email") {
+    if (!email) return jsonResponse({ ok: false, error: "メールアドレスをご記入ください。" }, 400);
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      return jsonResponse({ ok: false, error: "メールアドレスをご確認ください。" }, 400);
+    }
+  }
+  if (channel === "postal") {
+    if (!/^\d{3}-?\d{4}$/.test(zip)) {
+      return jsonResponse({ ok: false, error: "郵便番号を7桁でご記入ください。" }, 400);
+    }
+    if (!address) return jsonResponse({ ok: false, error: "ご住所をご記入ください。" }, 400);
+  }
+
+  // 同じメールアドレスの二重登録は上書き（キーに正規化した値を使う）
+  const id = channel === "email" && email
+    ? `mail_${await sha1Hex(email)}`
+    : channel === "postal"
+      ? `postal_${await sha1Hex(name + "|" + zip + "|" + address)}`
+      : `${channel}_${await sha1Hex(name + "|" + source)}`;
+
+  const record = {
+    id, channel, name, email: channel === "email" ? email : "",
+    zip, address,
+    postal, source,
+    created_at: new Date().toISOString(),
+  };
+
+  try {
+    const existing = await env.CHAT_HISTORY.get(KERA_NOTIFY_PREFIX + id, "json");
+    if (existing?.created_at) record.created_at = existing.created_at;
+    record.updated_at = new Date().toISOString();
+    await env.CHAT_HISTORY.put(KERA_NOTIFY_PREFIX + id, JSON.stringify(record));
+  } catch (e) {
+    console.error("kera_notify put error:", e);
+    return jsonResponse({ ok: false, error: "保存できませんでした。時間をおいてお試しください。" }, 500);
+  }
+
+  // 座への通知メール（任意・失敗しても登録は成立させる）
+  if (env.RESEND_API_KEY && ctx?.waitUntil) {
+    const label = channel === "postal_stop" ? "郵送停止のお申し出"
+      : channel === "postal" ? "はがき送付のお申し込み"
+      : "メール案内の登録";
+    ctx.waitUntil(
+      fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${env.RESEND_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: "onboarding@resend.dev",
+          to: ["kerakabuki@gmail.com"],
+          subject: `【気良歌舞伎】${label} — ${name} 様`,
+          html: `
+            <h2>${label}</h2>
+            <table style="border-collapse:collapse;font-size:14px;">
+              <tr><td style="padding:4px 12px 4px 0;color:#666;">お名前</td><td><strong>${escapeHtml(name)}</strong></td></tr>
+              <tr><td style="padding:4px 12px 4px 0;color:#666;">メール</td><td>${escapeHtml(record.email) || "（なし）"}</td></tr>
+              <tr><td style="padding:4px 12px 4px 0;color:#666;">郵便番号</td><td>${escapeHtml(zip) || "（なし）"}</td></tr>
+              <tr><td style="padding:4px 12px 4px 0;color:#666;">住所</td><td>${escapeHtml(address) || "（なし）"}</td></tr>
+              <tr><td style="padding:4px 12px 4px 0;color:#666;">郵送</td><td>${postal === "keep" ? "今後も希望" : "停止を希望"}</td></tr>
+              <tr><td style="padding:4px 12px 4px 0;color:#666;">経路</td><td>${escapeHtml(source)}</td></tr>
+              <tr><td style="padding:4px 12px 4px 0;color:#666;">日時</td><td>${new Date().toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" })}</td></tr>
+            </table>
+          `,
+        }),
+      }).then(r => r.json()).then(j => console.log("Resend kera_notify:", JSON.stringify(j)))
+        .catch(e => console.error("Resend kera_notify error:", e))
+    );
+  }
+
+  return jsonResponse({ ok: true });
+}
+
+async function listKeraNotify(env) {
+  const out = [];
+  let cursor;
+  do {
+    const res = await env.CHAT_HISTORY.list({ prefix: KERA_NOTIFY_PREFIX, cursor });
+    for (const k of res.keys) {
+      const rec = await env.CHAT_HISTORY.get(k.name, "json");
+      if (rec) out.push(rec);
+    }
+    cursor = res.list_complete ? null : res.cursor;
+  } while (cursor);
+  out.sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
+
+  // ポストカードQRの訪問数（直近30日）
+  const visits = {};
+  const vres = await env.CHAT_HISTORY.list({ prefix: "pc_visit:" });
+  for (const k of vres.keys) {
+    visits[k.name.replace("pc_visit:", "")] = parseInt((await env.CHAT_HISTORY.get(k.name)) || "0", 10) || 0;
+  }
+  return { count: out.length, records: out, pcVisits: visits };
+}
+
+// LINEの表示名を取得する（名前の入力を省くため）
+async function sha1Hex(str) {
+  const buf = await crypto.subtle.digest("SHA-1", new TextEncoder().encode(str));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("").slice(0, 16);
+}
+
+function escapeHtml(s) {
+  return String(s ?? "").replace(/[&<>"']/g, c => (
+    { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
+  ));
 }
 
 /* =========================================================
