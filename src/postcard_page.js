@@ -125,6 +125,10 @@ export function postcardPageHTML() {
   <p class="pc-note pc-reveal">
     <strong>席は自由席です。</strong>良いお席をご希望の方は、17:00の開場に合わせてお越しください。
   </p>
+  <a href="/kerakabuki/kaisetsu" class="pc-alt-link pc-reveal" style="margin-top:1.1rem;">
+    <span>曽根崎心中の解説を読む（あらすじ・見どころ）</span>
+    <span class="pc-alt-arrow">→</span>
+  </a>
 </section>
 
 <!-- ═══════ ② お帰りの計画 ═══════ -->
@@ -147,7 +151,7 @@ export function postcardPageHTML() {
   <h3 class="pc-h3 pc-reveal">ゆっくりされたい方へ（宿泊）</h3>
   <p class="pc-dim pc-reveal" style="margin-bottom:0.8rem;font-size:0.86rem;">
     <strong style="color:#e8c96a;">気良地区の宿は小規模で、9月第4土曜は白山神社の祭礼とも重なります。</strong>
-    満室のことが多いため、お早めにお問い合わせいただくか、部屋数に余裕のある郡上八幡エリアもあわせてご検討ください。
+    満室のことが多いため、部屋数に余裕のある郡上八幡エリアもあわせてご検討ください。宿の連絡先は「じゃらん」「楽天トラベル」などでご確認いただけます。
   </p>
   <div class="pc-stays">${stayCards}</div>
 
@@ -172,7 +176,7 @@ export function postcardPageHTML() {
       <h3 class="pc-card-title">🚗 車でお越しの方</h3>
       <ul>
         <li>東海北陸自動車道 <strong>郡上八幡IC</strong> から国道472号経由で<strong>約30分</strong></li>
-        <li>カーナビは <strong>「明宝歴史民俗資料館」</strong> を目的地に設定してください</li>
+        <li>カーナビは住所 <strong>「明宝気良154」</strong> または隣接する <strong>「明宝歴史民俗資料館」</strong> を目的地に設定してください</li>
         <li><strong>駐車場は無料</strong>です（台数に限りがあります）</li>
       </ul>
     </div>
@@ -218,10 +222,6 @@ export function postcardPageHTML() {
 
   <a href="/kerakabuki/annai" class="pc-alt-link pc-reveal">
     <span>メール・郵送をご希望の方はこちら</span>
-    <span class="pc-alt-arrow">→</span>
-  </a>
-  <a href="/kerakabuki/kaisetsu" class="pc-alt-link pc-reveal" style="margin-top:0.6rem;">
-    <span>曽根崎心中の解説を読む（あらすじ・見どころ）</span>
     <span class="pc-alt-arrow">→</span>
   </a>
   <p class="pc-dim pc-reveal" style="font-size:0.8rem;margin-top:0.7rem;">
