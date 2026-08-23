@@ -6,7 +6,8 @@
 // ダークテーマ・CSSプレフィックス: pc-
 // =========================================================
 
-const LINE_ADD_URL = "https://line.me/R/ti/p/@117oizby";
+// トーク画面を開き、入力欄に「はがき」を自動で入れる。利用者は送信を押すだけ
+const LINE_ADD_URL = "https://line.me/R/oaMessage/@117oizby/?" + encodeURIComponent("はがき");
 
 export function postcardPageHTML() {
 
@@ -211,7 +212,7 @@ export function postcardPageHTML() {
     <span class="pc-line-icon">💬</span>
     <span class="pc-line-text">
       <strong>LINEで受け取る</strong>
-      <small>タップして友だち追加 → 「はがき」と送信</small>
+      <small>タップ → 送信を押すだけ。入力は要りません</small>
     </span>
   </a>
 

@@ -4601,6 +4601,24 @@ async function listKeraNotify(env) {
   return { count: out.length, records: out, pcVisits: visits };
 }
 
+// LINEの表示名を取得する（名前の入力を省くため）
+async function fetchLineDisplayName(env, userId) {
+  if (!userId) return "";
+  try {
+    const token = getLineChannelAccessToken(env);
+    if (!token) return "";
+    const res = await fetch(`https://api.line.me/v2/bot/profile/${encodeURIComponent(userId)}`, {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+    if (!res.ok) return "";
+    const j = await res.json();
+    return String(j.displayName || "").slice(0, 60);
+  } catch (e) {
+    console.error("fetchLineDisplayName error:", e);
+    return "";
+  }
+}
+
 // LINE から届いた登録を、Webフォームと同じ形で保存する
 async function saveKeraLineOptin(env, { sourceKey, userId, name, postal, source }) {
   try {
@@ -4679,6 +4697,41 @@ async function handleEvent(event, env, ctx) {
         const log = await loadLog(env, sourceKey);
         const qst = await loadQuizState(env, userId || sourceKey);
         await respondLineMessages(env, replyToken, destId, [myPageFlex(log, qst)]);
+        return;
+      }
+
+      // step=kera_* : 気良歌舞伎の公演案内オプトイン（入力ゼロで完了させる）
+      if (p.step === "kera_ok" || p.step === "kera_rename" || p.step === "kera_cancel" || p.step === "kera_mail") {
+        const keraOptinKey = `kera_optin:${sourceKey}`;
+        if (p.step === "kera_cancel") {
+          await env.CHAT_HISTORY.delete(keraOptinKey);
+          await respondLine(env, replyToken, destId, "承知しました。気が変わったらいつでも「はがき」と送ってください。");
+          return;
+        }
+        if (p.step === "kera_rename") {
+          await env.CHAT_HISTORY.put(keraOptinKey, "await_name", { expirationTtl: 600 });
+          await respondLine(env, replyToken, destId, "はがきの宛名になっているお名前を送ってください。\n（例：気良 太郎）");
+          return;
+        }
+        if (p.step === "kera_ok") {
+          const nm = (await fetchLineDisplayName(env, userId)) || "";
+          await saveKeraLineOptin(env, { sourceKey, userId, name: nm, postal: "keep", source: "line_postcard" });
+          await respondLineMessages(env, replyToken, destId, [{
+            type: "text",
+            text: `${nm ? nm + " 様、" : ""}登録しました。\n次回からの公演案内はLINEでお届けします。\n\nはがきの郵送はどうしますか？`,
+            quickReply: { items: [
+              { type: "action", action: { type: "postback", label: "郵送も続ける", data: "step=kera_mail&v=keep", displayText: "郵送も続ける" } },
+              { type: "action", action: { type: "postback", label: "LINEだけでよい", data: "step=kera_mail&v=stop", displayText: "LINEだけでよい" } },
+            ]}
+          }]);
+          return;
+        }
+        // step=kera_mail
+        const keep = p.v !== "stop";
+        await saveKeraLineOptin(env, { sourceKey, userId, name: "", postal: keep ? "keep" : "stop", source: "line_postcard" });
+        await respondLine(env, replyToken, destId, keep
+          ? "承知しました。はがきも今まで通りお届けします。\nありがとうございました。"
+          : "承知しました。次回からの郵送を止めるよう手配します。\nありがとうございました。");
         return;
       }
 
@@ -4959,10 +5012,19 @@ async function handleEvent(event, env, ctx) {
 
     // ★ 公演案内のLINE登録（はがき・芳名帳のQRから来た人）
     const optinKey = `kera_optin:${sourceKey}`;
-    if (/^(はがき|ハガキ|葉書)$/.test(text)) {
-      await env.CHAT_HISTORY.put(optinKey, "await_name", { expirationTtl: 600 });
-      await respondLine(env, replyToken, destId,
-        "ありがとうございます！\n来年からの公演案内を、LINEでお届けします。\n\nはがきの宛名になっている**お名前**を送ってください。\n（例：気良 太郎）".replace(/\*\*/g, ""));
+    if (/^(はがき|ハガキ|葉書|公演案内)$/.test(text)) {
+      const profName = await fetchLineDisplayName(env, userId);
+      await respondLineMessages(env, replyToken, destId, [{
+        type: "text",
+        text: profName
+          ? `気良歌舞伎です。\n公演案内をLINEでお届けしましょうか？\n\nはがきの名簿と照合したいので、お名前を確認させてください。\n\n「${profName}」でよろしいですか？`
+          : "気良歌舞伎です。\n公演案内をLINEでお届けしましょうか？",
+        quickReply: { items: [
+          ...(profName ? [{ type: "action", action: { type: "postback", label: "はい、これで登録", data: "step=kera_ok", displayText: "はい" } }] : []),
+          { type: "action", action: { type: "postback", label: profName ? "別の名前にする" : "名前を伝えて登録", data: "step=kera_rename", displayText: "名前を入力する" } },
+          { type: "action", action: { type: "postback", label: "やめておく", data: "step=kera_cancel", displayText: "やめておく" } },
+        ]}
+      }]);
       return;
     }
     if (/^(郵送停止|郵送をとめる|郵送を止める)$/.test(text)) {

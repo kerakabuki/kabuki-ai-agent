@@ -6,7 +6,8 @@
 // スタンドアロン HTML・ダークテーマ・CSSプレフィックス: an-
 // =========================================================
 
-const LINE_ADD_URL = "https://line.me/R/ti/p/@117oizby";
+// トーク画面を開き、入力欄に「はがき」を自動で入れる。利用者は送信を押すだけ
+const LINE_ADD_URL = "https://line.me/R/oaMessage/@117oizby/?" + encodeURIComponent("はがき");
 
 export function annaiPageHTML() {
   return `<!DOCTYPE html>
@@ -50,17 +51,17 @@ export function annaiPageHTML() {
       <h2 class="an-opt-title">LINEで受け取る</h2>
     </div>
     <p class="an-opt-desc">
-      友だち追加して <strong>「はがき」</strong> と送るだけ。<br>
-      メールアドレスの入力は要りません。
+      ボタンを押すと、メッセージが入力された状態でトークが開きます。<br>
+      <strong>送信を押すだけ</strong>。文字の入力は要りません。
     </p>
     <a href="${LINE_ADD_URL}" target="_blank" rel="noopener" class="an-line-btn">
       <span class="an-line-icon">💬</span>
-      <span>友だち追加する</span>
+      <span>LINEで登録する</span>
     </a>
     <ol class="an-steps">
-      <li>上のボタンで友だち追加</li>
-      <li>トーク画面で <b>「はがき」</b> と送信</li>
-      <li>お名前を送ると登録完了</li>
+      <li>上のボタンを押す（未追加の方は友だち追加）</li>
+      <li>入力済みのメッセージを <b>そのまま送信</b></li>
+      <li>表示されたボタンを押して完了</li>
     </ol>
   </section>
 
