@@ -232,7 +232,7 @@ export function postcardPageHTML() {
 <!-- ═══════ FOOTER ═══════ -->
 <footer class="pc-footer">
   <p class="pc-footer-name">気良歌舞伎一座</p>
-  <p class="pc-footer-addr">〒501-4303 岐阜県郡上市明宝気良154</p>
+  <p class="pc-footer-addr">事務局 〒501-4303 岐阜県郡上市明宝気良2264</p>
   <nav class="pc-footer-links">
     <a href="/kerakabuki">公式サイト</a>
     <a href="/kerakabuki/guide">観劇ガイド</a>

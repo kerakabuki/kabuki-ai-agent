@@ -140,7 +140,7 @@ export function annaiPageHTML() {
 
 <footer class="an-footer">
   <p class="an-footer-name">気良歌舞伎一座</p>
-  <p class="an-footer-addr">〒501-4303 岐阜県郡上市明宝気良154</p>
+  <p class="an-footer-addr">事務局 〒501-4303 岐阜県郡上市明宝気良2264</p>
   <nav class="an-footer-links">
     <a href="/kerakabuki">公式サイト</a>
     <a href="/kerakabuki/guide">はじめての方へ</a>
