@@ -127,7 +127,6 @@ import { pressPageHTML } from "./src/press_page.js";
 import { keraGuidePageHTML } from "./src/kera_guide_page.js";
 import { postcardPageHTML } from "./src/postcard_page.js";
 import { annaiPageHTML } from "./src/annai_page.js";
-import { kaisetsuMessages, isKaisetsuRequest } from "./src/kera_kaisetsu.js";
 import { kaisetsuPageHTML } from "./src/kaisetsu_page.js";
 import { keraArchivePageHTML } from "./src/kera_archive_page.js";
 import { mypagePageHTML, recoProfilePageHTML } from "./src/mypage_page.js";
@@ -4519,7 +4518,7 @@ async function registerKeraNotify(request, env, ctx) {
   const clip = (v, n) => String(v ?? "").trim().slice(0, n);
   const name = clip(body.name, 60);
   const email = clip(body.email, 200).toLowerCase();
-  const channel = ["email", "postal", "postal_stop", "line"].includes(body.channel) ? body.channel : "email";
+  const channel = ["email", "postal", "postal_stop"].includes(body.channel) ? body.channel : "email";
   // 郵送の新規申し込みは常に「継続」
   const postal = channel === "postal" ? "keep" : (body.postal === "keep" ? "keep" : "stop");
   const source = clip(body.source, 40) || "web";
@@ -4624,46 +4623,6 @@ async function listKeraNotify(env) {
 }
 
 // LINEの表示名を取得する（名前の入力を省くため）
-async function fetchLineDisplayName(env, userId) {
-  if (!userId) return "";
-  try {
-    const token = getLineChannelAccessToken(env);
-    if (!token) return "";
-    const res = await fetch(`https://api.line.me/v2/bot/profile/${encodeURIComponent(userId)}`, {
-      headers: { "Authorization": `Bearer ${token}` }
-    });
-    if (!res.ok) return "";
-    const j = await res.json();
-    return String(j.displayName || "").slice(0, 60);
-  } catch (e) {
-    console.error("fetchLineDisplayName error:", e);
-    return "";
-  }
-}
-
-// LINE から届いた登録を、Webフォームと同じ形で保存する
-async function saveKeraLineOptin(env, { sourceKey, userId, name, postal, source }) {
-  try {
-    const id = `line_${await sha1Hex(userId || sourceKey)}`;
-    const key = KERA_NOTIFY_PREFIX + id;
-    const prev = (await env.CHAT_HISTORY.get(key, "json")) || {};
-    const record = {
-      id,
-      channel: "line",
-      name: (name || prev.name || "").slice(0, 60),
-      email: "",
-      line_user_id: userId || "",
-      postal: postal || prev.postal || "keep",
-      source: source || "line",
-      created_at: prev.created_at || new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    };
-    await env.CHAT_HISTORY.put(key, JSON.stringify(record));
-  } catch (e) {
-    console.error("saveKeraLineOptin error:", e);
-  }
-}
-
 async function sha1Hex(str) {
   const buf = await crypto.subtle.digest("SHA-1", new TextEncoder().encode(str));
   return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("").slice(0, 16);
@@ -4719,55 +4678,6 @@ async function handleEvent(event, env, ctx) {
         const log = await loadLog(env, sourceKey);
         const qst = await loadQuizState(env, userId || sourceKey);
         await respondLineMessages(env, replyToken, destId, [myPageFlex(log, qst)]);
-        return;
-      }
-
-      // step=kera_* : 気良歌舞伎の公演案内オプトイン（入力ゼロで完了させる）
-      if (p.step === "kera_from_kaisetsu") {
-        const kName = await fetchLineDisplayName(env, userId);
-        await respondLineMessages(env, replyToken, destId, [{
-          type: "text",
-          text: kName
-            ? `ありがとうございます。\n来年の公演案内をLINEでお届けします。\n\nはがきの名簿と照合したいので、お名前を確認させてください。\n「${kName}」でよろしいですか？`
-            : "ありがとうございます。\nはがきの宛名になっているお名前を送ってください。",
-          quickReply: { items: [
-            ...(kName ? [{ type: "action", action: { type: "postback", label: "はい、これで登録", data: "step=kera_ok", displayText: "はい" } }] : []),
-            { type: "action", action: { type: "postback", label: "別の名前にする", data: "step=kera_rename", displayText: "名前を入力する" } },
-          ]}
-        }]);
-        return;
-      }
-      if (p.step === "kera_ok" || p.step === "kera_rename" || p.step === "kera_cancel" || p.step === "kera_mail") {
-        const keraOptinKey = `kera_optin:${sourceKey}`;
-        if (p.step === "kera_cancel") {
-          await env.CHAT_HISTORY.delete(keraOptinKey);
-          await respondLine(env, replyToken, destId, "承知しました。気が変わったらいつでも「はがき」と送ってください。");
-          return;
-        }
-        if (p.step === "kera_rename") {
-          await env.CHAT_HISTORY.put(keraOptinKey, "await_name", { expirationTtl: 600 });
-          await respondLine(env, replyToken, destId, "はがきの宛名になっているお名前を送ってください。\n（例：気良 太郎）");
-          return;
-        }
-        if (p.step === "kera_ok") {
-          const nm = (await fetchLineDisplayName(env, userId)) || "";
-          await saveKeraLineOptin(env, { sourceKey, userId, name: nm, postal: "keep", source: "line_postcard" });
-          await respondLineMessages(env, replyToken, destId, [{
-            type: "text",
-            text: `${nm ? nm + " 様、" : ""}登録しました。\n次回からの公演案内はLINEでお届けします。\n\nはがきの郵送はどうしますか？`,
-            quickReply: { items: [
-              { type: "action", action: { type: "postback", label: "郵送も続ける", data: "step=kera_mail&v=keep", displayText: "郵送も続ける" } },
-              { type: "action", action: { type: "postback", label: "LINEだけでよい", data: "step=kera_mail&v=stop", displayText: "LINEだけでよい" } },
-            ]}
-          }]);
-          return;
-        }
-        // step=kera_mail
-        const keep = p.v !== "stop";
-        await saveKeraLineOptin(env, { sourceKey, userId, name: "", postal: keep ? "keep" : "stop", source: "line_postcard" });
-        await respondLine(env, replyToken, destId, keep
-          ? "承知しました。はがきも今まで通りお届けします。\nありがとうございました。"
-          : "承知しました。次回からの郵送を止めるよう手配します。\nありがとうございました。");
         return;
       }
 
@@ -5045,44 +4955,6 @@ async function handleEvent(event, env, ctx) {
 
     const text = (event.message?.text || "").trim();
     console.log("IN:", { sourceKey, userId, destId, text, mode });
-
-    // ★ 当日の演目解説（AIを通さない固定応答。Geminiのレート制限を受けない）
-    if (isKaisetsuRequest(text)) {
-      await respondLineMessages(env, replyToken, destId, kaisetsuMessages(env._origin));
-      return;
-    }
-
-    // ★ 公演案内のLINE登録（はがき・芳名帳のQRから来た人）
-    const optinKey = `kera_optin:${sourceKey}`;
-    if (/^(はがき|ハガキ|葉書|公演案内)$/.test(text)) {
-      const profName = await fetchLineDisplayName(env, userId);
-      await respondLineMessages(env, replyToken, destId, [{
-        type: "text",
-        text: profName
-          ? `気良歌舞伎です。\n公演案内をLINEでお届けしましょうか？\n\nはがきの名簿と照合したいので、お名前を確認させてください。\n\n「${profName}」でよろしいですか？`
-          : "気良歌舞伎です。\n公演案内をLINEでお届けしましょうか？",
-        quickReply: { items: [
-          ...(profName ? [{ type: "action", action: { type: "postback", label: "はい、これで登録", data: "step=kera_ok", displayText: "はい" } }] : []),
-          { type: "action", action: { type: "postback", label: profName ? "別の名前にする" : "名前を伝えて登録", data: "step=kera_rename", displayText: "名前を入力する" } },
-          { type: "action", action: { type: "postback", label: "やめておく", data: "step=kera_cancel", displayText: "やめておく" } },
-        ]}
-      }]);
-      return;
-    }
-    if (/^(郵送停止|郵送をとめる|郵送を止める)$/.test(text)) {
-      await saveKeraLineOptin(env, { sourceKey, userId, name: "", postal: "stop", source: "line_stop" });
-      await respondLine(env, replyToken, destId,
-        "承知しました。次回からの郵送を止めるよう手配します。\nお名前がまだの場合は「はがき」と送っていただけると、名簿と照合できます。");
-      return;
-    }
-    if ((await env.CHAT_HISTORY.get(optinKey)) === "await_name") {
-      await env.CHAT_HISTORY.delete(optinKey);
-      const optinName = text.slice(0, 60);
-      await saveKeraLineOptin(env, { sourceKey, userId, name: optinName, postal: "keep", source: "line_postcard" });
-      await respondLine(env, replyToken, destId,
-        `${optinName} 様、登録しました。\n来年の公演案内はLINEでお届けします。\n\n・はがきの郵送も続けてよろしければ、このままで結構です\n・郵送は不要でしたら「郵送停止」と送ってください\n\n今年の公演は9月26日（土）17:00開場・18:00開演です。お待ちしています。`);
-      return;
-    }
 
     // ★ BASE連携コマンド（LINEグループ専用）
     const baseLinkMatch = text.match(/^BASE連携\s+([a-zA-Z0-9_-]+)$/);

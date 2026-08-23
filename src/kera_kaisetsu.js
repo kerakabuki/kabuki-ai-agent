@@ -1,8 +1,7 @@
 // src/kera_kaisetsu.js
 // =========================================================
 // 気良歌舞伎 当日の演目解説（データ本体）
-// Webページ（/kerakabuki/kaisetsu）と LINE の両方がここを参照する。
-// 解説の本文はWebが担当し、LINEは要約とリンクだけを返す。
+// Webページ（/kerakabuki/kaisetsu）が参照する。
 //
 // 演目は毎年変わる。差し替えるのはこのファイルだけでよい。
 // =========================================================
@@ -80,36 +79,3 @@ export const KAISETSU = {
     ],
   },
 };
-
-// LINEは要約とリンクだけを返す（本文はWebに一本化する）
-export function kaisetsuMessages(origin) {
-  const url = `${origin || "https://kabukiplus.com"}/kerakabuki/kaisetsu`;
-  return [{
-    type: "text",
-    text:
-`【${KAISETSU.title}】${KAISETSU.reading}
-原作：${KAISETSU.author}　全三場
-
-一、生玉社前ノ場
-二、天満屋ノ場　★最大の見どころ
-三、天神森ノ場
-
-醤油屋の手代・徳兵衛と、遊女・お初。二人が死を選ぶまでの一日を描きます。
-
-あらすじ・見どころ・おひねりの投げ方は、こちらにまとめました。
-${url}
-
-上演中はどうぞ舞台をお楽しみください。幕間にまた開けます。`,
-    quickReply: {
-      items: [
-        { type: "action", action: { type: "uri", label: "解説を読む", uri: url } },
-        { type: "action", action: { type: "postback", label: "来年の案内も受け取る", data: "step=kera_from_kaisetsu", displayText: "来年の案内も受け取りたい" } },
-        { type: "action", action: { type: "uri", label: "アクセス・宿泊", uri: `${origin || "https://kabukiplus.com"}/kerakabuki/pc` } },
-      ],
-    },
-  }];
-}
-
-export function isKaisetsuRequest(text) {
-  return /^(解説|かいせつ|あらすじ|演目|見どころ|みどころ|曽根崎心中|そねざきしんじゅう|今日の演目)$/.test(text);
-}

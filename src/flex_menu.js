@@ -42,7 +42,6 @@ export function mainMenuMessage(env, url) {
       { type: "action", action: { type: "message", label: "用語辞典", text: "用語辞典" } },
       { type: "action", action: { type: "message", label: "ニュース", text: "ニュース" } },
       { type: "action", action: { type: "message", label: "おすすめ", text: "おすすめ教えて" } },
-      { type: "action", action: { type: "message", label: "気良歌舞伎の案内", text: "公演案内" } },
       { type: "action", action: { type: "uri", label: "KABUKI PLUS+", uri: `${origin}/kabuki/navi` } },
     ]}
   };

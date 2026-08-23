@@ -6,9 +6,6 @@
 // スタンドアロン HTML・ダークテーマ・CSSプレフィックス: an-
 // =========================================================
 
-// トーク画面を開き、入力欄に「はがき」を自動で入れる。利用者は送信を押すだけ
-const LINE_ADD_URL = "https://line.me/R/oaMessage/@117oizby/?" + encodeURIComponent("はがき");
-
 export function annaiPageHTML() {
   return `<!DOCTYPE html>
 <html lang="ja">
@@ -16,9 +13,9 @@ export function annaiPageHTML() {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>公演案内の受け取り方法 — 気良歌舞伎</title>
-<meta name="description" content="気良歌舞伎の公演案内を、LINE・メール・郵送からお選びいただけます。登録・変更・停止はこのページから。">
+<meta name="description" content="気良歌舞伎の公演案内を、メール・郵送からお選びいただけます。登録・変更・停止はこのページから。">
 <meta property="og:title" content="公演案内の受け取り方法 — 気良歌舞伎">
-<meta property="og:description" content="LINE・メール・郵送からお選びいただけます。">
+<meta property="og:description" content="メール・郵送からお選びいただけます。">
 <meta property="og:image" content="https://kabukiplus.com/assets/ogp/ogp_kabukiplus_top.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="気良歌舞伎">
@@ -44,31 +41,9 @@ export function annaiPageHTML() {
 
 <main class="an-main">
 
-  <!-- ① LINE ── いちばん簡単 -->
-  <section class="an-opt an-opt-line">
-    <div class="an-opt-head">
-      <span class="an-badge">おすすめ</span>
-      <h2 class="an-opt-title">LINEで受け取る</h2>
-    </div>
-    <p class="an-opt-desc">
-      ボタンを押すと、メッセージが入力された状態でトークが開きます。<br>
-      <strong>送信を押すだけ</strong>。文字の入力は要りません。
-    </p>
-    <a href="${LINE_ADD_URL}" target="_blank" rel="noopener" class="an-line-btn">
-      <span class="an-line-icon">💬</span>
-      <span>LINEで登録する</span>
-    </a>
-    <ol class="an-steps">
-      <li>上のボタンを押す（未追加の方は友だち追加）</li>
-      <li>入力済みのメッセージを <b>そのまま送信</b></li>
-      <li>表示されたボタンを押して完了</li>
-    </ol>
-  </section>
-
-  <!-- ② メール -->
+  <!-- ① メール -->
   <section class="an-opt">
     <div class="an-opt-head"><h2 class="an-opt-title">メールで受け取る</h2></div>
-    <p class="an-opt-desc">LINEをお使いでない方はこちら。</p>
     <form id="an-mail" class="an-form" novalidate>
       <label class="an-field">
         <span>お名前</span>
@@ -88,7 +63,7 @@ export function annaiPageHTML() {
     </form>
   </section>
 
-  <!-- ③ 郵送 -->
+  <!-- ② 郵送 -->
   <section class="an-opt">
     <div class="an-opt-head"><h2 class="an-opt-title">郵送で受け取る</h2></div>
     <p class="an-opt-desc">
@@ -132,7 +107,6 @@ export function annaiPageHTML() {
       <li>いただいたお名前・ご住所・連絡先は、<strong>気良歌舞伎の公演案内にのみ</strong>使用します</li>
       <li>他の目的への利用や、第三者への提供はいたしません</li>
       <li>配信の停止・変更は、このページからいつでも承ります</li>
-      <li>LINEは、トーク画面で「郵送停止」と送っていただければ郵送のみ止められます</li>
     </ul>
   </section>
 
@@ -236,27 +210,11 @@ a { color: inherit; }
   background: rgba(18,18,28,0.75); border: 1px solid rgba(197,162,85,0.16);
   border-radius: 12px; padding: 1.3rem 1.3rem 1.4rem;
 }
-.an-opt-line { border-color: rgba(6,199,85,0.45); background: rgba(6,199,85,0.05); }
 .an-opt-head { display: flex; align-items: center; gap: 0.7rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
 .an-opt-title { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.06em; }
-.an-badge {
-  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em;
-  background: #06C755; color: #05240f; border-radius: 3px; padding: 0.15rem 0.5rem;
-}
 .an-opt-desc { font-size: 0.9rem; color: #b8a88a; margin-bottom: 1rem; }
 .an-opt-desc strong, .an-lead strong { color: #e8c96a; }
 
-.an-line-btn {
-  display: flex; align-items: center; justify-content: center; gap: 0.6rem;
-  background: #06C755; color: #fff; text-decoration: none; font-weight: 700;
-  border-radius: 10px; padding: 0.95rem 1rem; font-size: 1.02rem;
-  box-shadow: 0 4px 18px rgba(6,199,85,0.22);
-}
-.an-line-icon { font-size: 1.25rem; }
-.an-steps { margin: 1rem 0 0 1.2rem; display: grid; gap: 0.3rem; }
-.an-steps li { font-size: 0.86rem; color: #a99c86; }
-.an-steps li::marker { color: #06C755; font-weight: 700; }
-.an-steps b { color: #e8e4dc; }
 
 .an-details { border-top: 1px solid rgba(197,162,85,0.14); margin-top: 0.9rem; }
 .an-details summary {
