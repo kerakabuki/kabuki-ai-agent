@@ -220,6 +220,10 @@ export function postcardPageHTML() {
     <span>メール・郵送をご希望の方はこちら</span>
     <span class="pc-alt-arrow">→</span>
   </a>
+  <a href="/kerakabuki/kaisetsu" class="pc-alt-link pc-reveal" style="margin-top:0.6rem;">
+    <span>曽根崎心中の解説を読む（あらすじ・見どころ）</span>
+    <span class="pc-alt-arrow">→</span>
+  </a>
   <p class="pc-dim pc-reveal" style="font-size:0.8rem;margin-top:0.7rem;">
     いただいた連絡先は、気良歌舞伎の公演案内にのみ使用します。停止・変更はいつでも承ります。
   </p>
