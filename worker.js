@@ -4507,7 +4507,27 @@ async function bumpPcVisit(env, ctx) {
 
 const KERA_NOTIFY_PREFIX = "kera_notify:";
 
+// 登録APIのレート制限（KV: kera_reg:{時}:{IPのハッシュ}）
+// 認証なし・CORS開放のうえ1回ごとにメールを送るので、無制限だと
+// 受信箱とKVの書き込み枠を潰される。IPは生で持たずハッシュで保存する
+async function checkKeraNotifyRate(request, env) {
+  try {
+    const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+    const hour = Math.floor(Date.now() / 3600000);
+    const key = `kera_reg:${hour}:${await sha1Hex(ip)}`;
+    const count = parseInt(await env.CHAT_HISTORY.get(key) || "0", 10) || 0;
+    if (count >= 5) return false;
+    await env.CHAT_HISTORY.put(key, String(count + 1), { expirationTtl: 7200 });
+    return true;
+  } catch {
+    return true; // KVエラーで登録を止めない
+  }
+}
+
 async function registerKeraNotify(request, env, ctx) {
+  if (!(await checkKeraNotifyRate(request, env))) {
+    return jsonResponse({ ok: false, error: "しばらく時間をおいてからお試しください。" }, 429);
+  }
   let body;
   try {
     body = await request.json();
@@ -4515,7 +4535,8 @@ async function registerKeraNotify(request, env, ctx) {
     return jsonResponse({ ok: false, error: "リクエストの形式が正しくありません。" }, 400);
   }
 
-  const clip = (v, n) => String(v ?? "").trim().slice(0, n);
+  // 制御文字（改行含む）を落とす。メール件名やKVキーに混入させない
+  const clip = (v, n) => String(v ?? "").replace(/\p{Cc}/gu, " ").trim().slice(0, n);
   const name = clip(body.name, 60);
   const email = clip(body.email, 200).toLowerCase();
   const channel = ["email", "postal", "postal_stop"].includes(body.channel) ? body.channel : "email";
