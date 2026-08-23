@@ -215,41 +215,13 @@ export function postcardPageHTML() {
     </span>
   </a>
 
-  <details class="pc-optin-alt pc-reveal">
-    <summary>メールで受け取る</summary>
-    <form id="pc-form" class="pc-form" novalidate>
-      <label class="pc-field">
-        <span>お名前</span>
-        <input type="text" name="name" autocomplete="name" placeholder="気良　太郎" required>
-      </label>
-      <label class="pc-field">
-        <span>メールアドレス</span>
-        <input type="email" name="email" autocomplete="email" inputmode="email" placeholder="example@example.com" required>
-      </label>
-      <fieldset class="pc-field pc-radios">
-        <legend>これからの郵送はどうしますか</legend>
-        <label><input type="radio" name="postal" value="keep" checked> 郵送も続けてほしい</label>
-        <label><input type="radio" name="postal" value="stop"> メールだけでよい（郵送を止める）</label>
-      </fieldset>
-      <button type="submit" class="pc-submit">登録する</button>
-      <p class="pc-form-msg" id="pc-msg" role="status"></p>
-      <p class="pc-dim" style="font-size:0.78rem;">
-        いただいた連絡先は、気良歌舞伎の公演案内にのみ使用します。配信停止はいつでも承ります。
-      </p>
-    </form>
-  </details>
-
-  <details class="pc-optin-alt pc-reveal">
-    <summary>郵送を止めてほしい</summary>
-    <form id="pc-stop-form" class="pc-form" novalidate>
-      <label class="pc-field">
-        <span>お名前（はがきの宛名）</span>
-        <input type="text" name="name" autocomplete="name" placeholder="気良　太郎" required>
-      </label>
-      <button type="submit" class="pc-submit pc-submit-quiet">郵送の停止を申し込む</button>
-      <p class="pc-form-msg" id="pc-stop-msg" role="status"></p>
-    </form>
-  </details>
+  <a href="/kerakabuki/annai" class="pc-alt-link pc-reveal">
+    <span>メール・郵送をご希望の方はこちら</span>
+    <span class="pc-alt-arrow">→</span>
+  </a>
+  <p class="pc-dim pc-reveal" style="font-size:0.8rem;margin-top:0.7rem;">
+    いただいた連絡先は、気良歌舞伎の公演案内にのみ使用します。停止・変更はいつでも承ります。
+  </p>
 </section>
 
 <!-- ═══════ FOOTER ═══════ -->
@@ -273,52 +245,6 @@ export function postcardPageHTML() {
   }, { threshold: 0.08, rootMargin: "0px 0px -40px 0px" });
   document.querySelectorAll(".pc-reveal").forEach(function(el){ io.observe(el); });
 
-  // ── フォーム送信 ──
-  function post(form, msgEl, payloadExtra){
-    var fd = new FormData(form);
-    var body = { source: "postcard2026" };
-    fd.forEach(function(v,k){ body[k] = v; });
-    Object.assign(body, payloadExtra || {});
-    msgEl.textContent = "送信中…";
-    msgEl.className = "pc-form-msg";
-    return fetch("/api/kera/notify", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
-    }).then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
-      .then(function(res){
-        if (res.ok && res.j.ok) {
-          msgEl.textContent = "受け付けました。ありがとうございます。";
-          msgEl.className = "pc-form-msg pc-ok";
-          form.querySelector(".pc-submit").disabled = true;
-        } else {
-          msgEl.textContent = (res.j && res.j.error) || "送信できませんでした。時間をおいてお試しください。";
-          msgEl.className = "pc-form-msg pc-ng";
-        }
-      })
-      .catch(function(){
-        msgEl.textContent = "通信に失敗しました。電波の良い場所でお試しください。";
-        msgEl.className = "pc-form-msg pc-ng";
-      });
-  }
-
-  var f1 = document.getElementById("pc-form");
-  if (f1) f1.addEventListener("submit", function(e){
-    e.preventDefault();
-    var name = f1.name.value.trim(), email = f1.email.value.trim();
-    var msg = document.getElementById("pc-msg");
-    if (!name) { msg.textContent = "お名前をご記入ください。"; msg.className = "pc-form-msg pc-ng"; return; }
-    if (!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(email)) { msg.textContent = "メールアドレスをご確認ください。"; msg.className = "pc-form-msg pc-ng"; return; }
-    post(f1, msg, { channel: "email" });
-  });
-
-  var f2 = document.getElementById("pc-stop-form");
-  if (f2) f2.addEventListener("submit", function(e){
-    e.preventDefault();
-    var msg = document.getElementById("pc-stop-msg");
-    if (!f2.name.value.trim()) { msg.textContent = "お名前をご記入ください。"; msg.className = "pc-form-msg pc-ng"; return; }
-    post(f2, msg, { channel: "postal_stop", postal: "stop" });
-  });
 })();
 </script>
 
@@ -472,6 +398,13 @@ img { max-width: 100%; display: block; }
 .pc-line-icon { font-size: 1.5rem; }
 .pc-line-text strong { display: block; font-size: 1.02rem; font-weight: 700; }
 .pc-line-text small { display: block; font-size: 0.78rem; opacity: 0.9; line-height: 1.6; }
+.pc-alt-link {
+  display: flex; align-items: center; justify-content: space-between; gap: 0.8rem;
+  background: rgba(18,18,28,0.7); border: 1px solid rgba(197,162,85,0.3);
+  border-radius: 10px; padding: 0.95rem 1.2rem;
+  color: #e8e4dc; text-decoration: none; font-size: 0.95rem;
+}
+.pc-alt-arrow { color: #c5a255; font-size: 1.1rem; }
 .pc-optin-alt {
   background: rgba(18,18,28,0.7); border: 1px solid rgba(197,162,85,0.16);
   border-radius: 10px; margin-bottom: 0.6rem; overflow: hidden;

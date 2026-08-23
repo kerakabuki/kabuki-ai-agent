@@ -126,6 +126,7 @@ import { keraOfficialPageHTML } from "./src/kera_official_page.js";
 import { pressPageHTML } from "./src/press_page.js";
 import { keraGuidePageHTML } from "./src/kera_guide_page.js";
 import { postcardPageHTML } from "./src/postcard_page.js";
+import { annaiPageHTML } from "./src/annai_page.js";
 import { keraArchivePageHTML } from "./src/kera_archive_page.js";
 import { mypagePageHTML, recoProfilePageHTML } from "./src/mypage_page.js";
 import { naviPageHTML } from "./src/navi_page.js";
@@ -1073,6 +1074,10 @@ ${glossaryI18nPairs.map(g => `  <url>
     if (path === "/kerakabuki/kawaraban" || path === "/jikabuki/gate/kera/kawaraban") return new Response(null, { status: 301, headers: { "Location": "/kerakabuki/press#kawaraban" } });
     if (path === "/kerakabuki/press" || path === "/jikabuki/gate/kera/press") return new Response(pressPageHTML(), { headers: HTML_HEADERS });
     if (path === "/kerakabuki/guide" || path === "/jikabuki/gate/kera/guide") return new Response(keraGuidePageHTML(), { headers: HTML_HEADERS });
+    // 公演案内の受け取り方法（登録専用・恒久ページ）。はがき・芳名帳・受付の共通導線
+    if (path === "/kerakabuki/annai" || path === "/jikabuki/gate/kera/annai") {
+      return new Response(annaiPageHTML(), { headers: HTML_HEADERS });
+    }
     // ポストカードQRの着地ページ（/pc は短縮パス。スキャン数の計測を兼ねる）
     if (path === "/kerakabuki/pc") {
       try { await bumpPcVisit(env, ctx); } catch (e) { console.error("pc visit count:", e); }
