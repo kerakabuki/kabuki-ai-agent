@@ -107,12 +107,6 @@ export function kaisetsuPageHTML() {
     <div class="ks-oh-list">${ohineri}</div>
   </section>
 
-  <section class="ks-cta">
-    <p class="ks-cta-lead">来年の公演案内も、お届けしましょうか。</p>
-    <a href="/kerakabuki/annai" class="ks-cta-btn">案内の受け取り方法を選ぶ</a>
-    <p class="ks-cta-sub">LINE・メール・郵送から選べます。いま決めなくても大丈夫です。</p>
-  </section>
-
 </main>
 
 <footer class="ks-footer">
@@ -250,19 +244,6 @@ a { color: inherit; }
 .ks-oh-item { border-left: 2px solid rgba(150,120,60,0.3); padding-left: 0.9rem; }
 .ks-oh-label { font-size: 0.86rem; font-weight: 700; color: #a98f52; letter-spacing: 0.08em; }
 .ks-oh-text { font-size: 0.9rem; color: #9c9384; line-height: 1.85; }
-
-/* ── CTA ── */
-.ks-cta {
-  border-top: 1px solid rgba(150,120,60,0.16);
-  padding: 2.4rem 0 1rem; text-align: center;
-}
-.ks-cta-lead { font-family: "Noto Serif JP", serif; font-size: 1.02rem; color: #c9c3b8; margin-bottom: 1.1rem; }
-.ks-cta-btn {
-  display: inline-block; text-decoration: none;
-  border: 1px solid rgba(169,143,82,0.6); border-radius: 4px;
-  padding: 0.8rem 1.6rem; color: #d9d2c4; font-size: 0.95rem; letter-spacing: 0.08em;
-}
-.ks-cta-sub { font-size: 0.8rem; color: #6d6252; margin-top: 0.9rem; }
 
 /* ── FOOTER ── */
 .ks-footer { max-width: 620px; margin: 2.5rem auto 0; padding: 1.6rem 1.4rem 0; border-top: 1px solid rgba(150,120,60,0.16); text-align: center; }
