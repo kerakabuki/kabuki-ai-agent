@@ -4519,9 +4519,12 @@ async function registerKeraNotify(request, env, ctx) {
   const clip = (v, n) => String(v ?? "").trim().slice(0, n);
   const name = clip(body.name, 60);
   const email = clip(body.email, 200).toLowerCase();
-  const channel = ["email", "postal_stop", "line"].includes(body.channel) ? body.channel : "email";
-  const postal = body.postal === "keep" ? "keep" : "stop";
+  const channel = ["email", "postal", "postal_stop", "line"].includes(body.channel) ? body.channel : "email";
+  // 郵送の新規申し込みは常に「継続」
+  const postal = channel === "postal" ? "keep" : (body.postal === "keep" ? "keep" : "stop");
   const source = clip(body.source, 40) || "web";
+  const zip = clip(body.zip, 8);
+  const address = clip(body.address, 200);
 
   if (!name) return jsonResponse({ ok: false, error: "お名前をご記入ください。" }, 400);
   if (channel === "email") {
@@ -4530,14 +4533,23 @@ async function registerKeraNotify(request, env, ctx) {
       return jsonResponse({ ok: false, error: "メールアドレスをご確認ください。" }, 400);
     }
   }
+  if (channel === "postal") {
+    if (!/^\d{3}-?\d{4}$/.test(zip)) {
+      return jsonResponse({ ok: false, error: "郵便番号を7桁でご記入ください。" }, 400);
+    }
+    if (!address) return jsonResponse({ ok: false, error: "ご住所をご記入ください。" }, 400);
+  }
 
   // 同じメールアドレスの二重登録は上書き（キーに正規化した値を使う）
   const id = channel === "email" && email
     ? `mail_${await sha1Hex(email)}`
-    : `${channel}_${await sha1Hex(name + "|" + source)}`;
+    : channel === "postal"
+      ? `postal_${await sha1Hex(name + "|" + zip + "|" + address)}`
+      : `${channel}_${await sha1Hex(name + "|" + source)}`;
 
   const record = {
     id, channel, name, email: channel === "email" ? email : "",
+    zip, address,
     postal, source,
     created_at: new Date().toISOString(),
   };
@@ -4554,7 +4566,9 @@ async function registerKeraNotify(request, env, ctx) {
 
   // 座への通知メール（任意・失敗しても登録は成立させる）
   if (env.RESEND_API_KEY && ctx?.waitUntil) {
-    const label = channel === "postal_stop" ? "郵送停止のお申し出" : "メール案内の登録";
+    const label = channel === "postal_stop" ? "郵送停止のお申し出"
+      : channel === "postal" ? "はがき送付のお申し込み"
+      : "メール案内の登録";
     ctx.waitUntil(
       fetch("https://api.resend.com/emails", {
         method: "POST",
@@ -4571,6 +4585,8 @@ async function registerKeraNotify(request, env, ctx) {
             <table style="border-collapse:collapse;font-size:14px;">
               <tr><td style="padding:4px 12px 4px 0;color:#666;">お名前</td><td><strong>${escapeHtml(name)}</strong></td></tr>
               <tr><td style="padding:4px 12px 4px 0;color:#666;">メール</td><td>${escapeHtml(record.email) || "（なし）"}</td></tr>
+              <tr><td style="padding:4px 12px 4px 0;color:#666;">郵便番号</td><td>${escapeHtml(zip) || "（なし）"}</td></tr>
+              <tr><td style="padding:4px 12px 4px 0;color:#666;">住所</td><td>${escapeHtml(address) || "（なし）"}</td></tr>
               <tr><td style="padding:4px 12px 4px 0;color:#666;">郵送</td><td>${postal === "keep" ? "今後も希望" : "停止を希望"}</td></tr>
               <tr><td style="padding:4px 12px 4px 0;color:#666;">経路</td><td>${escapeHtml(source)}</td></tr>
               <tr><td style="padding:4px 12px 4px 0;color:#666;">日時</td><td>${new Date().toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" })}</td></tr>

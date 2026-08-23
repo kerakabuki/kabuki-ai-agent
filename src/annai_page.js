@@ -92,8 +92,27 @@ export function annaiPageHTML() {
   <section class="an-opt">
     <div class="an-opt-head"><h2 class="an-opt-title">郵送で受け取る</h2></div>
     <p class="an-opt-desc">
-      いままで通り、はがきをお届けします。<strong>お手続きは要りません。</strong>
+      すでにはがきが届いている方は<strong>お手続きは要りません。</strong>いままで通りお届けします。
     </p>
+    <details class="an-details">
+      <summary>はがきを新しく受け取りたい</summary>
+      <form id="an-post" class="an-form" novalidate>
+        <label class="an-field">
+          <span>お名前</span>
+          <input type="text" name="name" autocomplete="name" placeholder="気良　太郎" required>
+        </label>
+        <label class="an-field">
+          <span>郵便番号</span>
+          <input type="text" name="zip" autocomplete="postal-code" inputmode="numeric" placeholder="501-4303" required>
+        </label>
+        <label class="an-field">
+          <span>ご住所</span>
+          <input type="text" name="address" autocomplete="street-address" placeholder="岐阜県郡上市明宝気良154" required>
+        </label>
+        <button type="submit" class="an-submit">はがきの送付を申し込む</button>
+        <p class="an-msg" id="an-post-msg" role="status"></p>
+      </form>
+    </details>
     <details class="an-details">
       <summary>郵送を止めてほしい</summary>
       <form id="an-stop" class="an-form" novalidate>
@@ -110,7 +129,7 @@ export function annaiPageHTML() {
   <section class="an-privacy">
     <h2 class="an-privacy-title">お預かりする情報について</h2>
     <ul>
-      <li>いただいたお名前・連絡先は、<strong>気良歌舞伎の公演案内にのみ</strong>使用します</li>
+      <li>いただいたお名前・ご住所・連絡先は、<strong>気良歌舞伎の公演案内にのみ</strong>使用します</li>
       <li>他の目的への利用や、第三者への提供はいたしません</li>
       <li>配信の停止・変更は、このページからいつでも承ります</li>
       <li>LINEは、トーク画面で「郵送停止」と送っていただければ郵送のみ止められます</li>
@@ -161,6 +180,15 @@ export function annaiPageHTML() {
     if (!m.name.value.trim()) { msg.textContent = "お名前をご記入ください。"; msg.className = "an-msg an-ng"; return; }
     if (!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(m.email.value.trim())) { msg.textContent = "メールアドレスをご確認ください。"; msg.className = "an-msg an-ng"; return; }
     post(m, msg, { channel: "email" });
+  });
+  var p = document.getElementById("an-post");
+  if (p) p.addEventListener("submit", function(e){
+    e.preventDefault();
+    var msg = document.getElementById("an-post-msg");
+    if (!p.name.value.trim()) { msg.textContent = "お名前をご記入ください。"; msg.className = "an-msg an-ng"; return; }
+    if (!/^\\d{3}-?\\d{4}$/.test(p.zip.value.trim())) { msg.textContent = "郵便番号を7桁でご記入ください。"; msg.className = "an-msg an-ng"; return; }
+    if (!p.address.value.trim()) { msg.textContent = "ご住所をご記入ください。"; msg.className = "an-msg an-ng"; return; }
+    post(p, msg, { channel: "postal", postal: "keep" });
   });
   var s = document.getElementById("an-stop");
   if (s) s.addEventListener("submit", function(e){
