@@ -226,7 +226,7 @@ const DEFAULT_GROUPS = {
     },
     contact: {
       instagram: "https://www.instagram.com/kerakabuki_official/",
-      website: "https://kerakabuki.jimdofree.com/",
+      website: "https://kabukiplus.com/kerakabuki",
       youtube: "https://www.youtube.com/@kerakabuki",
       x: "https://x.com/KeraKabuki",
       facebook: "https://www.facebook.com/kerakabuki/",

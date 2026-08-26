@@ -457,7 +457,7 @@ KABUKI PLUS+ と JIKABUKI PLUS+ の全機能を提供。
 
 ## 12. 気良歌舞伎チャネル（既存）
 
-- 公式サイト（Jimdo）：https://kerakabuki.jimdofree.com/
+- 公式サイト：https://kabukiplus.com/kerakabuki（旧サイト kerakabuki.jimdofree.com も継続稼働。NFT英語版・けらのすけウィジェットが残るため CORS 許可を維持）
 - YouTube：https://www.youtube.com/@kerakabuki
 - Note：https://note.com/kerakabuki
 - Medium（英語）：https://medium.com/@kerakabuki

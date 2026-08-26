@@ -944,7 +944,7 @@ export function projectPageHTML() {
     </div>
 
     <div class="channel-grid">
-      <a href="https://kerakabuki.jimdofree.com/" class="channel-link" target="_blank" rel="noopener">
+      <a href="https://kabukiplus.com/kerakabuki" class="channel-link" target="_blank" rel="noopener">
         <div class="ch-icon">🌐</div>
         <div>
           <div class="ch-name">公式サイト</div>
