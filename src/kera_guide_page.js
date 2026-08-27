@@ -193,6 +193,17 @@ export function keraGuidePageHTML() {
       </ul>
     </div>
   </div>
+
+  <div class="kg-video-block kg-reveal">
+    <h3 class="kg-card-title">気良座への車案内動画</h3>
+    <div class="kg-video-wrap">
+      <iframe
+        src="https://www.youtube.com/embed/Md09hr4aRKI"
+        title="気良座への車案内動画" loading="lazy"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
+  </div>
 </section>
 
 <!-- ═══════ §5 周辺情報 ═══════ -->
@@ -589,6 +600,20 @@ img { max-width: 100%; display: block; }
 }
 .kg-map-wrap iframe {
   display: block; width: 100%; height: 350px;
+}
+.kg-video-block {
+  max-width: 700px; margin: 2rem auto 0;
+  text-align: center;
+}
+.kg-video-block .kg-card-title { margin-bottom: 1rem; }
+.kg-video-wrap {
+  position: relative; width: 100%; padding-top: 56.25%;
+  border-radius: 12px; overflow: hidden;
+  border: 1px solid rgba(197,162,85,0.14);
+}
+.kg-video-wrap iframe {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%; border: 0;
 }
 
 /* ── FAQ ── */
