@@ -15,8 +15,13 @@ async function run(args,cwd){
   catch(e){throw new Error(`FFmpeg failed: ${String(e.stderr||e.message).slice(-1200)}`);}
 }
 export async function probe(file){const {stdout}=await exec(FFPROBE,['-v','error','-show_streams','-show_format','-of','json',file],{windowsHide:true});return JSON.parse(stdout);}
-function ass(title,subtitle,duration){
+function ass(title,subtitles,duration){
  const end=`0:00:${duration.toFixed(2).padStart(5,'0')}`;
+ const cues=subtitles.map((line,i)=>{
+  const time=n=>`0:00:${n.toFixed(2).padStart(5,'0')}`;
+  const clean=safeSubtitle(line,80),short=Array.from(clean).length>38?Array.from(clean).slice(0,36).join('')+'…':clean;
+  return `Dialogue: 0,${time(i*duration/subtitles.length)},${time((i+1)*duration/subtitles.length)},Body,,0,0,0,,${wrap(short)}`;
+ }).join('\n');
  return `[Script Info]
 ScriptType: v4.00+
 PlayResX: 1080
@@ -30,20 +35,25 @@ Style: Brand,Noto Sans CJK JP,29,&H006B6258,&H000000FF,&H00EEE8DF,&H00000000,0,0
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 Dialogue: 0,0:00:00.00,${end},Title,,0,0,0,,${wrap(safeSubtitle(title,32),16)}
-Dialogue: 0,0:00:00.00,${end},Body,,0,0,0,,${wrap(safeSubtitle(subtitle,38))}
+${cues}
 Dialogue: 0,0:00:00.00,${end},Brand,,0,0,0,,YouTube 気良歌舞伎
 `;
 }
 export async function renderReel(manifest,photoPaths,bgmPath,dir){
  if(![1,2,3].includes(photoPaths.length))throw Error('1〜3枚の写真が必要です');
  const duration=({1:12,2:16,3:20})[photoPaths.length],segment=duration/photoPaths.length;
- const lines=String(manifest.caption||'').split(/[。！？\n]/).map(x=>x.trim()).filter(x=>x&&!x.startsWith('#'));
+ const pieces=String(manifest.caption||'').split(/(?<=[。！？])|\n/).map(x=>x.trim()).filter(x=>x&&!x.startsWith('#')&&!/^https?:/.test(x));
+ const lines=[];
+ for(let i=0;i<pieces.length;i++){
+  let line=pieces[i];if(Array.from(line).length<9&&i+1<pieces.length)line+=pieces[++i];lines.push(line);
+ }
  await fs.mkdir(dir,{recursive:true});
  for(let i=0;i<photoPaths.length;i++){
   await fs.copyFile(photoPaths[i],path.join(dir,`photo${i}.jpg`));
-  await fs.writeFile(path.join(dir,`text${i}.ass`),ass(manifest.title,lines[i]||manifest.photos[i]?.caption||'気良歌舞伎',segment),'utf8');
+  const subtitles=photoPaths.length===1&&lines.length?lines.slice(0,3):[lines[i]||manifest.photos[i]?.caption||'気良歌舞伎'];
+  await fs.writeFile(path.join(dir,`text${i}.ass`),ass(manifest.title,subtitles,segment),'utf8');
   const frames=Math.round(segment*30);
-  await run(['-i',`photo${i}.jpg`,'-vf',`scale=1040:1320:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:260:color=0xEEE8DF,zoompan=z='min(1+on*0.000045,1.014)':x='iw/2-iw/zoom/2':y='ih/2-ih/zoom/2':d=${frames}:s=1080x1920:fps=30,subtitles=text${i}.ass,format=yuv420p`,
+  await run(['-i',`photo${i}.jpg`,'-vf',`scale=1040:1320:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:'260+(1320-ih)/2':color=0xEEE8DF,zoompan=z='min(1+on*0.000045,1.014)':x='iw/2-iw/zoom/2':y='ih/2-ih/zoom/2':d=${frames}:s=1080x1920:fps=30,subtitles=text${i}.ass,format=yuv420p`,
    '-frames:v',String(frames),'-c:v','libx264','-preset','veryfast','-crf','22','-threads','2','-an',`clip${i}.mp4`],dir);
  }
  await fs.writeFile(path.join(dir,'concat.txt'),photoPaths.map((_,i)=>`file 'clip${i}.mp4'`).join('\n'));
