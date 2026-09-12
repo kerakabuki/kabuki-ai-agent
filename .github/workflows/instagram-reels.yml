@@ -1,0 +1,26 @@
+name: Instagram daily reels
+on:
+  schedule:
+    - cron: '35 15,3 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write
+concurrency:
+  group: instagram-reels
+  cancel-in-progress: false
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install renderer
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-noto-cjk
+      - name: Prepare the next seven days
+        env:
+          KP365_BASE_URL: https://kabuki-post-365.kerakabuki.workers.dev
+        run: node kabuki-post-365/scripts/render-reel.mjs
