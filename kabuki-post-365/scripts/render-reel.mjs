@@ -6,9 +6,9 @@ import {promisify} from 'node:util';
 import {pathToFileURL} from 'node:url';
 const exec=promisify(execFile);
 const FFMPEG=process.env.FFMPEG_PATH||'ffmpeg',FFPROBE=process.env.FFPROBE_PATH||'ffprobe';
-export const TEMPLATE_VERSION='mobile-readable-v3';
+export const TEMPLATE_VERSION='mobile-readable-v4';
 export function safeSubtitle(s,max=1000){
-  return Array.from(String(s||'').replace(/https?:\/\/\S+/g,'').replace(/[{}\\\r\n]/g,' ').replace(/\s+/g,' ').trim()).slice(0,max).join('');
+  return Array.from(String(s||'').replace(/https?:\/\/\S+/g,'').replace(/[\p{Extended_Pictographic}\p{Emoji_Modifier}\uFE0E\uFE0F\u200D\u20E3]/gu,'').replace(/[\u{1F1E6}-\u{1F1FF}]/gu,'').replace(/[{}\\\r\n]/g,' ').replace(/\s+/g,' ').trim()).slice(0,max).join('');
 }
 const chars=s=>Array.from(s);
 const noStart=/^[、。，．！？!?：:；;）」』】〉》〕］｝ーぁぃぅぇぉっゃゅょァィゥェォッャュョ]/u;
