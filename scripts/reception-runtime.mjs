@@ -21,6 +21,10 @@ export async function runtime({ persist = false } = {}) {
     await db.batch([...sql.split(';').map(x=>x.trim()).filter(Boolean).map(statement=>db.prepare(statement)),db.prepare('INSERT INTO local_reception_migrations (name) VALUES (?)').bind(file)]);
   }
   const kv = await mf.getKVNamespace('CHAT_HISTORY');
+  // 公開用の記念画像だけをローカルR2へ用意する。本番へのアップロードはしない。
+  const assets = await mf.getR2Bucket('ASSETS_BUCKET');
+  const giftAssets = JSON.parse(await readFile('assets/reception/2026/shiranami/manifest.json', 'utf8'));
+  for (const asset of giftAssets) await assets.put(asset.key, new Uint8Array(await readFile(asset.file)), { httpMetadata: { contentType: asset.type } });
   // ローカルの架空アカウントのみ。本番コードに認証の迂回は設けない。
   await kv.put('session:local-manager', JSON.stringify({ userId: 'local-manager', displayName: '動作確認用の担当者' }));
   await kv.put('session:local-member', JSON.stringify({ userId: 'local-member', displayName: '動作確認用の一般メンバー' }));

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
-import { writeFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { runtime } from './reception-runtime.mjs';
 import { validateEntry, csvCell } from '../src/reception.js';
 import { receptionPage, receptionAdminPage } from '../src/reception_page.js';
@@ -72,6 +72,31 @@ try {
   const pngResponse = await call(base + '/commemorative.png');
   const pngBytes = new Uint8Array(await pngResponse.arrayBuffer());
   check('スマホ用PNGを直接配布できる', pngResponse.headers.get('content-type')==='image/png' && pngBytes[0]===137 && pngBytes[1]===80 && pngBytes.length>1000);
+  const giftAssets = JSON.parse(await readFile('assets/reception/2026/shiranami/manifest.json', 'utf8'));
+  const digest = bytes => crypto.subtle.digest('SHA-256', bytes).then(hash => Buffer.from(hash).toString('hex'));
+  let pngDownloads = true, webpPreviews = true, heads = true;
+  for (const asset of giftAssets) {
+    const path = base + '/cards/shiranami-v1/' + asset.key.split('/').at(-1);
+    const response = await call(path);
+    const bytes = await response.arrayBuffer();
+    const matches = response.status === 200 && response.headers.get('content-type') === asset.type && await digest(bytes) === asset.sha256;
+    if (asset.type === 'image/png') {
+      pngDownloads &&= matches && response.headers.get('content-disposition').startsWith('attachment;') && response.headers.get('content-disposition').includes("filename*=UTF-8''");
+      const inline = await call(path + '?view=1', 'HEAD');
+      heads &&= inline.status === 200 && inline.headers.get('content-disposition').startsWith('inline;') && Number(inline.headers.get('content-length')) === asset.bytes && (await inline.arrayBuffer()).byteLength === 0;
+    } else webpPreviews &&= matches && response.headers.get('content-disposition').startsWith('inline;');
+  }
+  check('白浪五人男5種のPNGは対応する実ファイルと一致し日本語名で保存できる', pngDownloads);
+  check('絵柄一覧と大きな見本のWebPを軽量配信できる', webpPreviews);
+  check('各カードの画像表示とHEADは本文を返さず正しいサイズを示す', heads);
+  check('カタログにない画像名やパスを公開しない', (await call(base+'/cards/shiranami-v1/private.png')).status===404 && (await call(base+'/cards/shiranami-v1/source/benten.jpg')).status===404);
+  check('記念カードのURLから更新操作はできない', (await call(base+'/cards/shiranami-v1/benten.png','POST',{})).status===405);
+  const giftBucket = await mf.getR2Bucket('ASSETS_BUCKET');
+  const temporaryGift = giftAssets[0];
+  await giftBucket.delete(temporaryGift.key);
+  const missingGift = await call(base + '/cards/shiranami-v1/' + temporaryGift.key.split('/').at(-1));
+  check('未配置の記念画像はキャッシュせず準備中を返す', missingGift.status===503 && missingGift.headers.get('cache-control').includes('no-store'));
+  await giftBucket.put(temporaryGift.key, new Uint8Array(await readFile(temporaryGift.file)));
   // ページング境界を実D1で確認。
   const now = new Date().toISOString();
   await db.batch(Array.from({ length: 101 }, (_, i) => db.prepare("INSERT INTO reception_entries (request_id,payload_hash,event_id,name,contact_method,donation_declared,source,created_at,updated_at) VALUES (?,?,'2026',?,'none',0,'qr',?,?)").bind(crypto.randomUUID(),'fixture','架空データ'+i,now,now)));

@@ -1,6 +1,7 @@
 import { requireGroupRole } from './auth.js';
 import { receptionPage, receptionAdminPage, receptionLoginPage, commemorativeSVG } from './reception_page.js';
 import { cardPNG } from './reception_card.js';
+import { GIFT_PATH, GIFT_OBJECT_PREFIX, receptionGifts, giftFilename } from './reception_gifts.js';
 
 export const RECEPTION_PATH = '/kerakabuki/reception/2026';
 export const RECEPTION_API = '/api/kerakabuki/reception/2026';
@@ -114,6 +115,23 @@ export async function handleReception(request, env) {
   const url = new URL(request.url); const path = url.pathname;
   if (!(path === RECEPTION_PATH || path.startsWith(RECEPTION_PATH + '/') || path === RECEPTION_API || path.startsWith(RECEPTION_API + '/'))) return null;
   try {
+    if (path.startsWith(GIFT_PATH + '/')) {
+      if (!['GET', 'HEAD'].includes(request.method)) return json({ error: 'この操作は利用できません。' }, 405);
+      const match = path.slice(GIFT_PATH.length + 1).match(/^([a-z]+)(\.png|-thumb\.webp|-preview\.webp)$/);
+      const gift = match && receptionGifts.find(g => g.id === match[1]);
+      if (!gift) return json({ error: '画像が見つかりません。' }, 404);
+      if (!env.ASSETS_BUCKET) return json({ error: '画像の準備中です。時間をおいてお試しください。' }, 503);
+      const key = GIFT_OBJECT_PREFIX + '/' + gift.id + match[2];
+      const object = request.method === 'HEAD' ? await env.ASSETS_BUCKET.head(key) : await env.ASSETS_BUCKET.get(key);
+      if (!object) return json({ error: '画像の準備中です。時間をおいてお試しください。' }, 503);
+      const png = match[2] === '.png';
+      const disposition = png && url.searchParams.get('view') !== '1' ? 'attachment' : 'inline';
+      return new Response(request.method === 'HEAD' ? null : object.body, { headers: {
+        ...headers, 'Cache-Control': 'public, max-age=86400',
+        'Content-Type': png ? 'image/png' : 'image/webp', 'Content-Length': String(object.size), 'ETag': object.httpEtag,
+        'Content-Disposition': disposition + '; filename="kerakabuki-2026-' + gift.id + (png ? '.png"; filename*=UTF-8\'\'' + encodeURIComponent(giftFilename(gift)) : '.webp"'),
+      } });
+    }
     if (path === RECEPTION_PATH && request.method === 'GET') {
       if (url.searchParams.get('paper') === '1') await staffAccess(request, env);
       return html(receptionPage({ paper: url.searchParams.get('paper') === '1', preview: env.RECEPTION_PREVIEW === '1', available: !!env.RECEPTION_DB }));

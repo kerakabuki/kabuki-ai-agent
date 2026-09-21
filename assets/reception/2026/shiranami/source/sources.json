@@ -1,0 +1,42 @@
+[
+  {
+    "id": "benten",
+    "name": "弁天小僧 菊之助",
+    "sourcePage": "https://kerakabuki.jimdofree.com/kerakabukinft/shiranaminft/",
+    "sourceURL": "https://image.jimcdn.com/app/cms/image/transf/dimension=920x1024:format=jpg/path/s43444304142afe20/image/id068781f6b34c3c1/version/1747538305/image.jpg",
+    "bytes": 141073,
+    "sha256": "2bb62f4bf8382c1f12ee1801624f7d358fde1ae81a413e1d7d186f6149024678"
+  },
+  {
+    "id": "rihei",
+    "name": "忠信 利平",
+    "sourcePage": "https://kerakabuki.jimdofree.com/kerakabukinft/shiranaminft/",
+    "sourceURL": "https://image.jimcdn.com/app/cms/image/transf/dimension=920x1024:format=jpg/path/s43444304142afe20/image/ic953f3d0291e0230/version/1747538305/image.jpg",
+    "bytes": 123997,
+    "sha256": "ec027152eaea34d4763e8fe1239fb58642b45de0d7512a8343723755512a5a12"
+  },
+  {
+    "id": "akahoshi",
+    "name": "赤星 十三郎",
+    "sourcePage": "https://kerakabuki.jimdofree.com/kerakabukinft/shiranaminft/",
+    "sourceURL": "https://image.jimcdn.com/app/cms/image/transf/dimension=920x1024:format=jpg/path/s43444304142afe20/image/i9b5a08b70828af26/version/1747538305/image.jpg",
+    "bytes": 135854,
+    "sha256": "f405b7acc77c9b5deff7c228ad63d6985207dc0562ef41eb6177db01f7a155d0"
+  },
+  {
+    "id": "nango",
+    "name": "南郷 力丸",
+    "sourcePage": "https://kerakabuki.jimdofree.com/kerakabukinft/shiranaminft/",
+    "sourceURL": "https://image.jimcdn.com/app/cms/image/transf/dimension=920x1024:format=jpg/path/s43444304142afe20/image/i777a017b4fe74515/version/1747538305/image.jpg",
+    "bytes": 170763,
+    "sha256": "082ef911172c7efefbff456d9d5c45ff9824cc1a45b59f40a28b578b775c382f"
+  },
+  {
+    "id": "daemon",
+    "name": "日本 駄右衛門",
+    "sourcePage": "https://kerakabuki.jimdofree.com/kerakabukinft/shiranaminft/",
+    "sourceURL": "https://image.jimcdn.com/app/cms/image/transf/dimension=920x1024:format=jpg/path/s43444304142afe20/image/i3e7787dbc26a73eb/version/1747538306/image.jpg",
+    "bytes": 134063,
+    "sha256": "1196c0a5dae2a13a78f3ef7cd4469c2fe99443602af4bfa0f687d60ddd9707bb"
+  }
+]

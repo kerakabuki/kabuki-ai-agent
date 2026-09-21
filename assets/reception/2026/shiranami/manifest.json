@@ -1,0 +1,122 @@
+[
+  {
+    "id": "benten",
+    "file": "assets/reception/2026/shiranami/cards/benten.png",
+    "key": "reception/2026/shiranami-v1/benten.png",
+    "type": "image/png",
+    "bytes": 1038556,
+    "sha256": "de966deaa257d30af2b5a3d0b0966fa6a2cb6676189fad8ea6a7d193b52ec918"
+  },
+  {
+    "id": "benten",
+    "file": "assets/reception/2026/shiranami/cards/benten-thumb.webp",
+    "key": "reception/2026/shiranami-v1/benten-thumb.webp",
+    "type": "image/webp",
+    "bytes": 10086,
+    "sha256": "9a266ee7e0d1f5c0017de493e5409c2d6a2c0e53c4ec033a3b03d907a0df9592"
+  },
+  {
+    "id": "benten",
+    "file": "assets/reception/2026/shiranami/cards/benten-preview.webp",
+    "key": "reception/2026/shiranami-v1/benten-preview.webp",
+    "type": "image/webp",
+    "bytes": 51784,
+    "sha256": "738eecc467e8f1a300556f442c0b4c1418281039e279d254edfa5f33479f51c5"
+  },
+  {
+    "id": "rihei",
+    "file": "assets/reception/2026/shiranami/cards/rihei.png",
+    "key": "reception/2026/shiranami-v1/rihei.png",
+    "type": "image/png",
+    "bytes": 982494,
+    "sha256": "f8d88b39e21735432bf64958ccb3fabd251a6bb9226f65c84a1654da4cf46e19"
+  },
+  {
+    "id": "rihei",
+    "file": "assets/reception/2026/shiranami/cards/rihei-thumb.webp",
+    "key": "reception/2026/shiranami-v1/rihei-thumb.webp",
+    "type": "image/webp",
+    "bytes": 9506,
+    "sha256": "c74a698256d0812b6ae7eceaa6babd1e3fb10ac4a81a1f446ac8d818888dffdb"
+  },
+  {
+    "id": "rihei",
+    "file": "assets/reception/2026/shiranami/cards/rihei-preview.webp",
+    "key": "reception/2026/shiranami-v1/rihei-preview.webp",
+    "type": "image/webp",
+    "bytes": 44960,
+    "sha256": "9a03c02cc0083ef45e6252c98b4a7166f291898afaecf5a5b08e111fad99b0e4"
+  },
+  {
+    "id": "akahoshi",
+    "file": "assets/reception/2026/shiranami/cards/akahoshi.png",
+    "key": "reception/2026/shiranami-v1/akahoshi.png",
+    "type": "image/png",
+    "bytes": 1034897,
+    "sha256": "55c49f9b08e0d61c26ee23c68d58a61fd45a01c3f6e5401ae82d3c7b09d28fa1"
+  },
+  {
+    "id": "akahoshi",
+    "file": "assets/reception/2026/shiranami/cards/akahoshi-thumb.webp",
+    "key": "reception/2026/shiranami-v1/akahoshi-thumb.webp",
+    "type": "image/webp",
+    "bytes": 10424,
+    "sha256": "aff5125fdd06507658cee769f4b3a65a0af23d818773ee364cf049329a3283be"
+  },
+  {
+    "id": "akahoshi",
+    "file": "assets/reception/2026/shiranami/cards/akahoshi-preview.webp",
+    "key": "reception/2026/shiranami-v1/akahoshi-preview.webp",
+    "type": "image/webp",
+    "bytes": 50016,
+    "sha256": "6e74f672f748eb0adcd430ab18b7184a7b748de11bce617632c970ea9ce3c6d0"
+  },
+  {
+    "id": "nango",
+    "file": "assets/reception/2026/shiranami/cards/nango.png",
+    "key": "reception/2026/shiranami-v1/nango.png",
+    "type": "image/png",
+    "bytes": 1301356,
+    "sha256": "da34231d71cd7a7e816897b82c15a9a7e5bc48ee468e507f10998e2f39e21acd"
+  },
+  {
+    "id": "nango",
+    "file": "assets/reception/2026/shiranami/cards/nango-thumb.webp",
+    "key": "reception/2026/shiranami-v1/nango-thumb.webp",
+    "type": "image/webp",
+    "bytes": 12376,
+    "sha256": "f296b6093e452e6c0482d14a74b79519e27daa40e063a37a7fe970e65d441dcc"
+  },
+  {
+    "id": "nango",
+    "file": "assets/reception/2026/shiranami/cards/nango-preview.webp",
+    "key": "reception/2026/shiranami-v1/nango-preview.webp",
+    "type": "image/webp",
+    "bytes": 65110,
+    "sha256": "bb79badd691b2090c5d7cceba1c624728fe739583df00e37b114454c4b298ce3"
+  },
+  {
+    "id": "daemon",
+    "file": "assets/reception/2026/shiranami/cards/daemon.png",
+    "key": "reception/2026/shiranami-v1/daemon.png",
+    "type": "image/png",
+    "bytes": 1027994,
+    "sha256": "2d92babb84fc792947aa1cffbb2663142f2531eae4e8fcfa7cae8806967d1b82"
+  },
+  {
+    "id": "daemon",
+    "file": "assets/reception/2026/shiranami/cards/daemon-thumb.webp",
+    "key": "reception/2026/shiranami-v1/daemon-thumb.webp",
+    "type": "image/webp",
+    "bytes": 10456,
+    "sha256": "85c0604be1224d7cb3e6b4aa92cb1ef04548bc097383c931d63595cd29580099"
+  },
+  {
+    "id": "daemon",
+    "file": "assets/reception/2026/shiranami/cards/daemon-preview.webp",
+    "key": "reception/2026/shiranami-v1/daemon-preview.webp",
+    "type": "image/webp",
+    "bytes": 49094,
+    "sha256": "852f9df6203b8836249fb2807272c8f7987126b5c2edec9d436d708e091802e3"
+  }
+]
