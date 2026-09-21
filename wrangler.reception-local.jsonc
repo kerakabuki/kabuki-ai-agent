@@ -1,0 +1,14 @@
+{
+  "name": "kerakabuki-reception-preview",
+  "main": "worker.js",
+  "compatibility_date": "2026-09-21",
+  "vars": { "RECEPTION_PREVIEW": "1" },
+  "kv_namespaces": [{ "binding": "CHAT_HISTORY", "id": "local-reception" }],
+  "d1_databases": [{ "binding": "RECEPTION_DB", "database_name": "kerakabuki-reception", "database_id": "00000000-0000-4000-8000-000000000026", "migrations_dir": "migrations/reception" }],
+  "r2_buckets": [
+    { "binding": "ASSETS_BUCKET", "bucket_name": "local-assets" },
+    { "binding": "CONTENT_BUCKET", "bucket_name": "local-content" },
+    { "binding": "ENMOKU_BUCKET", "bucket_name": "local-enmoku" },
+    { "binding": "QUIZ_BUCKET", "bucket_name": "local-quiz" }
+  ]
+}

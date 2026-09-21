@@ -42,3 +42,14 @@ FEEDBACK_FORM_URL = "https://forms.gle/i9snJSVAuZCH4AQd8"  # 感想フォーム�
 # Cron Trigger（ニュースRSS自動取得：日本時間 朝7時・夜7時 = UTC 22:00・10:00）
 [triggers]
 crons = ["0 22 * * *", "0 10 * * *"]
+# 令和八年公演の来場・祝儀受付（専用DB）
+[[d1_databases]]
+binding = "RECEPTION_DB"
+database_name = "kerakabuki-reception"
+database_id = "255d8eca-9e48-4464-b937-68a6e7f5d851"
+migrations_dir = "migrations/reception"
+
+[[ratelimits]]
+name = "RECEPTION_LIMITER"
+namespace_id = "2026092601"
+simple = { limit = 120, period = 60 }

@@ -25,6 +25,7 @@
 // Imports
 // =========================================================
 import { handleQuizMessage, loadQuizState, clearQuizCache } from "./src/quiz.js";
+import { handleReception } from "./src/reception.js";
 
 import { mainMenuFlex, mainMenuMessage } from "./src/flex_menu.js";
 
@@ -369,6 +370,8 @@ export default {
 
     const url = new URL(request.url);
     let path = url.pathname;
+    const receptionResponse = await handleReception(request, env);
+    if (receptionResponse) return receptionResponse;
     // originを保持（メニューの稽古モードリンク生成用）
     env._origin = url.origin;
 
@@ -454,7 +457,7 @@ export default {
     if (path === "/sw.js") {
       const swCode = `
 // KABUKI PLUS+ Service Worker
-const CACHE_VERSION = 'kp-v3';
+const CACHE_VERSION = 'kp-v4';
 const STATIC_CACHE = CACHE_VERSION + '-static';
 const RUNTIME_CACHE = CACHE_VERSION + '-runtime';
 
@@ -494,7 +497,8 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== self.location.origin) return;
 
   // API・認証はネットワーク直通（キャッシュしない）
-  if (url.pathname.startsWith('/api/') ||
+  if (url.pathname.startsWith('/kerakabuki/reception/') ||
+      url.pathname.startsWith('/api/') ||
       url.pathname.startsWith('/auth/') ||
       url.pathname.startsWith('/line')) {
     return;

@@ -1,0 +1,11 @@
+import { createRequire } from 'node:module';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import { commemorativeSVG } from '../src/reception_page.js';
+const require = createRequire(process.env.RECEPTION_CARD_DEPS || resolve('package.json'));
+const sharp = require('sharp');
+const png = await sharp(Buffer.from(commemorativeSVG())).png().toBuffer();
+await mkdir('artifacts', { recursive: true });
+await writeFile('artifacts/観劇記念画像_令和八年.png', png);
+await writeFile('src/reception_card.js', '// 観劇記念SVGをPNGに書き出した配布用データ。個人情報は含まない。\nexport const cardPNG = ' + JSON.stringify(png.toString('base64')) + ';\n');
+console.log(JSON.stringify({ bytes: png.length, width: 1080, height: 1440 }));
