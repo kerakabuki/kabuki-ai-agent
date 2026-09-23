@@ -23,6 +23,13 @@ interface CharacterOption {
   related_play?: string | null;
 }
 
+type PrivacyExclusionReason = 'child_face' | 'backstage_woman_face';
+
+const PRIVACY_REASON_LABELS: Record<PrivacyExclusionReason, string> = {
+  child_face: '子どもの顔',
+  backstage_woman_face: '裏方女性の顔',
+};
+
 export default function VerifyPage() {
   const { data: characters } = useCharacters();
   const [images, setImages] = useState<ImageItem[]>([]);
@@ -34,7 +41,7 @@ export default function VerifyPage() {
   const refresh = useCallback(async () => {
     setLoading(true);
     try {
-      const list = (await api.images.list({ verified: '0' })) as ImageItem[];
+      const list = (await api.images.list({ verified: '0', privacy_excluded: '0' })) as ImageItem[];
       // キャラクター紐付けあり（Gemini推定あり）を先に、なしを後に
       list.sort((a, b) => {
         const av = a.character_id != null ? 0 : 1;
@@ -91,6 +98,21 @@ export default function VerifyPage() {
 
   // 3. 特定の人物なしで確定
   const handleNoCharacter = (id: number) => runVerify(id, { character_id: null, play_name: null });
+
+  const handlePrivacyExclude = useCallback(
+    async (id: number, reason: PrivacyExclusionReason) => {
+      if (!confirm(`「${PRIVACY_REASON_LABELS[reason]}」としてSNS投稿から除外しますか？\n写真ファイル自体は削除されません。`)) return;
+      setProcessing((prev) => ({ ...prev, [id]: true }));
+      try {
+        await api.images.setPrivacyExclusion(id, { excluded: true, reason });
+        removeLocal(id);
+      } catch (e) {
+        alert(`投稿除外に失敗しました: ${(e as Error).message}`);
+        setProcessing((prev) => ({ ...prev, [id]: false }));
+      }
+    },
+    [removeLocal]
+  );
 
   if (loading) return <div className="text-center py-12 text-gray-500">読み込み中...</div>;
 
@@ -203,6 +225,22 @@ export default function VerifyPage() {
                       <Ban size={14} />
                       🚫 特定の人物なし
                     </button>
+
+                    <div className="pt-3 mt-3 border-t border-gray-200">
+                      <div className="text-xs font-medium text-red-700 mb-2">SNS投稿から除外</div>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        {(Object.keys(PRIVACY_REASON_LABELS) as PrivacyExclusionReason[]).map((reason) => (
+                          <button
+                            key={reason}
+                            onClick={() => handlePrivacyExclude(img.id, reason)}
+                            disabled={busy}
+                            className="px-2 py-2 text-xs bg-red-50 text-red-700 border border-red-200 rounded-lg hover:bg-red-100 disabled:opacity-50"
+                          >
+                            {PRIVACY_REASON_LABELS[reason]}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

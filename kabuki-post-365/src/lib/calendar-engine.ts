@@ -1,4 +1,5 @@
 import { DAY_THEMES, getSeason, CTA_DISTRIBUTION, FEATURES } from '../types';
+import { isPreferredImagePlay, PREFERRED_IMAGE_REUSE_DAYS } from './image-priority';
 
 // Special days
 const SPECIAL_DAYS: Record<string, string> = {
@@ -22,7 +23,10 @@ export async function generateCalendar(db: D1Database, startDate: string): Promi
 
   // Load available images
   const { results: images } = await db.prepare(
-    'SELECT id, filename, season_tag, scene_type, character_id, usage_count FROM images ORDER BY usage_count ASC'
+    `SELECT id, filename, play_name, season_tag, scene_type, character_id, usage_count
+     FROM images
+     WHERE verified = 1 AND privacy_excluded = 0
+     ORDER BY usage_count ASC`
   ).all();
 
   // Load unused quizzes
@@ -83,14 +87,23 @@ export async function generateCalendar(db: D1Database, startDate: string): Promi
     }
 
     if (!selectedImageId && (images as Array<Record<string, unknown>>).length > 0) {
-      // Generic selection: season match or 通年, and 30-day reuse interval
-      const candidates = (images as Array<Record<string, unknown>>).filter((img) => {
-        const imgId = img.id as number;
-        const lastUsedDay = imageLastUsed.get(imgId);
-        if (lastUsedDay !== undefined && day - lastUsedDay < 30) return false;
+      // Generic selection: 白浪五人男は14日間隔で優先し、その他は30日間隔で循環する
+      const seasonMatched = (images as Array<Record<string, unknown>>).filter((img) => {
         const tag = img.season_tag as string;
         return tag === season || tag === '通年' || !tag;
       });
+      // 優先演目は季節タグに関係なく使う（白浪五人男を主役にするため）。
+      const preferredCandidates = (images as Array<Record<string, unknown>>).filter((img) => {
+        const imgId = img.id as number;
+        const lastUsedDay = imageLastUsed.get(imgId);
+        return isPreferredImagePlay(img.play_name)
+          && (lastUsedDay === undefined || day - lastUsedDay >= PREFERRED_IMAGE_REUSE_DAYS);
+      });
+      const regularCandidates = seasonMatched.filter((img) => {
+        const lastUsedDay = imageLastUsed.get(img.id as number);
+        return lastUsedDay === undefined || day - lastUsedDay >= 30;
+      });
+      const candidates = preferredCandidates.length > 0 ? preferredCandidates : regularCandidates;
 
       if (candidates.length > 0) {
         candidates.sort((a, b) => (a.usage_count as number) - (b.usage_count as number));

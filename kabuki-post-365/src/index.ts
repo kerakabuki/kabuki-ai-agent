@@ -5,13 +5,17 @@ import { charactersRoutes } from './routes/characters';
 import { imagesRoutes } from './routes/images';
 import { postsRoutes } from './routes/posts';
 import { calendarRoutes } from './routes/calendar';
-import { generateRoutes } from './routes/generate';
+import { generateRoutes } from './routes/instagram-generate';
+import { reelsRoutes } from './routes/reels';
+import { crosspostRoutes } from './routes/crossposts';
+import { verifyRendererToken } from './lib/render-auth';
 import { quizRoutes } from './routes/quiz';
 import { exportRoutes } from './routes/export';
 import { settingsRoutes } from './routes/settings';
 import { naviRoutes } from './routes/navi';
 import { autoPostRoutes } from './routes/auto-post';
 import { shouldRunNow, runDailyPipeline, markDone, getJSTNow } from './lib/daily-run';
+import { shouldRunStoryNow, runEveningStory } from './lib/story-post';
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -37,6 +41,10 @@ app.use('/api/v1/*', async (c, next) => {
   // Public NAVI endpoints don't require auth
   if (c.req.path.startsWith('/api/v1/navi/')) return next();
 
+  if (c.req.path.startsWith('/api/v1/reels/jobs/')) {
+    const bearer=(c.req.header('Authorization')||'').replace(/^Bearer /,'');
+    if (await verifyRendererToken(bearer)) return next();
+  }
   const token = c.env.API_TOKEN;
   if (!token) return next(); // No token configured = skip auth (dev mode)
 
@@ -53,6 +61,8 @@ app.route('/api/v1/images', imagesRoutes);
 app.route('/api/v1/posts', postsRoutes);
 app.route('/api/v1/calendar', calendarRoutes);
 app.route('/api/v1/generate', generateRoutes);
+app.route('/api/v1/reels', reelsRoutes);
+app.route('/api/v1/crossposts', crosspostRoutes);
 app.route('/api/v1/quiz', quizRoutes);
 app.route('/api/v1/export', exportRoutes);
 app.route('/api/v1/settings', settingsRoutes);
@@ -82,6 +92,7 @@ app.get('/images/navi/:size/:imageId', async (c) => {
 app.get('/images/r2/*', async (c) => {
   const r2Key = c.req.path.replace('/images/r2/', '');
   if (!r2Key) return c.json({ error: 'No key specified' }, 400);
+  if (r2Key.startsWith('reels/audio/')) return c.notFound();
 
   const object = await c.env.R2.get(r2Key);
   if (!object) {
@@ -94,6 +105,22 @@ app.get('/images/r2/*', async (c) => {
   headers.set('Content-Type', contentType);
   headers.set('Cache-Control', 'public, max-age=3600');
   return new Response(object.body, { headers });
+});
+
+// MP4 responses preserve MIME type and byte ranges for Meta and browser players.
+app.on(['GET','HEAD'],'/media/*',async c=>{
+  const key=decodeURIComponent(c.req.path.replace('/media/',''));
+  if(!key || key.includes('..') || key.startsWith('reels/audio/')) return c.notFound();
+  const object=await c.env.R2.get(key,{range:c.req.raw.headers});
+  if(!object) return c.notFound();
+  const h=new Headers();object.writeHttpMetadata(h);
+  h.set('Accept-Ranges','bytes');h.set('Cache-Control','public,max-age=3600');
+  h.set('ETag',object.httpEtag);
+  if(c.req.header('Range') && object.range && 'offset' in object.range && object.range.offset!==undefined && 'length' in object.range && object.range.length!==undefined){
+    h.set('Content-Range',`bytes ${object.range.offset}-${object.range.offset+object.range.length-1}/${object.size}`);
+    h.set('Content-Length',String(object.range.length));
+  }else h.set('Content-Length',String(object.size));
+  return new Response(c.req.method==='HEAD'?null:object.body,{status:h.has('Content-Range')?206:200,headers:h});
 });
 
 // Auth verify endpoint (for frontend login)
@@ -111,15 +138,26 @@ app.get('/api/health', (c) => c.json({ status: 'ok', service: 'kabuki-post-365' 
 export default {
   fetch: app.fetch,
   async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
-    // 15分刻みのcronのうち、日替わりで選ばれたスロットだけ実行する
-    // （投稿時刻を毎日ばらつかせて機械的な運用パターンを避けるため）
+    // 夕方の舞台裏ストーリーズ窓（19:00-19:45 JST = 10:00-10:45 UTC）は別フローで処理する。
+    // 日替わりで選ばれた1スロットだけ実投稿し、朝のフィード投稿フローには影響させない。
+    if (event.cron === '*/15 10 * * *') {
+      ctx.waitUntil((async () => {
+        const { run, reason } = await shouldRunStoryNow(env);
+        console.log(`[scheduled:story] ${reason}`);
+        if (!run) return;
+        await runEveningStory(env);
+      })());
+      return;
+    }
+
+    // Retry processing containers in the morning until a confirmed publication.
     ctx.waitUntil((async () => {
       const { run, reason } = await shouldRunNow(env);
       console.log(`[scheduled] ${reason}`);
       if (!run) return;
       const date = getJSTNow().date;
-      await runDailyPipeline(env, date);
-      await markDone(env, date);
+      const report=await runDailyPipeline(env, date);
+      if(report.results.some(r=>r.platforms.some(p=>p.success))) await markDone(env,date);
     })());
   },
 };

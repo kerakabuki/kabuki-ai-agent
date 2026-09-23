@@ -1,5 +1,6 @@
 import type { Env } from '../types';
 import { generateImage } from './image-gen';
+import { PREFERRED_IMAGE_PLAY_SQL, PREFERRED_IMAGE_REUSE_DAYS } from './image-priority';
 
 export interface ImageAssignResult {
   assigned: number;   // ライブラリから割当した件数
@@ -29,14 +30,15 @@ interface ImageRow {
 
 /**
  * 当日分の投稿のうち画像未割当のものに画像を自動で割り当てる。
- * 優先順: 既存ライブラリ（季節一致→通年、直近60日で未使用、使用回数少ない順）→ AI生成
+ * 優先順: 白浪五人男（14日間隔）→ 既存ライブラリ（60日間隔）→ AI生成
  */
 export async function ensureImages(env: Env, date: string): Promise<ImageAssignResult> {
   const result: ImageAssignResult = { assigned: 0, generated: 0, errors: [] };
 
   const { results: posts } = await env.DB.prepare(
     `SELECT id, theme, special_day FROM posts
-     WHERE post_date = ? AND status IN ('draft', 'approved') AND image_id IS NULL`,
+     WHERE post_date = ? AND status IN ('draft', 'approved') AND image_id IS NULL
+       AND auto_publish=1 AND publish_state IN ('idle','failed')`,
   ).bind(date).all<TargetPost>();
 
   if (!posts.length) return result;
@@ -80,32 +82,62 @@ export async function ensureImages(env: Env, date: string): Promise<ImageAssignR
   return result;
 }
 
-/** 直近60日で使っていない画像を、季節一致→通年→なんでも の順で1枚選ぶ */
+/**
+ * 白浪五人男をメインにしつつ、同じ写真が短期間に繰り返されないように選ぶ。
+ * 優先写真が14日以内にすべて使用済みのときは、通常写真の60日ローテーションへ戻る。
+ */
 async function pickLibraryImage(env: Env, season: string, date: string): Promise<ImageRow | null> {
   const recentlyUsed = `
     SELECT image_id FROM posts
     WHERE image_id IS NOT NULL AND post_date >= date(?, '-60 days') AND post_date <= ?`;
+  const recentlyUsedPreferred = `
+    SELECT image_id FROM posts
+    WHERE image_id IS NOT NULL AND post_date >= date(?, '-${PREFERRED_IMAGE_REUSE_DAYS} days') AND post_date <= ?`;
 
-  // 1. 季節一致 or 通年、直近未使用
+  // 1. 白浪五人男: 季節一致 or 通年、直近14日で未使用
   let row = await env.DB.prepare(
     `SELECT id, character_id, verified FROM images
-     WHERE id NOT IN (${recentlyUsed}) AND season_tag IN (?, '通年')
+     WHERE verified = 1 AND privacy_excluded = 0
+       AND ${PREFERRED_IMAGE_PLAY_SQL}
+       AND id NOT IN (${recentlyUsedPreferred}) AND season_tag IN (?, '通年')
      ORDER BY usage_count ASC, RANDOM() LIMIT 1`,
   ).bind(date, date, season).first<ImageRow>();
   if (row) return row;
 
-  // 2. 直近未使用ならなんでも
+  // 2. 白浪五人男: 季節を問わず直近14日で未使用
   row = await env.DB.prepare(
     `SELECT id, character_id, verified FROM images
-     WHERE id NOT IN (${recentlyUsed})
+     WHERE verified = 1 AND privacy_excluded = 0
+       AND ${PREFERRED_IMAGE_PLAY_SQL}
+       AND id NOT IN (${recentlyUsedPreferred})
      ORDER BY usage_count ASC, RANDOM() LIMIT 1`,
   ).bind(date, date).first<ImageRow>();
   if (row) return row;
 
-  // 3. 全部使用済みなら使用回数最少をローテーション再利用
+  // 3. 通常写真: 季節一致 or 通年、直近60日で未使用
   row = await env.DB.prepare(
     `SELECT id, character_id, verified FROM images
+     WHERE verified = 1 AND privacy_excluded = 0
+       AND id NOT IN (${recentlyUsed}) AND season_tag IN (?, '通年')
      ORDER BY usage_count ASC, RANDOM() LIMIT 1`,
+  ).bind(date, date, season).first<ImageRow>();
+  if (row) return row;
+
+  // 4. 通常写真: 季節を問わず直近60日で未使用
+  row = await env.DB.prepare(
+    `SELECT id, character_id, verified FROM images
+     WHERE verified = 1 AND privacy_excluded = 0
+       AND id NOT IN (${recentlyUsed})
+     ORDER BY usage_count ASC, RANDOM() LIMIT 1`,
+  ).bind(date, date).first<ImageRow>();
+  if (row) return row;
+
+  // 5. 全部使用済みなら白浪五人男を優先し、使用回数最少を再利用
+  row = await env.DB.prepare(
+    `SELECT id, character_id, verified FROM images
+     WHERE verified = 1 AND privacy_excluded = 0
+     ORDER BY CASE WHEN ${PREFERRED_IMAGE_PLAY_SQL} THEN 0 ELSE 1 END,
+              usage_count ASC, RANDOM() LIMIT 1`,
   ).first<ImageRow>();
   return row || null;
 }
@@ -141,11 +173,11 @@ async function generateAndRegisterImage(
   }
 
   const dbResult = await env.DB.prepare(
-    `INSERT INTO images (filename, r2_key, scene_type, visual_features, season_tag)
-     VALUES (?, ?, 'AI生成', ?, '通年')`,
+    `INSERT INTO images (filename, r2_key, scene_type, visual_features, season_tag, verified)
+     VALUES (?, ?, 'AI生成', ?, '通年', 1)`,
   ).bind(filename, r2Key, `AI生成画像（テーマ: ${post.theme}）`).run();
 
-  return { id: dbResult.meta.last_row_id as number, character_id: null, verified: 0 };
+  return { id: dbResult.meta.last_row_id as number, character_id: null, verified: 1 };
 }
 
 function buildImagePrompt(theme: string, date: string): string {

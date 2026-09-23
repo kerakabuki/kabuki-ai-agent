@@ -1,20 +1,16 @@
 import { NavLink, Outlet } from 'react-router-dom';
 import {
-  LayoutDashboard, Calendar, Image, ShieldCheck, Users, HelpCircle, Download, Settings, Menu, X, LogOut, Camera
+  LayoutDashboard, Calendar, Image, Settings, Menu, X, LogOut, Camera
 } from 'lucide-react';
 import { useState } from 'react';
 import { clearAuthToken } from '../lib/api';
 
 const navItems = [
-  { to: '/', icon: LayoutDashboard, label: 'ダッシュボード' },
-  { to: '/quick', icon: Camera, label: 'クイック投稿' },
-  { to: '/calendar', icon: Calendar, label: 'カレンダー' },
-  { to: '/images', icon: Image, label: '画像管理' },
-  { to: '/verify', icon: ShieldCheck, label: '写真チェック' },
-  { to: '/characters', icon: Users, label: 'キャラクター' },
-  { to: '/quiz', icon: HelpCircle, label: 'クイズ' },
-  { to: '/export', icon: Download, label: 'エクスポート' },
-  { to: '/settings', icon: Settings, label: '設定' },
+ {to:'/',icon:LayoutDashboard,label:'今日の投稿'},
+ {to:'/quick',icon:Camera,label:'撮影・写真追加'},
+ {to:'/calendar',icon:Calendar,label:'カレンダー'},
+ {to:'/images',icon:Image,label:'素材'},
+ {to:'/settings',icon:Settings,label:'設定'},
 ];
 
 export default function AppLayout() {
@@ -30,7 +26,7 @@ export default function AppLayout() {
       `}>
         <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200">
           <h1 className="text-lg font-bold" style={{ color: 'var(--color-kabuki)' }}>
-            KABUKI POST 365
+            KABUKI POST 365 · Instagram
           </h1>
           <button onClick={() => setSidebarOpen(false)} className="lg:hidden p-1">
             <X size={20} />
@@ -79,7 +75,7 @@ export default function AppLayout() {
             <Menu size={20} />
           </button>
           <h1 className="ml-3 text-lg font-bold" style={{ color: 'var(--color-kabuki)' }}>
-            KABUKI POST 365
+            KABUKI POST 365 · Instagram
           </h1>
         </header>
         <main className="flex-1 overflow-y-auto p-4 lg:p-6">

@@ -4,6 +4,7 @@ import {
   Check, AlertCircle, Image as ImageIcon, RefreshCw,
 } from 'lucide-react';
 import { api } from '../lib/api';
+import ReelPanel from '../components/ReelPanel';
 import { processImageFile } from '../lib/image-resize';
 
 // テーマ選択肢（既存テーマから「クイズ」を除いたもの）
@@ -12,8 +13,6 @@ const THEME_OPTIONS = ['舞台裏', '演目', '役者', '豆知識', '名場面'
 // 投稿先プラットフォーム（x は現在無効のため対象外。実際の可否は設定の disabled_platforms で判定）
 const QUICK_PLATFORMS: { key: string; label: string }[] = [
   { key: 'instagram', label: 'Instagram' },
-  { key: 'facebook', label: 'Facebook' },
-  { key: 'bluesky', label: 'Bluesky' },
 ];
 
 // AI画像分析の結果
@@ -490,6 +489,7 @@ export default function QuickPostPage() {
         </div>
       )}
 
+      {step===3&&postId!=null&&<ReelPanel postId={postId} published={!!basePost?.instagram_posted}/>}
       {/* Step 3: プレビューと投稿 */}
       {step === 3 && (
         <div className="space-y-4">

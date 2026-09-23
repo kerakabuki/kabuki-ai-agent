@@ -8,6 +8,7 @@ export interface PostResult {
   success: boolean;
   platformPostId?: string;
   error?: string;
+  permalink?: string;
 }
 
 const GRAPH_API = 'https://graph.facebook.com/v21.0';
@@ -62,9 +63,100 @@ export async function postToInstagram(
     if (publishData.error) {
       return { success: false, error: formatMetaError(publishData.error) };
     }
-    return { success: true, platformPostId: publishData.id as string };
+    const mediaId = publishData.id as string;
+
+    // permalink（投稿の直リンク）をbest-effortで取得する。
+    // LINE通知に載せて管理者が個人アカウントで即シェアするための導線。
+    // 取得に失敗しても投稿自体は成功なので、投稿の成否には影響させない。
+    let permalink: string | undefined;
+    try {
+      const permaRes = await fetch(
+        `${GRAPH_API}/${mediaId}?fields=permalink&access_token=${config.accessToken}`,
+      );
+      const permaData = await permaRes.json() as Record<string, unknown>;
+      if (typeof permaData.permalink === 'string') {
+        permalink = permaData.permalink;
+      }
+    } catch {
+      /* permalink取得失敗は無視（投稿は成功扱いのまま） */
+    }
+
+    return { success: true, platformPostId: mediaId, permalink };
   } catch (e: unknown) {
     return { success: false, error: `Instagram API error: ${(e as Error).message}` };
+  }
+}
+
+// ── Instagram Stories（舞台裏ストーリーズ投稿） ──
+// フィードと同じ2段階（コンテナ作成 → ステータスポーリング → media_publish）だが、
+// コンテナ作成bodyに media_type: 'STORIES' を付け、キャプションは付けない。
+export async function postInstagramStory(
+  config: MetaConfig,
+  imageUrl: string,
+): Promise<PostResult> {
+  if (!config.igUserId) {
+    return { success: false, error: 'INSTAGRAM_USER_ID not configured' };
+  }
+  try {
+    // Step 1: Create media container（STORIES指定・キャプションなし）
+    const createRes = await fetch(
+      `${GRAPH_API}/${config.igUserId}/media`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          image_url: imageUrl,
+          media_type: 'STORIES',
+          access_token: config.accessToken,
+        }),
+      },
+    );
+    const createData = await createRes.json() as Record<string, unknown>;
+    if (createData.error) {
+      return { success: false, error: formatMetaError(createData.error) };
+    }
+    const containerId = createData.id as string;
+
+    // Step 2: Poll until container is ready (max 30s)
+    const ready = await pollContainerStatus(config, containerId);
+    if (!ready.success) return ready;
+
+    // Step 3: Publish
+    const publishRes = await fetch(
+      `${GRAPH_API}/${config.igUserId}/media_publish`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          creation_id: containerId,
+          access_token: config.accessToken,
+        }),
+      },
+    );
+    const publishData = await publishRes.json() as Record<string, unknown>;
+    if (publishData.error) {
+      return { success: false, error: formatMetaError(publishData.error) };
+    }
+    const mediaId = publishData.id as string;
+
+    // permalinkはbest-effortで取得（ストーリーズは24hで消えるため取得できないこともある）。
+    // 取得失敗は無視し、投稿の成否には影響させない。
+    let permalink: string | undefined;
+    try {
+      const permaRes = await fetch(
+        `${GRAPH_API}/${mediaId}?fields=permalink&access_token=${config.accessToken}`,
+      );
+      const permaData = await permaRes.json() as Record<string, unknown>;
+      if (typeof permaData.permalink === 'string') {
+        permalink = permaData.permalink;
+      }
+    } catch {
+      /* permalink取得失敗は無視（投稿は成功扱いのまま） */
+    }
+
+    return { success: true, platformPostId: mediaId, permalink };
+  } catch (e: unknown) {
+    return { success: false, error: `Instagram Story API error: ${(e as Error).message}` };
   }
 }
 
@@ -139,7 +231,13 @@ export async function postToFacebook(
     if (data.error) {
       return { success: false, error: formatMetaError(data.error) };
     }
-    return { success: true, platformPostId: (data.post_id || data.id) as string };
+    // /photos は post_id="pageId_postId" 形式を返す。facebook.com/{post_id} で投稿ページが開ける
+    const postId = (data.post_id || data.id) as string;
+    return {
+      success: true,
+      platformPostId: postId,
+      permalink: `https://www.facebook.com/${postId}`,
+    };
   } catch (e: unknown) {
     return { success: false, error: `Facebook API error: ${(e as Error).message}` };
   }

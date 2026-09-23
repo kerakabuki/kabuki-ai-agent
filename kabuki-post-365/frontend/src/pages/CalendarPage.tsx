@@ -7,9 +7,6 @@ import { api } from '../lib/api';
 const DAY_LABELS = ['日', '月', '火', '水', '木', '金', '土'];
 
 const PLATFORM_BADGES: Record<string, { letter: string; label: string; color: string; postedColor: string }> = {
-  x: { letter: 'X', label: 'X', color: 'bg-gray-200 text-gray-500', postedColor: 'bg-black text-white' },
-  bluesky: { letter: 'B', label: 'Bluesky', color: 'bg-blue-100 text-blue-300', postedColor: 'bg-blue-500 text-white' },
-  facebook: { letter: 'F', label: 'Facebook', color: 'bg-blue-100 text-blue-300', postedColor: 'bg-blue-700 text-white' },
   instagram: { letter: 'I', label: 'Instagram', color: 'bg-pink-100 text-pink-300', postedColor: 'bg-gradient-to-br from-purple-600 to-orange-500 text-white' },
 };
 

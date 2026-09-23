@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import type { Env, Character } from '../types';
 import { analyzeImageWithVision } from '../lib/vision';
 import { generateImage } from '../lib/image-gen';
+import { STORY_POOL_WHERE } from '../lib/story-post';
 
 export const imagesRoutes = new Hono<{ Bindings: Env }>();
 
@@ -57,8 +58,8 @@ imagesRoutes.post('/generate', async (c) => {
 
   // Create DB record
   const dbResult = await c.env.DB.prepare(
-    `INSERT INTO images (filename, r2_key, scene_type, visual_features, season_tag)
-     VALUES (?, ?, ?, ?, ?)`
+    `INSERT INTO images (filename, r2_key, scene_type, visual_features, season_tag, verified)
+     VALUES (?, ?, ?, ?, ?, 1)`
   ).bind(filename, r2Key, 'AI生成', 'AI生成画像', '通年').run();
 
   return c.json({
@@ -99,6 +100,8 @@ imagesRoutes.get('/', async (c) => {
   const characterId = c.req.query('character_id');
   const seasonTag = c.req.query('season_tag');
   const verified = c.req.query('verified'); // '0'（未検品）or '1'（検品済み）
+  const privacyExcluded = c.req.query('privacy_excluded'); // '0'（使用可）or '1'（投稿除外）
+  const eligible = c.req.query('eligible'); // '1' は投稿に使用できる検品済み写真のみ
 
   let query = 'SELECT * FROM images WHERE 1=1';
   const params: (string | number)[] = [];
@@ -115,11 +118,46 @@ imagesRoutes.get('/', async (c) => {
     query += ' AND verified = ?';
     params.push(Number(verified));
   }
+  if (privacyExcluded === '0' || privacyExcluded === '1') {
+    query += ' AND privacy_excluded = ?';
+    params.push(Number(privacyExcluded));
+  }
+  if (eligible === '1') {
+    query += ' AND verified = 1 AND privacy_excluded = 0';
+  }
 
   query += ' ORDER BY created_at DESC';
   const stmt = c.env.DB.prepare(query);
   const { results } = params.length > 0 ? await stmt.bind(...params).all() : await stmt.all();
   return c.json(results);
+});
+
+// 夕方の舞台裏ストーリーズ投稿履歴。
+// 対象プール条件は story-post.ts の STORY_POOL_WHERE を共有（画像選定と同一条件）。
+// 注意: このルートは '/:id' より前に登録すること（後だと 'story-history' が id として拾われる）。
+imagesRoutes.get('/story-history', async (c) => {
+  // 対象プールの総数と、まだ一度もストーリーズに出ていない枚数
+  const totalRow = await c.env.DB.prepare(
+    `SELECT COUNT(*) AS n FROM images WHERE ${STORY_POOL_WHERE}`
+  ).first<{ n: number }>();
+  const unpostedRow = await c.env.DB.prepare(
+    `SELECT COUNT(*) AS n FROM images WHERE ${STORY_POOL_WHERE} AND story_posted_at IS NULL`
+  ).first<{ n: number }>();
+
+  // 投稿履歴（新しい順に最大30件）
+  const { results: history } = await c.env.DB.prepare(
+    `SELECT id, filename, r2_key, scene_type, story_posted_at
+     FROM images
+     WHERE ${STORY_POOL_WHERE} AND story_posted_at IS NOT NULL
+     ORDER BY story_posted_at DESC
+     LIMIT 30`
+  ).all();
+
+  return c.json({
+    pool_total: totalRow?.n ?? 0,
+    pool_unposted: unpostedRow?.n ?? 0,
+    history: history ?? [],
+  });
 });
 
 // Get single image
@@ -226,6 +264,65 @@ imagesRoutes.post('/:id/verify', async (c) => {
   ).bind(...params).run();
 
   return c.json({ success: true });
+});
+
+const PRIVACY_EXCLUSION_REASONS = new Set([
+  'child_face',
+  'backstage_woman_face',
+]);
+
+// 個人情報・舞台裏配慮によるSNS投稿除外。
+// R2上の写真は削除せず、未投稿の予約枠から割当と生成済み本文だけを安全に外す。
+imagesRoutes.post('/:id/privacy-exclusion', async (c) => {
+  const id = Number(c.req.param('id'));
+  if (!Number.isInteger(id) || id <= 0) return c.json({ error: 'Invalid image id' }, 400);
+
+  const body = await c.req.json<{ excluded?: boolean; reason?: string | null }>();
+  const excluded = body.excluded === true;
+  let reason: string | null = null;
+  if (excluded) {
+    if (!body.reason || !PRIVACY_EXCLUSION_REASONS.has(body.reason)) {
+      return c.json({ error: 'Invalid privacy exclusion reason' }, 400);
+    }
+    reason = body.reason;
+  }
+
+  const existing = await c.env.DB.prepare('SELECT id FROM images WHERE id = ?').bind(id).first();
+  if (!existing) return c.json({ error: 'Not found' }, 404);
+
+  const statements = [
+    c.env.DB.prepare(
+      `UPDATE images
+       SET privacy_excluded = ?, privacy_exclusion_reason = ?, updated_at = datetime('now')
+       WHERE id = ?`,
+    ).bind(excluded ? 1 : 0, reason, id),
+  ];
+
+  if (excluded) {
+    statements.push(
+      c.env.DB.prepare(
+        `UPDATE posts
+         SET image_id = NULL,
+             instagram_text = NULL, instagram_hashtags = NULL,
+             x_text = NULL, x_hashtags = NULL,
+             facebook_text = NULL, facebook_hashtags = NULL,
+             bluesky_text = NULL,
+             updated_at = datetime('now')
+         WHERE image_id = ?
+           AND instagram_posted = 0
+           AND x_posted = 0
+           AND facebook_posted = 0
+           AND bluesky_posted = 0`,
+      ).bind(id),
+    );
+  }
+
+  const results = await c.env.DB.batch(statements);
+  return c.json({
+    success: true,
+    excluded,
+    affected_posts: excluded ? (results[1]?.meta.changes ?? 0) : 0,
+  });
 });
 
 // Upload variants for existing image (R2 only, no DB change)

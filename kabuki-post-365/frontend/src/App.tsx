@@ -1,12 +1,13 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import AppLayout from './components/AppLayout';
-import DashboardPage from './pages/DashboardPage';
+import DashboardPage from './pages/InstagramTodayPage';
 import QuickPostPage from './pages/QuickPostPage';
 import CalendarPage from './pages/CalendarPage';
 import PostEditPage from './pages/PostEditPage';
 import ImagesPage from './pages/ImagesPage';
 import VerifyPage from './pages/VerifyPage';
+import StoryHistoryPage from './pages/StoryHistoryPage';
 import CharactersPage from './pages/CharactersPage';
 import QuizPage from './pages/QuizPage';
 import ExportPage from './pages/ExportPage';
@@ -95,6 +96,7 @@ export default function App() {
           <Route path="/posts/:id" element={<PostEditPage />} />
           <Route path="/images" element={<ImagesPage />} />
           <Route path="/verify" element={<VerifyPage />} />
+          <Route path="/stories" element={<StoryHistoryPage />} />
           <Route path="/characters" element={<CharactersPage />} />
           <Route path="/quiz" element={<QuizPage />} />
           <Route path="/export" element={<ExportPage />} />

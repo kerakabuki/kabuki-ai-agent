@@ -37,7 +37,7 @@ export async function generatePostText(
   const cta = buildCtaText(ctaType, settings);
   const commonHashtags = settings.common_hashtags || '#歌舞伎 #kabuki';
 
-  const platforms = platform ? [platform] : ['instagram', 'x', 'facebook', 'bluesky'];
+  const platforms = ['instagram'];
   const platformSpecs: Record<string, string> = {
     instagram: `Instagram投稿文（最大2200文字、改行自由、ハッシュタグは本文とは別に出力）
 - 親しみやすく丁寧な口調
@@ -202,21 +202,12 @@ ${cta ? `【CTA】${cta}` : '【CTA】なし（CTAは入れず、読者への問
 
 ${variationPrompt}
 ${customPrompt ? `\n【追加指示（構成指示と食い違う場合はこちらを優先）】${customPrompt}` : ''}
-以下の各プラットフォーム用の投稿文を作成してください：
-
+Instagramだけの投稿文を作成してください。他SNSの文章は出力しないでください。
+写真の撮影日が不明な場合、「今日」「今夜の稽古」など現在の出来事として書かないでください。
+本文は150〜250字を目安に、ハッシュタグは最大5個。読み上げ用の台本やMarkdownは不要です。
 ${promptParts}
-
-以下のJSON形式で回答してください（コードブロックなし）：
-{
-  "instagram_text": "...",
-  "instagram_hashtags": "...",
-  "x_text": "...",
-  "x_hashtags": "...",
-  "facebook_text": "...",
-  "bluesky_text": "..."${theme === 'クイズ' && quizQuestion ? `,
-  "comment_x": "...",
-  "comment_bluesky": "..."` : ''}
-}${quizAnswerInstruction}`;
+以下のJSON形式だけで回答してください：
+{"instagram_text":"...","instagram_hashtags":"..."}`;
 
   // Gemini API (with retry for cold start)
   const model = env.GEMINI_TEXT_MODEL || 'gemini-2.5-flash';

@@ -5,13 +5,11 @@ import {
   Copy, Check, Send, CheckCircle, ChevronDown, ChevronUp,
 } from 'lucide-react';
 import { api } from '../lib/api';
+import ReelPanel from '../components/ReelPanel';
 
-const PLATFORMS = [
-  { key: 'x', label: 'X', icon: '𝕏', maxLen: 280, color: 'bg-black', canPost: true },
-  { key: 'bluesky', label: 'Bluesky', icon: '🦋', maxLen: 300, color: 'bg-blue-500', canPost: true },
-  { key: 'facebook', label: 'Facebook', icon: 'f', maxLen: 500, color: 'bg-blue-700', canPost: true },
-  { key: 'instagram', label: 'Instagram', icon: '📷', maxLen: 2200, color: 'bg-gradient-to-br from-purple-600 to-orange-500', canPost: true },
-] as const;
+const PLATFORMS: Array<{key:string;label:string;icon:string;maxLen:number;color:string;canPost:boolean}> = [
+ {key:'instagram',label:'Instagram',icon:'📷',maxLen:2200,color:'bg-gradient-to-br from-purple-600 to-orange-500',canPost:true},
+];
 
 const THEMES = ['演目', '役者', '豆知識', '名場面', 'クイズ', '舞台裏', '歴史', '機能紹介'];
 const CTA_TYPES = [
@@ -168,6 +166,7 @@ export default function PostEditPage() {
 
   return (
     <div className="max-w-5xl mx-auto">
+      <ReelPanel postId={Number(id)} published={!!post.instagram_posted}/>
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
@@ -772,7 +771,7 @@ function ImagePickerModal({ onSelect, onClose, currentImageId }: {
 
   const loadImages = () => {
     setLoading(true);
-    api.images.list().then(setImages).finally(() => setLoading(false));
+    api.images.list({ eligible: '1' }).then(setImages).finally(() => setLoading(false));
   };
 
   useEffect(() => { loadImages(); }, []);

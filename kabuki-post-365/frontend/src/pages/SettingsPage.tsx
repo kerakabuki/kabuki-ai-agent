@@ -29,8 +29,6 @@ const SETTING_GROUPS: SettingGroup[] = [
     title: 'SNSアカウント',
     fields: [
       { key: 'sns_instagram', label: 'Instagram', type: 'text', placeholder: 'https://www.instagram.com/kerakabuki_official' },
-      { key: 'sns_x', label: 'X（旧Twitter）', type: 'text', placeholder: 'https://x.com/KeraKabuki' },
-      { key: 'sns_facebook', label: 'Facebook', type: 'text', placeholder: 'https://www.facebook.com/kerakabuki' },
       { key: 'sns_note', label: 'Note', type: 'text', placeholder: 'https://note.com/kerakabuki' },
       { key: 'sns_youtube', label: 'YouTube', type: 'text', placeholder: 'https://www.youtube.com/@kerakabuki' },
     ],

@@ -47,6 +47,14 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 
 // Characters
 export const api = {
+  reels: {
+    status: () => request<{enabled:boolean;bgm_key:string;jobs:unknown[]}>('/reels/status'),
+    post: (id:number) => request<{status:string;video_url:string|null;error?:string}|null>(`/reels/post/${id}`),
+    prepare: () => request<{queued:number}>('/reels/prepare',{method:'POST'}),
+  },
+  crossposts: {
+    list: (date:string) => request<Array<{platform:string;status:string;permalink:string|null}>>(`/crossposts?date=${date}`),
+  },
   characters: {
     list: () => request<any[]>('/characters'),
     get: (id: number) => request<any>(`/characters/${id}`),
@@ -65,12 +73,20 @@ export const api = {
     analyze: (formData: FormData) => request<any>('/images/analyze', { method: 'POST', body: formData }),
     update: (id: number, data: any) => request<any>(`/images/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
     setPrimary: (id: number) => request<any>(`/images/${id}/primary`, { method: 'PUT' }),
-    verify: (id: number, data?: { character_id?: number | null; play_name?: string | null }) =>
-      request<{ success: boolean }>(`/images/${id}/verify`, { method: 'POST', body: JSON.stringify(data || {}) }),
-    delete: (id: number) => request<any>(`/images/${id}`, { method: 'DELETE' }),
+      verify: (id: number, data?: { character_id?: number | null; play_name?: string | null }) =>
+        request<{ success: boolean }>(`/images/${id}/verify`, { method: 'POST', body: JSON.stringify(data || {}) }),
+      setPrivacyExclusion: (id: number, data: { excluded: boolean; reason?: string | null }) =>
+        request<{ success: boolean; excluded: boolean; affected_posts: number }>(`/images/${id}/privacy-exclusion`, {
+          method: 'POST',
+          body: JSON.stringify(data),
+        }),
+      delete: (id: number) => request<any>(`/images/${id}`, { method: 'DELETE' }),
     generate: (formData: FormData) => request<any>('/images/generate', { method: 'POST', body: formData }),
+    // 夕方の舞台裏ストーリーズ投稿履歴（プール残数＋履歴一覧）。呼び出し側で型付けする。
+    storyHistory: () => request<unknown>('/images/story-history'),
   },
   posts: {
+    schedule: (id:number,date:string) => request<{success:boolean}>(`/posts/${id}/schedule`,{method:'POST',body:JSON.stringify({date})}),
     list: (params?: Record<string, string>) => {
       const qs = params ? '?' + new URLSearchParams(params).toString() : '';
       return request<any[]>(`/posts${qs}`);

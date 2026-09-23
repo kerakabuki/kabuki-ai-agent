@@ -56,6 +56,8 @@ export interface ImageRecord {
   navi_visible: number;
   is_primary: number;
   verified: number; // 人間が写真チェックで確認済みなら1（本文生成のキャラ文脈に使える）
+  privacy_excluded: number; // 個人情報・舞台裏配慮によりSNS投稿へ使用しないなら1
+  privacy_exclusion_reason: string | null;
   created_at: string;
   updated_at: string;
 }

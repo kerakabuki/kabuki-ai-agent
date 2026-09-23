@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
-import { Upload, Trash2, Star, Loader2, Sparkles, X, ImagePlus, ChevronDown, ChevronUp } from 'lucide-react';
+import { Upload, Trash2, Star, Loader2, Sparkles, X, ImagePlus, ChevronDown, ChevronUp, ShieldAlert } from 'lucide-react';
 import { useImages, useCharacters } from '../hooks/useData';
 import { api } from '../lib/api';
 import { processImageFile } from '../lib/image-resize';
@@ -21,6 +21,13 @@ interface StagedFile {
     navi_caption: string;
   };
 }
+
+type PrivacyExclusionReason = 'child_face' | 'backstage_woman_face';
+
+const PRIVACY_REASON_LABELS: Record<PrivacyExclusionReason, string> = {
+  child_face: '子どもの顔',
+  backstage_woman_face: '裏方女性の顔',
+};
 
 export default function ImagesPage() {
   const { data: images, loading, refresh } = useImages();
@@ -217,6 +224,26 @@ export default function ImagesPage() {
     await api.images.update(editingId, editForm);
     setEditingId(null);
     refresh();
+  };
+
+  const handlePrivacyExclusion = async (
+    id: number,
+    excluded: boolean,
+    reason?: PrivacyExclusionReason,
+  ) => {
+    if (excluded) {
+      if (!reason) return;
+      if (!confirm(`「${PRIVACY_REASON_LABELS[reason]}」としてSNS投稿から除外しますか？\n写真ファイル自体は削除されません。`)) return;
+    }
+    const result = await api.images.setPrivacyExclusion(id, {
+      excluded,
+      reason: excluded ? reason : null,
+    });
+    setEditingId(null);
+    await refresh();
+    if (result.affected_posts > 0) {
+      alert(`未投稿の予約 ${result.affected_posts}件から、この写真を外しました。`);
+    }
   };
 
   const pendingCount = stagedFiles.filter((f) => f.status !== 'done').length;
@@ -509,7 +536,7 @@ export default function ImagesPage() {
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {images.map((img: any) => (
-            <div key={img.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden group">
+            <div key={img.id} className={`bg-white rounded-xl border overflow-hidden group ${img.privacy_excluded === 1 ? 'border-red-400' : 'border-gray-200'}`}>
               <div className="aspect-square bg-gray-100 relative">
                 <img
                   src={`/images/r2/${img.r2_key}`}
@@ -528,6 +555,11 @@ export default function ImagesPage() {
                     <Star size={10} /> プライマリ
                   </div>
                 )}
+                {img.privacy_excluded === 1 && (
+                  <div className="absolute top-2 right-2 bg-red-700 text-white text-xs px-2 py-0.5 rounded-full flex items-center gap-1">
+                    <ShieldAlert size={10} /> 投稿除外
+                  </div>
+                )}
                 {/* Hover actions */}
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                   <button onClick={() => handleSetPrimary(img.id)} className="p-2 bg-white rounded-full hover:bg-yellow-100" title="プライマリに設定">
@@ -536,6 +568,13 @@ export default function ImagesPage() {
                   <button onClick={() => handleDelete(img.id)} className="p-2 bg-white rounded-full hover:bg-red-100" title="削除">
                     <Trash2 size={16} className="text-red-600" />
                   </button>
+                  <button
+                    onClick={() => { setEditingId(img.id); setEditForm(img); }}
+                    className="p-2 bg-white rounded-full hover:bg-red-100"
+                    title="SNS投稿の使用可否を設定"
+                  >
+                    <ShieldAlert size={16} className="text-red-700" />
+                  </button>
                 </div>
               </div>
               <div className="p-3">
@@ -543,6 +582,11 @@ export default function ImagesPage() {
                 <div className="text-xs text-gray-500 mt-1">
                   {img.season_tag || '通年'} | 使用回数: {img.usage_count}
                 </div>
+                {img.privacy_excluded === 1 && (
+                  <div className="text-xs text-red-700 font-medium mt-1">
+                    除外理由: {PRIVACY_REASON_LABELS[img.privacy_exclusion_reason as PrivacyExclusionReason] || '個人情報保護'}
+                  </div>
+                )}
                 <button
                   onClick={() => { setEditingId(img.id); setEditForm(img); }}
                   className="text-xs text-red-700 hover:underline mt-2"
@@ -578,6 +622,38 @@ export default function ImagesPage() {
                   />
                 </div>
               ))}
+
+              <div className="border-t border-gray-200 pt-3">
+                <div className="text-sm font-medium text-gray-700 mb-2">SNS投稿での使用</div>
+                {editForm.privacy_excluded === 1 ? (
+                  <div className="rounded-lg border border-red-200 bg-red-50 p-3">
+                    <div className="text-sm font-medium text-red-800">
+                      投稿から除外中: {PRIVACY_REASON_LABELS[editForm.privacy_exclusion_reason as PrivacyExclusionReason] || '個人情報保護'}
+                    </div>
+                    <button
+                      onClick={() => editingId && handlePrivacyExclusion(editingId, false)}
+                      className="mt-2 px-3 py-1.5 text-xs bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50"
+                    >
+                      投稿に使用できる状態へ戻す
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    <p className="text-xs text-gray-500 mb-2">該当する理由を押すと、写真を削除せず投稿候補から外します。</p>
+                    <div className="grid grid-cols-1 gap-2">
+                      {(Object.keys(PRIVACY_REASON_LABELS) as PrivacyExclusionReason[]).map((reason) => (
+                        <button
+                          key={reason}
+                          onClick={() => editingId && handlePrivacyExclusion(editingId, true, reason)}
+                          className="px-3 py-2 text-sm text-left bg-red-50 text-red-700 border border-red-200 rounded-lg hover:bg-red-100"
+                        >
+                          除外する — {PRIVACY_REASON_LABELS[reason]}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
             <div className="flex justify-end gap-2 mt-6">
               <button onClick={() => setEditingId(null)} className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg">キャンセル</button>

@@ -22,6 +22,7 @@ interface PostRow {
   theme: string | null;
   quiz_answer_comment: string | null;
   r2_key: string | null;
+  privacy_excluded: number;
   navi_image_url: string | null;
   status: string;
 }
@@ -32,6 +33,7 @@ interface PlatformResult {
   platformPostId?: string;
   error?: string;
   skipped?: boolean;
+  permalink?: string;
 }
 
 export interface AutoPostReport {
@@ -60,7 +62,7 @@ export async function executeAutoPost(
            p.facebook_text, p.facebook_hashtags, p.facebook_posted,
            p.bluesky_text, p.bluesky_posted,
            p.cta_type, p.cta_url, p.theme, p.quiz_answer_comment,
-           i.r2_key,
+           i.r2_key, COALESCE(i.privacy_excluded, 0) AS privacy_excluded,
            c.navi_image_url
     FROM posts p
     LEFT JOIN images i ON p.image_id = i.id
@@ -75,10 +77,7 @@ export async function executeAutoPost(
   }
 
   // Get worker base URL for constructing public image URLs
-  const baseUrlRow = await env.DB.prepare(
-    `SELECT value FROM settings WHERE key = 'worker_base_url'`,
-  ).first<{ value: string }>();
-  const baseUrl = baseUrlRow?.value || 'https://kabuki-post-365.kerakabuki.workers.dev';
+  const baseUrl = await getWorkerBaseUrl(env);
 
   // Build platform configs (null if secrets not configured)
   const metaConfig = buildMetaConfig(env);
@@ -92,21 +91,23 @@ export async function executeAutoPost(
 
   for (const post of posts.results) {
     const platforms: PlatformResult[] = [];
+    const imageBlocked = post.privacy_excluded === 1;
+    if (imageBlocked) {
+      console.warn(`[auto-post] Post ${post.id} uses a privacy-excluded image; all image platforms will be skipped`);
+    }
 
     // Image resolution: R2 image > character navi_image_url
-    const r2ImageUrl = post.r2_key
-      ? `${baseUrl}/images/r2/${post.r2_key.split('/').map(s => encodeURIComponent(s)).join('/')}`
-      : null;
-    const imageUrl = r2ImageUrl || post.navi_image_url || null;
+    const r2ImageUrl = !imageBlocked && post.r2_key ? buildR2ImageUrl(baseUrl, post.r2_key) : null;
+    const imageUrl = imageBlocked ? null : (r2ImageUrl || post.navi_image_url || null);
 
     // Read raw image for platforms that upload directly (X, Bluesky)
     let imageData: Uint8Array | null = null;
-    if (post.r2_key) {
+    if (!imageBlocked && post.r2_key) {
       const obj = await env.R2.get(post.r2_key);
       if (obj) {
         imageData = new Uint8Array(await obj.arrayBuffer());
       }
-    } else if (post.navi_image_url) {
+    } else if (!imageBlocked && post.navi_image_url) {
       try {
         const res = await fetch(post.navi_image_url);
         if (res.ok) {
@@ -307,13 +308,28 @@ async function processBluesky(
 
 // ── Disabled platforms (settings: disabled_platforms = "x,facebook" 形式) ──
 
-async function getDisabledPlatforms(env: Env): Promise<Set<string>> {
+export async function getDisabledPlatforms(env: Env): Promise<Set<string>> {
   const row = await env.DB.prepare(
     `SELECT value FROM settings WHERE key = 'disabled_platforms'`,
   ).first<{ value: string }>();
   return new Set(
     (row?.value || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean),
   );
+}
+
+// ── 公開画像URLの組み立て（フィード・ストーリーズで共有） ──
+
+/** settings.worker_base_url を読む（未設定なら本番Workerの既定URL） */
+export async function getWorkerBaseUrl(env: Env): Promise<string> {
+  const baseUrlRow = await env.DB.prepare(
+    `SELECT value FROM settings WHERE key = 'worker_base_url'`,
+  ).first<{ value: string }>();
+  return baseUrlRow?.value || 'https://kabuki-post-365.kerakabuki.workers.dev';
+}
+
+/** R2キーからWorker経由の公開画像URLを組み立てる（セグメント毎にURLエンコード） */
+export function buildR2ImageUrl(baseUrl: string, r2Key: string): string {
+  return `${baseUrl}/images/r2/${r2Key.split('/').map(s => encodeURIComponent(s)).join('/')}`;
 }
 
 // ── Comment text helper ──
@@ -401,7 +417,7 @@ export async function postSinglePlatform(
            p.facebook_text, p.facebook_hashtags, p.facebook_posted,
            p.bluesky_text, p.bluesky_posted,
            p.cta_type, p.cta_url, p.theme, p.quiz_answer_comment,
-           i.r2_key,
+           i.r2_key, COALESCE(i.privacy_excluded, 0) AS privacy_excluded,
            c.navi_image_url
     FROM posts p
     LEFT JOIN images i ON p.image_id = i.id
@@ -411,6 +427,10 @@ export async function postSinglePlatform(
 
   if (!post) {
     return { success: false, error: 'Post not found' };
+  }
+
+  if (post.privacy_excluded === 1) {
+    return { success: false, error: 'この写真は個人情報保護のため投稿対象外です。別の写真に差し替えてください。' };
   }
 
   // Check if already posted
@@ -426,15 +446,10 @@ export async function postSinglePlatform(
   }
 
   // Get base URL
-  const baseUrlRow = await env.DB.prepare(
-    `SELECT value FROM settings WHERE key = 'worker_base_url'`,
-  ).first<{ value: string }>();
-  const baseUrl = baseUrlRow?.value || 'https://kabuki-post-365.kerakabuki.workers.dev';
+  const baseUrl = await getWorkerBaseUrl(env);
 
   // Image resolution
-  const r2ImageUrl = post.r2_key
-    ? `${baseUrl}/images/r2/${post.r2_key.split('/').map(s => encodeURIComponent(s)).join('/')}`
-    : null;
+  const r2ImageUrl = post.r2_key ? buildR2ImageUrl(baseUrl, post.r2_key) : null;
   const imageUrl = r2ImageUrl || post.navi_image_url || null;
 
   let imageData: Uint8Array | null = null;

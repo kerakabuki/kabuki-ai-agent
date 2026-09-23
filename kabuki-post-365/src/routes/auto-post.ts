@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import type { Env } from '../types';
-import { executeAutoPost, postSinglePlatform } from '../lib/auto-post';
+import { executeAutoPost, postSinglePlatform } from '../lib/instagram-auto-post';
 import { runDailyPipeline, pickSlotForDate, getJSTNow } from '../lib/daily-run';
 
 export const autoPostRoutes = new Hono<{ Bindings: Env }>();
