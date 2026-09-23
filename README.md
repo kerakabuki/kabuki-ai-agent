@@ -17,6 +17,6 @@
   - `menu-icon-quiz.png`（クイズ … 問答）
   - `menu-icon-news.png`（ニュース … 高札）
   - `menu-icon-training.png`（お稽古 … 稽古）
-  - **反映手順**: `python scripts/prepare_menu_icons_for_r2.py` で `assets/menu-icons-for-r2/` に 7 ファイルを用意 → [Cloudflare ダッシュボード](https://dash.cloudflare.com) → R2 → バケット **assets-keranosuke** → **Upload** でアップロード。**重要**: R2 のオブジェクトキーは **ファイル名だけ**（`menu-icon-kera.png` など）にすること。フォルダ付き（例: `menu-icons-for-r2/menu-icon-kera.png`）だと 404 になります。アップロード後、`npx wrangler deploy` でデプロイし、ウィジェットは強制再読み込み（Ctrl+Shift+R）、LINE はメニューを開き直してください。
+  - **反映手順**: `python scripts/assets/prepare_menu_icons_for_r2.py` で `assets/menu-icons-for-r2/` に 7 ファイルを用意 → [Cloudflare ダッシュボード](https://dash.cloudflare.com) → R2 → バケット **assets-keranosuke** → **Upload** でアップロード。**重要**: R2 のオブジェクトキーは **ファイル名だけ**（`menu-icon-kera.png` など）にすること。フォルダ付き（例: `menu-icons-for-r2/menu-icon-kera.png`）だと 404 になります。アップロード後、`npx wrangler deploy` でデプロイし、ウィジェットは強制再読み込み（Ctrl+Shift+R）、LINE はメニューを開き直してください。
 - **アバター**: `assets/keranosuke-icon-kabuki.png` を R2 に `keranosuke-icon-kabuki.png` でアップロードすると、FAB・ヘッダー・吹き出しのアバターに反映されます。
 - **LINE Bot プロフィール**: LINE Developers → チャネル → 基本設定 → 「Bot プロフィール画像」でトーク画面のアイコンを変更できます。
