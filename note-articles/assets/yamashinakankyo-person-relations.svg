@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1320" viewBox="0 0 1600 1320">
+  <rect width="1600" height="1320" fill="#f7f5ef"/>
+  <style>
+    text { font-family: 'BIZ UDPゴシック', 'Meiryo', sans-serif; fill: #20333c; }
+    .label { font-size: 30px; }
+    .name { font-size: 44px; font-weight: 700; }
+    .reading { font-size: 26px; fill: #566c76; }
+    .role { font-size: 29px; fill: #566c76; }
+    .line { fill: none; stroke: #617783; stroke-width: 4; }
+    .step { fill: none; stroke: #a25c48; stroke-width: 4; stroke-dasharray: 10 8; }
+  </style>
+  <rect x="64" y="64" width="10" height="96" rx="5" fill="#345b6c"/>
+  <text x="104" y="96" font-size="28" letter-spacing="3">『仮名手本忠臣蔵』九段目</text>
+  <text x="100" y="162" font-size="56" font-weight="700">「山科閑居」 人物関係図</text>
+  <text x="100" y="215" font-size="30" fill="#60717a">二つの家族と、ひとつの縁談</text>
+
+  <rect x="64" y="264" width="696" height="610" rx="24" fill="#e8eff1"/>
+  <rect x="840" y="264" width="696" height="610" rx="24" fill="#f1e8de"/>
+  <text x="104" y="323" font-size="38" font-weight="700" fill="#345b6c">大星家</text>
+  <text x="880" y="323" font-size="38" font-weight="700" fill="#8c5b46">加古川家</text>
+
+  <!-- Parents: spouses are connected horizontally. -->
+  <rect x="94" y="358" width="302" height="166" rx="15" fill="#fff"/>
+  <rect x="428" y="358" width="302" height="166" rx="15" fill="#fff"/>
+  <rect x="870" y="358" width="302" height="166" rx="15" fill="#fff"/>
+  <rect x="1204" y="358" width="302" height="166" rx="15" fill="#fff"/>
+  <text x="245" y="397" class="reading" text-anchor="middle">おおぼし ゆらのすけ</text>
+  <text x="245" y="454" class="name" text-anchor="middle">大星由良之助</text>
+  <text x="245" y="498" class="role" text-anchor="middle">力弥の父</text>
+  <text x="579" y="397" class="reading" text-anchor="middle">おいし</text>
+  <text x="579" y="454" class="name" text-anchor="middle">お石</text>
+  <text x="579" y="498" class="role" text-anchor="middle">力弥の母</text>
+  <text x="1021" y="397" class="reading" text-anchor="middle">かこがわ ほんぞう</text>
+  <text x="1021" y="454" class="name" text-anchor="middle">加古川本蔵</text>
+  <text x="1021" y="498" class="role" text-anchor="middle">小浪の父</text>
+  <text x="1355" y="397" class="reading" text-anchor="middle">となせ</text>
+  <text x="1355" y="454" class="name" text-anchor="middle">戸無瀬</text>
+  <text x="1355" y="498" class="role" text-anchor="middle">本蔵の後妻</text>
+  <path class="line" d="M396 434H428 M396 444H428 M1172 434H1204 M1172 444H1204"/>
+  <text x="412" y="348" font-size="25" text-anchor="middle">夫婦</text>
+  <text x="1188" y="348" font-size="25" text-anchor="middle">夫婦</text>
+
+  <!-- Left: two parents. Right: father and stepmother are distinct paths. -->
+  <path class="line" d="M245 524V595H579V524 M412 595V657"/>
+  <text x="412" y="573" class="label" text-anchor="middle">父母</text>
+  <path class="line" d="M1021 524V600H1106V657"/>
+  <text x="1054" y="581" class="label" text-anchor="middle">父</text>
+  <path class="step" d="M1355 524V600H1270V657"/>
+  <text x="1301" y="581" class="label" text-anchor="middle" style="fill:#934f3e">継母</text>
+
+  <rect x="247" y="657" width="330" height="155" rx="15" fill="#fff" stroke="#345b6c" stroke-width="3"/>
+  <rect x="1023" y="657" width="330" height="155" rx="15" fill="#fff" stroke="#99634d" stroke-width="3"/>
+  <text x="412" y="697" class="reading" text-anchor="middle">おおぼし りきや</text>
+  <text x="412" y="754" font-size="52" font-weight="700" text-anchor="middle">大星力弥</text>
+  <text x="412" y="795" class="role" text-anchor="middle">由良之助とお石の息子</text>
+  <text x="1188" y="697" class="reading" text-anchor="middle">こなみ</text>
+  <text x="1188" y="754" font-size="52" font-weight="700" text-anchor="middle">小浪</text>
+  <text x="1188" y="795" class="role" text-anchor="middle">本蔵の娘</text>
+
+  <path d="M577 724H1023" fill="none" stroke="#a86648" stroke-width="4" stroke-dasharray="12 9"/>
+  <rect x="672" y="694" width="256" height="64" rx="20" fill="#f7f5ef"/>
+  <text x="800" y="737" font-size="38" font-weight="700" text-anchor="middle" fill="#8c5b46">許嫁</text>
+  <text x="800" y="787" font-size="28" text-anchor="middle">いいなずけ</text>
+  <text x="800" y="828" font-size="28" text-anchor="middle">結婚の約束</text>
+
+  <text x="800" y="926" font-size="32" text-anchor="middle">※戸無瀬は小浪の継母で、実母ではありません。</text>
+
+  <rect x="64" y="976" width="1472" height="250" rx="22" fill="#fff"/>
+  <rect x="64" y="976" width="10" height="250" rx="5" fill="#a86648"/>
+  <text x="108" y="1037" font-size="38" font-weight="700">縁談を隔てる、二つの家の「因縁」</text>
+  <text x="108" y="1104" font-size="33">本蔵が、師直に斬りかかった塩冶判官を抱きとめた。</text>
+  <text x="108" y="1164" font-size="33">判官は師直を討てずに切腹。大星家には、その無念が残る。</text>
+  <text x="64" y="1282" font-size="24" fill="#60717a">劇中の人物関係を、九段目に登場する六人に絞って示しています。</text>
+  <text x="1536" y="1282" font-size="24" text-anchor="end" fill="#60717a">気良歌舞伎</text>
+</svg>
