@@ -1,0 +1,769 @@
+{
+  "episode": {
+    "title": "超訳！歌舞伎ナビ『盛綱陣屋』④ 偽物だと知って、なぜ嘘をつく？",
+    "epDir": "歌舞伎ナビ06盛綱陣屋",
+    "workName": "work_ep4_v5",
+    "number": null,
+    "outputName": "盛綱陣屋04_偽物だと知って_v5.mp4",
+    "voiceId": "xOKkuQfZt5N7XfbFdn9W",
+    "ttsModel": "eleven_v3",
+    "ttsOutputFormat": "mp3_44100_128"
+  },
+  "layout": {
+    "series": "超訳！歌舞伎ナビ",
+    "title": "盛綱陣屋",
+    "background": "common:v6レイアウト/青海波背景.jpg",
+    "kera": "common:v6レイアウト/けらのすけ立ち姿.png"
+  },
+  "settings": {
+    "W": 1920,
+    "H": 1080,
+    "FPS": 24,
+    "LEAD": 0.4,
+    "TAIL": 0.8,
+    "CRF": "18",
+    "wrapMax": 20,
+    "capFontSize": 48,
+    "subNoOverlap": true,
+    "subStyle": {
+      "fontName": "BIZ UDGothic",
+      "fontSize": 66,
+      "bold": 0,
+      "borderStyle": 4,
+      "outline": 16,
+      "shadow": 0,
+      "primaryColour": "&H00FFFFFF",
+      "outlineColour": "&H5A000000",
+      "backColour": "&H5A000000",
+      "marginL": 180,
+      "marginR": 180,
+      "marginV": 48
+    },
+    "bgm": "bgm:道行.mp3",
+    "bgmVolNormal": 0.32,
+    "bgmMuteOnClip": true,
+    "slideXfade": 0.4,
+    "edSrc": "common:けらのすけ動画/けらのすけED.mp4",
+    "edBackground": "common:背景.png",
+    "subWrap": "balanced",
+    "slideTiming": "sentence"
+  },
+  "blocks": [
+    {
+      "id": "1",
+      "audio": "voice:第4回/ブロック1.mp3",
+      "avatar": "none",
+      "styleTag": "[friendly, serious Japanese narration]",
+      "subtitleText": "本当のことを言えば、守れなくなるものがある。嘘をつけば、自分が命を失うかもしれない。そんな場で、すぐに答えを出せるかな。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 0,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:寄り/盛綱_寄り_首実検.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.06,
+              "focus": {
+                "x": 0.5,
+                "y": 0.4
+              }
+            }
+          },
+          {
+            "sentFrom": 1,
+            "sentTo": 2,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:寄り/盛綱_寄り_決断.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.08,
+              "focus": {
+                "x": 0.52,
+                "y": 0.42
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "2",
+      "audio": "voice:第4回/ブロック2.mp3",
+      "avatar": "none",
+      "styleTag": "[cheerful, friendly, warm Japanese narration]",
+      "subtitleText": "けらのすけだよ。今日の『盛綱陣屋』は、盛綱が選んだ、命がけの嘘。",
+      "seBySent": [
+        {
+          "file": "common:効果音/拍子木1.mp3",
+          "sent": 0,
+          "vol": 0.5
+        }
+      ],
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 1,
+            "kera": "large",
+            "photoLayer": {
+              "img": "stage:候補/p291.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 1080,
+              "move": "zoomOut",
+              "amount": 0.06,
+              "focus": {
+                "x": 0.5,
+                "y": 0.45
+              },
+              "dim": 0.5,
+              "shade": "left"
+            },
+            "header": false,
+            "heading": {
+              "tone": "light",
+              "x": 128,
+              "y": 300,
+              "lead": "盛綱陣屋",
+              "lines": [
+                "命がけの嘘"
+              ],
+              "size": 130,
+              "emphasis": "嘘"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "3",
+      "audio": "voice:第4回/ブロック3.mp3",
+      "avatar": "none",
+      "styleTag": "[cheerful, friendly, warm Japanese narration]",
+      "subtitleText": "敵味方に分かれた兄弟の、兄が盛綱、弟が高綱。弟の首だとして持ち込まれた首を、兄が調べる。これが、首実検だよ。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 0,
+            "relations": {
+              "nodes": [
+                {
+                  "id": "moritsuna",
+                  "name": "盛綱",
+                  "ruby": "もりつな",
+                  "x": 250,
+                  "y": 330
+                },
+                {
+                  "id": "takatsuna",
+                  "name": "高綱",
+                  "ruby": "たかつな",
+                  "x": 850,
+                  "y": 330
+                }
+              ],
+              "links": [
+                {
+                  "from": "moritsuna",
+                  "to": "takatsuna",
+                  "label": "兄弟"
+                }
+              ]
+            }
+          },
+          {
+            "sentFrom": 1,
+            "sentTo": 2,
+            "photoLayer": {
+              "img": "stage:v6_盛綱_首実検.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.07,
+              "focus": {
+                "x": 0.45,
+                "y": 0.4
+              },
+              "shade": "left",
+              "dim": 0.1
+            },
+            "termCard": {
+              "ruby": "くびじっけん",
+              "text": "首実検",
+              "x": 110,
+              "y": 330
+            },
+            "header": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "4",
+      "audio": "voice:第4回/ブロック4.mp3",
+      "avatar": "none",
+      "styleTag": "[friendly, serious Japanese narration]",
+      "subtitleText": "盛綱には、その首が弟のものではないとわかる。ところが、小四郎は父の首として受け止め、命をかけた行動に出るんだ。小四郎は高綱の息子。実の息子なら、違いがわかるはずなのに。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 0,
+            "photoLayer": {
+              "img": "stage:候補/p273.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 1080,
+              "move": "panRight",
+              "amount": 0.06,
+              "focus": {
+                "x": 0.35,
+                "y": 0.4
+              },
+              "dim": 0,
+              "shade": "none"
+            },
+            "header": false
+          },
+          {
+            "sentFrom": 1,
+            "sentTo": 3,
+            "photoLayer": {
+              "img": "stage:候補/p342.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 1080,
+              "fit": "blurpad",
+              "move": "zoomIn",
+              "amount": 0.06,
+              "focus": {
+                "x": 0.45,
+                "y": 0.3
+              }
+            },
+            "person": {
+              "variant": "vertical",
+              "ruby": "こしろう",
+              "name": "小四郎",
+              "x": 1150,
+              "y": 140
+            },
+            "header": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "5",
+      "audio": "voice:第4回/ブロック5.mp3",
+      "avatar": "none",
+      "styleTag": "[friendly, serious Japanese narration]",
+      "subtitleText": "その食い違いをたどって、盛綱は、弟の計略に気づく。小四郎は、偽の首を本物だと敵に信じさせるために、自分の命をかけていたんだ。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 0,
+            "photoLayer": {
+              "img": "stage:候補/p285.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.08,
+              "focus": {
+                "x": 0.4,
+                "y": 0.4
+              },
+              "dim": 0,
+              "shade": "none"
+            },
+            "header": false
+          },
+          {
+            "sentFrom": 1,
+            "sentTo": 1,
+            "photoLayer": {
+              "img": "stage:候補/p330.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.08,
+              "focus": {
+                "x": 0.45,
+                "y": 0.35
+              }
+            },
+            "header": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "6",
+      "audio": "voice:第4回/ブロック6.mp3",
+      "avatar": "none",
+      "quiet": true,
+      "styleTag": "[gentle, warm Japanese narration]",
+      "subtitleText": "盛綱の迷いを、今の言葉にすると、こういうことだね。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 0,
+            "header": false,
+            "photoLayer": {
+              "img": "stage:寄り/盛綱_顔_282.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.06,
+              "focus": {
+                "x": 0.3,
+                "y": 0.35
+              },
+              "dim": 0,
+              "shade": "none"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "7",
+      "audio": "voice:第4回/ブロック7.mp3",
+      "avatar": "none",
+      "quiet": true,
+      "tail": 1.2,
+      "styleTag": "[slow, quiet, somber Japanese narration]",
+      "subtitleText": "ここで本当のことを言えば、あの子が命をかけた意味がなくなる。でも、偽物を本物だと認めれば、今度は自分が主君を欺くことになる。弟と甥っ子の思いを受け取るなら、自分も、その責任を背負わなくてはならない。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 0,
+            "header": false,
+            "photoLayer": {
+              "img": "stage:候補/p348.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.05,
+              "focus": {
+                "x": 0.4,
+                "y": 0.4
+              },
+              "dim": 0,
+              "shade": "none"
+            }
+          },
+          {
+            "sentFrom": 1,
+            "sentTo": 1,
+            "header": false,
+            "photoLayer": {
+              "img": "stage:寄り/時政_顔_285_43.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.06,
+              "focus": {
+                "x": 0.7,
+                "y": 0.3
+              },
+              "dim": 0,
+              "shade": "none"
+            }
+          },
+          {
+            "sentFrom": 2,
+            "sentTo": 2,
+            "header": false,
+            "photoLayer": {
+              "img": "stage:寄り/盛綱_寄り_決断.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.06,
+              "focus": {
+                "x": 0.55,
+                "y": 0.42
+              },
+              "dim": 0,
+              "shade": "none"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "8",
+      "audio": "voice:第4回/ブロック8.mp3",
+      "avatar": "none",
+      "quiet": true,
+      "styleTag": "[friendly, serious Japanese narration]",
+      "subtitleText": "盛綱は、この首は弟の高綱に間違いない、という答えを選ぶんだ。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 0,
+            "header": false,
+            "photoLayer": {
+              "img": "stage:候補/p051.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.06,
+              "focus": {
+                "x": 0.43,
+                "y": 0.35
+              },
+              "dim": 0,
+              "shade": "none"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "9",
+      "audio": "voice:第4回/ブロック9.mp3",
+      "avatar": "none",
+      "styleTag": "[cheerful, friendly, warm Japanese narration]",
+      "subtitleText": "この場面がすごいのは、その答えにたどり着く心の動きを、長い説明の台詞に頼らず見せるところ。首を見て、考え、気づいて、決める。でも、目の前の時政には、その本心を悟らせてはいけない。",
+      "seBySent": [
+        {
+          "file": "common:効果音/和太鼓でドン.mp3",
+          "sent": 0,
+          "vol": 0.45
+        }
+      ],
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 0,
+            "header": false,
+            "photoLayer": {
+              "img": "stage:候補/p270.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.06,
+              "focus": {
+                "x": 0.3,
+                "y": 0.35
+              },
+              "dim": 0,
+              "shade": "none"
+            }
+          },
+          {
+            "sentFrom": 1,
+            "sentTo": 1,
+            "header": false,
+            "photoLayer": {
+              "img": "stage:候補/p264.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.05,
+              "focus": {
+                "x": 0.3,
+                "y": 0.4
+              },
+              "dim": 0,
+              "shade": "none"
+            }
+          },
+          {
+            "sentFrom": 2,
+            "sentTo": 2,
+            "header": false,
+            "photoLayer": {
+              "img": "stage:寄り/時政_顔_285_43.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 1080,
+              "move": "zoomOut",
+              "amount": 0.05,
+              "focus": {
+                "x": 0.7,
+                "y": 0.3
+              },
+              "dim": 0.2,
+              "shade": "left"
+            },
+            "person": {
+              "variant": "vertical",
+              "ruby": "ときまさ",
+              "name": "時政",
+              "x": 220,
+              "y": 140
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "10",
+      "audio": "voice:第4回/ブロック10.mp3",
+      "avatar": "none",
+      "styleTag": "[gentle, warm Japanese narration]",
+      "subtitleText": "ここから少し、説明を止めて、盛綱を見てみよう。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 0,
+            "header": false,
+            "kera": "large",
+            "photoLayer": {
+              "img": "stage:寄り/首実検_映像頭.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "none",
+              "dim": 0,
+              "shade": "none"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "11",
+      "clip": {
+        "src": "D:/Codex/気良歌舞伎事務/動画編集/盛綱陣屋_リマスター_20260913/moritsuna_2013_remaster_oped_v2.mp4",
+        "start": 4788,
+        "dur": 18,
+        "vol": 1,
+        "crop": {
+          "x": 14,
+          "y": 78,
+          "w": 1280,
+          "h": 720
+        }
+      },
+      "fade": false,
+      "note": "首実検の肚芸。4789〜4800秒は首を見つめて考える静寂、4801秒に義太夫「とっくと改め故実を守り」が入り盛綱が背筋を伸ばす（決断）、4805秒から首を時政へ差し出す。台詞「相違ござりませぬ」は4824秒からなので含めない。4771〜4777秒に客席の話し声があるため避けた。v5の4378秒付近は首桶を置く前の段階だった"
+    },
+    {
+      "id": "12",
+      "audio": "voice:第4回/ブロック12.mp3",
+      "avatar": "none",
+      "styleTag": "[gentle, warm Japanese narration]",
+      "subtitleText": "どうだったかな。顔だけじゃなく、視線や手の動き、身体が止まる時間にも、目を向けてみて。どこで何かに気づいたように見えたか。どこから、答えを決めたように感じたか。そこは、自分の目で受け取っていいんだよ。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 1,
+            "header": false,
+            "kera": "large",
+            "photoLayer": {
+              "img": "stage:寄り/首実検_映像尻.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.05,
+              "focus": {
+                "x": 0.49,
+                "y": 0.35
+              },
+              "dim": 0,
+              "shade": "none"
+            }
+          },
+          {
+            "sentFrom": 2,
+            "sentTo": 4,
+            "header": false,
+            "photoLayer": {
+              "img": "stage:寄り/盛綱_寄り_首実検.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.05,
+              "focus": {
+                "x": 0.55,
+                "y": 0.3
+              },
+              "dim": 0,
+              "shade": "none"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "13",
+      "audio": "voice:第4回/ブロック13.mp3",
+      "avatar": "none",
+      "styleTag": "[cheerful, friendly, warm Japanese narration]",
+      "subtitleText": "答えを知っているからこそ、答えるまでの時間が面白くなる。首実検の場面全体は、概要欄の気良歌舞伎リマスター版で観てみてね。最後は、この嘘のあと。盛綱を助けるのは、敵側の武将なんだ。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 0,
+            "header": false,
+            "photoLayer": {
+              "img": "stage:候補/p300.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 1080,
+              "move": "zoomOut",
+              "amount": 0.05,
+              "focus": {
+                "x": 0.35,
+                "y": 0.5
+              },
+              "dim": 0,
+              "shade": "none"
+            }
+          },
+          {
+            "sentFrom": 1,
+            "sentTo": 1,
+            "header": false,
+            "kera": "large",
+            "photoLayer": {
+              "img": "stage:候補/p291.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.05,
+              "focus": {
+                "x": 0.5,
+                "y": 0.45
+              },
+              "dim": 0,
+              "shade": "none"
+            }
+          },
+          {
+            "sentFrom": 2,
+            "sentTo": 3,
+            "header": false,
+            "photoLayer": {
+              "img": "stage:寄り/和田兵衛_鉄砲.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.05,
+              "focus": {
+                "x": 0.62,
+                "y": 0.35
+              },
+              "dim": 0.3,
+              "shade": "left"
+            },
+            "person": {
+              "variant": "vertical",
+              "ruby": "わだびょうえ",
+              "name": "和田兵衛",
+              "role": "次回",
+              "x": 220,
+              "y": 120
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "chapters": [
+    {
+      "block": "1",
+      "label": "偽物だと知って、なぜ嘘をつく？"
+    },
+    {
+      "block": "3",
+      "label": "首実検とは"
+    },
+    {
+      "block": "6",
+      "label": "盛綱の迷い"
+    },
+    {
+      "block": "9",
+      "label": "台詞に頼らない名場面"
+    },
+    {
+      "block": "11",
+      "label": "舞台を見てみよう"
+    },
+    {
+      "block": "13",
+      "label": "まとめ・次回予告"
+    }
+  ],
+  "youtube": {
+    "title": "【わかる！超訳】盛綱陣屋④ 偽物だと知って、なぜ嘘をつく？",
+    "titleCandidates": [
+      "【わかる！超訳】盛綱陣屋④ 偽物だと知って、なぜ嘘をつく？",
+      "【わかる！超訳】盛綱陣屋④ 首実検――盛綱が選んだ、命がけの嘘",
+      "【わかる！超訳】盛綱陣屋④ 台詞のない時間に、何が起きている？"
+    ],
+    "description": "『盛綱陣屋』を、けらのすけが五つの「どうして？」からひもとくシリーズ。\n第4回は、偽の首を前にした盛綱が選んだ、命がけの嘘。\n※真相・結末を含む観劇ガイドです。\n\n▼ 首実検の場面から観る（気良歌舞伎 2013年公演・リマスター版）\nhttps://youtu.be/w7juB7FcrVw?t=4055\n\n▼ この動画で見た盛綱の場面（1:19:48〜）\nhttps://youtu.be/w7juB7FcrVw?t=4788\n\n▼ 家系図つきnote\nhttps://note.com/kerakabuki/n/nf81df34475d6\n\n▼ KABUKI PLUS+ 演目ガイド\nhttps://kabukiplus.com/kabuki/navi/enmoku/moritunajinya\n\n0:00 偽物だと知って、なぜ嘘をつく？\n0:24 首実検とは\n1:10 盛綱の迷い\n1:47 台詞に頼らない名場面\n2:14 舞台を見てみよう\n2:53 まとめ・次回予告\n\nナレーション: けらのすけ（AI音声）\n写真・映像: 気良歌舞伎 2013年公演\n\n#超訳歌舞伎ナビ #盛綱陣屋 #近江源氏先陣館 #歌舞伎 #地芝居 #けらのすけ",
+    "pinnedComment": "首実検の場面は、リマスター版のここから観られるよ → https://youtu.be/w7juB7FcrVw?t=4055　どこで気づいて、どこで決めたように見えたか、コメントで教えてね。",
+    "tags": [
+      "超訳歌舞伎ナビ",
+      "わかる超訳",
+      "盛綱陣屋",
+      "近江源氏先陣館",
+      "首実検",
+      "歌舞伎",
+      "地芝居",
+      "けらのすけ",
+      "気良歌舞伎"
+    ]
+  }
+}

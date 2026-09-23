@@ -1,0 +1,896 @@
+{
+  "episode": {
+    "title": "超訳！歌舞伎ナビ『盛綱陣屋』① 家族なのに、なぜ敵同士？",
+    "epDir": "歌舞伎ナビ06盛綱陣屋",
+    "workName": "work_ep1_v3",
+    "number": null,
+    "outputName": "盛綱陣屋01_家族なのに_v4.mp4",
+    "voiceId": "xOKkuQfZt5N7XfbFdn9W",
+    "ttsModel": "eleven_v3",
+    "ttsOutputFormat": "mp3_44100_128"
+  },
+  "layout": {
+    "series": "超訳！歌舞伎ナビ",
+    "title": "盛綱陣屋",
+    "background": "common:v6レイアウト/青海波背景.jpg",
+    "kera": "common:v6レイアウト/けらのすけ立ち姿.png",
+    "keraLive": "common:けらのすけ口パク",
+    "keraMotion": "video"
+  },
+  "settings": {
+    "W": 1920,
+    "H": 1080,
+    "FPS": 24,
+    "LEAD": 0.4,
+    "TAIL": 0.8,
+    "CRF": "18",
+    "wrapMax": 20,
+    "capFontSize": 48,
+    "subNoOverlap": true,
+    "subStyle": {
+      "fontName": "BIZ UDGothic",
+      "fontSize": 66,
+      "bold": 0,
+      "borderStyle": 4,
+      "outline": 16,
+      "shadow": 0,
+      "primaryColour": "&H00FFFFFF",
+      "outlineColour": "&H5A000000",
+      "backColour": "&H5A000000",
+      "marginL": 180,
+      "marginR": 180,
+      "marginV": 48
+    },
+    "bgm": "bgm:道行.mp3",
+    "bgmVolNormal": 0.32,
+    "bgmMuteOnClip": true,
+    "slideXfade": 0.4,
+    "edSrc": "common:けらのすけ動画/けらのすけED.mp4",
+    "edBackground": "common:背景.png",
+    "subWrap": "balanced",
+    "slideTiming": "sentence",
+    "bgmSections": [
+      {
+        "from": "1",
+        "to": "2",
+        "file": "common:BGM/華志の舞_HMIX.mp3",
+        "vol": 0.18,
+        "offset": 0
+      },
+      {
+        "from": "3",
+        "to": "9",
+        "file": "common:BGM/Moment_HMIX.mp3",
+        "vol": 0.2,
+        "offset": 0.8
+      },
+      {
+        "from": "10",
+        "to": "10",
+        "file": "common:BGM/華志の舞_HMIX.mp3",
+        "vol": 0.18,
+        "offset": 170
+      }
+    ],
+    "bgmSectionFade": 1.2
+  },
+  "blocks": [
+    {
+      "id": "1",
+      "audio": "voice:第1回/ブロック1.mp3",
+      "avatar": "none",
+      "styleTag": "[friendly, serious Japanese narration]",
+      "subtitleText": "ねえ、戦で捕まえた相手が、自分のいとこだったら。ただ敵を捕まえた、では済まなくなるよね。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 0,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:寄り/小四郎_縄_007.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.06,
+              "focus": {
+                "x": 0.42,
+                "y": 0.3
+              }
+            }
+          },
+          {
+            "sentFrom": 1,
+            "sentTo": 1,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:寄り/小三郎_寄り_288.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.06,
+              "focus": {
+                "x": 0.25,
+                "y": 0.35
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "2",
+      "audio": "voice:第1回/ブロック2.mp3",
+      "avatar": "none",
+      "styleTag": "[cheerful, friendly, warm Japanese narration]",
+      "subtitleText": "こんにちは、けらのすけだよ。今回から、気良歌舞伎の『盛綱陣屋』を、五つの「どうして？」から見ていこう。このシリーズでは、真相と結末までお話しするよ。まず今回は、登場人物の関係から見ていこう。",
+      "seBySent": [
+        {
+          "file": "common:効果音/拍子木1.mp3",
+          "sent": 0,
+          "vol": 0.5
+        }
+      ],
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 3,
+            "header": false,
+            "kera": "large",
+            "photoLayer": {
+              "img": "stage:候補/p291.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 1080,
+              "move": "zoomOut",
+              "amount": 0.06,
+              "focus": {
+                "x": 0.5,
+                "y": 0.45
+              },
+              "dim": 0.45,
+              "shade": "left"
+            },
+            "heading": {
+              "tone": "light",
+              "font": "gothic",
+              "lead": "盛綱陣屋",
+              "lines": [
+                "家族なのに、",
+                "なぜ敵同士？"
+              ],
+              "size": 104,
+              "emphasis": "敵同士",
+              "x": 128,
+              "y": 330
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "3",
+      "audio": "voice:第1回/ブロック3.mp3",
+      "avatar": "none",
+      "styleTag": "[cheerful, friendly, warm Japanese narration]",
+      "subtitleText": "最初は、この家族。兄が盛綱。弟が高綱。兄は鎌倉方、弟は京方。仕える相手が違うから、兄弟なのに、戦では敵同士なんだ。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 4,
+            "relations": {
+              "nodes": [
+                {
+                  "id": "mori",
+                  "name": "盛綱",
+                  "ruby": "もりつな",
+                  "sub": "鎌倉方",
+                  "x": 360,
+                  "y": 390,
+                  "w": 220,
+                  "accent": true
+                },
+                {
+                  "id": "taka",
+                  "name": "高綱",
+                  "ruby": "たかつな",
+                  "sub": "京方",
+                  "x": 860,
+                  "y": 390,
+                  "w": 220,
+                  "accent": true
+                }
+              ],
+              "links": [
+                {
+                  "from": "mori",
+                  "to": "taka",
+                  "label": "兄弟"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "4",
+      "audio": "voice:第1回/ブロック4.mp3",
+      "avatar": "none",
+      "styleTag": "[cheerful, friendly, warm Japanese narration]",
+      "subtitleText": "そして、盛綱の息子が小三郎。高綱の息子が小四郎。小三郎が、小四郎を捕まえて、父の陣屋に連れてくる。陣屋は、戦の指揮をとる場所だよ。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 1,
+            "relations": {
+              "nodes": [
+                {
+                  "id": "mori",
+                  "name": "盛綱",
+                  "ruby": "もりつな",
+                  "sub": "鎌倉方",
+                  "x": 360,
+                  "y": 390,
+                  "w": 220
+                },
+                {
+                  "id": "taka",
+                  "name": "高綱",
+                  "ruby": "たかつな",
+                  "sub": "京方",
+                  "x": 860,
+                  "y": 390,
+                  "w": 220
+                },
+                {
+                  "id": "kosa",
+                  "name": "小三郎",
+                  "ruby": "こさぶろう",
+                  "x": 360,
+                  "y": 670,
+                  "w": 220,
+                  "accent": true
+                },
+                {
+                  "id": "kosh",
+                  "name": "小四郎",
+                  "ruby": "こしろう",
+                  "x": 860,
+                  "y": 670,
+                  "w": 220,
+                  "accent": true
+                }
+              ],
+              "links": [
+                {
+                  "from": "mori",
+                  "to": "taka",
+                  "label": "兄弟"
+                },
+                {
+                  "type": "family",
+                  "parent": "mori",
+                  "children": [
+                    "kosa"
+                  ]
+                },
+                {
+                  "type": "family",
+                  "parent": "taka",
+                  "children": [
+                    "kosh"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "sentFrom": 2,
+            "sentTo": 3,
+            "header": false,
+            "photoLayer": {
+              "img": "stage:候補/p063.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 1080,
+              "fit": "blurpad",
+              "move": "zoomIn",
+              "amount": 0.05,
+              "focus": {
+                "x": 0.5,
+                "y": 0.3
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "5",
+      "audio": "voice:第1回/ブロック5.mp3",
+      "avatar": "none",
+      "styleTag": "[friendly, serious Japanese narration]",
+      "subtitleText": "ここ、盛綱の立場で考えてみて。連れてこられたのは、敵の子ども。でも同時に、弟の息子。自分の甥っ子なんだ。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 0,
+            "header": false,
+            "photoLayer": {
+              "img": "stage:寄り/盛綱_顔_282.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.06,
+              "focus": {
+                "x": 0.3,
+                "y": 0.35
+              }
+            }
+          },
+          {
+            "sentFrom": 1,
+            "sentTo": 3,
+            "header": false,
+            "photoLayer": {
+              "img": "stage:候補/p011.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.06,
+              "focus": {
+                "x": 0.4,
+                "y": 0.35
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "6",
+      "audio": "voice:第1回/ブロック6.mp3",
+      "avatar": "none",
+      "styleTag": "[gentle, warm Japanese narration]",
+      "subtitleText": "だから、このお芝居では、相手を敵として見るのか、家族として見るのかで、同じ出来事の意味が変わってくるんだよ。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 0,
+            "header": false,
+            "photoLayer": {
+              "img": "stage:候補/p285.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 1080,
+              "move": "panRight",
+              "amount": 0.06,
+              "focus": {
+                "x": 0.45,
+                "y": 0.4
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "7",
+      "audio": "voice:第1回/ブロック7.mp3",
+      "avatar": "none",
+      "styleTag": "[cheerful, friendly, warm Japanese narration]",
+      "subtitleText": "あと三人だけ、家族を紹介するね。兄弟の母が微妙。二人の子どもにとっては、おばあさん。盛綱の妻が早瀬。高綱の妻で、小四郎のお母さんが篝火だよ。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 2,
+            "relations": {
+              "nodes": [
+                {
+                  "id": "mimy",
+                  "name": "微妙",
+                  "ruby": "みみょう",
+                  "x": 610,
+                  "y": 110,
+                  "w": 220,
+                  "accent": true
+                },
+                {
+                  "id": "mori",
+                  "name": "盛綱",
+                  "ruby": "もりつな",
+                  "sub": "鎌倉方",
+                  "x": 360,
+                  "y": 390,
+                  "w": 220
+                },
+                {
+                  "id": "taka",
+                  "name": "高綱",
+                  "ruby": "たかつな",
+                  "sub": "京方",
+                  "x": 860,
+                  "y": 390,
+                  "w": 220
+                },
+                {
+                  "id": "kosa",
+                  "name": "小三郎",
+                  "ruby": "こさぶろう",
+                  "x": 360,
+                  "y": 670,
+                  "w": 220
+                },
+                {
+                  "id": "kosh",
+                  "name": "小四郎",
+                  "ruby": "こしろう",
+                  "x": 860,
+                  "y": 670,
+                  "w": 220
+                }
+              ],
+              "links": [
+                {
+                  "type": "family",
+                  "parent": "mimy",
+                  "children": [
+                    "mori",
+                    "taka"
+                  ],
+                  "label": "母"
+                },
+                {
+                  "from": "mori",
+                  "to": "taka",
+                  "label": "兄弟"
+                },
+                {
+                  "type": "family",
+                  "parent": "mori",
+                  "children": [
+                    "kosa"
+                  ]
+                },
+                {
+                  "type": "family",
+                  "parent": "taka",
+                  "children": [
+                    "kosh"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "sentFrom": 3,
+            "sentTo": 4,
+            "relations": {
+              "nodes": [
+                {
+                  "id": "mimy",
+                  "name": "微妙",
+                  "ruby": "みみょう",
+                  "x": 610,
+                  "y": 110,
+                  "w": 220
+                },
+                {
+                  "id": "haya",
+                  "name": "早瀬",
+                  "ruby": "はやせ",
+                  "x": 20,
+                  "y": 390,
+                  "w": 220,
+                  "accent": true
+                },
+                {
+                  "id": "mori",
+                  "name": "盛綱",
+                  "ruby": "もりつな",
+                  "sub": "鎌倉方",
+                  "x": 360,
+                  "y": 390,
+                  "w": 220
+                },
+                {
+                  "id": "taka",
+                  "name": "高綱",
+                  "ruby": "たかつな",
+                  "sub": "京方",
+                  "x": 860,
+                  "y": 390,
+                  "w": 220
+                },
+                {
+                  "id": "kaga",
+                  "name": "篝火",
+                  "ruby": "かがりび",
+                  "x": 1200,
+                  "y": 390,
+                  "w": 220,
+                  "accent": true
+                },
+                {
+                  "id": "kosa",
+                  "name": "小三郎",
+                  "ruby": "こさぶろう",
+                  "x": 360,
+                  "y": 670,
+                  "w": 220
+                },
+                {
+                  "id": "kosh",
+                  "name": "小四郎",
+                  "ruby": "こしろう",
+                  "x": 860,
+                  "y": 670,
+                  "w": 220
+                }
+              ],
+              "links": [
+                {
+                  "type": "family",
+                  "parent": "mimy",
+                  "children": [
+                    "mori",
+                    "taka"
+                  ],
+                  "label": "母"
+                },
+                {
+                  "from": "haya",
+                  "to": "mori",
+                  "label": "夫婦"
+                },
+                {
+                  "from": "mori",
+                  "to": "taka",
+                  "label": "兄弟"
+                },
+                {
+                  "from": "taka",
+                  "to": "kaga",
+                  "label": "夫婦"
+                },
+                {
+                  "type": "family",
+                  "parent": "mori",
+                  "children": [
+                    "kosa"
+                  ]
+                },
+                {
+                  "type": "family",
+                  "parent": "taka",
+                  "children": [
+                    "kosh"
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "8",
+      "audio": "voice:第1回/ブロック8.mp3",
+      "avatar": "none",
+      "styleTag": "[gentle, warm Japanese narration]",
+      "subtitleText": "名前を一度で全部覚えなくても大丈夫。兄弟が敵同士。その子ども同士も、捕まえる側と捕まる側。まずは、この関係がわかれば、お芝居についていきやすくなるよ。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 2,
+            "relations": {
+              "nodes": [
+                {
+                  "id": "mimy",
+                  "name": "微妙",
+                  "ruby": "みみょう",
+                  "x": 610,
+                  "y": 110,
+                  "w": 220
+                },
+                {
+                  "id": "haya",
+                  "name": "早瀬",
+                  "ruby": "はやせ",
+                  "x": 20,
+                  "y": 390,
+                  "w": 220
+                },
+                {
+                  "id": "mori",
+                  "name": "盛綱",
+                  "ruby": "もりつな",
+                  "sub": "鎌倉方",
+                  "x": 360,
+                  "y": 390,
+                  "w": 220
+                },
+                {
+                  "id": "taka",
+                  "name": "高綱",
+                  "ruby": "たかつな",
+                  "sub": "京方",
+                  "x": 860,
+                  "y": 390,
+                  "w": 220
+                },
+                {
+                  "id": "kaga",
+                  "name": "篝火",
+                  "ruby": "かがりび",
+                  "x": 1200,
+                  "y": 390,
+                  "w": 220
+                },
+                {
+                  "id": "kosa",
+                  "name": "小三郎",
+                  "ruby": "こさぶろう",
+                  "x": 360,
+                  "y": 670,
+                  "w": 220,
+                  "accent": true
+                },
+                {
+                  "id": "kosh",
+                  "name": "小四郎",
+                  "ruby": "こしろう",
+                  "x": 860,
+                  "y": 670,
+                  "w": 220,
+                  "accent": true
+                }
+              ],
+              "links": [
+                {
+                  "type": "family",
+                  "parent": "mimy",
+                  "children": [
+                    "mori",
+                    "taka"
+                  ],
+                  "label": "母"
+                },
+                {
+                  "from": "haya",
+                  "to": "mori",
+                  "label": "夫婦"
+                },
+                {
+                  "from": "mori",
+                  "to": "taka",
+                  "label": "兄弟"
+                },
+                {
+                  "from": "taka",
+                  "to": "kaga",
+                  "label": "夫婦"
+                },
+                {
+                  "type": "family",
+                  "parent": "mori",
+                  "children": [
+                    "kosa"
+                  ]
+                },
+                {
+                  "type": "family",
+                  "parent": "taka",
+                  "children": [
+                    "kosh"
+                  ]
+                },
+                {
+                  "from": "kosa",
+                  "to": "kosh",
+                  "label": "いとこ"
+                }
+              ]
+            }
+          },
+          {
+            "sentFrom": 3,
+            "sentTo": 3,
+            "header": false,
+            "photoLayer": {
+              "img": "stage:候補/p051.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.05,
+              "focus": {
+                "x": 0.45,
+                "y": 0.4
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "9",
+      "audio": "voice:第1回/ブロック9.mp3",
+      "avatar": "none",
+      "styleTag": "[friendly, serious Japanese narration]",
+      "subtitleText": "本編では、盛綱が誰と向き合っているのかに注目してみて。武将としての顔と、兄として、伯父としての顔。その間で揺れる気持ちを、役者はどう見せるんだろう。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 0,
+            "header": false,
+            "photoLayer": {
+              "img": "stage:候補/p300.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.06,
+              "focus": {
+                "x": 0.35,
+                "y": 0.45
+              }
+            }
+          },
+          {
+            "sentFrom": 1,
+            "sentTo": 2,
+            "header": false,
+            "photoLayer": {
+              "img": "stage:寄り/盛綱_寄り_決断.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.06,
+              "focus": {
+                "x": 0.52,
+                "y": 0.42
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "10",
+      "audio": "voice:第1回/ブロック10.mp3",
+      "avatar": "none",
+      "styleTag": "[cheerful, friendly, warm Japanese narration]",
+      "subtitleText": "本編は、概要欄の気良歌舞伎リマスター版から。家系図を見ながら読み返せるnoteと、歌舞伎プラスも載せておくね。次は、おばあさんの微妙。なぜ、大切な孫に厳しいことを言うのかを見ていこう。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 1,
+            "header": false,
+            "kera": "large",
+            "photoLayer": {
+              "img": "stage:候補/p273.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 1080,
+              "move": "zoomOut",
+              "amount": 0.05,
+              "focus": {
+                "x": 0.4,
+                "y": 0.45
+              }
+            }
+          },
+          {
+            "sentFrom": 2,
+            "sentTo": 3,
+            "header": false,
+            "photoLayer": {
+              "img": "stage:候補/p174.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.06,
+              "focus": {
+                "x": 0.62,
+                "y": 0.35
+              },
+              "dim": 0.3,
+              "shade": "left"
+            },
+            "heading": {
+              "tone": "light",
+              "font": "gothic",
+              "lead": "次回",
+              "lines": [
+                "微妙は、",
+                "なぜ孫に厳しいの？"
+              ],
+              "size": 92,
+              "x": 128,
+              "y": 190
+            },
+            "kera": false
+          }
+        ]
+      }
+    }
+  ],
+  "chapters": [
+    {
+      "block": "1",
+      "label": "いとこを捕まえたら？"
+    },
+    {
+      "block": "3",
+      "label": "兄弟が敵同士"
+    },
+    {
+      "block": "5",
+      "label": "捕まえたのは甥っ子"
+    },
+    {
+      "block": "7",
+      "label": "あと三人の家族"
+    },
+    {
+      "block": "9",
+      "label": "本編で注目したいところ"
+    },
+    {
+      "block": "10",
+      "label": "次回予告"
+    }
+  ],
+  "youtube": {
+    "title": "盛綱陣屋① 家族なのに、なぜ敵同士？｜人物関係（超訳！歌舞伎ナビ）",
+    "titleCandidates": [
+      "盛綱陣屋① 家族なのに、なぜ敵同士？｜人物関係（超訳！歌舞伎ナビ）",
+      "【わかる！超訳】盛綱陣屋① 家族なのに、なぜ敵同士？｜人物関係"
+    ],
+    "description": "兄弟なのに、戦では敵同士。陣屋に連れてこられた敵の子は、実の甥っ子――。\n歌舞伎『盛綱陣屋（もりつなじんや）』を、けらのすけが五つの「どうして？」からひもとく5回シリーズ。第1回は、登場人物の関係を約3分で超訳します。\n※シリーズ全体では、真相と結末までお話しします。\n\n▼ 本編を観る｜気良歌舞伎 2013年公演・リマスター版（全編）\nhttps://youtu.be/w7juB7FcrVw\n\n▼ 家系図を見ながら読み返せるnote\nhttps://note.com/kerakabuki/n/nf81df34475d6\n\n▼ あらすじ・見どころ｜KABUKI PLUS+ 演目ガイド\nhttps://kabukiplus.com/kabuki/navi/enmoku/moritunajinya\n\n0:00 いとこを捕まえたら？\n0:28 兄弟が敵同士\n1:02 捕まえたのは甥っ子\n1:27 あと三人の家族\n2:00 本編で注目したいところ\n2:15 次回予告\n\n次回② 微妙は、なぜ孫に厳しいの？\n\nナレーション: けらのすけ（AI音声）\n写真: 気良歌舞伎 2013年公演\n音楽: H/MIX GALLERY「華志の舞」「Moment」\n\n#盛綱陣屋 #歌舞伎 #超訳歌舞伎ナビ #近江源氏先陣館 #地芝居 #けらのすけ #気良歌舞伎",
+    "pinnedComment": "家系図を見ながら読み返せるnoteはこちら → https://note.com/kerakabuki/n/nf81df34475d6",
+    "tags": [
+      "盛綱陣屋",
+      "近江源氏先陣館",
+      "歌舞伎",
+      "歌舞伎 初心者",
+      "歌舞伎 解説",
+      "超訳歌舞伎ナビ",
+      "けらのすけ",
+      "気良歌舞伎",
+      "地歌舞伎",
+      "地芝居"
+    ]
+  }
+}

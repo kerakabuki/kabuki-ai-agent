@@ -1,7 +1,8 @@
 // 素材プレフィックスパスのリゾルバ（build スクリプトと server で共有）
 // プレフィックス:
 //   gen:X    → {EP}/画像/生成/X
-//   photo:X  → {EP}/画像/ゆかりの地/X
+//   photo:X  → {EP}/画像/ゆかりの地
+//   stage:X  → {EP}/画像/舞台写真/X
 //   common:X → {COMMON}/X
 //   voice:X  → {EP}/音声/X
 //   bgm:X    → {EP}/BGM/X
@@ -22,6 +23,7 @@ export function makePaths(epDir) {
     EP,
     GEN: `${EP}/画像/生成`,
     PHOTO: `${EP}/画像/ゆかりの地`,
+    STAGE: `${EP}/画像/舞台写真`,
     VOICE: `${EP}/音声`,
     BGM: `${EP}/BGM`,
     OUT: `${EP}/出力`,
@@ -40,6 +42,7 @@ export function resolveAsset(p, paths) {
     switch (prefix) {
       case 'gen':    return `${paths.GEN}/${rest}`;
       case 'photo':  return `${paths.PHOTO}/${rest}`;
+      case 'stage':  return `${paths.STAGE}/${rest}`;
       case 'common': return `${paths.COMMON}/${rest}`;
       case 'voice':  return `${paths.VOICE}/${rest}`;
       case 'bgm':    return `${paths.BGM}/${rest}`;

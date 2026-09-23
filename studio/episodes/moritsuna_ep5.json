@@ -1,0 +1,876 @@
+{
+ "episode": {
+  "title": "超訳！歌舞伎ナビ『盛綱陣屋』⑤ 和田兵衛は、なぜ敵を助ける？",
+  "epDir": "歌舞伎ナビ06盛綱陣屋",
+  "workName": "work_ep5_v1",
+  "number": null,
+  "outputName": "盛綱陣屋05_和田兵衛は_v2.mp4",
+  "voiceId": "xOKkuQfZt5N7XfbFdn9W",
+  "ttsModel": "eleven_v3",
+  "ttsOutputFormat": "mp3_44100_128"
+ },
+ "layout": {
+  "series": "超訳！歌舞伎ナビ",
+  "title": "盛綱陣屋",
+  "background": "common:v6レイアウト/青海波背景.jpg",
+  "kera": "common:v6レイアウト/けらのすけ立ち姿.png",
+  "keraLive": "common:けらのすけ口パク",
+  "keraMotion": "video"
+ },
+ "settings": {
+  "W": 1920,
+  "H": 1080,
+  "FPS": 24,
+  "LEAD": 0.4,
+  "TAIL": 0.8,
+  "CRF": "18",
+  "wrapMax": 20,
+  "capFontSize": 48,
+  "subNoOverlap": true,
+  "subStyle": {
+   "fontName": "BIZ UDGothic",
+   "fontSize": 66,
+   "bold": 0,
+   "borderStyle": 4,
+   "outline": 16,
+   "shadow": 0,
+   "primaryColour": "&H00FFFFFF",
+   "outlineColour": "&H5A000000",
+   "backColour": "&H5A000000",
+   "marginL": 180,
+   "marginR": 180,
+   "marginV": 48
+  },
+  "bgm": "bgm:道行.mp3",
+  "bgmVolNormal": 0.32,
+  "bgmMuteOnClip": true,
+  "slideXfade": 0.4,
+  "edSrc": "common:けらのすけ動画/けらのすけED.mp4",
+  "edBackground": "common:背景.png",
+  "subWrap": "balanced",
+  "slideTiming": "sentence",
+  "bgmSections": [
+   {
+    "from": "1",
+    "to": "2",
+    "file": "common:BGM/華志の舞_HMIX.mp3",
+    "vol": 0.18,
+    "offset": 0
+   },
+   {
+    "from": "3",
+    "to": "14",
+    "file": "common:BGM/Moment_HMIX.mp3",
+    "vol": 0.2,
+    "offset": 0.8
+   },
+   {
+    "from": "15",
+    "to": "15",
+    "file": "common:BGM/華志の舞_HMIX.mp3",
+    "vol": 0.18,
+    "offset": 170
+   }
+  ],
+  "bgmSectionFade": 1.2
+ },
+ "blocks": [
+  {
+   "id": "1",
+   "audio": "voice:第5回/ブロック1.mp3",
+   "avatar": "none",
+   "styleTag": "[friendly, serious Japanese narration]",
+   "subtitleText": "自分を追いつめたのは、味方の主君。そこへ助けに現れたのは、敵側の武将。いったい、どうしてなんだろう。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 0,
+      "header": false,
+      "kera": false,
+      "photoLayer": {
+       "img": "stage:寄り/時政_顔_285_43.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.7,
+        "y": 0.3
+       }
+      }
+     },
+     {
+      "sentFrom": 1,
+      "sentTo": 1,
+      "header": false,
+      "kera": false,
+      "photoLayer": {
+       "img": "stage:寄り/和田_登場.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.55,
+        "y": 0.35
+       }
+      }
+     },
+     {
+      "sentFrom": 2,
+      "sentTo": 2,
+      "header": false,
+      "kera": false,
+      "photoLayer": {
+       "img": "stage:寄り/和田と盛綱.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.45,
+        "y": 0.4
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "2",
+   "audio": "voice:第5回/ブロック2.mp3",
+   "avatar": "none",
+   "styleTag": "[cheerful, friendly, warm Japanese narration]",
+   "subtitleText": "けらのすけだよ。『盛綱陣屋』、最後は和田兵衛と盛綱のお話。",
+   "seBySent": [
+    {
+     "file": "common:効果音/拍子木1.mp3",
+     "sent": 0,
+     "vol": 0.5
+    }
+   ],
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 1,
+      "header": false,
+      "kera": "large",
+      "photoLayer": {
+       "img": "stage:候補/p303.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1440,
+       "h": 1080,
+       "move": "zoomOut",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.5,
+        "y": 0.45
+       },
+       "dim": 0.45,
+       "shade": "left"
+      },
+      "heading": {
+       "tone": "light",
+       "font": "gothic",
+       "lead": "盛綱陣屋",
+       "lines": [
+        "和田兵衛は、",
+        "なぜ敵を助ける？"
+       ],
+       "size": 104,
+       "emphasis": "助ける",
+       "x": 128,
+       "y": 330
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "3",
+   "audio": "voice:第5回/ブロック3.mp3",
+   "avatar": "none",
+   "styleTag": "[friendly, serious Japanese narration]",
+   "subtitleText": "盛綱は、小四郎が命をかけた計略を守るため、偽物の首を、弟の高綱の首だと認めた。時政が去っても、その嘘の責任がなくなるわけではないんだ。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 0,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/x99910.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.45,
+        "y": 0.1
+       }
+      }
+     },
+     {
+      "sentFrom": 1,
+      "sentTo": 1,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:寄り/盛綱_顔_282.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1440,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.3,
+        "y": 0.35
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "4",
+   "audio": "voice:第5回/ブロック4.mp3",
+   "avatar": "none",
+   "styleTag": "[gentle, warm Japanese narration]",
+   "subtitleText": "盛綱は、隠れていた小四郎の母、篝火を呼び出す。篝火も夫の計略を知っていた。祖母の微妙は、孫の覚悟を知らずに責めたことを悔やむ。家族が向き合う中で、小四郎との、最後の別れが訪れるんだ。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 0,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/x996.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1440,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.45,
+        "y": 0.35
+       }
+      },
+      "person": {
+       "variant": "vertical",
+       "ruby": "かがりび",
+       "name": "篝火",
+       "x": 1150,
+       "y": 140
+      }
+     },
+     {
+      "sentFrom": 1,
+      "sentTo": 1,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/p324.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.45,
+        "y": 0.4
+       }
+      }
+     },
+     {
+      "sentFrom": 2,
+      "sentTo": 2,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/x50.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.5,
+        "y": 0.4
+       }
+      }
+     },
+     {
+      "sentFrom": 3,
+      "sentTo": 3,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/p354.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.5,
+        "y": 0.4
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "5",
+   "audio": "voice:第5回/ブロック5.mp3",
+   "avatar": "none",
+   "styleTag": "[slow, quiet, somber Japanese narration]",
+   "subtitleText": "計略がうまくいったから、めでたしめでたし、とはならない。残るのは、失った命と、家族の悲しみ。",
+   "quiet": true,
+   "tail": 1.2,
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 0,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/p351.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.45,
+        "y": 0.45
+       }
+      }
+     },
+     {
+      "sentFrom": 1,
+      "sentTo": 1,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/x49.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.45,
+        "y": 0.45
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "6",
+   "audio": "voice:第5回/ブロック6.mp3",
+   "avatar": "none",
+   "styleTag": "[friendly, serious Japanese narration]",
+   "subtitleText": "盛綱も、主君を欺いた責任を、自分の命で取ろうとする。そこへ、和田兵衛が現れるんだ。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 0,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/x36.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.35,
+        "y": 0.35
+       }
+      }
+     },
+     {
+      "sentFrom": 1,
+      "sentTo": 1,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/x998c.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1440,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.5,
+        "y": 0.4
+       }
+      },
+      "person": {
+       "variant": "vertical",
+       "ruby": "わだびょうえ",
+       "name": "和田兵衛",
+       "x": 1150,
+       "y": 140
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "7",
+   "audio": "voice:第5回/ブロック7.mp3",
+   "avatar": "none",
+   "styleTag": "[cheerful, friendly, warm Japanese narration]",
+   "subtitleText": "和田は、弟の高綱と同じ側の武将。前には、この陣屋に来て、小四郎を返してほしいと求めた人だよ。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 0,
+      "relations": {
+       "nodes": [
+        {
+         "id": "mori",
+         "name": "盛綱",
+         "ruby": "もりつな",
+         "x": 360,
+         "y": 390,
+         "w": 220,
+         "sub": "鎌倉方"
+        },
+        {
+         "id": "taka",
+         "name": "高綱",
+         "ruby": "たかつな",
+         "x": 860,
+         "y": 390,
+         "w": 220,
+         "sub": "京方"
+        },
+        {
+         "id": "wada",
+         "name": "和田兵衛",
+         "ruby": "わだびょうえ",
+         "x": 1180,
+         "y": 390,
+         "w": 240,
+         "sub": "京方",
+         "accent": true
+        }
+       ],
+       "links": [
+        {
+         "from": "mori",
+         "to": "taka",
+         "label": "兄弟"
+        },
+        {
+         "from": "taka",
+         "to": "wada",
+         "label": "味方"
+        }
+       ]
+      }
+     },
+     {
+      "sentFrom": 1,
+      "sentTo": 1,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/x03.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1440,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.5,
+        "y": 0.4
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "8",
+   "audio": "voice:第5回/ブロック8.mp3",
+   "avatar": "none",
+   "styleTag": "[friendly, serious Japanese narration]",
+   "subtitleText": "和田は、時政が残した櫃に潜んでいた監視役を見破り、盛綱を救う。そして、高綱が再び立つときに義理を果たすよう、盛綱に伝えて去っていくんだ。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 0,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:寄り/和田兵衛_鉄砲.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.62,
+        "y": 0.35
+       }
+      }
+     },
+     {
+      "sentFrom": 1,
+      "sentTo": 1,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:寄り/和田と盛綱.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "panRight",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.45,
+        "y": 0.4
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "9",
+   "audio": "voice:第5回/ブロック9.mp3",
+   "avatar": "none",
+   "styleTag": "[gentle, warm Japanese narration]",
+   "subtitleText": "今の言葉で、その働きかけを受け取るなら。",
+   "quiet": true,
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 0,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:寄り/和田_初来訪.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.04,
+       "focus": {
+        "x": 0.7,
+        "y": 0.4
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "10",
+   "audio": "voice:第5回/ブロック10.mp3",
+   "avatar": "none",
+   "styleTag": "[slow, quiet, firm Japanese narration]",
+   "subtitleText": "責任を取って、ここで終わるな。生きて、これからの働きで応えろ。",
+   "quiet": true,
+   "tail": 1.2,
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 1,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:寄り/盛綱_寄り_決断.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.52,
+        "y": 0.42
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "11",
+   "audio": "voice:第5回/ブロック11.mp3",
+   "avatar": "none",
+   "styleTag": "[gentle, warm Japanese narration]",
+   "subtitleText": "そんな意味にも聞こえるんじゃないかな。戦の陣営は別でも、盛綱は弟と甥っ子の思いを受け取った。その決断に、今度は和田が応える。そう見ると、最初に対立していた二人の関係も、違って見えてくるね。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 1,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/x45.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.4,
+        "y": 0.4
+       }
+      }
+     },
+     {
+      "sentFrom": 2,
+      "sentTo": 2,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:寄り/和田_登場.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.55,
+        "y": 0.35
+       }
+      }
+     },
+     {
+      "sentFrom": 3,
+      "sentTo": 3,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/x03.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1440,
+       "h": 1080,
+       "move": "zoomOut",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.5,
+        "y": 0.45
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "12",
+   "audio": "voice:第5回/ブロック12.mp3",
+   "avatar": "none",
+   "styleTag": "[gentle, warm Japanese narration]",
+   "subtitleText": "舞台では、盛綱と和田の向き合い方を見てみて。言葉だけでなく、相手を見る顔や、応じる動きに、どんな思いが表れるだろう。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 1,
+      "header": false,
+      "kera": false,
+      "photoLayer": {
+       "img": "stage:寄り/和田_映像頭.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "none",
+       "amount": 0.06,
+       "dim": 0,
+       "shade": "none"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "13",
+   "clip": {
+    "src": "D:/Codex/気良歌舞伎事務/動画編集/盛綱陣屋_リマスター_20260913/moritsuna_2013_remaster_oped_v2.mp4",
+    "start": 5825,
+    "dur": 12.3,
+    "vol": 1.25
+   },
+   "fade": false,
+   "note": "終幕。上段の和田兵衛が「時節を待って佐々木高綱、まことはこれにと…」と、高綱が立つときの義理を盛綱に説く。5830秒から盛綱が左に入り、二人が向き合う。1:37:05〜。舞台音が他の回より2dBほど小さいので1.25倍"
+  },
+  {
+   "id": "14",
+   "audio": "voice:第5回/ブロック14.mp3",
+   "avatar": "none",
+   "styleTag": "[cheerful, friendly, warm Japanese narration]",
+   "subtitleText": "誰が何を知っていて、誰に何を隠しているのか。そこがわかったら、今度は、役者がどう見せるかを味わう番だよ。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 0,
+      "header": false,
+      "kera": false,
+      "photoLayer": {
+       "img": "stage:寄り/和田_映像尻.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.5,
+        "y": 0.4
+       }
+      }
+     },
+     {
+      "sentFrom": 1,
+      "sentTo": 1,
+      "header": false,
+      "kera": "large",
+      "photoLayer": {
+       "img": "stage:候補/p291.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1440,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.45,
+        "y": 0.45
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "15",
+   "audio": "voice:第5回/ブロック15.mp3",
+   "avatar": "none",
+   "styleTag": "[cheerful, friendly, warm Japanese narration]",
+   "subtitleText": "気良歌舞伎、2013年公演のリマスター版は、概要欄から。家系図つきのnoteと、歌舞伎プラスの演目ガイドもどうぞ。意味がわかると、芝居がもっと面白くなる。けらのすけでした。また、一緒に観ようね。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 1,
+      "header": false,
+      "kera": "large",
+      "photoLayer": {
+       "img": "stage:寄り/終幕.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1440,
+       "h": 1080,
+       "move": "zoomOut",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.4,
+        "y": 0.4
+       }
+      }
+     },
+     {
+      "sentFrom": 2,
+      "sentTo": 4,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/x51.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1440,
+       "h": 1080,
+       "move": "zoomOut",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.45,
+        "y": 0.5
+       }
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "chapters": [
+  {
+   "block": "1",
+   "label": "敵が助けに来るのはなぜ？"
+  },
+  {
+   "block": "3",
+   "label": "嘘の責任"
+  },
+  {
+   "block": "4",
+   "label": "小四郎との別れ"
+  },
+  {
+   "block": "6",
+   "label": "和田兵衛の登場"
+  },
+  {
+   "block": "9",
+   "label": "和田の働きかけ"
+  },
+  {
+   "block": "12",
+   "label": "舞台を見てみよう"
+  },
+  {
+   "block": "14",
+   "label": "まとめ"
+  }
+ ],
+ "youtube": {
+  "title": "盛綱陣屋⑤ 和田兵衛は、なぜ敵を助ける？｜結末（超訳！歌舞伎ナビ）",
+  "titleCandidates": [
+   "盛綱陣屋⑤ 和田兵衛は、なぜ敵を助ける？｜結末（超訳！歌舞伎ナビ）",
+   "【わかる！超訳】盛綱陣屋⑤ 和田兵衛は、なぜ敵を助ける？"
+  ],
+  "description": "自分を追いつめたのは味方の主君。助けに現れたのは、敵側の武将――。\n歌舞伎『盛綱陣屋（もりつなじんや）』を、けらのすけが五つの「どうして？」からひもとく5回シリーズ。最終回は、和田兵衛（わだびょうえ）と盛綱、そして物語の結末を約3分で超訳します。\n※真相・結末を含む観劇ガイドです。\n\n▼ 小四郎との別れから観る｜気良歌舞伎 2013年公演・リマスター版（1:26:05〜）\nhttps://youtu.be/w7juB7FcrVw?t=5165\n\n▼ この動画で見た和田兵衛の場面（1:37:05〜）\nhttps://youtu.be/w7juB7FcrVw?t=5825\n\n▼ 家系図を見ながら読み返せるnote\nhttps://note.com/kerakabuki/n/nf81df34475d6\n\n▼ あらすじ・見どころ｜KABUKI PLUS+ 演目ガイド\nhttps://kabukiplus.com/kabuki/navi/enmoku/moritunajinya\n\n0:00 敵が助けに来るのはなぜ？\n0:21 嘘の責任\n0:37 小四郎との別れ\n1:10 和田兵衛の登場\n1:44 和田の働きかけ\n2:16 舞台を見てみよう\n2:41 まとめ\n\nナレーション: けらのすけ（AI音声）\n写真・映像: 気良歌舞伎 2013年公演\n音楽: H/MIX GALLERY「華志の舞」「Moment」\n\n#盛綱陣屋 #歌舞伎 #超訳歌舞伎ナビ #近江源氏先陣館 #地芝居 #けらのすけ #気良歌舞伎",
+  "pinnedComment": "和田兵衛が盛綱に語る終幕は、リマスター版のここから → https://youtu.be/w7juB7FcrVw?t=5720　5回、観てくれてありがとう。いちばん印象に残った「どうして？」はどれだった？",
+  "tags": [
+   "盛綱陣屋",
+   "近江源氏先陣館",
+   "和田兵衛",
+   "歌舞伎",
+   "歌舞伎 初心者",
+   "歌舞伎 解説",
+   "超訳歌舞伎ナビ",
+   "けらのすけ",
+   "気良歌舞伎",
+   "地歌舞伎"
+  ]
+ }
+}

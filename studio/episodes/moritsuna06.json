@@ -1,0 +1,615 @@
+{
+  "episode": {
+    "title": "超訳！歌舞伎ナビ06「盛綱陣屋」",
+    "epDir": "歌舞伎ナビ06盛綱陣屋",
+    "number": 4,
+    "outputName": "盛綱陣屋_超訳歌舞伎ナビ_v1.mp4",
+    "voiceId": "xOKkuQfZt5N7XfbFdn9W",
+    "ttsModel": "eleven_v3",
+    "ttsOutputFormat": "mp3_44100_128"
+  },
+  "layout": {
+    "series": "超訳！歌舞伎ナビ",
+    "title": "盛綱陣屋",
+    "background": "common:v6レイアウト/青海波背景.jpg",
+    "kera": "common:v6レイアウト/けらのすけ立ち姿.png"
+  },
+  "settings": {
+    "W": 1920,
+    "H": 1080,
+    "FPS": 24,
+    "LEAD": 0.4,
+    "TAIL": 0.8,
+    "CRF": "18",
+    "wrapMax": 20,
+    "capFontSize": 48,
+    "subNoOverlap": true,
+    "subStyle": {
+      "fontName": "BIZ UDGothic",
+      "fontSize": 72,
+      "bold": 0,
+      "borderStyle": 4,
+      "outline": 16,
+      "shadow": 0,
+      "primaryColour": "&H00FFFFFF",
+      "outlineColour": "&H243A2716",
+      "backColour": "&H243A2716",
+      "marginL": 180,
+      "marginR": 180,
+      "marginV": 52
+    },
+    "bgm": "common:BGM/Neu_Kabuki.mp3",
+    "bgmVolNormal": 0.13,
+    "bgmVolQuiet": 0.05,
+    "quietFromBlock": "4",
+    "quietToBlock": "7",
+    "op": "common:OP_ED/歌舞伎ナビOP.mov",
+    "edSrc": "common:けらのすけ動画/けらのすけED.mp4",
+    "edBackground": "common:背景.png"
+  },
+  "blocks": [
+    {
+      "id": "1",
+      "audio": "voice:ブロック1.mp3",
+      "avatar": "none",
+      "styleTag": "[cheerful, friendly, warm Japanese narration]",
+      "subtitleText": "『盛綱陣屋』は、答えを知ってから観たほうが、何倍も面白くなる芝居なんだ。役者の沈黙にも、目の動きにも、ぜんぶ理由があるからね。だから今回は、首実検の真相も、結末も、ぜんぶ話すよ。そのうえで、どこを見ればいいかを案内するね。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 1,
+            "heading": {
+              "lead": "この芝居は、",
+              "lines": [
+                "答えを知ってから。"
+              ],
+              "emphasis": "答え"
+            }
+          },
+          {
+            "sentFrom": 2,
+            "sentTo": 3,
+            "heading": {
+              "lines": [
+                "真相も、",
+                "結末も、",
+                "ぜんぶ話すよ。"
+              ],
+              "size": 64,
+              "emphasis": "真相"
+            },
+            "photo": {
+              "img": "stage:候補/p273.jpg",
+              "position": "right"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "2",
+      "audio": "voice:ブロック2.mp3",
+      "avatar": "none",
+      "styleTag": "[cheerful, friendly, warm Japanese narration]",
+      "subtitleText": "時は、源氏の一族が敵味方に分かれた戦のさなか。兄が佐々木盛綱、弟が佐々木高綱。血を分けた兄弟が、仕える相手が違うというだけで、刃を向け合うことになったんだ。そして大事なのがここ。弟の高綱は、この一幕には最後まで姿を見せない。姿の見えない弟の考えが、舞台の上の全員を動かしていく。そういう芝居なんだよ。",
+      "seBySent": [
+        {
+          "file": "common:効果音/拍子木1.mp3",
+          "sent": 0,
+          "vol": 0.5
+        }
+      ],
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 2,
+            "person": {
+              "ruby": "もりつな",
+              "name": "盛綱",
+              "role": "弟の首を見分ける兄",
+              "position": "left"
+            },
+            "photo": {
+              "img": "stage:候補/p051.jpg",
+              "position": "right"
+            }
+          },
+          {
+            "sentFrom": 3,
+            "sentTo": 6,
+            "relations": {
+              "nodes": [
+                {
+                  "id": "moritsuna",
+                  "name": "盛綱",
+                  "ruby": "もりつな",
+                  "x": 250,
+                  "y": 330
+                },
+                {
+                  "id": "takatsuna",
+                  "name": "高綱",
+                  "ruby": "たかつな",
+                  "x": 850,
+                  "y": 330
+                }
+              ],
+              "links": [
+                {
+                  "from": "moritsuna",
+                  "to": "takatsuna",
+                  "label": "兄弟"
+                }
+              ]
+            },
+            "person": {
+              "ruby": "たかつな",
+              "name": "高綱",
+              "role": "舞台に出てこない弟",
+              "position": "left",
+              "variant": "chip",
+              "x": 850,
+              "y": 560
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "3",
+      "audio": "voice:ブロック3.mp3",
+      "avatar": "none",
+      "styleTag": "[cheerful, friendly, warm Japanese narration]",
+      "subtitleText": "舞台は、兄・盛綱がかまえる陣屋。ここに、弟・高綱の子、小四郎が捕らえられているんだ。捕らえたのは、盛綱の子の小三郎。いとこ同士が、捕らえる側と捕らえられる側に分かれてしまった。戦の相手が、そのまま身内。この陣屋は、そういう場所なんだ。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 2,
+            "photo": {
+              "img": "stage:候補/p063.jpg",
+              "position": "left"
+            },
+            "person": {
+              "ruby": "こしろう",
+              "name": "小四郎",
+              "role": "捕らわれた高綱の子",
+              "position": "right"
+            }
+          },
+          {
+            "sentFrom": 3,
+            "sentTo": 5,
+            "relations": {
+              "nodes": [
+                {
+                  "id": "moritsuna",
+                  "name": "盛綱",
+                  "ruby": "もりつな",
+                  "x": 210,
+                  "y": 230
+                },
+                {
+                  "id": "takatsuna",
+                  "name": "高綱",
+                  "ruby": "たかつな",
+                  "x": 810,
+                  "y": 230
+                },
+                {
+                  "id": "kosaburo",
+                  "name": "小三郎",
+                  "ruby": "こさぶろう",
+                  "x": 210,
+                  "y": 540
+                },
+                {
+                  "id": "koshiro",
+                  "name": "小四郎",
+                  "ruby": "こしろう",
+                  "x": 810,
+                  "y": 540
+                }
+              ],
+              "links": [
+                {
+                  "from": "moritsuna",
+                  "to": "takatsuna",
+                  "label": "兄弟"
+                },
+                {
+                  "from": "moritsuna",
+                  "to": "kosaburo",
+                  "label": "親子"
+                },
+                {
+                  "from": "takatsuna",
+                  "to": "koshiro",
+                  "label": "親子"
+                },
+                {
+                  "from": "kosaburo",
+                  "to": "koshiro",
+                  "label": "いとこ"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "4",
+      "audio": "voice:ブロック4.mp3",
+      "avatar": "none",
+      "quiet": true,
+      "styleTag": "[slow, quiet, somber Japanese narration]",
+      "subtitleText": "盛綱は、母の微妙を呼んで、重い頼みごとをする。小四郎に、切腹を勧めてほしい、と。人質にとられた我が子を思うあまり、弟が武士としての筋を曲げてしまう。それを恐れているんだ。でも微妙にとって、小四郎はようやく会えた孫だよ。武家の母としての役目と、祖母の情のあいだで、引き裂かれることになる。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 1,
+            "person": {
+              "ruby": "みみょう",
+              "name": "微妙",
+              "role": "兄弟の母、子らの祖母",
+              "position": "left"
+            },
+            "photo": {
+              "img": "stage:候補/p183.jpg",
+              "position": "right"
+            }
+          },
+          {
+            "sentFrom": 2,
+            "sentTo": 5,
+            "heading": {
+              "lines": [
+                "孫に、",
+                "死んでくれ。"
+              ],
+              "size": 76,
+              "emphasis": "孫"
+            },
+            "photo": {
+              "img": "stage:候補/p174.jpg",
+              "position": "right"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "5",
+      "audio": "voice:ブロック5.mp3",
+      "avatar": "none",
+      "styleTag": "[cheerful, friendly, warm Japanese narration]",
+      "subtitleText": "やがて陣屋に、高綱が討ち死にしたという知らせが届く。運ばれてきた首をあらためるよう命じられたのは、兄の盛綱だった。討ち取った首が、本当に本人のものかどうかを見きわめる。これが「首実検」だよ。兄が、弟の首と向き合うことになるんだ。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 1,
+            "photo": {
+              "img": "stage:v6_盛綱_首実検.jpg",
+              "position": "right"
+            }
+          },
+          {
+            "sentFrom": 2,
+            "sentTo": 4,
+            "termCard": {
+              "ruby": "くびじっけん",
+              "text": "首実検"
+            },
+            "person": {
+              "ruby": "もりつな",
+              "name": "盛綱",
+              "role": "弟の首を見分ける兄",
+              "position": "left"
+            },
+            "photo": {
+              "img": "stage:v6_盛綱_首実検.jpg",
+              "position": "right"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "6",
+      "audio": "voice:ブロック6.mp3",
+      "avatar": "none",
+      "quiet": true,
+      "tail": 1.4,
+      "styleTag": "[slow, quiet, somber Japanese narration]",
+      "subtitleText": "ここで真相を明かすね。その首は、高綱じゃない。高綱は、自分は死んだと敵に信じ込ませようとしているんだ。その計略のために、小四郎はわざと捕らわれた。そして首実検の場面で、父の首だと信じたふりをして、自分から腹を切る。盛綱は、それを悟ってしまう。本当のことを言えば、小四郎の死が無駄になる。偽首を認めれば、主君を欺く。盛綱は、こう言い切る。「弟佐々木高綱が首に、相違ござりませぬ」。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 2,
+            "heading": {
+              "lead": "その首は、",
+              "lines": [
+                "高綱じゃない。"
+              ],
+              "emphasis": "じゃない"
+            }
+          },
+          {
+            "sentFrom": 3,
+            "sentTo": 4,
+            "photo": {
+              "img": "stage:候補/p342.jpg",
+              "position": "left"
+            },
+            "person": {
+              "ruby": "こしろう",
+              "name": "小四郎",
+              "role": "計略のために、わざと捕まった",
+              "position": "right",
+              "variant": "chip"
+            }
+          },
+          {
+            "sentFrom": 5,
+            "sentTo": 7,
+            "heading": {
+              "lines": [
+                "言えば、死が無駄になる。",
+                "認めれば、主君を欺く。"
+              ],
+              "size": 76
+            }
+          },
+          {
+            "sentFrom": 8,
+            "sentTo": 9,
+            "photo": {
+              "img": "stage:候補/p285.jpg",
+              "position": "right"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "7",
+      "audio": "voice:ブロック7.mp3",
+      "avatar": "none",
+      "styleTag": "[cheerful, friendly, warm Japanese narration]",
+      "subtitleText": "見どころを三つ。ひとつめは、せりふのない時間。首をあらためてから、盛綱が答えを口にするまで。気づいて、迷って、決める。その全部を、言葉を使わずに見せるんだ。歌舞伎の数ある首実検のなかでも、いちばん長くて難しいと言われる場面だよ。息をつめて見てみよう。",
+      "seBySent": [
+        {
+          "file": "common:効果音/和太鼓でドン.mp3",
+          "sent": 0,
+          "vol": 0.45
+        }
+      ],
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 1,
+            "heading": {
+              "lead": "見どころ ①",
+              "lines": [
+                "せりふのない時間。"
+              ],
+              "emphasis": "ない"
+            }
+          },
+          {
+            "sentFrom": 2,
+            "sentTo": 6,
+            "photo": {
+              "img": "stage:候補/p312.jpg",
+              "position": "left"
+            },
+            "person": {
+              "ruby": "もりつな",
+              "name": "盛綱",
+              "role": "気づいて、迷って、決める",
+              "position": "right",
+              "variant": "chip"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "8",
+      "audio": "voice:ブロック8.mp3",
+      "avatar": "none",
+      "styleTag": "[cheerful, friendly, warm Japanese narration]",
+      "subtitleText": "ふたつめは、小四郎。祖母に刀を向けられた場面では、泣いて、助けてくださいと言うんだ。なのに首実検では、自分から腹を切る。この差に、意味がある。計略が仕上がるその場面まで、生きていなければならなかったんだね。",
+      "seBySent": [
+        {
+          "file": "common:効果音/和太鼓でドン.mp3",
+          "sent": 0,
+          "vol": 0.45
+        }
+      ],
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 1,
+            "heading": {
+              "lead": "見どころ ②",
+              "lines": [
+                "泣いた子が、腹を切る。"
+              ],
+              "size": 104,
+              "emphasis": "腹を切る"
+            }
+          },
+          {
+            "sentFrom": 2,
+            "sentTo": 2,
+            "photo": {
+              "img": "stage:候補/p249.jpg",
+              "position": "right"
+            }
+          },
+          {
+            "sentFrom": 3,
+            "sentTo": 4,
+            "photo": {
+              "img": "stage:候補/p342.jpg",
+              "position": "left"
+            },
+            "person": {
+              "ruby": "こしろう",
+              "name": "小四郎",
+              "role": "その場面まで、生きる",
+              "position": "right",
+              "variant": "chip"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "9",
+      "audio": "voice:ブロック9.mp3",
+      "avatar": "none",
+      "styleTag": "[cheerful, friendly, warm Japanese narration]",
+      "subtitleText": "みっつめは、微妙。孫に刀を振り上げて、振り下ろせない。しまいには自分のほうから手を合わせて、死んでくれと頼むんだ。武家の気位と、祖母の情。どちらも捨てられない人として見てみよう。",
+      "seBySent": [
+        {
+          "file": "common:効果音/和太鼓でドン.mp3",
+          "sent": 0,
+          "vol": 0.45
+        }
+      ],
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 1,
+            "heading": {
+              "lead": "見どころ ③",
+              "lines": [
+                "振り下ろせない刀。"
+              ],
+              "emphasis": "ない"
+            }
+          },
+          {
+            "sentFrom": 2,
+            "sentTo": 3,
+            "photo": {
+              "img": "stage:候補/p174.jpg",
+              "position": "right"
+            }
+          },
+          {
+            "sentFrom": 4,
+            "sentTo": 4,
+            "photo": {
+              "img": "stage:候補/p189.jpg",
+              "position": "right"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "10",
+      "audio": "voice:ブロック10.mp3",
+      "avatar": "none",
+      "styleTag": "[cheerful, friendly, warm Japanese narration]",
+      "subtitleText": "あらすじや人物をもっと知りたい人は、概要欄の演目ガイドを読んでみてね。気良歌舞伎が2013年に上演した『盛綱陣屋』は、全編の映像を公開しているよ。答えを知ったいまの目で、観てみてね。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 0,
+            "heading": {
+              "lines": [
+                "演目ガイドは、",
+                "概要欄から。"
+              ],
+              "size": 88
+            }
+          },
+          {
+            "sentFrom": 1,
+            "sentTo": 2,
+            "heading": {
+              "lines": [
+                "2013年の",
+                "全編映像も",
+                "公開中。"
+              ],
+              "size": 64
+            },
+            "photo": {
+              "img": "stage:候補/p291.jpg",
+              "position": "right"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "chapters": [
+    {
+      "block": "1",
+      "label": "答えを知ってから観る"
+    },
+    {
+      "block": "2",
+      "label": "敵味方に分かれた兄弟"
+    },
+    {
+      "block": "3",
+      "label": "捕らわれた小四郎"
+    },
+    {
+      "block": "4",
+      "label": "母・微妙への頼み"
+    },
+    {
+      "block": "5",
+      "label": "首実検とは"
+    },
+    {
+      "block": "6",
+      "label": "首実検の真相"
+    },
+    {
+      "block": "7",
+      "label": "見どころ3つ"
+    },
+    {
+      "block": "10",
+      "label": "まとめ"
+    }
+  ],
+  "youtube": {
+    "title": "【超訳！歌舞伎ナビ】盛綱陣屋｜答えを知ってから観ると、芝居が見える",
+    "titleCandidates": [
+      "【超訳！歌舞伎ナビ】盛綱陣屋｜答えを知ってから観ると、芝居が見える",
+      "【超訳！歌舞伎ナビ】首実検の真相をぜんぶ話します『盛綱陣屋』",
+      "【超訳！歌舞伎ナビ】なぜ兄は、偽の首を「弟だ」と言い切ったのか"
+    ],
+    "description": "『盛綱陣屋』は、答えを知ってから観たほうが何倍も面白い芝居です。\nKABUKI PLUS+のナビゲーター「けらのすけ」が、首実検の真相と、\n役者のどこを見ればいいかを解説します。\n※この動画は真相・結末を含む予習用の解説です。\n\n▼ もっと詳しいあらすじ・登場人物（KABUKI PLUS+ 演目ガイド）\nhttps://kabukiplus.com/kabuki/navi/enmoku/moritunajinya\n\n▼ 気良歌舞伎『盛綱陣屋』全編（2013年上演）\nhttps://www.youtube.com/watch?v=_UYjJkNjhAE\n\n▼ けらのすけに直接質問もできます（KABUKI PLUS+）\nhttps://kabukiplus.com/\n\n※チャプターは出力後の実測値に差し替える\n\nナレーション: けらのすけ（AI音声）\n映像: 気良歌舞伎 2013年公演\n\n#超訳歌舞伎ナビ #盛綱陣屋 #近江源氏先陣館 #歌舞伎 #地芝居 #けらのすけ",
+    "pinnedComment": "『盛綱陣屋』の全編（気良歌舞伎 2013年上演）はこちら → https://www.youtube.com/watch?v=_UYjJkNjhAE　答えを知ったいまの目で観ると、首実検の沈黙の意味が変わります。",
+    "tags": [
+      "超訳歌舞伎ナビ",
+      "盛綱陣屋",
+      "近江源氏先陣館",
+      "歌舞伎",
+      "地芝居",
+      "けらのすけ",
+      "気良歌舞伎",
+      "首実検"
+    ]
+  }
+}

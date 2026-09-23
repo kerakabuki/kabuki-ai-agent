@@ -1,0 +1,838 @@
+{
+ "episode": {
+  "title": "超訳！歌舞伎ナビ『盛綱陣屋』② 微妙は、なぜ孫に厳しいの？",
+  "epDir": "歌舞伎ナビ06盛綱陣屋",
+  "workName": "work_ep2_v1",
+  "number": null,
+  "outputName": "盛綱陣屋02_微妙は_v2.mp4",
+  "voiceId": "xOKkuQfZt5N7XfbFdn9W",
+  "ttsModel": "eleven_v3",
+  "ttsOutputFormat": "mp3_44100_128"
+ },
+ "layout": {
+  "series": "超訳！歌舞伎ナビ",
+  "title": "盛綱陣屋",
+  "background": "common:v6レイアウト/青海波背景.jpg",
+  "kera": "common:v6レイアウト/けらのすけ立ち姿.png",
+  "keraLive": "common:けらのすけ口パク",
+  "keraMotion": "video"
+ },
+ "settings": {
+  "W": 1920,
+  "H": 1080,
+  "FPS": 24,
+  "LEAD": 0.4,
+  "TAIL": 0.8,
+  "CRF": "18",
+  "wrapMax": 20,
+  "capFontSize": 48,
+  "subNoOverlap": true,
+  "subStyle": {
+   "fontName": "BIZ UDGothic",
+   "fontSize": 66,
+   "bold": 0,
+   "borderStyle": 4,
+   "outline": 16,
+   "shadow": 0,
+   "primaryColour": "&H00FFFFFF",
+   "outlineColour": "&H5A000000",
+   "backColour": "&H5A000000",
+   "marginL": 180,
+   "marginR": 180,
+   "marginV": 48
+  },
+  "bgm": "bgm:道行.mp3",
+  "bgmVolNormal": 0.32,
+  "bgmMuteOnClip": true,
+  "slideXfade": 0.4,
+  "edSrc": "common:けらのすけ動画/けらのすけED.mp4",
+  "edBackground": "common:背景.png",
+  "subWrap": "balanced",
+  "slideTiming": "sentence",
+  "bgmSections": [
+   {
+    "from": "1",
+    "to": "2",
+    "file": "common:BGM/華志の舞_HMIX.mp3",
+    "vol": 0.18,
+    "offset": 0
+   },
+   {
+    "from": "3",
+    "to": "12",
+    "file": "common:BGM/Moment_HMIX.mp3",
+    "vol": 0.2,
+    "offset": 0.8
+   },
+   {
+    "from": "13",
+    "to": "13",
+    "file": "common:BGM/華志の舞_HMIX.mp3",
+    "vol": 0.18,
+    "offset": 170
+   }
+  ],
+  "bgmSectionFade": 1.2
+ },
+ "blocks": [
+  {
+   "id": "1",
+   "audio": "voice:第2回/ブロック1.mp3",
+   "avatar": "none",
+   "styleTag": "[friendly, serious Japanese narration]",
+   "subtitleText": "かわいい孫に、いちばん厳しいことを言わなくてはいけない。もし、そんな立場になったら。言葉と気持ちは、同じ方向を向けるのかな。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 0,
+      "header": false,
+      "kera": false,
+      "photoLayer": {
+       "img": "stage:候補/x15.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.5,
+        "y": 0.35
+       }
+      }
+     },
+     {
+      "sentFrom": 1,
+      "sentTo": 1,
+      "header": false,
+      "kera": false,
+      "photoLayer": {
+       "img": "stage:候補/p087.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.6,
+        "y": 0.3
+       }
+      }
+     },
+     {
+      "sentFrom": 2,
+      "sentTo": 2,
+      "header": false,
+      "kera": false,
+      "photoLayer": {
+       "img": "stage:候補/p153.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.45,
+        "y": 0.45
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "2",
+   "audio": "voice:第2回/ブロック2.mp3",
+   "avatar": "none",
+   "styleTag": "[cheerful, friendly, warm Japanese narration]",
+   "subtitleText": "けらのすけだよ。今日は『盛綱陣屋』のおばあさん、微妙のお話。",
+   "seBySent": [
+    {
+     "file": "common:効果音/拍子木1.mp3",
+     "sent": 0,
+     "vol": 0.5
+    }
+   ],
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 1,
+      "header": false,
+      "kera": "large",
+      "photoLayer": {
+       "img": "stage:候補/p168.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1440,
+       "h": 1080,
+       "move": "zoomOut",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.55,
+        "y": 0.45
+       },
+       "dim": 0.45,
+       "shade": "left"
+      },
+      "heading": {
+       "tone": "light",
+       "font": "gothic",
+       "lead": "盛綱陣屋",
+       "lines": [
+        "微妙は、",
+        "なぜ孫に厳しいの？"
+       ],
+       "size": 104,
+       "emphasis": "厳しい",
+       "x": 128,
+       "y": 330
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "3",
+   "audio": "voice:第2回/ブロック3.mp3",
+   "avatar": "none",
+   "styleTag": "[cheerful, friendly, warm Japanese narration]",
+   "subtitleText": "微妙は盛綱と高綱の母で、捕らわれた小四郎の祖母なんだ。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 0,
+      "relations": {
+       "nodes": [
+        {
+         "id": "mimy",
+         "name": "微妙",
+         "ruby": "みみょう",
+         "x": 610,
+         "y": 110,
+         "w": 220,
+         "accent": true
+        },
+        {
+         "id": "mori",
+         "name": "盛綱",
+         "ruby": "もりつな",
+         "x": 360,
+         "y": 390,
+         "w": 220
+        },
+        {
+         "id": "taka",
+         "name": "高綱",
+         "ruby": "たかつな",
+         "x": 860,
+         "y": 390,
+         "w": 220
+        },
+        {
+         "id": "kosh",
+         "name": "小四郎",
+         "ruby": "こしろう",
+         "x": 860,
+         "y": 670,
+         "w": 220,
+         "accent": true
+        }
+       ],
+       "links": [
+        {
+         "type": "family",
+         "parent": "mimy",
+         "children": [
+          "mori",
+          "taka"
+         ],
+         "label": "母"
+        },
+        {
+         "from": "mori",
+         "to": "taka",
+         "label": "兄弟"
+        },
+        {
+         "type": "family",
+         "parent": "taka",
+         "children": [
+          "kosh"
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "4",
+   "audio": "voice:第2回/ブロック4.mp3",
+   "avatar": "none",
+   "styleTag": "[friendly, serious Japanese narration]",
+   "subtitleText": "小四郎を人質にすれば、父の高綱をこちらに従わせられる。盛綱の主君、時政は、そう考えている。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 0,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:寄り/小四郎_縄_007.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.42,
+        "y": 0.3
+       }
+      }
+     },
+     {
+      "sentFrom": 1,
+      "sentTo": 1,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:寄り/時政_顔_285_43.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1440,
+       "h": 1080,
+       "move": "zoomOut",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.7,
+        "y": 0.3
+       },
+       "dim": 0.2,
+       "shade": "left"
+      },
+      "person": {
+       "variant": "vertical",
+       "ruby": "ときまさ",
+       "name": "時政",
+       "x": 220,
+       "y": 140
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "5",
+   "audio": "voice:第2回/ブロック5.mp3",
+   "avatar": "none",
+   "styleTag": "[friendly, serious Japanese narration]",
+   "subtitleText": "盛綱が恐れるのは、弟が息子を助けるために、主君を裏切ってしまうこと。そこで微妙に、小四郎へ死を勧めてほしいと頼むんだ。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 0,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/x999.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1440,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.5,
+        "y": 0.35
+       }
+      }
+     },
+     {
+      "sentFrom": 1,
+      "sentTo": 1,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/x07.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.5,
+        "y": 0.35
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "6",
+   "audio": "voice:第2回/ブロック6.mp3",
+   "avatar": "none",
+   "styleTag": "[gentle, warm Japanese narration]",
+   "subtitleText": "弟の忠義を守りたい。そのために、弟の子の命を諦めようとする。家族を思う気持ちが、家族を追いつめてしまうんだね。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 0,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/x01.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1440,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.5,
+        "y": 0.35
+       }
+      }
+     },
+     {
+      "sentFrom": 1,
+      "sentTo": 1,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/x9992.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.5,
+        "y": 0.3
+       }
+      }
+     },
+     {
+      "sentFrom": 2,
+      "sentTo": 2,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/x22.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "panRight",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.5,
+        "y": 0.45
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "7",
+   "audio": "voice:第2回/ブロック7.mp3",
+   "avatar": "none",
+   "styleTag": "[friendly, serious Japanese narration]",
+   "subtitleText": "その頼みを受けた微妙の前で、小四郎は、父や母に会いたいと訴える。微妙にとっては、ただの人質じゃない。大切な孫なんだ。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 0,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/p129.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.45,
+        "y": 0.35
+       }
+      }
+     },
+     {
+      "sentFrom": 1,
+      "sentTo": 1,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/p150.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.55,
+        "y": 0.4
+       }
+      }
+     },
+     {
+      "sentFrom": 2,
+      "sentTo": 2,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/x21.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.5,
+        "y": 0.4
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "8",
+   "audio": "voice:第2回/ブロック8.mp3",
+   "avatar": "none",
+   "styleTag": "[gentle, warm Japanese narration]",
+   "subtitleText": "微妙の苦しさを、今の言葉で受け取るなら、こんなふうに考えられるよ。",
+   "quiet": true,
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 0,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/p135.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.6,
+        "y": 0.35
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "9",
+   "audio": "voice:第2回/ブロック9.mp3",
+   "avatar": "none",
+   "styleTag": "[slow, quiet, somber Japanese narration]",
+   "subtitleText": "孫を失いたくない。でも、武家の母としては、覚悟を求めようとする。厳しい言葉を口にしても、かわいいという気持ちは消えてくれない。",
+   "quiet": true,
+   "tail": 1.2,
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 0,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/x9999.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.45,
+        "y": 0.45
+       }
+      }
+     },
+     {
+      "sentFrom": 1,
+      "sentTo": 1,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/x9996.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.5,
+        "y": 0.35
+       }
+      }
+     },
+     {
+      "sentFrom": 2,
+      "sentTo": 2,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/x9991.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.45,
+        "y": 0.35
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "10",
+   "audio": "voice:第2回/ブロック10.mp3",
+   "avatar": "none",
+   "styleTag": "[gentle, warm Japanese narration]",
+   "subtitleText": "だから、厳しいことを言うから冷たい人、と決めてしまうと、見えなくなるものがあるんだ。言っていることと、胸の中の気持ちがぶつかる。そこを見せるのが、この役の難しさなんだね。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 0,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/p174.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.55,
+        "y": 0.4
+       }
+      }
+     },
+     {
+      "sentFrom": 1,
+      "sentTo": 1,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/p108.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.6,
+        "y": 0.35
+       }
+      }
+     },
+     {
+      "sentFrom": 2,
+      "sentTo": 2,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/x997.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.5,
+        "y": 0.3
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "11",
+   "audio": "voice:第2回/ブロック11.mp3",
+   "avatar": "none",
+   "styleTag": "[gentle, warm Japanese narration]",
+   "subtitleText": "ここで少し、舞台の微妙を見てみよう。声だけじゃなく、孫との距離や、身体の向きにも注目してみて。強く言おうとする微妙の中に、おばあさんの気持ちが見えるのは、どんなときだろう。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 0,
+      "header": false,
+      "kera": "large",
+      "photoLayer": {
+       "img": "stage:候補/p096.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1440,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.5,
+        "y": 0.35
+       }
+      }
+     },
+     {
+      "sentFrom": 1,
+      "sentTo": 2,
+      "header": false,
+      "kera": "large",
+      "photoLayer": {
+       "img": "stage:寄り/微妙_映像頭.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "none",
+       "amount": 0.06,
+       "dim": 0,
+       "shade": "none"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "12",
+   "clip": {
+    "src": "D:/Codex/気良歌舞伎事務/動画編集/盛綱陣屋_リマスター_20260913/moritsuna_2013_remaster_oped_v2.mp4",
+    "start": 2811,
+    "dur": 12.5,
+    "vol": 1
+   },
+   "fade": false,
+   "note": "微妙が強い口調で言い聞かせたあと（2808〜2813秒）、すがる小四郎の手を取り（2815秒〜）、顔を伏せる（2823秒）。台本の「強く言おうとする微妙の中に、おばあさんの気持ち」に当たる。46:51〜"
+  },
+  {
+   "id": "13",
+   "audio": "voice:第2回/ブロック13.mp3",
+   "avatar": "none",
+   "styleTag": "[cheerful, friendly, warm Japanese narration]",
+   "subtitleText": "同じ場面でも、そこを気にして観ると、聞こえ方が変わるかもしれないよ。続きは、概要欄のリマスター版で。次は小四郎。父母に会いたいと訴えるこの子は、実は大きな秘密を抱えているんだ。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 1,
+      "header": false,
+      "kera": "large",
+      "photoLayer": {
+       "img": "stage:寄り/微妙_映像尻.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.45,
+        "y": 0.4
+       }
+      }
+     },
+     {
+      "sentFrom": 2,
+      "sentTo": 3,
+      "header": false,
+      "kera": false,
+      "photoLayer": {
+       "img": "stage:候補/x33.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.55,
+        "y": 0.35
+       },
+       "dim": 0.3,
+       "shade": "left"
+      },
+      "heading": {
+       "tone": "light",
+       "font": "gothic",
+       "lead": "次回",
+       "lines": [
+        "小四郎は、",
+        "何を隠している？"
+       ],
+       "size": 92,
+       "x": 128,
+       "y": 190
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "chapters": [
+  {
+   "block": "1",
+   "label": "孫に厳しいことを言うなら？"
+  },
+  {
+   "block": "4",
+   "label": "盛綱の頼み"
+  },
+  {
+   "block": "7",
+   "label": "会いたいと訴える小四郎"
+  },
+  {
+   "block": "8",
+   "label": "微妙の苦しさ"
+  },
+  {
+   "block": "11",
+   "label": "舞台を見てみよう"
+  },
+  {
+   "block": "13",
+   "label": "次回予告"
+  }
+ ],
+ "youtube": {
+  "title": "盛綱陣屋② 微妙は、なぜ孫に厳しいの？｜祖母と孫（超訳！歌舞伎ナビ）",
+  "titleCandidates": [
+   "盛綱陣屋② 微妙は、なぜ孫に厳しいの？｜祖母と孫（超訳！歌舞伎ナビ）",
+   "【わかる！超訳】盛綱陣屋② 微妙は、なぜ孫に厳しいの？"
+  ],
+  "description": "かわいい孫に、いちばん厳しいことを言わなくてはいけない――。\n歌舞伎『盛綱陣屋（もりつなじんや）』を、けらのすけが五つの「どうして？」からひもとく5回シリーズ。第2回は、おばあさんの微妙（みみょう）の気持ちを約3分で超訳します。\n※真相・結末を含む観劇ガイドです。\n\n▼ 微妙と小四郎の場面から観る｜気良歌舞伎 2013年公演・リマスター版（32:05〜）\nhttps://youtu.be/w7juB7FcrVw?t=1925\n\n▼ この動画で見た場面（46:51〜）\nhttps://youtu.be/w7juB7FcrVw?t=2811\n\n▼ 家系図を見ながら読み返せるnote\nhttps://note.com/kerakabuki/n/nf81df34475d6\n\n▼ あらすじ・見どころ｜KABUKI PLUS+ 演目ガイド\nhttps://kabukiplus.com/kabuki/navi/enmoku/moritunajinya\n\n0:00 孫に厳しいことを言うなら？\n0:27 盛綱の頼み\n1:04 会いたいと訴える小四郎\n1:19 微妙の苦しさ\n1:59 舞台を見てみよう\n2:30 次回予告\n\n次回③ 小四郎は、何を隠している？\n\nナレーション: けらのすけ（AI音声）\n写真・映像: 気良歌舞伎 2013年公演\n音楽: H/MIX GALLERY「華志の舞」「Moment」\n\n#盛綱陣屋 #歌舞伎 #超訳歌舞伎ナビ #近江源氏先陣館 #地芝居 #けらのすけ #気良歌舞伎",
+  "pinnedComment": "微妙と小四郎の場面は、リマスター版のここから観られるよ → https://youtu.be/w7juB7FcrVw?t=1925　強く言う微妙の中に、おばあさんの気持ちが見えたのはどこだった？",
+  "tags": [
+   "盛綱陣屋",
+   "近江源氏先陣館",
+   "微妙",
+   "歌舞伎",
+   "歌舞伎 初心者",
+   "歌舞伎 解説",
+   "超訳歌舞伎ナビ",
+   "けらのすけ",
+   "気良歌舞伎",
+   "地歌舞伎"
+  ]
+ }
+}

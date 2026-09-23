@@ -1,0 +1,801 @@
+{
+ "episode": {
+  "title": "超訳！歌舞伎ナビ『盛綱陣屋』③ 小四郎は、何を隠している？",
+  "epDir": "歌舞伎ナビ06盛綱陣屋",
+  "workName": "work_ep3_v1",
+  "number": null,
+  "outputName": "盛綱陣屋03_小四郎は_v2.mp4",
+  "voiceId": "xOKkuQfZt5N7XfbFdn9W",
+  "ttsModel": "eleven_v3",
+  "ttsOutputFormat": "mp3_44100_128"
+ },
+ "layout": {
+  "series": "超訳！歌舞伎ナビ",
+  "title": "盛綱陣屋",
+  "background": "common:v6レイアウト/青海波背景.jpg",
+  "kera": "common:v6レイアウト/けらのすけ立ち姿.png",
+  "keraLive": "common:けらのすけ口パク",
+  "keraMotion": "video"
+ },
+ "settings": {
+  "W": 1920,
+  "H": 1080,
+  "FPS": 24,
+  "LEAD": 0.4,
+  "TAIL": 0.8,
+  "CRF": "18",
+  "wrapMax": 20,
+  "capFontSize": 48,
+  "subNoOverlap": true,
+  "subStyle": {
+   "fontName": "BIZ UDGothic",
+   "fontSize": 66,
+   "bold": 0,
+   "borderStyle": 4,
+   "outline": 16,
+   "shadow": 0,
+   "primaryColour": "&H00FFFFFF",
+   "outlineColour": "&H5A000000",
+   "backColour": "&H5A000000",
+   "marginL": 180,
+   "marginR": 180,
+   "marginV": 48
+  },
+  "bgm": "bgm:道行.mp3",
+  "bgmVolNormal": 0.32,
+  "bgmMuteOnClip": true,
+  "slideXfade": 0.4,
+  "edSrc": "common:けらのすけ動画/けらのすけED.mp4",
+  "edBackground": "common:背景.png",
+  "subWrap": "balanced",
+  "slideTiming": "sentence",
+  "bgmSections": [
+   {
+    "from": "1",
+    "to": "2",
+    "file": "common:BGM/華志の舞_HMIX.mp3",
+    "vol": 0.18,
+    "offset": 0
+   },
+   {
+    "from": "3",
+    "to": "12",
+    "file": "common:BGM/Moment_HMIX.mp3",
+    "vol": 0.2,
+    "offset": 0.8
+   },
+   {
+    "from": "13",
+    "to": "13",
+    "file": "common:BGM/華志の舞_HMIX.mp3",
+    "vol": 0.18,
+    "offset": 170
+   }
+  ],
+  "bgmSectionFade": 1.2
+ },
+ "blocks": [
+  {
+   "id": "1",
+   "audio": "voice:第3回/ブロック1.mp3",
+   "avatar": "none",
+   "styleTag": "[friendly, serious Japanese narration]",
+   "subtitleText": "さっきまでは、父や母に会いたいと泣いていた子が、今度は、命をかけた行動に出る。その間に、何があったんだろう。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 0,
+      "header": false,
+      "kera": false,
+      "photoLayer": {
+       "img": "stage:候補/p132.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.45,
+        "y": 0.35
+       }
+      }
+     },
+     {
+      "sentFrom": 1,
+      "sentTo": 1,
+      "header": false,
+      "kera": false,
+      "photoLayer": {
+       "img": "stage:候補/x37.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.45,
+        "y": 0.4
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "2",
+   "audio": "voice:第3回/ブロック2.mp3",
+   "avatar": "none",
+   "styleTag": "[cheerful, friendly, warm Japanese narration]",
+   "subtitleText": "けらのすけだよ。今日の『盛綱陣屋』は、小四郎が抱えていた秘密。",
+   "seBySent": [
+    {
+     "file": "common:効果音/拍子木1.mp3",
+     "sent": 0,
+     "vol": 0.5
+    }
+   ],
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 1,
+      "header": false,
+      "kera": "large",
+      "photoLayer": {
+       "img": "stage:候補/x33.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1440,
+       "h": 1080,
+       "move": "zoomOut",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.5,
+        "y": 0.4
+       },
+       "dim": 0.45,
+       "shade": "left"
+      },
+      "heading": {
+       "tone": "light",
+       "font": "gothic",
+       "lead": "盛綱陣屋",
+       "lines": [
+        "小四郎は、",
+        "何を隠している？"
+       ],
+       "size": 104,
+       "emphasis": "隠している",
+       "x": 128,
+       "y": 330
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "3",
+   "audio": "voice:第3回/ブロック3.mp3",
+   "avatar": "none",
+   "styleTag": "[cheerful, friendly, warm Japanese narration]",
+   "subtitleText": "小四郎は高綱の息子で、敵方の陣屋に捕らわれている。そこの大将、盛綱は、伯父にあたる人なんだ。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 0,
+      "relations": {
+       "nodes": [
+        {
+         "id": "taka",
+         "name": "高綱",
+         "ruby": "たかつな",
+         "x": 860,
+         "y": 390,
+         "w": 220,
+         "sub": "父"
+        },
+        {
+         "id": "kosh",
+         "name": "小四郎",
+         "ruby": "こしろう",
+         "x": 860,
+         "y": 670,
+         "w": 220,
+         "accent": true
+        }
+       ],
+       "links": [
+        {
+         "type": "family",
+         "parent": "taka",
+         "children": [
+          "kosh"
+         ]
+        }
+       ]
+      }
+     },
+     {
+      "sentFrom": 1,
+      "sentTo": 1,
+      "relations": {
+       "nodes": [
+        {
+         "id": "mori",
+         "name": "盛綱",
+         "ruby": "もりつな",
+         "x": 360,
+         "y": 390,
+         "w": 220,
+         "sub": "伯父",
+         "accent": true
+        },
+        {
+         "id": "taka",
+         "name": "高綱",
+         "ruby": "たかつな",
+         "x": 860,
+         "y": 390,
+         "w": 220,
+         "sub": "父"
+        },
+        {
+         "id": "kosh",
+         "name": "小四郎",
+         "ruby": "こしろう",
+         "x": 860,
+         "y": 670,
+         "w": 220,
+         "accent": true
+        }
+       ],
+       "links": [
+        {
+         "from": "mori",
+         "to": "taka",
+         "label": "兄弟"
+        },
+        {
+         "type": "family",
+         "parent": "taka",
+         "children": [
+          "kosh"
+         ]
+        }
+       ]
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "4",
+   "audio": "voice:第3回/ブロック4.mp3",
+   "avatar": "none",
+   "styleTag": "[friendly, serious Japanese narration]",
+   "subtitleText": "やがて、父の高綱が討ち死にしたという知らせが届く。時政が持ってきた首を、本当に高綱のものか、盛綱が確かめることになる。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 0,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/x99916c.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1440,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.6,
+        "y": 0.4
+       }
+      }
+     },
+     {
+      "sentFrom": 1,
+      "sentTo": 1,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/x35.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.5,
+        "y": 0.4
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "5",
+   "audio": "voice:第3回/ブロック5.mp3",
+   "avatar": "none",
+   "styleTag": "[friendly, serious Japanese narration]",
+   "subtitleText": "でも、この首は偽物。高綱は、自分が死んだと敵に信じさせて、次の戦いに備えようとしているんだ。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 0,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/x99910.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.45,
+        "y": 0.1
+       }
+      }
+     },
+     {
+      "sentFrom": 1,
+      "sentTo": 1,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/x36.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomOut",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.45,
+        "y": 0.4
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "6",
+   "audio": "voice:第3回/ブロック6.mp3",
+   "avatar": "none",
+   "styleTag": "[friendly, serious Japanese narration]",
+   "subtitleText": "小四郎は、その計略を知っていた。捕らわれたのも、最初から役目のうちだったんだよ。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 0,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/p063.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1440,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.05,
+       "fit": "blurpad",
+       "focus": {
+        "x": 0.5,
+        "y": 0.3
+       },
+       "shade": "left",
+       "dim": 0.1
+      },
+      "termCard": {
+       "ruby": "けいりゃく",
+       "text": "計略",
+       "x": 110,
+       "y": 330
+      }
+     },
+     {
+      "sentFrom": 1,
+      "sentTo": 1,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:寄り/小四郎_縄_007.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.42,
+        "y": 0.3
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "7",
+   "audio": "voice:第3回/ブロック7.mp3",
+   "avatar": "none",
+   "styleTag": "[friendly, serious Japanese narration]",
+   "subtitleText": "別人の首を見ただけなら、敵は疑うかもしれない。でも、実の息子が父の首だと受け止めて、父の後を追ったように見えたら。その子の行動が、高綱は本当に死んだのだと、敵に信じさせる証拠になる。小四郎は、自分の命を犠牲にする役目を背負っていたんだ。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 0,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:寄り/時政_顔_285.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1440,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.6,
+        "y": 0.3
+       }
+      }
+     },
+     {
+      "sentFrom": 1,
+      "sentTo": 1,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/x38.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.55,
+        "y": 0.45
+       }
+      }
+     },
+     {
+      "sentFrom": 2,
+      "sentTo": 2,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/x42.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.4,
+        "y": 0.4
+       }
+      }
+     },
+     {
+      "sentFrom": 3,
+      "sentTo": 3,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/x46.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.55,
+        "y": 0.35
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "8",
+   "audio": "voice:第3回/ブロック8.mp3",
+   "avatar": "none",
+   "styleTag": "[gentle, warm Japanese narration]",
+   "subtitleText": "そう考えると、前半の、死を拒む姿にも別の意味が見えてくるよ。計略のためには、その場まで生きていなければならない。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 0,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/x22.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "panRight",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.5,
+        "y": 0.45
+       }
+      }
+     },
+     {
+      "sentFrom": 1,
+      "sentTo": 1,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/p183.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.45,
+        "y": 0.4
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "9",
+   "audio": "voice:第3回/ブロック9.mp3",
+   "avatar": "none",
+   "styleTag": "[gentle, warm Japanese narration]",
+   "subtitleText": "でも、だからといって、父や母に会いたいという気持ちまで、全部嘘だと決めつけないでほしいんだ。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 0,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/p129.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.45,
+        "y": 0.35
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "10",
+   "audio": "voice:第3回/ブロック10.mp3",
+   "avatar": "none",
+   "styleTag": "[gentle, warm Japanese narration]",
+   "subtitleText": "役目をわかっていることと、お父さん、お母さんに会いたいこと。その二つは、一人の子どもの中に、いっしょにあってもおかしくないよね。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 0,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/p324.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.45,
+        "y": 0.4
+       }
+      }
+     },
+     {
+      "sentFrom": 1,
+      "sentTo": 1,
+      "header": false,
+      "photoLayer": {
+       "img": "stage:候補/x47.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.45,
+        "y": 0.4
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "11",
+   "audio": "voice:第3回/ブロック11.mp3",
+   "avatar": "none",
+   "styleTag": "[gentle, warm Japanese narration]",
+   "subtitleText": "小四郎が盛綱に向き合うところを、見てみよう。伯父さんは、自分の思いを受け取ってくれるだろうか。そんな気持ちを想像すると、視線や返事にも、切実さが感じられるんじゃないかな。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 0,
+      "header": false,
+      "kera": "large",
+      "photoLayer": {
+       "img": "stage:候補/x39.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1440,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.4,
+        "y": 0.4
+       }
+      }
+     },
+     {
+      "sentFrom": 1,
+      "sentTo": 2,
+      "header": false,
+      "kera": "large",
+      "photoLayer": {
+       "img": "stage:寄り/小四郎_映像頭.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "none",
+       "amount": 0.06,
+       "dim": 0,
+       "shade": "none"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "12",
+   "clip": {
+    "src": "D:/Codex/気良歌舞伎事務/動画編集/盛綱陣屋_リマスター_20260913/moritsuna_2013_remaster_oped_v2.mp4",
+    "start": 5392.3,
+    "dur": 13.3,
+    "vol": 1
+   },
+   "fade": false,
+   "note": "首実検のあと、盛綱が小四郎の覚悟を受け止め、微妙に「なぜ褒めてやりなされぬ」、皆に「褒めてやれ、褒めてやれ」と語る（5393〜5405秒）。台本の「伯父さんは、自分の思いを受け取ってくれるだろうか」への答えになる場面。1:29:52〜"
+  },
+  {
+   "id": "13",
+   "audio": "voice:第3回/ブロック13.mp3",
+   "avatar": "none",
+   "styleTag": "[cheerful, friendly, warm Japanese narration]",
+   "subtitleText": "物語の仕掛けがわかったあとで、もう一度、小四郎の表情を観てほしい。本編は概要欄から。次は、その思いを受け取った盛綱。嘘をつくまでの、言葉にならない時間を見ていくよ。",
+   "layout": {
+    "states": [
+     {
+      "sentFrom": 0,
+      "sentTo": 1,
+      "header": false,
+      "kera": "large",
+      "photoLayer": {
+       "img": "stage:寄り/小四郎_映像尻.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.05,
+       "focus": {
+        "x": 0.5,
+        "y": 0.4
+       }
+      }
+     },
+     {
+      "sentFrom": 2,
+      "sentTo": 3,
+      "header": false,
+      "kera": false,
+      "photoLayer": {
+       "img": "stage:寄り/盛綱_寄り_決断.jpg",
+       "x": 0,
+       "y": 0,
+       "w": 1920,
+       "h": 1080,
+       "move": "zoomIn",
+       "amount": 0.06,
+       "focus": {
+        "x": 0.55,
+        "y": 0.42
+       },
+       "dim": 0.3,
+       "shade": "left"
+      },
+      "heading": {
+       "tone": "light",
+       "font": "gothic",
+       "lead": "次回",
+       "lines": [
+        "偽物だと知って、",
+        "なぜ嘘をつく？"
+       ],
+       "size": 92,
+       "x": 128,
+       "y": 190
+      }
+     }
+    ]
+   }
+  }
+ ],
+ "chapters": [
+  {
+   "block": "1",
+   "label": "泣いていた子が、なぜ？"
+  },
+  {
+   "block": "4",
+   "label": "偽物の首"
+  },
+  {
+   "block": "6",
+   "label": "小四郎が知っていたこと"
+  },
+  {
+   "block": "8",
+   "label": "前半の姿の意味"
+  },
+  {
+   "block": "11",
+   "label": "舞台を見てみよう"
+  },
+  {
+   "block": "13",
+   "label": "次回予告"
+  }
+ ],
+ "youtube": {
+  "title": "盛綱陣屋③ 小四郎は、何を隠している？｜小四郎の覚悟（超訳！歌舞伎ナビ）",
+  "titleCandidates": [
+   "盛綱陣屋③ 小四郎は、何を隠している？｜小四郎の覚悟（超訳！歌舞伎ナビ）",
+   "【わかる！超訳】盛綱陣屋③ 小四郎は、何を隠している？"
+  ],
+  "description": "父や母に会いたいと泣いていた子が、なぜ命をかけた行動に出たのか――。\n歌舞伎『盛綱陣屋（もりつなじんや）』を、けらのすけが五つの「どうして？」からひもとく5回シリーズ。第3回は、小四郎（こしろう）が抱えていた秘密を約3分で超訳します。\n※真相・結末を含む観劇ガイドです。\n\n▼ 首実検の場面から観る｜気良歌舞伎 2013年公演・リマスター版（1:07:35〜）\nhttps://youtu.be/w7juB7FcrVw?t=4055\n\n▼ この動画で見た場面（1:29:52〜）\nhttps://youtu.be/w7juB7FcrVw?t=5392\n\n▼ 家系図を見ながら読み返せるnote\nhttps://note.com/kerakabuki/n/nf81df34475d6\n\n▼ あらすじ・見どころ｜KABUKI PLUS+ 演目ガイド\nhttps://kabukiplus.com/kabuki/navi/enmoku/moritunajinya\n\n0:00 泣いていた子が、なぜ？\n0:29 偽物の首\n0:53 小四郎が知っていたこと\n1:27 前半の姿の意味\n2:01 舞台を見てみよう\n2:31 次回予告\n\n次回④ 偽物だと知って、なぜ嘘をつく？\n\nナレーション: けらのすけ（AI音声）\n写真・映像: 気良歌舞伎 2013年公演\n音楽: H/MIX GALLERY「華志の舞」「Moment」\n\n#盛綱陣屋 #歌舞伎 #超訳歌舞伎ナビ #近江源氏先陣館 #地芝居 #けらのすけ #気良歌舞伎",
+  "pinnedComment": "盛綱が小四郎の覚悟を受け止める場面は、リマスター版のここから → https://youtu.be/w7juB7FcrVw?t=5392　仕掛けを知ってから観ると、小四郎の表情はどう見えた？",
+  "tags": [
+   "盛綱陣屋",
+   "近江源氏先陣館",
+   "小四郎",
+   "首実検",
+   "歌舞伎",
+   "歌舞伎 初心者",
+   "歌舞伎 解説",
+   "超訳歌舞伎ナビ",
+   "けらのすけ",
+   "気良歌舞伎",
+   "地歌舞伎"
+  ]
+ }
+}
