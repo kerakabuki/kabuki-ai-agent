@@ -3,7 +3,7 @@
 生成: 2026-07-04 ／ 手法実証: Claude Fable 5
 先行研究: 土谷桃子「岐阜の地芝居の足跡: 岐阜日日新聞」(2018) — 地方紙渉猟による地芝居史研究のほぼ唯一の例（当プロジェクトの空白分析で確認: 新聞資料を主史料とする研究は全国568件中16件）
 データ: 秋田県立図書館 ADEAC「秋田魁新報記事見出し検索」(1900〜1999年、見出し283,858件、無料公開)
-収集: `scripts/collect_sakigake_headlines.mjs`（本プロジェクト開発） → `sakigake_headlines.json`（11キーワード・ユニーク200件）
+収集: `scripts/research/collect_sakigake_headlines.mjs`（本プロジェクト開発） → `sakigake_headlines.json`（11キーワード・ユニーク200件）
 
 ---
 
@@ -64,4 +64,4 @@
 4. **note発信**: 「新聞は地芝居の墓碑銘を残している——秋田で見つけた『絶えて久しい』歌舞伎たち」（空白レポートのnote骨子と対にする）
 
 ---
-*データ: `sakigake_headlines.json`（キーワード別内訳・全200見出し収録）。収集器: `scripts/collect_sakigake_headlines.mjs`（リクエスト間1.2秒の待機を実装済み。公共アーカイブへの負荷配慮を変更しないこと）*
+*データ: `sakigake_headlines.json`（キーワード別内訳・全200見出し収録）。収集器: `scripts/research/collect_sakigake_headlines.mjs`（リクエスト間1.2秒の待機を実装済み。公共アーカイブへの負荷配慮を変更しないこと）*

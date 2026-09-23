@@ -1,7 +1,7 @@
 # 地芝居研究の空白マップ 2026 — 論文1,295件・書籍751点の悉皆分析
 
 生成: 2026-07-04 ／ 分析: Claude Fable 5（並列38エージェント＋悉皆再検証）
-データ: `research/jishibai_papers_all.json`（CiNii/J-STAGE/NDL統合 1,295件）、`research/ndl_books_catalog.json`（全文検索可能書籍573冊）、`research/ndl_fulltext_results.json`（180冊）
+データ: `research/jishibai/jishibai_papers_all.json`（CiNii/J-STAGE/NDL統合 1,295件）、`research/jishibai/ndl_books_catalog.json`（全文検索可能書籍573冊）、`research/jishibai/ndl_fulltext_results.json`（180冊）
 成果物: `papers_classified.json` `books_classified.json` `group_matrix.json` `group_matrix.md`（すべて本ディレクトリ）
 
 ---
@@ -21,7 +21,7 @@
 | 工程 | 内容 |
 |---|---|
 | ①分類 | 論文1,295件を並列LLM分類: 関連度（core/周辺/ノイズ）・都道府県・登場団体・テーマ10分類・時代・新聞資料の有無。書籍751点も同様（言及地域・一次資料価値） |
-| ②照合 | 94団体（`jikabuki_groups.json`）のキーワードを、ノイズ除外後の論文タイトル・説明文に厳密文字列照合 |
+| ②照合 | 94団体（`data/jikabuki_groups.json`）のキーワードを、ノイズ除外後の論文タイトル・説明文に厳密文字列照合 |
 | ③悉皆再検証 | ヒットゼロ団体59（エージェント54＋手動5）を原典データの直接grepで再確認。**同名異物を1件ずつ除外**（下記）し、変則表記（異体字⽑、田峰/田峯）も追試 |
 
 再現方法: ワークフロースクリプト `jishibai-gap-analysis` 一式が保存済み。データ更新後に再実行すれば同じマトリクスが再生成できる。
