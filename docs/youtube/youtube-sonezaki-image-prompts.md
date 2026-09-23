@@ -1,13 +1,13 @@
 # 曽根崎心中解説動画 生成AI画像プロンプト集
 
-> 台本: `docs/youtube-script-sonezaki-kaisetsu.md`
+> 台本: `docs/youtube/youtube-script-sonezaki-kaisetsu.md`
 > 生成物の保存先: `D:\気良歌舞伎\youtubeチャンネル用\超訳！歌舞伎ナビ\歌舞伎ナビ05曽根崎心中\画像\生成\`
 
 ## 使用ツール: **Gemini**（決定 2026-07-04）
 
 - 理由: 参照画像つき生成でキャラ一貫性を保てる／GEMINI_API_KEY・画像生成パイプラインが既にある／Google AI Studioで対話的に修正できる
 - 手順: ①人物カード3枚を先に確定 → ②カードを参照画像にして場面カットを生成（「同じお初で」） → ③人物なしカットは独立生成 → ④8枚並べて色調を揃える
-- **自動生成スクリプトあり**: `scripts/generate_sonezaki_images.mjs` — 本ドキュメントの8カットを一括生成し `画像\生成\` に保存（参照画像の受け渡しも自動）。`$env:GEMINI_API_KEY` を設定して `node scripts/generate_sonezaki_images.mjs`。気に入らないカットは番号指定+`--force` で作り直し
+- **自動生成スクリプトあり**: `scripts/video/generate_sonezaki_images.mjs` — 本ドキュメントの8カットを一括生成し `画像\生成\` に保存（参照画像の受け渡しも自動）。`$env:GEMINI_API_KEY` を設定して `node scripts/video/generate_sonezaki_images.mjs`。気に入らないカットは番号指定+`--force` で作り直し
 
 ## 方針（どこに生成AIを使い、どこに使わないか）
 

@@ -2,12 +2,12 @@
 
 > シリーズ: **超訳！歌舞伎ナビ**（既存: 02浜松屋 / 03曽我対面 / 03-04切られ与三 / 封印切）の次回作として制作
 > ベース素材: `note-articles/sonezakisinju.md`
-> 企画位置づけ: `docs/pr-plan-r8-kera-sonezaki.md` YouTube企画 #4
+> 企画位置づけ: `docs/pr/pr-plan-r8-kera-sonezaki.md` YouTube企画 #4
 > **公開タイミング: 2026年7月中旬に前倒し**（2026-07-04改訂）。映画『国宝』がPrime Videoで配信中（6/6〜）のタイミングに合わせる。この解説動画は稽古映像に依存せず、生成画像＋ゆかりの地実写だけで完結するため前倒し可能
 > 想定尺: 本編3分半前後（ナレーション約1,100字）+ シリーズ共通OP/ED
 > ナレーター: **けらのすけ**（ElevenLabs 既存ボイス）
 >
-> **本編は「曽根崎心中とは何か」の演目解説に徹する（2026-07-04改訂）。気良歌舞伎の公演告知は本編に含めない** — 02浜松屋・03曽我対面と同じ「恒久的な演目解説」の型に統一し、来年以降も使い回せる動画にする。公演の告知・集客はSNS投稿（`docs/pr-plan-r8-kera-sonezaki.md`）と概要欄・エンドカードが担う。
+> **本編は「曽根崎心中とは何か」の演目解説に徹する（2026-07-04改訂）。気良歌舞伎の公演告知は本編に含めない** — 02浜松屋・03曽我対面と同じ「恒久的な演目解説」の型に統一し、来年以降も使い回せる動画にする。公演の告知・集客はSNS投稿（`docs/pr/pr-plan-r8-kera-sonezaki.md`）と概要欄・エンドカードが担う。
 >
 > **注意: 台本中の稽古写真・稽古映像・稽古カットの指定は全て生成画像またはゆかりの地実写に差し替え済み**（下記参照）。
 
@@ -53,12 +53,12 @@
 | `07_天神の森.png` | ブロック6 場面イラスト |
 | `08_サムネ背景.png` | サムネイル背景 |
 
-プロンプト集: `docs/youtube-sonezaki-image-prompts.md`（8カット分・スタイル統一指定つき）。追加カットが必要な場合は `scripts/generate_sonezaki_images.mjs` で生成
+プロンプト集: `docs/youtube/youtube-sonezaki-image-prompts.md`（8カット分・スタイル統一指定つき）。追加カットが必要な場合は `scripts/video/generate_sonezaki_images.mjs` で生成
 
 **エピソード固有BGM（Eleven Musicで生成済み・2026-07-05）**
 
 - `歌舞伎ナビ05曽根崎心中\BGM\道行.mp3`（60秒） — ブロック5〜6専用の静かな和風トラック（尺八+琴、打楽器なし）。実尺約50秒に合わせて編集時にトリム＋フェード
-- 生成: `scripts/generate_music.mjs`（要APIキーのmusic_generation権限）。**音楽はTTSよりクレジット消費が大きいので追加生成は慎重に** — 全編BGMは従来どおり共通素材のNeu_Kabukiを使い、専用曲はここぞの場面だけ
+- 生成: `scripts/video/generate_music.mjs`（要APIキーのmusic_generation権限）。**音楽はTTSよりクレジット消費が大きいので追加生成は慎重に** — 全編BGMは従来どおり共通素材のNeu_Kabukiを使い、専用曲はここぞの場面だけ
 - サムネ: `08_サムネ背景.png` をベースに、`サムネ画像\` の既存様式に合わせてけらのすけ+「曽根崎心中」+「気良歌舞伎 初挑戦」の文字入れ
 
 **ゆかりの地の実写写真（2026GW撮影・入手済み）**
@@ -196,7 +196,7 @@
 > 客席が静まり返る、歌舞伎屈指の名場面だよ。映画『国宝』を観た人は、きっと「あの場面だ」って思うはず。
 > ふたつめは、近松の言葉の美しさ。
 > 「この世のなごり、夜もなごり」—— 死に向かう道行の一節は、悲しいのに、美しいんだ。
-> ※字幕・テロップは漢字「夜もなごり」表記。TTSの読みだけカナ「よもなごり」（docs/youtube-script-sonezaki-tts.md）
+> ※字幕・テロップは漢字「夜もなごり」表記。TTSの読みだけカナ「よもなごり」（docs/youtube/youtube-script-sonezaki-tts.md）
 > みっつめは、悪役・九平次の憎たらしさ。
 > 本気で腹が立ってきたら、それはもう物語に入り込んでいる証拠だよ。
 
@@ -262,10 +262,10 @@ https://kabukiplus.com/
 | スタイル指定 | テキスト冒頭に `[...]` 形式のスタイルタグを付けて生成（既存運用どおり） |
 | クレジット | このボイスはレート3倍。本台本 約1,100字 ≒ 約3,400クレジット/全編（残高10万超あれば余裕） |
 
-**API一括生成（2026-07-04導入・推奨）**: Web UIコピペの代わりに `scripts/generate_episode_audio.mjs` で全ブロック自動生成できる。APIキーは `.env` の `ELEVENLABS_API_KEY`（gitignore対象）。
+**API一括生成（2026-07-04導入・推奨）**: Web UIコピペの代わりに `scripts/video/generate_episode_audio.mjs` で全ブロック自動生成できる。APIキーは `.env` の `ELEVENLABS_API_KEY`（gitignore対象）。
 
 ```
-node scripts/generate_episode_audio.mjs --script docs/youtube-script-sonezaki-tts.md --voice xOKkuQfZt5N7XfbFdn9W --out "D:\気良歌舞伎\youtubeチャンネル用\超訳！歌舞伎ナビ\歌舞伎ナビ05曽根崎心中\音声"
+node scripts/video/generate_episode_audio.mjs --script docs/youtube/youtube-script-sonezaki-tts.md --voice xOKkuQfZt5N7XfbFdn9W --out "D:\気良歌舞伎\youtubeチャンネル用\超訳！歌舞伎ナビ\歌舞伎ナビ05曽根崎心中\音声"
 ```
 
 `--only 5,6` で指定ブロックだけ再生成も可能（聴いてNGだったブロックの録り直しに使う）。本編9ファイルは2026-07-04にこの方法で生成済み。
@@ -292,7 +292,7 @@ node scripts/generate_episode_audio.mjs --script docs/youtube-script-sonezaki-tt
 - **字幕は全編必須**: 合成音声はミュート視聴との相性が良い。ナレーション全文をそのまま字幕に
 - **心中場面の表現**: 直接的な描写は避け、月・鳥居のイメージカットで示唆に留める（`06_道行シルエット.png`・`07_天神の森.png` がこのトーンで生成済み）
 - **ショート版切り出し**: ブロック7の「足の会話」部分をリール/ショート60秒に再構成できる（`リール用\` フォルダの明宝ハムシリーズと同じ縦型フォーマット）。配信中の映画『国宝』流入を狙うなら本編公開と同時か先行で出すのも有効
-- **公演告知**: 配役リレー等の告知1枚画像はSNS投稿側（`docs/pr-plan-r8-kera-sonezaki.md` テンプレA）で別途制作する。本動画には含めない
+- **公演告知**: 配役リレー等の告知1枚画像はSNS投稿側（`docs/pr/pr-plan-r8-kera-sonezaki.md` テンプレA）で別途制作する。本動画には含めない
 - **公開タイミング**: **2026年7月中旬**（前倒し。冒頭注記参照）。SNS側は cta_type E でこの動画URLへ誘導。9月の公演直前はコミュニティ投稿・ストーリーズ等で別途告知する（本動画自体の再編集は不要）
 
 ---
