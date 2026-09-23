@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 上段3枚（icon-0, icon-2, icon-4）の上の余白を詰め、下に余白を足して縦のバランスを取る。
-使い方: python scripts/fix_icon_padding.py [割合]
+使い方: python scripts/assets/fix_icon_padding.py [割合]
   割合: 上から削る割合（0.0～0.3、省略時は 0.15 = 15%）
 """
 import sys
@@ -14,7 +14,7 @@ except ImportError:
     print("Pillow が必要です: pip install Pillow")
     sys.exit(1)
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 ICONS_DIR = ROOT / "assets" / "menu-icons"
 TARGETS = (0, 2, 4)
 

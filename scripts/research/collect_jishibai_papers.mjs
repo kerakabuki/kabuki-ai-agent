@@ -1,12 +1,12 @@
 /**
  * CiNii Research APIから地芝居・地歌舞伎関連の論文メタデータを収集
- * Usage: node scripts/collect_jishibai_papers.mjs
+ * Usage: node scripts/research/collect_jishibai_papers.mjs
  */
 
 const QUERY = '地芝居 OR 地歌舞伎';
 const PER_PAGE = 20;
 const BASE_URL = 'https://cir.nii.ac.jp/opensearch/articles';
-const OUTPUT_FILE = 'research/jishibai_papers.json';
+const OUTPUT_FILE = 'research/jishibai/jishibai_papers.json';
 
 import { writeFileSync, mkdirSync } from 'fs';
 

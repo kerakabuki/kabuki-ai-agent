@@ -2,7 +2,7 @@
  * NDL次世代デジタルライブラリーで地芝居関連書籍を広範に収集
  * 全文OCR検索可能な書籍のカタログを作成
  *
- * Usage: node scripts/ndl_broad_search.mjs
+ * Usage: node scripts/research/ndl_broad_search.mjs
  */
 
 import { writeFileSync, mkdirSync } from 'fs';
@@ -145,8 +145,8 @@ async function main() {
     queryStats,
     books: unique.sort((a, b) => (b.matchedKeywords?.length || 0) - (a.matchedKeywords?.length || 0)),
   };
-  writeFileSync('research/ndl_books_catalog.json', JSON.stringify(output, null, 2), 'utf-8');
-  console.log(`\nSaved to research/ndl_books_catalog.json`);
+  writeFileSync('research/jishibai/ndl_books_catalog.json', JSON.stringify(output, null, 2), 'utf-8');
+  console.log(`\nSaved to research/jishibai/ndl_books_catalog.json`);
 }
 
 main().catch(err => {

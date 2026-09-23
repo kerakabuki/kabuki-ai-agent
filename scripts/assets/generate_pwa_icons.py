@@ -10,8 +10,8 @@ keranosuke-icon-kabuki.png (2048x2048) から PWA 用の 4 サイズを生成す
 import os
 from PIL import Image
 
-SRC = os.path.join(os.path.dirname(__file__), "..", "assets", "keranosuke-icon-kabuki.png")
-OUT_DIR = os.path.join(os.path.dirname(__file__), "..", "assets", "pwa-icons")
+SRC = os.path.join(os.path.dirname(__file__), "..", "..", "assets", "keranosuke-icon-kabuki.png")
+OUT_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "assets", "pwa-icons")
 os.makedirs(OUT_DIR, exist_ok=True)
 
 img = Image.open(SRC).convert("RGBA")

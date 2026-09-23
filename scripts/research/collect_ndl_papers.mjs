@@ -2,7 +2,7 @@
  * 国立国会図書館 SRU APIから地芝居・地歌舞伎関連の資料を収集
  * NDLはCiNii/J-STAGEにない書籍・報告書・地方資料も含む
  *
- * Usage: node scripts/collect_ndl_papers.mjs
+ * Usage: node scripts/research/collect_ndl_papers.mjs
  */
 
 import { readFileSync, writeFileSync, mkdirSync } from 'fs';
@@ -10,7 +10,7 @@ import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 const BASE_URL = 'https://ndlsearch.ndl.go.jp/api/sru';
 const PER_PAGE = 50;
 const DELAY_MS = 2000;
-const OUTPUT_FILE = 'research/ndl_papers.json';
+const OUTPUT_FILE = 'research/jishibai/ndl_papers.json';
 
 const KEYWORDS = [
   '地芝居',
@@ -25,7 +25,7 @@ const KEYWORDS = [
 
 // 団体名で特に有望なもの（CiNii/J-STAGEでヒットした団体 + 岐阜県の主要団体）
 function loadGroupKeywords() {
-  const data = JSON.parse(readFileSync('jikabuki_groups.json', 'utf-8'));
+  const data = JSON.parse(readFileSync('data/jikabuki_groups.json', 'utf-8'));
   const keywords = [];
   for (const g of data.groups) {
     // 団体名（一般的すぎる名前は除外）

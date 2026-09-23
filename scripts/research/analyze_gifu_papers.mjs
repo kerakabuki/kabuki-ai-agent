@@ -3,8 +3,8 @@
  */
 import { readFileSync } from 'fs';
 
-const papers = JSON.parse(readFileSync('research/jishibai_papers_extended.json', 'utf-8'));
-const groups = JSON.parse(readFileSync('jikabuki_groups.json', 'utf-8'));
+const papers = JSON.parse(readFileSync('research/jishibai/jishibai_papers_extended.json', 'utf-8'));
+const groups = JSON.parse(readFileSync('data/jikabuki_groups.json', 'utf-8'));
 
 // 岐阜県の団体一覧
 const gifuGroups = groups.groups.filter(g => g.prefecture === '岐阜県');

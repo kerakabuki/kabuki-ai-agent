@@ -4,14 +4,14 @@
  * - 94団体の名称・会場名
  * - 関連研究者名
  *
- * Usage: node scripts/collect_jishibai_papers_extended.mjs
+ * Usage: node scripts/research/collect_jishibai_papers_extended.mjs
  */
 
 import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 
 const BASE_URL = 'https://cir.nii.ac.jp/opensearch/articles';
 const PER_PAGE = 20;
-const OUTPUT_FILE = 'research/jishibai_papers_extended.json';
+const OUTPUT_FILE = 'research/jishibai/jishibai_papers_extended.json';
 const DELAY_MS = 1500; // CiNiiに優しく
 
 // ---- 基本キーワード ----
@@ -29,7 +29,7 @@ const BASE_KEYWORDS = [
 
 // ---- 団体データからキーワード抽出 ----
 function loadGroupKeywords() {
-  const data = JSON.parse(readFileSync('jikabuki_groups.json', 'utf-8'));
+  const data = JSON.parse(readFileSync('data/jikabuki_groups.json', 'utf-8'));
   const keywords = new Set();
   for (const g of data.groups) {
     // 団体名
@@ -208,7 +208,7 @@ async function main() {
   }
 
   // 県別集計（matchedQueryから推定）
-  const groups = JSON.parse(readFileSync('jikabuki_groups.json', 'utf-8'));
+  const groups = JSON.parse(readFileSync('data/jikabuki_groups.json', 'utf-8'));
   const prefMap = {};
   for (const g of groups.groups) {
     for (const kw of [g.name, g.venue, ...(g.keywords || [])]) {

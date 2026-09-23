@@ -151,8 +151,8 @@ def main():
         time.sleep(SLEEP_ACTOR)
 
     df = pd.DataFrame(rows).sort_values(["yago", "name_kanji"]).reset_index(drop=True)
-    df.to_csv("kabuki_meikan_current_actors.csv", index=False, encoding="utf-8-sig")
-    df.to_json("kabuki_meikan_current_actors.json", force_ascii=False, orient="records", indent=2)
+    df.to_csv("data/kabuki_meikan_current_actors.csv", index=False, encoding="utf-8-sig")
+    df.to_json("data/kabuki_meikan_current_actors.json", force_ascii=False, orient="records", indent=2)
     
     # サマリ出力
     with_name = df[df["name_kanji"] != ""].shape[0]

@@ -5,7 +5,7 @@
  * Step 2: 各書籍のヒットページのコンテキストを取得
  * Step 3: 地域名・団体名を自動抽出
  *
- * Usage: node scripts/ndl_fulltext_search.mjs
+ * Usage: node scripts/research/ndl_fulltext_search.mjs
  */
 
 import { readFileSync, writeFileSync, mkdirSync } from 'fs';
@@ -13,7 +13,7 @@ import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 const BOOK_API = 'https://lab.ndl.go.jp/dl/api/book/search';
 const PAGE_API = 'https://lab.ndl.go.jp/dl/api/page/search';
 const DELAY_MS = 1000;
-const OUTPUT_FILE = 'research/ndl_fulltext_results.json';
+const OUTPUT_FILE = 'research/jishibai/ndl_fulltext_results.json';
 
 const KEYWORDS = ['地芝居', '素人芝居', '村芝居', '農村歌舞伎'];
 

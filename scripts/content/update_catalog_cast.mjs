@@ -1,5 +1,5 @@
 // cast_count の修正と has_kodomo フラグを catalog.json に反映する
-// Usage: node scripts/update_catalog_cast.mjs
+// Usage: node scripts/content/update_catalog_cast.mjs
 import { writeFileSync } from "fs";
 
 const BASE = "https://kerakabuki.kerakabuki.workers.dev";

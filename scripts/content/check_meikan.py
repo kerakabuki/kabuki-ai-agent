@@ -2,7 +2,7 @@ import json, sys, io
 from collections import Counter
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
-d = json.load(open("kabuki_meikan_current_actors.json", "r", encoding="utf-8"))
+d = json.load(open("data/kabuki_meikan_current_actors.json", "r", encoding="utf-8"))
 print(f"Total: {len(d)}")
 print(f"With name: {sum(1 for x in d if x['name_kanji'])}")
 print(f"With kana: {sum(1 for x in d if x['name_kana'])}")

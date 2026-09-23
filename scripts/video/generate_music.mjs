@@ -1,5 +1,5 @@
 // ElevenLabs Eleven Music APIでBGMを生成する
-// 使い方: node scripts/generate_music.mjs --prompt "曲の指示文" --length 60 --out "D:\...\BGM\道行.mp3"
+// 使い方: node scripts/video/generate_music.mjs --prompt "曲の指示文" --length 60 --out "D:\...\BGM\道行.mp3"
 // APIキーは .env の ELEVENLABS_API_KEY から読む（音声生成と共通）
 // 注意: 音楽はTTSよりクレジット消費が大きい。レスポンスヘッダの消費量を必ず確認すること
 

@@ -1,5 +1,5 @@
 // 前セッションで入力した上演時間データを duration_min として enmoku JSON と catalog.json に反映する
-// Usage: node scripts/set_duration_min.mjs
+// Usage: node scripts/content/set_duration_min.mjs
 import { writeFileSync } from "fs";
 
 const BASE = "https://kerakabuki.kerakabuki.workers.dev";

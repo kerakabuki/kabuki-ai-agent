@@ -1,13 +1,13 @@
 /**
  * CiNii + J-STAGE + NDL の3ソースを統合マージ
- * Usage: node scripts/merge_all_papers.mjs
+ * Usage: node scripts/research/merge_all_papers.mjs
  */
 
 import { readFileSync, writeFileSync } from 'fs';
 
-const cinii = JSON.parse(readFileSync('research/jishibai_papers_extended.json', 'utf-8'));
-const jstage = JSON.parse(readFileSync('research/jstage_papers.json', 'utf-8'));
-const ndl = JSON.parse(readFileSync('research/ndl_papers.json', 'utf-8'));
+const cinii = JSON.parse(readFileSync('research/jishibai/jishibai_papers_extended.json', 'utf-8'));
+const jstage = JSON.parse(readFileSync('research/jishibai/jstage_papers.json', 'utf-8'));
+const ndl = JSON.parse(readFileSync('research/jishibai/ndl_papers.json', 'utf-8'));
 
 console.log(`CiNii:   ${cinii.uniqueCount}件`);
 console.log(`J-STAGE: ${jstage.uniqueCount}件`);
@@ -96,7 +96,7 @@ unique.sort((a, b) => {
 });
 
 // 団体別集計
-const groups = JSON.parse(readFileSync('jikabuki_groups.json', 'utf-8'));
+const groups = JSON.parse(readFileSync('data/jikabuki_groups.json', 'utf-8'));
 console.log('\n=== 団体別ヒット数（統合） ===');
 const groupHits = [];
 for (const g of groups.groups) {
@@ -181,5 +181,5 @@ const output = {
   sourceBreakdown: sourceStats,
   papers: unique,
 };
-writeFileSync('research/jishibai_papers_all.json', JSON.stringify(output, null, 2), 'utf-8');
-console.log(`\nSaved to research/jishibai_papers_all.json`);
+writeFileSync('research/jishibai/jishibai_papers_all.json', JSON.stringify(output, null, 2), 'utf-8');
+console.log(`\nSaved to research/jishibai/jishibai_papers_all.json`);

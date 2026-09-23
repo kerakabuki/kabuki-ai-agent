@@ -1,8 +1,8 @@
 // 秋田魁新報 記事見出し検索（秋田県立図書館 ADEAC）から見出しを収集する
 // 対象: https://adeac.jp/akita-pref/detailed-search （1900-1999年の見出し283,858件）
-// 使い方: node scripts/collect_sakigake_headlines.mjs "キーワード1" "キーワード2" ...
+// 使い方: node scripts/research/collect_sakigake_headlines.mjs "キーワード1" "キーワード2" ...
 //         引数なしの場合は既定の地芝居関連キーワードセットを使用
-// 出力: research/newspapers/sakigake_headlines.json （キーワード別・重複除去済み）
+// 出力: research/jishibai/newspapers/sakigake_headlines.json （キーワード別・重複除去済み）
 // 注意: 公共アーカイブへの礼儀としてリクエスト間に1.2秒の待機を入れている。並列実行しないこと。
 
 import fs from 'fs';
@@ -133,6 +133,6 @@ for (const kw of keywords) {
 }
 
 out.items.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
-fs.mkdirSync('research/newspapers', { recursive: true });
-fs.writeFileSync('research/newspapers/sakigake_headlines.json', JSON.stringify(out, null, 1));
-console.log(`保存: research/newspapers/sakigake_headlines.json（ユニーク${out.items.length}件）`);
+fs.mkdirSync('research/jishibai/newspapers', { recursive: true });
+fs.writeFileSync('research/jishibai/newspapers/sakigake_headlines.json', JSON.stringify(out, null, 1));
+console.log(`保存: research/jishibai/newspapers/sakigake_headlines.json（ユニーク${out.items.length}件）`);

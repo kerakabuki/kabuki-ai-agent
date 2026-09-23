@@ -1,5 +1,5 @@
 // 超訳！歌舞伎ナビ 各エピソードのナレーション音声をElevenLabs APIで一括生成する
-// 使い方: node scripts/generate_episode_audio.mjs --script docs/youtube-script-sonezaki-tts.md --voice xOKkuQfZt5N7XfbFdn9W --out "D:\...\音声"
+// 使い方: node scripts/video/generate_episode_audio.mjs --script docs/youtube/youtube-script-sonezaki-tts.md --voice xOKkuQfZt5N7XfbFdn9W --out "D:\...\音声"
 // APIキーは .env の ELEVENLABS_API_KEY から読む（gitignore対象。チャット等に貼らないこと）
 // TTS用マークダウンの規約: "## ブロック{n}" 見出し + 直後の ```...``` コードフェンス内にタグ付きテキスト
 // 出力ファイル名は見出しの{n}をそのまま使う（例: ブロック1.mp3, ブロック6-2.mp3, ブロック8.mp3）

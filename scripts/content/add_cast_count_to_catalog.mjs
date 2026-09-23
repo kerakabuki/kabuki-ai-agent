@@ -1,5 +1,5 @@
 // 各演目 JSON の cast_names 数を catalog.json に cast_count として追加する
-// Usage: node scripts/add_cast_count_to_catalog.mjs
+// Usage: node scripts/content/add_cast_count_to_catalog.mjs
 import { writeFileSync } from "fs";
 
 const BASE = "https://kerakabuki.kerakabuki.workers.dev";

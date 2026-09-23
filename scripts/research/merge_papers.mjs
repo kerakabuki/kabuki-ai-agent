@@ -3,8 +3,8 @@
  */
 import { readFileSync, writeFileSync } from 'fs';
 
-const cinii = JSON.parse(readFileSync('research/jishibai_papers_extended.json', 'utf-8'));
-const jstage = JSON.parse(readFileSync('research/jstage_papers.json', 'utf-8'));
+const cinii = JSON.parse(readFileSync('research/jishibai/jishibai_papers_extended.json', 'utf-8'));
+const jstage = JSON.parse(readFileSync('research/jishibai/jstage_papers.json', 'utf-8'));
 
 console.log(`CiNii: ${cinii.uniqueCount}件`);
 console.log(`J-STAGE: ${jstage.uniqueCount}件`);
@@ -63,8 +63,8 @@ const output = {
   mergedUniqueCount: filtered.length,
   papers: filtered,
 };
-writeFileSync('research/jishibai_papers_merged.json', JSON.stringify(output, null, 2), 'utf-8');
-console.log('\nSaved to research/jishibai_papers_merged.json');
+writeFileSync('research/jishibai/jishibai_papers_merged.json', JSON.stringify(output, null, 2), 'utf-8');
+console.log('\nSaved to research/jishibai/jishibai_papers_merged.json');
 
 // ---- 統合サマリー ----
 // 両方にある論文
@@ -104,7 +104,7 @@ for (const [author, count] of Object.entries(authorCount).sort((a, b) => b[1] - 
 }
 
 // 団体別ヒット（J-STAGEで新たに見つかった団体）
-const groups = JSON.parse(readFileSync('jikabuki_groups.json', 'utf-8'));
+const groups = JSON.parse(readFileSync('data/jikabuki_groups.json', 'utf-8'));
 console.log('\n=== 団体別ヒット数（統合） ===');
 for (const g of groups.groups) {
   const allKw = [g.name, g.venue, ...(g.keywords || [])].filter(Boolean);

@@ -7,7 +7,7 @@ assets/menu-icons/ の icon-*.png を R2 用の menu-icon-*.png にコピーす�
 """
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent
 SRC_DIR = ROOT / "assets" / "menu-icons"
 OUT_DIR = ROOT / "assets" / "menu-icons-for-r2"
 

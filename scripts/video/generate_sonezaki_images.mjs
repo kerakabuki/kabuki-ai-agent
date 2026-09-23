@@ -1,13 +1,13 @@
 // 曽根崎心中解説動画 生成AI画像の一括生成スクリプト
-// プロンプト定義: docs/youtube-sonezaki-image-prompts.md
+// プロンプト定義: docs/youtube/youtube-sonezaki-image-prompts.md
 // API形式は kabuki-post-365/src/lib/image-gen.ts と同じ (Gemini native image generation)
 //
 // 使い方:
 //   $env:GEMINI_API_KEY = "..."   # 事前に1回設定
-//   node scripts/generate_sonezaki_images.mjs          # 全カット（既存ファイルはスキップ）
-//   node scripts/generate_sonezaki_images.mjs cards    # 人物カードのみ (01-03)
-//   node scripts/generate_sonezaki_images.mjs scenes   # 場面カットのみ (04-08)
-//   node scripts/generate_sonezaki_images.mjs 06       # 番号指定で1枚だけ
+//   node scripts/video/generate_sonezaki_images.mjs          # 全カット（既存ファイルはスキップ）
+//   node scripts/video/generate_sonezaki_images.mjs cards    # 人物カードのみ (01-03)
+//   node scripts/video/generate_sonezaki_images.mjs scenes   # 場面カットのみ (04-08)
+//   node scripts/video/generate_sonezaki_images.mjs 06       # 番号指定で1枚だけ
 //   末尾に --force で既存ファイルも作り直し
 
 import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'node:fs';
@@ -53,7 +53,7 @@ const CUTS = [
 ];
 
 // APIキー: 環境変数 GEMINI_API_KEY → リポジトリ直下の .gemini_api_key ファイル の順で探す
-const KEY_FILE = new URL('../.gemini_api_key', import.meta.url);
+const KEY_FILE = new URL('../../.gemini_api_key', import.meta.url);
 let apiKey = process.env.GEMINI_API_KEY;
 if (!apiKey && existsSync(KEY_FILE)) {
   apiKey = readFileSync(KEY_FILE, 'utf8').trim();

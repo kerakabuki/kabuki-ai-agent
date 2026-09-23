@@ -3,7 +3,7 @@
 3x3 グリッドのアイコン画像を1枚ずつ切り出して保存する。
 使い方:
   pip install Pillow
-  python scripts/crop_icon_grid.py <入力画像パス> [出力フォルダ] [--icon-only]
+  python scripts/assets/crop_icon_grid.py <入力画像パス> [出力フォルダ] [--icon-only]
 
   --icon-only  各マスの下のラベル（英語など）を除き、アイコン部分だけ切り出す（上約75%）
 """

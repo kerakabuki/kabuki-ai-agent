@@ -1,5 +1,5 @@
 // catalog.json を全フィールド込みで再構築するマスタースクリプト
-// Usage: node scripts/rebuild_catalog.mjs
+// Usage: node scripts/content/rebuild_catalog.mjs
 import { writeFileSync } from "fs";
 
 const BASE = "https://kerakabuki.kerakabuki.workers.dev";

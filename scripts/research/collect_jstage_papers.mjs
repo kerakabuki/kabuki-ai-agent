@@ -2,7 +2,7 @@
  * J-STAGE APIから地芝居・地歌舞伎関連の論文を全文検索で収集
  * + 団体名でも検索してマージ
  *
- * Usage: node scripts/collect_jstage_papers.mjs
+ * Usage: node scripts/research/collect_jstage_papers.mjs
  */
 
 import { readFileSync, writeFileSync, mkdirSync } from 'fs';
@@ -10,7 +10,7 @@ import { readFileSync, writeFileSync, mkdirSync } from 'fs';
 const BASE_URL = 'https://api.jstage.jst.go.jp/searchapi/do';
 const PER_PAGE = 20;
 const DELAY_MS = 1500;
-const OUTPUT_FILE = 'research/jstage_papers.json';
+const OUTPUT_FILE = 'research/jishibai/jstage_papers.json';
 
 // 基本キーワード
 const BASE_KEYWORDS = [
@@ -24,7 +24,7 @@ const BASE_KEYWORDS = [
 
 // 団体データからキーワード抽出
 function loadGroupKeywords() {
-  const data = JSON.parse(readFileSync('jikabuki_groups.json', 'utf-8'));
+  const data = JSON.parse(readFileSync('data/jikabuki_groups.json', 'utf-8'));
   const keywords = new Set();
   for (const g of data.groups) {
     keywords.add(g.name);

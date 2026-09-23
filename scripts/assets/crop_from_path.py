@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 r"""
-icon_grid_path.txt に書いた画像パスを読み、アイコンを切り出します。
-1. プロジェクト直下に icon_grid_path.txt を作成
+data/icon_grid_path.txt に書いた画像パスを読み、アイコンを切り出します。
+1. data/icon_grid_path.txt を作成
 2. 1行目にグリッド画像のフルパスを貼り付け
-3. 実行: python scripts/crop_from_path.py
+3. 実行: python scripts/assets/crop_from_path.py
 """
 import sys
 from pathlib import Path
@@ -15,9 +15,9 @@ except ImportError:
     print("Pillow が必要です: pip install Pillow")
     sys.exit(1)
 
-# プロジェクトルート（このスクリプトの2つ上）
-ROOT = Path(__file__).resolve().parent.parent
-PATH_FILE = ROOT / "icon_grid_path.txt"
+# プロジェクトルート（このスクリプトの3つ上）
+ROOT = Path(__file__).resolve().parent.parent.parent
+PATH_FILE = ROOT / "data" / "icon_grid_path.txt"
 OUT_DIR = ROOT / "assets" / "menu-icons"
 
 

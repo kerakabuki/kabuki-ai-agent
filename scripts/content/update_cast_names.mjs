@@ -1,5 +1,5 @@
 // cast_names のふりがな除去・端役追加を catalog.json に反映する
-// Usage: node scripts/update_cast_names.mjs
+// Usage: node scripts/content/update_cast_names.mjs
 import { writeFileSync } from "fs";
 
 const BASE = "https://kerakabuki.kerakabuki.workers.dev";

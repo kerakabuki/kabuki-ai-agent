@@ -2,7 +2,7 @@
  * NDL次世代デジタルライブラリーから特定書籍の全文テキストを取得し
  * 地芝居・村芝居関連ページを抽出・分析
  *
- * Usage: node scripts/ndl_analyze_book.mjs
+ * Usage: node scripts/research/ndl_analyze_book.mjs
  */
 
 import { writeFileSync, mkdirSync } from 'fs';
@@ -200,8 +200,8 @@ async function main() {
 
   // 保存
   mkdirSync('research', { recursive: true });
-  writeFileSync('research/ndl_fulltext_analysis.json', JSON.stringify(results, null, 2), 'utf-8');
-  console.log('\nSaved to research/ndl_fulltext_analysis.json');
+  writeFileSync('research/jishibai/ndl_fulltext_analysis.json', JSON.stringify(results, null, 2), 'utf-8');
+  console.log('\nSaved to research/jishibai/ndl_fulltext_analysis.json');
 }
 
 main().catch(err => {

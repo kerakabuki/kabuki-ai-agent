@@ -2,7 +2,7 @@
  * NDL次世代デジタルライブラリーから有望書籍の全文テキストをバッチ分析
  * 地域×芝居の言及を自動抽出
  *
- * Usage: node scripts/ndl_analyze_books_batch.mjs
+ * Usage: node scripts/research/ndl_analyze_books_batch.mjs
  */
 
 import { writeFileSync, readFileSync, mkdirSync } from 'fs';
@@ -221,14 +221,14 @@ async function main() {
 
   // 保存
   mkdirSync('research', { recursive: true });
-  writeFileSync('research/ndl_batch_analysis.json', JSON.stringify({
+  writeFileSync('research/jishibai/ndl_batch_analysis.json', JSON.stringify({
     collectedAt: new Date().toISOString(),
     description: 'NDL有望書籍のバッチ全文分析',
     booksAnalyzed: allResults.length,
     totalRegionMentions: totalRegions,
     results: allResults,
   }, null, 2), 'utf-8');
-  console.log('\nSaved to research/ndl_batch_analysis.json');
+  console.log('\nSaved to research/jishibai/ndl_batch_analysis.json');
 }
 
 main().catch(err => {
