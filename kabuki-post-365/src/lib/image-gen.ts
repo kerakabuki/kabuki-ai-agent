@@ -1,4 +1,5 @@
 import type { Env } from '../types';
+import { logGeminiUsage } from './gemini-usage';
 
 interface GenerateImageResult {
   success: boolean;
@@ -36,7 +37,7 @@ export async function generateImage(
 
   parts.push({ text: prompt });
 
-  const model = 'gemini-3.1-flash-image-preview';
+  const model = env.GEMINI_IMAGE_MODEL || 'gemini-3.1-flash-image-preview';
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
 
   const body = {
@@ -70,6 +71,7 @@ export async function generateImage(
       }
 
       const data = await res.json() as any;
+      logGeminiUsage('image', model, data.usageMetadata);
       const candidates = data.candidates;
       if (!candidates || candidates.length === 0) {
         return { success: false, error: 'No candidates in response' };

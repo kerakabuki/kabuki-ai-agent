@@ -1,4 +1,5 @@
 import type { Env } from '../types';
+import { logGeminiUsage, type GeminiUsage } from './gemini-usage';
 import { buildCtaText } from './cta';
 import { pickCompositionStyle, fetchRecentOpenings, buildVariationPrompt } from './post-style';
 
@@ -217,8 +218,9 @@ ${promptParts}
   "comment_bluesky": "..."` : ''}
 }${quizAnswerInstruction}`;
 
-  // Gemini 2.5 Flash API (with retry for cold start)
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${env.GEMINI_API_KEY}`;
+  // Gemini API (with retry for cold start)
+  const model = env.GEMINI_TEXT_MODEL || 'gemini-2.5-flash';
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${env.GEMINI_API_KEY}`;
   const requestBody = JSON.stringify({
     contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
     systemInstruction: { parts: [{ text: systemPrompt }] },
@@ -259,7 +261,9 @@ ${promptParts}
 
   const data = await res.json() as {
     candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+    usageMetadata?: GeminiUsage;
   };
+  logGeminiUsage('text', model, data.usageMetadata);
 
   // Gemini 2.5 Flash may return multiple parts (thinking + response)
   // Collect text from all parts, then extract JSON

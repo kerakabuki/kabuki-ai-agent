@@ -1,4 +1,5 @@
 import type { Env, Character } from '../types';
+import { logGeminiUsage, type GeminiUsage } from './gemini-usage';
 
 export interface VisionAnalysisResult {
   play_name: string;
@@ -40,7 +41,8 @@ ${characterList || '（なし）'}
 
 簡潔に回答してください。各フィールドは短く。`;
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${env.GEMINI_API_KEY}`;
+  const model = env.GEMINI_VISION_MODEL || 'gemini-2.5-flash';
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${env.GEMINI_API_KEY}`;
   const res = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -79,7 +81,9 @@ ${characterList || '（なし）'}
       content?: { parts?: Array<{ text?: string }> };
       finishReason?: string;
     }>;
+    usageMetadata?: GeminiUsage;
   };
+  logGeminiUsage('vision', model, data.usageMetadata);
 
   const candidate = data.candidates?.[0];
   if (!candidate?.content?.parts?.length) {

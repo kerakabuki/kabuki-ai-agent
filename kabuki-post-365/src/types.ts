@@ -3,6 +3,10 @@ export interface Env {
   R2: R2Bucket;
   KV: KVNamespace;
   GEMINI_API_KEY: string;
+  // Geminiモデル（未設定なら各呼び出し側の既定値。wrangler.toml の [vars] で差し替える）
+  GEMINI_TEXT_MODEL?: string;
+  GEMINI_VISION_MODEL?: string;
+  GEMINI_IMAGE_MODEL?: string;
   API_TOKEN: string;
   // SNS API secrets (all optional — unconfigured platforms are skipped)
   META_ACCESS_TOKEN?: string;
