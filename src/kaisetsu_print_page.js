@@ -73,7 +73,7 @@ export function kaisetsuPrintPageHTML() {
   <div class="pp-bar-in">
     <div class="pp-bar-text">
       <p class="pp-bar-title">会場配布パンフ（A4・両面1枚）</p>
-      <p class="pp-bar-note">印刷の設定：用紙 A4／両面印刷（長辺とじ）／倍率 100%（実際のサイズ）。白黒で刷っても読めるように組んであります。</p>
+      <p class="pp-bar-note">印刷の設定：Chrome か Edge で、用紙 A4／両面印刷（長辺とじ）／倍率 100%（実際のサイズ）／ヘッダーとフッターはオフ。白黒で刷っても読めるように組んであります。</p>
     </div>
     <button type="button" id="pp-print" class="pp-bar-btn">印刷する</button>
   </div>
