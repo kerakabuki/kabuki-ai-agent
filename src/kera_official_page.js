@@ -39,12 +39,20 @@ export function keraOfficialPageHTML() {
   "logo": "https://kabukiplus.com/assets/ogp/ogp_kabukiplus_top.png",
   "description": "岐阜県郡上市明宝気良の地歌舞伎団体。2005年に17年ぶりに復活し、約40名のメンバーが毎年秋に気良座で定期公演を行う。",
   "foundingDate": "2005",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "明宝気良2264",
+    "addressLocality": "郡上市",
+    "addressRegion": "岐阜県",
+    "postalCode": "501-4303",
+    "addressCountry": "JP"
+  },
   "location": {
     "@type": "PerformingArtsTheater",
     "name": "気良座",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "明宝気良2264",
+      "streetAddress": "明宝気良154",
       "addressLocality": "郡上市",
       "addressRegion": "岐阜県",
       "postalCode": "501-4303",
@@ -68,13 +76,14 @@ export function keraOfficialPageHTML() {
   "@context": "https://schema.org",
   "@type": "TheaterEvent",
   "name": "気良歌舞伎 令和8年定期公演",
-  "startDate": "2026-09-26",
+  "startDate": "2026-09-26T18:00+09:00",
+  "doorTime": "2026-09-26T17:00+09:00",
   "location": {
     "@type": "PerformingArtsTheater",
     "name": "気良座",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "明宝気良2264",
+      "streetAddress": "明宝気良154",
       "addressLocality": "郡上市",
       "addressRegion": "岐阜県",
       "postalCode": "501-4303",
@@ -142,6 +151,13 @@ export function keraOfficialPageHTML() {
         <div>
           <strong>2026年9月26日（土）</strong>
           <span>毎年9月第4土曜日</span>
+        </div>
+      </div>
+      <div class="kl-next-time">
+        <span class="kl-next-icon">🕕</span>
+        <div>
+          <strong>18:00開演</strong>
+          <span>17:00開場</span>
         </div>
       </div>
       <div class="kl-next-venue">
@@ -667,7 +683,7 @@ img { max-width: 100%; display: block; }
   text-align: left;
   margin-bottom: 1.5rem;
 }
-.kl-next-date, .kl-next-venue, .kl-next-fee {
+.kl-next-date, .kl-next-time, .kl-next-venue, .kl-next-fee {
   display: flex;
   align-items: center;
   gap: 0.8rem;

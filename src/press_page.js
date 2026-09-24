@@ -292,7 +292,7 @@ export function pressPageHTML() {
     </div>
     <div class="kp-contact-item">
       <span class="kp-contact-label">所在地</span>
-      <span>〒501-4303 岐阜県郡上市明宝気良気良2264（気良歌舞伎事務局）</span>
+      <span>〒501-4303 岐阜県郡上市明宝気良2264（気良歌舞伎事務局）</span>
     </div>
     <p class="kp-contact-note">取材・メディア掲載に関するお問い合わせは、メールにてお気軽にご連絡ください。</p>
   </div>
