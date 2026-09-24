@@ -75,9 +75,14 @@ export function keraOfficialPageHTML() {
 {
   "@context": "https://schema.org",
   "@type": "TheaterEvent",
-  "name": "気良歌舞伎 令和8年定期公演",
+  "name": "気良歌舞伎 令和8年定期公演「曽根崎心中」",
   "startDate": "2026-09-26T18:00+09:00",
   "doorTime": "2026-09-26T17:00+09:00",
+  "workPerformed": {
+    "@type": "CreativeWork",
+    "name": "曽根崎心中",
+    "author": { "@type": "Person", "name": "近松門左衛門" }
+  },
   "location": {
     "@type": "PerformingArtsTheater",
     "name": "気良座",
@@ -146,6 +151,13 @@ export function keraOfficialPageHTML() {
     <p class="kl-next-label">NEXT PERFORMANCE</p>
     <h2 class="kl-next-title">令和8年 定期公演</h2>
     <div class="kl-next-info">
+      <div class="kl-next-play">
+        <span class="kl-next-icon">🎭</span>
+        <div>
+          <strong>曽根崎心中</strong>
+          <span>原作 近松門左衛門・全三場</span>
+        </div>
+      </div>
       <div class="kl-next-date">
         <span class="kl-next-icon">📅</span>
         <div>
@@ -230,7 +242,7 @@ export function keraOfficialPageHTML() {
     <div class="kl-tl-item kl-reveal"><span class="kl-tl-year">2005</span><div class="kl-tl-dot"></div><div class="kl-tl-body"><strong>気良歌舞伎復活</strong><br>17年ぶりに白山神社祭礼での歌舞伎奉納を再開</div></div>
     <div class="kl-tl-item kl-reveal"><span class="kl-tl-year">2024</span><div class="kl-tl-dot"></div><div class="kl-tl-body"><strong>気良座こけら落とし</strong><br>旧明方小学校の木造講堂が芝居小屋として生まれ変わる</div></div>
     <div class="kl-tl-item kl-reveal"><span class="kl-tl-year">2025</span><div class="kl-tl-dot"></div><div class="kl-tl-body"><strong>五代目座長 林克彦</strong><br>襲名披露公演・ぎふ清流座公演</div></div>
-    <div class="kl-tl-item kl-tl-current kl-reveal"><span class="kl-tl-year">2026</span><div class="kl-tl-dot"></div><div class="kl-tl-body"><strong>令和8年公演（予定）</strong></div></div>
+    <div class="kl-tl-item kl-tl-current kl-reveal"><span class="kl-tl-year">2026</span><div class="kl-tl-dot"></div><div class="kl-tl-body"><strong>令和8年公演「曽根崎心中」（予定）</strong></div></div>
   </div>
   <p class="kl-tl-more kl-reveal"><a href="/kerakabuki/press#timeline">沿革の全年表を見る</a>　<a href="/kerakabuki/archive">公演アーカイブ →</a></p>
 </section>
@@ -683,7 +695,7 @@ img { max-width: 100%; display: block; }
   text-align: left;
   margin-bottom: 1.5rem;
 }
-.kl-next-date, .kl-next-time, .kl-next-venue, .kl-next-fee {
+.kl-next-play, .kl-next-date, .kl-next-time, .kl-next-venue, .kl-next-fee {
   display: flex;
   align-items: center;
   gap: 0.8rem;
