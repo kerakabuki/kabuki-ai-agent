@@ -73,7 +73,7 @@ export function kaisetsuPageHTML() {
 <body>
 
 <header class="ks-hero">
-  <p class="ks-kicker">令和八年　気良歌舞伎公演</p>
+  <p class="ks-kicker">${esc(K.event)}</p>
   <h1 class="ks-title">${esc(K.title)}</h1>
   <p class="ks-reading">${esc(K.reading)}</p>
   <p class="ks-meta">原作　${esc(K.author)}　／　全三場</p>

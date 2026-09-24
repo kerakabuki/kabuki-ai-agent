@@ -129,6 +129,7 @@ import { keraGuidePageHTML } from "./src/kera_guide_page.js";
 import { postcardPageHTML } from "./src/postcard_page.js";
 import { annaiPageHTML } from "./src/annai_page.js";
 import { kaisetsuPageHTML } from "./src/kaisetsu_page.js";
+import { kaisetsuPrintPageHTML } from "./src/kaisetsu_print_page.js";
 import { keraArchivePageHTML } from "./src/kera_archive_page.js";
 import { mypagePageHTML, recoProfilePageHTML } from "./src/mypage_page.js";
 import { naviPageHTML } from "./src/navi_page.js";
@@ -1082,6 +1083,10 @@ ${glossaryI18nPairs.map(g => `  <url>
     // 当日の演目解説。登録も何も要らずに読める（当日QRの飛び先）
     if (path === "/kerakabuki/kaisetsu" || path === "/jikabuki/gate/kera/kaisetsu") {
       return new Response(kaisetsuPageHTML(), { headers: HTML_HEADERS });
+    }
+    // 会場配布パンフ（A4両面）の印刷用。検索には出さない
+    if (path === "/kerakabuki/kaisetsu/print") {
+      return new Response(kaisetsuPrintPageHTML(), { headers: { ...HTML_HEADERS, "X-Robots-Tag": "noindex" } });
     }
     // 公演案内の受け取り方法（登録専用・恒久ページ）。はがき・芳名帳・受付の共通導線
     if (path === "/kerakabuki/annai" || path === "/jikabuki/gate/kera/annai") {
