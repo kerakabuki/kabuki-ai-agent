@@ -202,7 +202,7 @@ export function pressPageHTML() {
     <div class="kp-tl-item kp-reveal"><span class="kp-tl-year">2023</span><div class="kp-tl-dot"></div><div class="kp-tl-body">清流の国ぎふ 地歌舞伎勢揃い公演・秋 出演</div></div>
     <div class="kp-tl-item kp-reveal"><span class="kp-tl-year">2024</span><div class="kp-tl-dot"></div><div class="kp-tl-body"><strong>気良座こけら落とし公演</strong>（旧明方小学校木造講堂を「気良座」として開場）</div></div>
     <div class="kp-tl-item kp-reveal"><span class="kp-tl-year">2025</span><div class="kp-tl-dot"></div><div class="kp-tl-body"><strong>五代目座長 林克彦</strong><br>座長襲名披露公演<br>ぎふ清流座公演（10月）<br>岐阜大学留学生の歌舞伎体験受入（11月）</div></div>
-    <div class="kp-tl-item kp-tl-current kp-reveal"><span class="kp-tl-year">2026</span><div class="kp-tl-dot"></div><div class="kp-tl-body"><strong>令和8年公演（予定）</strong></div></div>
+    <div class="kp-tl-item kp-tl-current kp-reveal"><span class="kp-tl-year">2026</span><div class="kp-tl-dot"></div><div class="kp-tl-body"><strong>令和8年公演「曽根崎心中」（予定）</strong></div></div>
   </div>
 </section>
 
