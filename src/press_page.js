@@ -110,6 +110,7 @@ export function pressPageHTML() {
     <a href="#sns">SNS</a>
     <a href="#kawaraban">かわら版</a>
     <a href="#news">お知らせ</a>
+    <a href="#coverage">掲載記事</a>
     <a href="/kerakabuki/archive">アーカイブ</a>
     <a href="/kerakabuki/guide">ガイド</a>
   </div>
@@ -469,6 +470,68 @@ export function pressPageHTML() {
       <h3 class="kp-news-title">「おうちで歌舞伎！」地芝居映像配信プロジェクト</h3>
       <p class="kp-news-desc">コロナ禍で公演中止を余儀なくされる中、いち早く映像配信に挑戦。地歌舞伎をオンラインで届ける取り組みは全国的にも注目され、新たな観客層の開拓に繋がった。</p>
     </article>
+  </div>
+</section>
+
+<!-- ═══════ §8 掲載記事アーカイブ ═══════ -->
+<section class="kp-section" id="coverage">
+  <h2 class="kp-section-title kp-reveal">これまでの掲載記事</h2>
+  <p class="kp-archive-intro kp-reveal">新聞で紹介していただいた主な記事です（2013年〜2021年の紙面から）。<br>2020年以降のWeb掲載記事は「お知らせ」をご覧ください。</p>
+  <div class="kp-archive-timeline">
+    <div class="kp-archive-year kp-reveal">
+      <span class="kp-ay-label">2021</span>
+      <ul class="kp-cov-items">
+        <li class="kp-cov-item"><span class="kp-cov-src">12月</span>気良歌舞伎 ネットが舞台　明宝の住民「仮名手本忠臣蔵」11日から配信</li>
+      </ul>
+    </div>
+    <div class="kp-archive-year kp-reveal">
+      <span class="kp-ay-label">2020</span>
+      <ul class="kp-cov-items">
+        <li class="kp-cov-item"><span class="kp-cov-src">神社新報　10月26日</span>白山神社に奉納する気良歌舞伎のテレビ放映を紹介</li>
+      </ul>
+    </div>
+    <div class="kp-archive-year kp-reveal">
+      <span class="kp-ay-label">2019</span>
+      <ul class="kp-cov-items">
+        <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　7月</span>気良歌舞伎 郡上を飛び出す　14日 岐阜で保存会が初公演</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">7月</span>気良歌舞伎 本番へ熱気　明宝の魅力 14日に岐阜市で発信</li>
+        <li class="kp-cov-item">明宝の若者ら「気良歌舞伎」</li>
+      </ul>
+    </div>
+    <div class="kp-archive-year kp-reveal">
+      <span class="kp-ay-label">2018</span>
+      <ul class="kp-cov-items">
+        <li class="kp-cov-item"><span class="kp-cov-src">9月</span>子を犠牲にした悲劇演じる　明宝で15日 気良歌舞伎</li>
+      </ul>
+    </div>
+    <div class="kp-archive-year kp-reveal">
+      <span class="kp-ay-label">2017</span>
+      <ul class="kp-cov-items">
+        <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　1月8日</span>「主役脇役」新春特別版　気良歌舞伎事務局 沢奈央也さん</li>
+      </ul>
+    </div>
+    <div class="kp-archive-year kp-reveal">
+      <span class="kp-ay-label">2016</span>
+      <ul class="kp-cov-items">
+        <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　11月23日</span>地歌舞伎 次世代にも　郡上「高雄」「気良」が合同公演</li>
+        <li class="kp-cov-item">キリリ「気良歌舞伎」　郡上市で公演</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　4月17日</span>郡上・明宝歴史民俗資料館　昔の衣装や小道具展示</li>
+      </ul>
+    </div>
+    <div class="kp-archive-year kp-reveal">
+      <span class="kp-ay-label">2015</span>
+      <ul class="kp-cov-items">
+        <li class="kp-cov-item"><span class="kp-cov-src">10月27日</span>高雄歌舞伎と気良歌舞伎　切磋琢磨の合同公演</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">10月</span>青年歌舞伎 伝統結ぶ合同公演</li>
+        <li class="kp-cov-item">郡上市で「気良歌舞伎」上演　せりふ回し絶妙、観衆魅了</li>
+      </ul>
+    </div>
+    <div class="kp-archive-year kp-reveal">
+      <span class="kp-ay-label">2013</span>
+      <ul class="kp-cov-items">
+        <li class="kp-cov-item">若者ら迫真の大見え　明宝で気良歌舞伎</li>
+      </ul>
+    </div>
   </div>
 </section>
 
@@ -932,6 +995,22 @@ img { max-width: 100%; display: block; }
 }
 .kp-ay-date {
   font-size: 0.68rem; color: #6a5d4a;
+}
+/* ── Coverage ── */
+.kp-cov-items {
+  flex: 1; align-self: stretch; list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column; gap: 0.5rem;
+}
+.kp-cov-item {
+  padding: 0.55rem 0.9rem;
+  background: rgba(18,18,28,0.7);
+  border: 1px solid rgba(197,162,85,0.14);
+  border-radius: 8px;
+  font-size: 0.82rem; color: #e8e4dc; line-height: 1.6;
+}
+.kp-cov-src {
+  display: block; font-size: 0.68rem; color: #b8a88a;
+  margin-bottom: 0.15rem;
 }
 
 @media (max-width: 480px) {
