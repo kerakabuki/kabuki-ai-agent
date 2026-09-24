@@ -187,7 +187,10 @@ export function keraOfficialPageHTML() {
         </div>
       </div>
     </div>
-    <a href="/kerakabuki/guide" class="kl-next-btn">観劇ガイド・アクセスを見る →</a>
+    <div class="kl-next-btns">
+      <a href="/kerakabuki/pc" class="kl-next-btn">令和8年公演のご来場ガイド →</a>
+      <a href="/kerakabuki/guide" class="kl-next-btn">観劇ガイド・アクセスを見る →</a>
+    </div>
   </div>
 </section>
 
@@ -729,6 +732,12 @@ img { max-width: 100%; display: block; }
 .kl-next-btn:hover {
   background: #c5a255;
   color: #0a0a0f;
+}
+.kl-next-btns {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
 }
 @media (max-width: 600px) {
   .kl-next-inner { padding: 1.8rem 1.2rem; }
