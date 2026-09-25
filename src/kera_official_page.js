@@ -131,6 +131,7 @@ export function keraOfficialPageHTML() {
     <a href="/kerakabuki/archive">アーカイブ</a>
     <a href="#gallery">映像</a>
     <a href="#sns">SNS</a>
+    <a href="/kerakabuki/press">PRESS</a>
   </div>
 </nav>
 
@@ -584,6 +585,9 @@ img { max-width: 100%; display: block; }
 .kl-nav-active span:nth-child(2) { opacity: 0; }
 .kl-nav-active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
 
+@media (max-width: 760px) {
+  .kl-nav-links { gap: 1rem; }
+}
 @media (max-width: 640px) {
   .kl-nav-toggle { display: flex; }
   .kl-nav-links {
