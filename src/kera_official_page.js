@@ -355,8 +355,15 @@ export function keraOfficialPageHTML() {
   /* ── Mobile nav toggle ── */
   var toggle = document.getElementById("kl-nav-toggle");
   var links = document.getElementById("kl-nav-links");
-  toggle.addEventListener("click", function(){ links.classList.toggle("kl-nav-open"); toggle.classList.toggle("kl-nav-active"); });
-  links.addEventListener("click", function(e){ if (e.target.tagName === "A") { links.classList.remove("kl-nav-open"); toggle.classList.remove("kl-nav-active"); } });
+  var fabWrap = document.getElementById("kl-fab-wrap");
+  // メニューを開いている間は「けらのすけに聞く」を隠す（小さい画面で下の項目に重なるため）
+  function setMenu(open){
+    links.classList.toggle("kl-nav-open", open);
+    toggle.classList.toggle("kl-nav-active", open);
+    if (fabWrap) fabWrap.classList.toggle("kl-fab-hidden", open);
+  }
+  toggle.addEventListener("click", function(){ setMenu(!links.classList.contains("kl-nav-open")); });
+  links.addEventListener("click", function(e){ if (e.target.tagName === "A") setMenu(false); });
 
   /* ── Sticky nav background on scroll ── */
   var nav = document.getElementById("kl-nav");
@@ -573,6 +580,7 @@ img { max-width: 100%; display: block; }
   transition: color 0.2s;
 }
 .kl-nav-links a:hover { color: #e8c96a; }
+.kl-fab-hidden { display: none !important; }
 .kl-nav-toggle {
   display: none; background: none; border: none;
   cursor: pointer; width: 28px; height: 20px;
