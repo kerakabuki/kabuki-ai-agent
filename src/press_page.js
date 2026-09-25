@@ -516,7 +516,7 @@ export function pressPageHTML() {
       <ul class="kp-cov-items">
         <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　11月23日</span>地歌舞伎 次世代にも　郡上「高雄」「気良」が合同公演</li>
         <li class="kp-cov-item"><span class="kp-cov-src">岐阜新聞　11月</span>郡上の地歌舞伎 共演　「高雄」250年以上の歴史　「気良」若手中心に復活</li>
-        <li class="kp-cov-item">キリリ「気良歌舞伎」　郡上市で公演</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">岐阜新聞　9月</span>キリリ「気良歌舞伎」　郡上市で公演</li>
         <li class="kp-cov-item"><span class="kp-cov-src">読売新聞　9月</span>気良歌舞伎 世代超え一丸　手作り舞台、花道で稽古</li>
         <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　4月17日</span>郡上・明宝歴史民俗資料館　昔の衣装や小道具展示</li>
       </ul>
