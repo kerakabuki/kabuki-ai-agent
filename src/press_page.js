@@ -481,7 +481,7 @@ export function pressPageHTML() {
     <div class="kp-archive-year kp-reveal">
       <span class="kp-ay-label">2021</span>
       <ul class="kp-cov-items">
-        <li class="kp-cov-item"><span class="kp-cov-src">12月</span>気良歌舞伎 ネットが舞台　明宝の住民「仮名手本忠臣蔵」11日から配信</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">岐阜新聞　12月</span>気良歌舞伎 ネットが舞台　明宝の住民「仮名手本忠臣蔵」11日から配信</li>
       </ul>
     </div>
     <div class="kp-archive-year kp-reveal">
