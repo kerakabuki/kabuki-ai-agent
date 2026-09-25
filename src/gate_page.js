@@ -225,10 +225,14 @@ export function gatePageHTML(group, extraData = {}) {
     </section>`;
 
   // --- 5. News (client-side) ---
+  // 公式のPRESSページがある団体は、掲載記事・お知らせへの入口を出す
+  const OFFICIAL_PRESS = { kera: "/kerakabuki/press" };
+  const pressUrl = OFFICIAL_PRESS[g.group_id || currentGroupId] || "";
   const newsHTML = `
     <section class="gate-section fade-up">
       <h3 class="section-title">最新ニュース</h3>
       <div id="gate-news"><span class="gate-loading">読み込み中…</span></div>
+      ${pressUrl ? `<p class="gate-news-press"><a href="${pressUrl}">これまでの掲載記事・お知らせを見る（PRESS）→</a></p>` : ""}
     </section>`;
 
   // --- 6. SNS / Links ---
@@ -237,6 +241,7 @@ export function gatePageHTML(group, extraData = {}) {
   if (Object.keys(allLinks).length) {
     const linkItems = [];
     if (allLinks.website) linkItems.push({ icon: "🌐", label: "公式サイト", url: allLinks.website });
+    if (pressUrl) linkItems.push({ icon: "📰", label: "PRESS", url: pressUrl });
     if (allLinks.youtube) linkItems.push({ icon: "▶️", label: "YouTube", url: allLinks.youtube });
     if (allLinks.instagram) linkItems.push({ icon: "📷", label: "Instagram", url: allLinks.instagram });
     if (allLinks.x) linkItems.push({ icon: "𝕏", label: "X (Twitter)", url: allLinks.x });
@@ -245,8 +250,10 @@ export function gatePageHTML(group, extraData = {}) {
     if (allLinks.email) linkItems.push({ icon: "📧", label: "メール", url: "mailto:" + allLinks.email });
 
     if (linkItems.length) {
+      // サイト内のリンクは同じ画面で開く（アプリ〈PWA〉の外に出ないように）
+      const isSameSite = (u) => u.startsWith("/") || u.startsWith("https://kabukiplus.com/");
       const btns = linkItems.map(l =>
-        `<a href="${escHTML(l.url)}" target="_blank" rel="noopener" class="gate-sns-btn">${l.icon} ${escHTML(l.label)}</a>`
+        `<a href="${escHTML(l.url)}"${isSameSite(l.url) ? "" : ' target="_blank" rel="noopener"'} class="gate-sns-btn">${l.icon} ${escHTML(l.label)}</a>`
       ).join("");
       snsHTML = `
     <section class="gate-section fade-up">
@@ -1060,6 +1067,13 @@ const GATE_CSS = `
 .gate-sns-list {
   display: flex; flex-wrap: wrap; gap: 0.5rem;
 }
+.gate-news-press {
+  margin: 0.9rem 0 0; font-size: 0.88rem;
+}
+.gate-news-press a {
+  color: var(--gold); text-decoration: none;
+}
+.gate-news-press a:hover { text-decoration: underline; }
 .gate-sns-btn {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 8px 16px; border-radius: var(--radius-sm);
