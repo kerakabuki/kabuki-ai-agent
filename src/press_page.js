@@ -502,6 +502,7 @@ export function pressPageHTML() {
       <span class="kp-ay-label">2018</span>
       <ul class="kp-cov-items">
         <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　9月</span>「気良歌舞伎」演技に喝采　明宝 子どもらは「白浪五人男」</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">岐阜新聞　9月</span>「気良歌舞伎」おひねり舞う</li>
         <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　9月13日</span>子を犠牲にした悲劇演じる　明宝で15日 気良歌舞伎</li>
       </ul>
     </div>
