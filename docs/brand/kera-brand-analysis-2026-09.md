@@ -265,11 +265,11 @@
 ### ② 共有したときに「KABUKI PLUS+」の看板が出る
 
 - 気良歌舞伎の全ページ（LP・PRESS・観劇ガイド・アーカイブ・/pc）の `og:image` と、構造化データの `logo` が `ogp_kabukiplus_top.png` になっている（`src/kera_official_page.js:18`・`:39` ほか）。画像の文言は「KABUKI PLUS+ 歌舞伎を、もっと面白く。歌舞伎AIプラットフォーム」で、気良歌舞伎の要素がない。
-- LINE・X・Facebookで公演案内が共有されるたびに、気良歌舞伎ではなくプラットフォームの広告に見える。一方で、提灯と客席を撮った `assets/photos/hero-kiraza.webp` と、紋の `assets/kera-logo-gold.png` は手元にある。
+- LINE・X・Facebookで公演案内が共有されるたびに、気良歌舞伎ではなくプラットフォームの広告に見える。**→ 2026-09-25 対応: 気良座の入口の写真に紋と名称を重ねた専用の共有画像（`/kerakabuki/ogp-v1.jpg`、1200×630）を作り、気良の9ページの og:image・twitter:image と、構造化データの logo（紋のアイコン）を差し替えた（コミット `62c748a`）。**一方で、提灯と客席を撮った `assets/photos/hero-kiraza.webp` と、紋の `assets/kera-logo-gold.png` は手元にある。
 
 ### ③ 公式サイトが検索エンジンに十分に伝わっていない
 
-- `sitemap.xml` に `/kerakabuki` 系のページが1つも載っていない（`worker.js:641` からのページ一覧）。
+- `sitemap.xml` に `/kerakabuki` 系のページが1つも載っていない（`worker.js:641` からのページ一覧）。**→ 2026-09-25 対応: 7ページを追加し、各ページに canonical を入れ（/jikabuki/gate/kera/* の同じページは /kerakabuki 側を指す）、GATE の canonical を自ページに直し、llms.txt に気良歌舞伎の節を加えた。フッター「Produced by」と /project のリンクも /kerakabuki に向けた（コミット `62c748a`・`5b0a755`）。/pc はQRの計測を守るため sitemap に入れていない。**
 - 同じ内容が `/kerakabuki/*` と `/jikabuki/gate/kera/*` の両方で配信されているのに、`canonical` があるのは PRESS だけ（`worker.js:1074`〜`:1096`）。
 - JIKABUKI PLUS+ 側の気良ページ（`/jikabuki/gate/kera`）は、canonical がトップページ（`https://kabukiplus.com/`）を指している。ページ側が URL を渡さず、共通レイアウトの既定値が使われるため（`src/gate_page.js:712-722`、`src/web_layout.js:275`）。このページは全ページのフッター「Produced by KERAKABUKI」のリンク先で、PR計画でもSNSの公演投稿の着地先になっている（`docs/pr/pr-plan-r8-kera-sonezaki.md:140`）。それなのに、**検索エンジンにはトップページの重複として扱われる**。
 - AI検索向けの `llms.txt` にも `/kerakabuki` 系は載っていない（`worker.js:768-848`）。
@@ -362,7 +362,7 @@
    - 外部: TABITABI郡上・明宝観光協会（日英）・県DB・旧Jimdo に更新を依頼する。会場（154）と郵送先（2264）は分けて載せてもらう。
    - 自サイト: アーカイブの2025年の日付、演目ガイドの監修表記（「江戸時代から続く」「保存会」）、団体データの紹介文とFAQ。
    - 英語の来場案内（日時・アクセス・観劇のしかた）を1ページ用意する。
-9. **器を直す。**
+9. **器を直す。**（共有画像・sitemap・canonical・公式サイトへのリンクは 2026-09-25 に対応済み。GATE の共有画像と、NFTガイドの英語版リンク〈旧Jimdo〉は残っている）
    - 気良歌舞伎専用の共有画像（提灯の写真＋紋＋「気良歌舞伎」）を作り、全 `/kerakabuki` ページの `og:image` と構造化データの `logo` を差し替える。
    - `/kerakabuki` 系をサイトマップと `llms.txt` に加え、各ページに `canonical` を入れる。GATEページの canonical を自ページに直す。
    - 「公式サイト」を1つに決め（`/kerakabuki` を推奨）、GATE・/project・フッターの「Produced by」から、そこへリンクする。
