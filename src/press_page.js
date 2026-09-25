@@ -525,6 +525,7 @@ export function pressPageHTML() {
       <span class="kp-ay-label">2015</span>
       <ul class="kp-cov-items">
         <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　10月27日</span>高雄歌舞伎と気良歌舞伎　切磋琢磨の合同公演</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">岐阜新聞　10月26日</span>郡上の歌舞伎、若手が磨く　伝統の「高雄」、復活の「気良」が合同公演</li>
         <li class="kp-cov-item"><span class="kp-cov-src">朝日新聞　10月</span>青年歌舞伎 伝統結ぶ合同公演</li>
         <li class="kp-cov-item"><span class="kp-cov-src">岐阜新聞</span>若者役者が堂々の舞台　郡上市で「気良歌舞伎」上演</li>
       </ul>
