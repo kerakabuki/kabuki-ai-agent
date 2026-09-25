@@ -494,7 +494,7 @@ export function pressPageHTML() {
       <span class="kp-ay-label">2019</span>
       <ul class="kp-cov-items">
         <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　7月</span>気良歌舞伎 郡上を飛び出す　14日 岐阜で保存会が初公演</li>
-        <li class="kp-cov-item"><span class="kp-cov-src">7月</span>気良歌舞伎 本番へ熱気　明宝の魅力 14日に岐阜市で発信</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">岐阜新聞　7月</span>気良歌舞伎 本番へ熱気　明宝の魅力 14日に岐阜市で発信</li>
         <li class="kp-cov-item">明宝の若者ら「気良歌舞伎」</li>
       </ul>
     </div>
@@ -514,6 +514,7 @@ export function pressPageHTML() {
       <span class="kp-ay-label">2016</span>
       <ul class="kp-cov-items">
         <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　11月23日</span>地歌舞伎 次世代にも　郡上「高雄」「気良」が合同公演</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">岐阜新聞　11月</span>郡上の地歌舞伎 共演　「高雄」250年以上の歴史　「気良」若手中心に復活</li>
         <li class="kp-cov-item">キリリ「気良歌舞伎」　郡上市で公演</li>
         <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　4月17日</span>郡上・明宝歴史民俗資料館　昔の衣装や小道具展示</li>
       </ul>
