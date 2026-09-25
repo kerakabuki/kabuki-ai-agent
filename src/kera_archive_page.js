@@ -5,6 +5,8 @@
 // ダークテーマ・CSSプレフィックス: ka-
 // =========================================================
 
+import { KERA_SITE_URL, KERA_OGP_URL } from "./kera_brand.js";
+
 export function keraArchivePageHTML() {
   return `<!DOCTYPE html>
 <html lang="ja">
@@ -15,13 +17,13 @@ export function keraArchivePageHTML() {
 <meta name="description" content="気良歌舞伎の2005年復活以降の全公演記録。年度別の演目一覧と映像アーカイブ。">
 <meta property="og:title" content="公演アーカイブ — 気良歌舞伎">
 <meta property="og:description" content="気良歌舞伎の2005年復活以降の全公演記録。年度別の演目一覧と映像アーカイブ。">
-<meta property="og:image" content="https://kabukiplus.com/assets/ogp/ogp_kabukiplus_top.png">
+<meta property="og:image" content="${KERA_OGP_URL}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="気良歌舞伎">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="公演アーカイブ — 気良歌舞伎">
 <meta name="twitter:description" content="気良歌舞伎の2005年復活以降の全公演記録。年度別の演目一覧と映像アーカイブ。">
-<meta name="twitter:image" content="https://kabukiplus.com/assets/ogp/ogp_kabukiplus_top.png">
+<meta name="twitter:image" content="${KERA_OGP_URL}">
 <link rel="icon" href="/assets/kera-favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/assets/kera-touch-icon.png">
 <meta name="theme-color" content="#0a0a0f">
@@ -29,6 +31,7 @@ export function keraArchivePageHTML() {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>${KA_CSS}</style>
+<link rel="canonical" href="${KERA_SITE_URL}/archive">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",

@@ -5,6 +5,8 @@
 // フルスクロール型ダークテーマLP
 // =========================================================
 
+import { KERA_SITE_URL, KERA_OGP_URL, KERA_LOGO_URL } from "./kera_brand.js";
+
 export function keraOfficialPageHTML() {
   return `<!DOCTYPE html>
 <html lang="ja">
@@ -15,13 +17,13 @@ export function keraOfficialPageHTML() {
 <meta name="description" content="岐阜県郡上市明宝気良。人口400人の山里で、毎年9月第4土曜日に幕が開く地歌舞伎。2005年の復活から20年、約40名が常設芝居小屋「気良座」で演じ続ける。入場無料。">
 <meta property="og:title" content="気良歌舞伎 — 岐阜県郡上市明宝気良の地歌舞伎">
 <meta property="og:description" content="岐阜県郡上市明宝気良。人口400人の山里で、毎年秋に幕が開く地歌舞伎。2005年の復活から20年。">
-<meta property="og:image" content="https://kabukiplus.com/assets/ogp/ogp_kabukiplus_top.png">
+<meta property="og:image" content="${KERA_OGP_URL}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="気良歌舞伎">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="気良歌舞伎 — 岐阜県郡上市明宝気良の地歌舞伎">
 <meta name="twitter:description" content="岐阜県郡上市明宝気良。人口400人の山里で、毎年秋に幕が開く地歌舞伎。2005年の復活から20年。">
-<meta name="twitter:image" content="https://kabukiplus.com/assets/ogp/ogp_kabukiplus_top.png">
+<meta name="twitter:image" content="${KERA_OGP_URL}">
 <link rel="icon" href="/assets/kera-favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/assets/kera-touch-icon.png">
 <meta name="theme-color" content="#0a0a0f">
@@ -29,6 +31,7 @@ export function keraOfficialPageHTML() {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>${KERA_LP_CSS}</style>
+<link rel="canonical" href="${KERA_SITE_URL}">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -36,7 +39,8 @@ export function keraOfficialPageHTML() {
   "name": "気良歌舞伎",
   "alternateName": ["Kera Kabuki", "KeraKabuki"],
   "url": "https://kabukiplus.com/kerakabuki",
-  "logo": "https://kabukiplus.com/assets/ogp/ogp_kabukiplus_top.png",
+  "logo": "${KERA_LOGO_URL}",
+  "image": "${KERA_OGP_URL}",
   "description": "岐阜県郡上市明宝気良の地歌舞伎団体。2005年に17年ぶりに復活し、約40名のメンバーが毎年秋に気良座で定期公演を行う。",
   "foundingDate": "2005",
   "address": {

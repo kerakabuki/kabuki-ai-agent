@@ -719,6 +719,8 @@ export function gatePageHTML(group, extraData = {}) {
     googleClientId,
     ogTitle: name + " | GATE | JIKABUKI PLUS+",
     ogDesc: tagline || (name + "の公式ページ。次回公演・ニュース・SNS・アクセス情報をまとめています。"),
+    // canonical は各団体のGATEページ自身（未指定だとサイトトップになってしまう）
+    canonicalUrl: currentGroupId ? `https://kabukiplus.com/jikabuki/gate/${encodeURIComponent(currentGroupId)}` : "",
     headExtra: `<style>${GATE_CSS}</style>`,
   });
 }

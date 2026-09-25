@@ -6,6 +6,8 @@
 // ダークテーマ・CSSプレフィックス: pc-
 // =========================================================
 
+import { KERA_SITE_URL, KERA_OGP_URL } from "./kera_brand.js";
+
 export function postcardPageHTML() {
 
   // ── 宿泊（気良・明宝エリア）──
@@ -80,11 +82,12 @@ export function postcardPageHTML() {
 <meta name="description" content="令和八年 気良歌舞伎公演「曽根崎心中」9月26日（土）17:00開場 18:00開演。入場無料・予約不要。アクセス、駐車場、宿泊、観劇のしかたをまとめました。">
 <meta property="og:title" content="ご来場ガイド — 令和八年 気良歌舞伎公演">
 <meta property="og:description" content="9月26日（土）18:00開演「曽根崎心中」。アクセス・宿泊・観劇のしかた。">
-<meta property="og:image" content="https://kabukiplus.com/assets/ogp/ogp_kabukiplus_top.png">
+<meta property="og:image" content="${KERA_OGP_URL}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="気良歌舞伎">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="noindex">
+<link rel="canonical" href="${KERA_SITE_URL}/pc">
 <link rel="icon" href="/assets/kera-favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/assets/kera-touch-icon.png">
 <meta name="theme-color" content="#0a0a0f">

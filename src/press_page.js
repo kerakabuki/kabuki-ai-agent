@@ -5,6 +5,8 @@
 // ダークテーマ、kera_official_page.js と同系統デザイン
 // =========================================================
 
+import { KERA_OGP_URL, KERA_LOGO_URL } from "./kera_brand.js";
+
 export function pressPageHTML() {
   return `<!DOCTYPE html>
 <html lang="ja">
@@ -15,13 +17,13 @@ export function pressPageHTML() {
 <meta name="description" content="気良歌舞伎のプレスキット・団体情報・お知らせ一覧。取材・メディア掲載のお問い合わせもこちらから。">
 <meta property="og:title" content="PRESS / お知らせ — 気良歌舞伎">
 <meta property="og:description" content="気良歌舞伎のプレスキット・団体情報・お知らせ一覧。">
-<meta property="og:image" content="https://kabukiplus.com/assets/ogp/ogp_kabukiplus_top.png">
+<meta property="og:image" content="${KERA_OGP_URL}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="気良歌舞伎">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="PRESS / お知らせ — 気良歌舞伎">
 <meta name="twitter:description" content="気良歌舞伎のプレスキット・団体情報・お知らせ一覧。">
-<meta name="twitter:image" content="https://kabukiplus.com/assets/ogp/ogp_kabukiplus_top.png">
+<meta name="twitter:image" content="${KERA_OGP_URL}">
 <link rel="icon" href="/assets/kera-favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/assets/kera-touch-icon.png">
 <meta name="theme-color" content="#0a0a0f">
@@ -37,7 +39,7 @@ export function pressPageHTML() {
   "name": "気良歌舞伎",
   "alternateName": ["Kera Kabuki", "KeraKabuki", "気良歌舞伎保存会"],
   "url": "https://kabukiplus.com/kerakabuki",
-  "logo": "https://kabukiplus.com/assets/ogp/ogp_kabukiplus_top.png",
+  "logo": "${KERA_LOGO_URL}",
   "description": "岐阜県郡上市明宝気良の地歌舞伎団体。2005年に17年ぶりに復活し、約40名のメンバーが毎年秋に気良座で定期公演を行う。",
   "foundingDate": "2005",
   "address": {

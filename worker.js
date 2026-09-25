@@ -123,6 +123,8 @@ import { quizPageHTML } from "./src/quiz_page.js";
 import { kawarabanPageHTML } from "./src/kawaraban_page.js";
 import { nftGuidePageHTML } from "./src/nft_guide_page.js";
 import { storyPageHTML } from "./src/story_page.js";
+import { KERA_OGP_PATH } from "./src/kera_brand.js";
+import { keraOgpJPEG } from "./src/kera_ogp_image.js";
 import { keraOfficialPageHTML } from "./src/kera_official_page.js";
 import { pressPageHTML } from "./src/press_page.js";
 import { keraGuidePageHTML } from "./src/kera_guide_page.js";
@@ -180,6 +182,9 @@ import { jikabukiHelpPageHTML } from "./src/jikabuki_help_page.js";
 ========================================================= */
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
+// 気良歌舞伎の共有画像（OGP）。base64 は起動時に一度だけデコードして使い回す
+const KERA_OGP_BYTES = Uint8Array.from(atob(keraOgpJPEG), c => c.charCodeAt(0));
+
 /** CSV値のエスケープ（ダブルクォート対応） */
 function csvEscape(val) {
   const s = String(val);
@@ -230,7 +235,7 @@ const DEFAULT_GROUPS = {
     },
     contact: {
       instagram: "https://www.instagram.com/kerakabuki_official/",
-      website: "https://kerakabuki.jimdofree.com/",
+      website: "https://kabukiplus.com/kerakabuki",
       youtube: "https://www.youtube.com/@kerakabuki",
       x: "https://x.com/KeraKabuki",
       facebook: "https://www.facebook.com/kerakabuki/",
@@ -380,6 +385,17 @@ export default {
     if (path.startsWith("/en/") || path === "/en") {
       lang = "en";
       path = path.replace(/^\/en/, "") || "/";
+    }
+
+    /* ─── 気良歌舞伎の共有画像（og:image / twitter:image） ─── */
+    if (path === KERA_OGP_PATH && (request.method === "GET" || request.method === "HEAD")) {
+      return new Response(request.method === "HEAD" ? null : KERA_OGP_BYTES, {
+        headers: {
+          "Content-Type": "image/jpeg",
+          "Cache-Control": "public, max-age=31536000, immutable",
+          "Content-Length": String(KERA_OGP_BYTES.byteLength),
+        },
+      });
     }
 
     /* =====================================================
@@ -662,6 +678,14 @@ function offlinePage() {
         { loc: "/jikabuki/info/events",     priority: "0.7",  changefreq: "weekly" },
         { loc: "/jikabuki/info/groups",     priority: "0.8",  changefreq: "monthly" },
         { loc: "/jikabuki/help",            priority: "0.5",  changefreq: "monthly" },
+        // 気良歌舞伎 公式サイト（/kerakabuki/pc ははがきQRのスキャン数を数えているので入れない。/kerakabuki/annai・受付も入れない）
+        { loc: "/kerakabuki",               priority: "0.9",  changefreq: "weekly" },
+        { loc: "/kerakabuki/guide",         priority: "0.8",  changefreq: "monthly" },
+        { loc: "/kerakabuki/press",         priority: "0.7",  changefreq: "monthly" },
+        { loc: "/kerakabuki/archive",       priority: "0.7",  changefreq: "monthly" },
+        { loc: "/kerakabuki/story",         priority: "0.7",  changefreq: "monthly" },
+        { loc: "/kerakabuki/kaisetsu",      priority: "0.6",  changefreq: "yearly" },
+        { loc: "/kerakabuki/nft",           priority: "0.5",  changefreq: "monthly" },
       ];
       // 演目個別ページを動的に追加
       try {
@@ -827,6 +851,22 @@ ${glossaryI18nPairs.map(g => `  <url>
           "- [公演カレンダー](https://kabukiplus.com/jikabuki/info/events)",
           "- [全国の地歌舞伎団体](https://kabukiplus.com/jikabuki/info/groups)",
           "- [ヘルプ](https://kabukiplus.com/jikabuki/help)",
+          "",
+          "## 気良歌舞伎（公式サイト）",
+          "",
+          "URL: https://kabukiplus.com/kerakabuki",
+          "",
+          "岐阜県郡上市明宝気良の地歌舞伎。1988年を最後に途絶え、2005年に地元の若者が復活させた。",
+          "定期公演は毎年9月第4土曜日（白山神社祭礼）。会場は気良座（1937年築の旧明方小学校の木造講堂。郡上市指定重要文化財）。入場無料・予約不要。",
+          "KABUKI PLUS+ / JIKABUKI PLUS+ は気良歌舞伎がプロデュースしています（Produced by KERAKABUKI）。",
+          "",
+          "### ページ一覧",
+          "",
+          "- [気良歌舞伎 公式サイト](https://kabukiplus.com/kerakabuki)",
+          "- [観劇ガイド](https://kabukiplus.com/kerakabuki/guide)",
+          "- [PRESS](https://kabukiplus.com/kerakabuki/press)",
+          "- [公演アーカイブ](https://kabukiplus.com/kerakabuki/archive)",
+          "- [復活ストーリー](https://kabukiplus.com/kerakabuki/story)",
           "",
           "## AIアシスタント",
           "",
@@ -1075,7 +1115,7 @@ ${glossaryI18nPairs.map(g => `  <url>
     if (path === "/jikabuki/gate/kera/story") return new Response(null, { status: 301, headers: { "Location": "/kerakabuki/story" } });
 
     /* ─── /kerakabuki/* 気良歌舞伎専用サブページ ─── */
-    if (path === "/kerakabuki/story" || path.startsWith("/kerakabuki/story/") || path.startsWith("/jikabuki/gate/kera/story/")) return new Response(storyPageHTML(), { headers: HTML_HEADERS });
+    if (path === "/kerakabuki/story" || path.startsWith("/kerakabuki/story/") || path.startsWith("/jikabuki/gate/kera/story/")) return new Response(storyPageHTML(path), { headers: HTML_HEADERS });
     if (path === "/kerakabuki/kawaraban" || path === "/jikabuki/gate/kera/kawaraban") return new Response(null, { status: 301, headers: { "Location": "/kerakabuki/press#kawaraban" } });
     if (path === "/kerakabuki/press" || path === "/jikabuki/gate/kera/press") return new Response(pressPageHTML(), { headers: HTML_HEADERS });
     if (path === "/kerakabuki/guide" || path === "/jikabuki/gate/kera/guide") return new Response(keraGuidePageHTML(), { headers: HTML_HEADERS });
