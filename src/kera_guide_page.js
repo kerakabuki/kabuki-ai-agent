@@ -90,6 +90,7 @@ export function keraGuidePageHTML() {
     <p class="kg-reveal">「地歌舞伎（じかぶき）」とは、地域の人々が自ら演じる歌舞伎のことです。プロの役者が演じる大歌舞伎（松竹歌舞伎）とは異なり、農家や会社員、学生など、ふだんは別の仕事を持つ人たちが舞台に立ちます。</p>
     <p class="kg-reveal">岐阜県は全国でも地歌舞伎が最も盛んな地域のひとつ。県内には30以上の保存会が活動しており、江戸時代から続く芝居小屋や舞台が数多く残っています。</p>
     <p class="kg-reveal">気良歌舞伎は、岐阜県郡上市明宝気良（けら）地区に伝わる地歌舞伎です。人口400人に満たない山あいの集落で、2005年に17年ぶりに復活。以来、毎年秋の白山神社祭礼で公演を重ねてきました。</p>
+    <p class="kg-reveal"><strong><span style="display:inline-block">約130世帯の山里で、</span><span style="display:inline-block">約40人の一座が、</span><span style="display:inline-block">1937年築の講堂を</span><span style="display:inline-block">芝居小屋にした。</span></strong><br>それが会場の「気良座」です。旧明方小学校の木造講堂（郡上市指定重要文化財）を一座が自分たちの手で改修し、2024年に開場しました。</p>
     <div class="kg-highlight kg-reveal">
       <p><strong>大歌舞伎と地歌舞伎のちがい</strong></p>
       <ul>
@@ -160,7 +161,7 @@ export function keraGuidePageHTML() {
   <div class="kg-access-info kg-reveal">
     <div class="kg-access-venue">
       <h3 class="kg-access-venue-name">気良座（けらざ）</h3>
-      <p class="kg-access-venue-sub">旧明方小学校木造講堂（2024年開場）</p>
+      <p class="kg-access-venue-sub"><span style="display:inline-block">1937年築の旧明方小学校木造講堂</span><span style="display:inline-block">（郡上市指定重要文化財）</span><span style="display:inline-block">・2024年開場</span></p>
     </div>
     <div class="kg-access-detail">
       <div class="kg-access-row">
