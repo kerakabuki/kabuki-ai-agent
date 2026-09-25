@@ -476,7 +476,7 @@ export function pressPageHTML() {
 <!-- ═══════ §8 掲載記事アーカイブ ═══════ -->
 <section class="kp-section" id="coverage">
   <h2 class="kp-section-title kp-reveal">これまでの掲載記事</h2>
-  <p class="kp-archive-intro kp-reveal">新聞で紹介していただいた主な記事です（2013年〜2021年の紙面から）。<br>2020年以降のWeb掲載記事は「お知らせ」をご覧ください。</p>
+  <p class="kp-archive-intro kp-reveal">新聞で紹介していただいた主な記事です（2012年〜2021年の紙面から）。<br>2020年以降のWeb掲載記事は「お知らせ」をご覧ください。</p>
   <div class="kp-archive-timeline">
     <div class="kp-archive-year kp-reveal">
       <span class="kp-ay-label">2021</span>
@@ -522,14 +522,22 @@ export function pressPageHTML() {
       <span class="kp-ay-label">2015</span>
       <ul class="kp-cov-items">
         <li class="kp-cov-item"><span class="kp-cov-src">10月27日</span>高雄歌舞伎と気良歌舞伎　切磋琢磨の合同公演</li>
-        <li class="kp-cov-item"><span class="kp-cov-src">10月</span>青年歌舞伎 伝統結ぶ合同公演</li>
-        <li class="kp-cov-item">郡上市で「気良歌舞伎」上演　せりふ回し絶妙、観衆魅了</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">朝日新聞　10月</span>青年歌舞伎 伝統結ぶ合同公演</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">岐阜新聞</span>若者役者が堂々の舞台　郡上市で「気良歌舞伎」上演</li>
       </ul>
     </div>
     <div class="kp-archive-year kp-reveal">
       <span class="kp-ay-label">2013</span>
       <ul class="kp-cov-items">
-        <li class="kp-cov-item">若者ら迫真の大見え　明宝で気良歌舞伎</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　9月</span>伝統の息吹 気良歌舞伎　郡上 若者ら時代物悲劇を熱演</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">岐阜新聞　9月</span>若者ら迫真の大見え　明宝で気良歌舞伎</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　9月</span>子、若者が〝魅せます〟　あす明宝の気良歌舞伎</li>
+      </ul>
+    </div>
+    <div class="kp-archive-year kp-reveal">
+      <span class="kp-ay-label">2012</span>
+      <ul class="kp-cov-items">
+        <li class="kp-cov-item"><span class="kp-cov-src">岐阜新聞　9月</span>「きらり中濃 応援歌」若い力、伝統つなぐ　郡上市明宝の気良歌舞伎</li>
       </ul>
     </div>
   </div>
