@@ -168,7 +168,7 @@ export function enmokuDetailSSR({ id, data, catalogEntry, relatedColumns = [], g
 
       <section class="content-meta">
         <div class="meta-credit">
-          <strong>${lang === "en" ? "Supervised by" : "監修"}</strong>：${lang === "en" ? "Kera Kabuki Preservation Society (Gujo, Gifu)" : "気良歌舞伎保存会（岐阜県郡上市）"}
+          <strong>${lang === "en" ? "Supervised by" : "監修"}</strong>：${lang === "en" ? "Kera Kabuki (Gujo, Gifu)" : "気良歌舞伎（岐阜県郡上市）"}
           <p>${lang === "en"
             ? "A group dedicated to preserving jikabuki (regional kabuki) traditions since the Edo period. Content accuracy is reviewed based on their knowledge and experience."
             : "江戸時代から続く地歌舞伎を保存・継承する団体。地域の伝統芸能としての歌舞伎の知識と経験に基づき、コンテンツの正確性を監修しています。"}</p>
