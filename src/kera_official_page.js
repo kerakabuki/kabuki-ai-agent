@@ -14,15 +14,15 @@ export function keraOfficialPageHTML() {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>気良歌舞伎 — 岐阜県郡上市明宝気良の地歌舞伎</title>
-<meta name="description" content="岐阜県郡上市明宝気良。人口400人の山里で、毎年9月第4土曜日に幕が開く地歌舞伎。2005年の復活から20年、約40名が常設芝居小屋「気良座」で演じ続ける。入場無料。">
+<meta name="description" content="約130世帯の山里で、約40人の一座が、1937年築の講堂を芝居小屋にした。岐阜県郡上市明宝気良の地歌舞伎「気良歌舞伎」。毎年9月第4土曜日、気良座で公演。入場無料。">
 <meta property="og:title" content="気良歌舞伎 — 岐阜県郡上市明宝気良の地歌舞伎">
-<meta property="og:description" content="岐阜県郡上市明宝気良。人口400人の山里で、毎年秋に幕が開く地歌舞伎。2005年の復活から20年。">
+<meta property="og:description" content="約130世帯の山里で、約40人の一座が、1937年築の講堂を芝居小屋にした。岐阜県郡上市明宝気良の地歌舞伎。">
 <meta property="og:image" content="${KERA_OGP_URL}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="気良歌舞伎">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="気良歌舞伎 — 岐阜県郡上市明宝気良の地歌舞伎">
-<meta name="twitter:description" content="岐阜県郡上市明宝気良。人口400人の山里で、毎年秋に幕が開く地歌舞伎。2005年の復活から20年。">
+<meta name="twitter:description" content="約130世帯の山里で、約40人の一座が、1937年築の講堂を芝居小屋にした。岐阜県郡上市明宝気良の地歌舞伎。">
 <meta name="twitter:image" content="${KERA_OGP_URL}">
 <link rel="icon" href="/assets/kera-favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/assets/kera-touch-icon.png">

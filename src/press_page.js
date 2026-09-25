@@ -14,15 +14,15 @@ export function pressPageHTML() {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>PRESS / お知らせ — 気良歌舞伎</title>
-<meta name="description" content="気良歌舞伎のプレスキット・団体情報・お知らせ一覧。取材・メディア掲載のお問い合わせもこちらから。">
+<meta name="description" content="約130世帯の山里で、約40人の一座が、1937年築の講堂を芝居小屋にした。気良歌舞伎のプレスキット・団体情報・お知らせ一覧。取材・メディア掲載のお問い合わせもこちらから。">
 <meta property="og:title" content="PRESS / お知らせ — 気良歌舞伎">
-<meta property="og:description" content="気良歌舞伎のプレスキット・団体情報・お知らせ一覧。">
+<meta property="og:description" content="約130世帯の山里で、約40人の一座が、1937年築の講堂を芝居小屋にした。気良歌舞伎のプレスキット・団体情報・お知らせ一覧。">
 <meta property="og:image" content="${KERA_OGP_URL}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="気良歌舞伎">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="PRESS / お知らせ — 気良歌舞伎">
-<meta name="twitter:description" content="気良歌舞伎のプレスキット・団体情報・お知らせ一覧。">
+<meta name="twitter:description" content="約130世帯の山里で、約40人の一座が、1937年築の講堂を芝居小屋にした。気良歌舞伎のプレスキット・団体情報・お知らせ一覧。">
 <meta name="twitter:image" content="${KERA_OGP_URL}">
 <link rel="icon" href="/assets/kera-favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/assets/kera-touch-icon.png">
