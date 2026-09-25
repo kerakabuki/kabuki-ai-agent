@@ -493,15 +493,16 @@ export function pressPageHTML() {
     <div class="kp-archive-year kp-reveal">
       <span class="kp-ay-label">2019</span>
       <ul class="kp-cov-items">
+        <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　9月</span>おひねり飛び ヤンヤの喝采　明宝の若者ら「気良歌舞伎」</li>
         <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　7月</span>気良歌舞伎 郡上を飛び出す　14日 岐阜で保存会が初公演</li>
         <li class="kp-cov-item"><span class="kp-cov-src">岐阜新聞　7月</span>気良歌舞伎 本番へ熱気　明宝の魅力 14日に岐阜市で発信</li>
-        <li class="kp-cov-item">明宝の若者ら「気良歌舞伎」</li>
       </ul>
     </div>
     <div class="kp-archive-year kp-reveal">
       <span class="kp-ay-label">2018</span>
       <ul class="kp-cov-items">
-        <li class="kp-cov-item"><span class="kp-cov-src">9月</span>子を犠牲にした悲劇演じる　明宝で15日 気良歌舞伎</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　9月</span>「気良歌舞伎」演技に喝采　明宝 子どもらは「白浪五人男」</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　9月13日</span>子を犠牲にした悲劇演じる　明宝で15日 気良歌舞伎</li>
       </ul>
     </div>
     <div class="kp-archive-year kp-reveal">
@@ -516,13 +517,14 @@ export function pressPageHTML() {
         <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　11月23日</span>地歌舞伎 次世代にも　郡上「高雄」「気良」が合同公演</li>
         <li class="kp-cov-item"><span class="kp-cov-src">岐阜新聞　11月</span>郡上の地歌舞伎 共演　「高雄」250年以上の歴史　「気良」若手中心に復活</li>
         <li class="kp-cov-item">キリリ「気良歌舞伎」　郡上市で公演</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">読売新聞　9月</span>気良歌舞伎 世代超え一丸　手作り舞台、花道で稽古</li>
         <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　4月17日</span>郡上・明宝歴史民俗資料館　昔の衣装や小道具展示</li>
       </ul>
     </div>
     <div class="kp-archive-year kp-reveal">
       <span class="kp-ay-label">2015</span>
       <ul class="kp-cov-items">
-        <li class="kp-cov-item"><span class="kp-cov-src">10月27日</span>高雄歌舞伎と気良歌舞伎　切磋琢磨の合同公演</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　10月27日</span>高雄歌舞伎と気良歌舞伎　切磋琢磨の合同公演</li>
         <li class="kp-cov-item"><span class="kp-cov-src">朝日新聞　10月</span>青年歌舞伎 伝統結ぶ合同公演</li>
         <li class="kp-cov-item"><span class="kp-cov-src">岐阜新聞</span>若者役者が堂々の舞台　郡上市で「気良歌舞伎」上演</li>
       </ul>
