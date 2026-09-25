@@ -9,6 +9,8 @@ const GOOGLE_NEWS_RSS = "https://news.google.com/rss/search";
 const NEWS_FEEDS = [
   { key: "kabuki",    query: '"歌舞伎" -歌舞伎町 -新宿',  label: "歌舞伎" },
   { key: "jikabuki",  query: "地歌舞伎 OR 地芝居",        label: "地歌舞伎" },
+  // 気良歌舞伎（GATEの最新ニュース用）。団体名のまとめ検索では他の記事に埋もれて拾えないため単独で引く
+  { key: "jikabuki",  query: '"気良歌舞伎" OR "気良座"',  label: "地歌舞伎" },
 ];
 
 /** タイトルにこれらを含む記事は除外（ゴシップ/犯罪報道フィルタ） */
