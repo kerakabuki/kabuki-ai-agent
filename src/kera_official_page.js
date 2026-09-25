@@ -144,6 +144,7 @@ export function keraOfficialPageHTML() {
     </h1>
     <p class="kl-hero-tagline">山里に灯る、もうひとつの舞台。</p>
     <p class="kl-hero-place">岐阜県郡上市明宝気良</p>
+    <p class="kl-hero-story">約130世帯の山里で、約40人の一座が<br>1937年築の講堂を、芝居小屋にした。</p>
   </div>
   <div class="kl-scroll-hint" aria-hidden="true">
     <span class="kl-scroll-arrow"></span>
@@ -215,6 +216,7 @@ export function keraOfficialPageHTML() {
     <p>2005年。「もう一度、この地域を盛り上げたい」。地元の若者たちが声をかけ合い、17年ぶりに幕が開いた。</p>
     <figure class="kl-about-photo kl-reveal"><img src="/assets/photos/about-kuroko.webp" alt="黒衣の笑顔 — 裏方が支える舞台" loading="lazy"></figure>
     <p>それから20年。メンバーは20代から50代まで約40名に広がった。毎年秋の定期公演は、気良の一年で最も熱い夜になった。</p>
+    <p>2024年、一座は1937年に建てられた旧明方小学校の木造講堂（郡上市指定重要文化財）を、自分たちの手で芝居小屋「気良座」に生まれ変わらせた。</p>
     <figure class="kl-about-photo kl-reveal"><img src="/assets/photos/about-butaiura.webp" alt="舞台裏 — 出番を待つ役者たち" loading="lazy"></figure>
     <p class="kl-accent">守るために、変わる。</p>
     <p><strong>「地域の人たちに元気になってほしい」</strong>、そして<strong>「自分たちも一緒に楽しみたい」</strong>。原点はいつもそこにある。</p>
@@ -226,7 +228,7 @@ export function keraOfficialPageHTML() {
     <div class="kl-info-item"><span class="kl-info-label">定期公演</span><span>毎年9月第4土曜日（白山神社祭礼）</span></div>
     <div class="kl-info-item"><span class="kl-info-label">メンバー</span><span>20代〜50代 約40名</span></div>
     <div class="kl-info-item"><span class="kl-info-label">加盟</span><span>岐阜県地歌舞伎保存振興協議会（2017年〜）</span></div>
-    <div class="kl-info-item"><span class="kl-info-label">会場</span><span>気良座（旧明方小学校木造講堂、2024年開場）</span></div>
+    <div class="kl-info-item"><span class="kl-info-label">会場</span><span>気良座（1937年築の旧明方小学校木造講堂・郡上市指定重要文化財、2024年開場）</span></div>
   </div>
 </section>
 
@@ -654,6 +656,14 @@ img { max-width: 100%; display: block; }
 .kl-hero-place {
   font-size: 0.78rem; color: #6a5d4a;
   letter-spacing: 0.2em;
+}
+.kl-hero-story {
+  margin: 1.6rem auto 0;
+  font-family: "Noto Serif JP", serif;
+  font-size: clamp(0.8rem, 2.3vw, 0.95rem);
+  color: #a8997c;
+  letter-spacing: 0.08em;
+  line-height: 2;
 }
 .kl-scroll-hint {
   position: absolute; bottom: 2.5rem; left: 50%;

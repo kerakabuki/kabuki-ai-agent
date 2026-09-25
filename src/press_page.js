@@ -160,7 +160,7 @@ export function pressPageHTML() {
     <div class="kp-stat-card kp-reveal">
       <span class="kp-stat-num">2024</span>
       <span class="kp-stat-label">気良座開場</span>
-      <span class="kp-stat-desc">旧明方小学校木造講堂を改修</span>
+      <span class="kp-stat-desc"><span style="display:inline-block">1937年築・</span><span style="display:inline-block">市指定重要文化財の</span><span style="display:inline-block">講堂を改修</span></span>
     </div>
   </div>
 </section>
@@ -170,6 +170,7 @@ export function pressPageHTML() {
   <h2 class="kp-section-title kp-reveal">団体概要</h2>
   <div class="kp-overview-body">
     <div class="kp-mission kp-reveal">
+      <p><strong><span style="display:inline-block">約130世帯の山里で、</span><span style="display:inline-block">約40人の一座が、</span><span style="display:inline-block">1937年築の講堂を</span><span style="display:inline-block">芝居小屋にした。</span></strong></p>
       <p>岐阜県郡上市明宝気良。世帯数およそ130、山と川に囲まれた小さな集落で、<br>毎年秋に幕が開く地歌舞伎——それが<strong>気良歌舞伎</strong>です。</p>
       <p>「地域の人たちに元気になってほしい」「自分たちも一緒に楽しみたい」。<br>
       その想いで2005年に17年ぶりの復活を遂げて以来、途切れることなく公演を続けています。</p>
@@ -181,7 +182,7 @@ export function pressPageHTML() {
     <div class="kp-info-grid kp-reveal">
       <div class="kp-info-item"><span class="kp-info-label">団体名</span><span>気良歌舞伎</span></div>
       <div class="kp-info-item"><span class="kp-info-label">所在地</span><span>岐阜県郡上市明宝気良</span></div>
-      <div class="kp-info-item"><span class="kp-info-label">会場</span><span>気良座（旧明方小学校木造講堂、2024年開場）</span></div>
+      <div class="kp-info-item"><span class="kp-info-label">会場</span><span>気良座（1937年築の旧明方小学校木造講堂・郡上市指定重要文化財、2024年開場）</span></div>
       <div class="kp-info-item"><span class="kp-info-label">定期公演</span><span>毎年9月第4土曜日（白山神社祭礼）</span></div>
       <div class="kp-info-item"><span class="kp-info-label">メンバー</span><span>20代〜50代 約40名（地域住民中心）</span></div>
       <div class="kp-info-item"><span class="kp-info-label">加盟</span><span>岐阜県地歌舞伎保存振興協議会（2017年〜）</span></div>
