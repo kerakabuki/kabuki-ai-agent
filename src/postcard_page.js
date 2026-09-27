@@ -100,6 +100,7 @@ export function postcardPageHTML() {
 <body>
 
 <!-- ═══════ HERO ═══════ -->
+<div class="pc-ended">令和八年公演は、満員のうちに終演しました。ご来場ありがとうございました。<br><a href="/kerakabuki/annai">次回公演のご案内を受け取る →</a></div>
 <header class="pc-hero">
   <p class="pc-hero-kicker">令和八年　気良歌舞伎公演</p>
   <h1 class="pc-hero-title">曽根崎心中</h1>
@@ -244,6 +245,14 @@ body {
 }
 a { color: inherit; }
 img { max-width: 100%; display: block; }
+
+/* ── 終演のお知らせ ── */
+.pc-ended {
+  padding: 0.9rem 1.2rem; text-align: center;
+  font-size: 0.86rem; line-height: 1.8; color: #e8e4dc;
+  background: rgba(197,162,85,0.14); border-bottom: 1px solid rgba(197,162,85,0.3);
+}
+.pc-ended a { color: #e8c96a; text-decoration: none; }
 
 /* ── HERO ── */
 .pc-hero {

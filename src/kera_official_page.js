@@ -75,46 +75,6 @@ export function keraOfficialPageHTML() {
   ]
 }
 </script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "TheaterEvent",
-  "name": "気良歌舞伎 令和8年定期公演「曽根崎心中」",
-  "startDate": "2026-09-26T18:00+09:00",
-  "doorTime": "2026-09-26T17:00+09:00",
-  "workPerformed": {
-    "@type": "CreativeWork",
-    "name": "曽根崎心中",
-    "author": { "@type": "Person", "name": "近松門左衛門" }
-  },
-  "location": {
-    "@type": "PerformingArtsTheater",
-    "name": "気良座",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "明宝気良154",
-      "addressLocality": "郡上市",
-      "addressRegion": "岐阜県",
-      "postalCode": "501-4303",
-      "addressCountry": "JP"
-    }
-  },
-  "organizer": {
-    "@type": "PerformingGroup",
-    "name": "気良歌舞伎",
-    "url": "https://kabukiplus.com/kerakabuki"
-  },
-  "eventStatus": "https://schema.org/EventScheduled",
-  "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
-  "isAccessibleForFree": true,
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "JPY",
-    "availability": "https://schema.org/InStock"
-  }
-}
-</script>
 </head>
 <body>
 
@@ -151,31 +111,18 @@ export function keraOfficialPageHTML() {
   </div>
 </section>
 
-<!-- ═══════ §NEXT 次回公演 ═══════ -->
+<!-- ═══════ §NEXT 公演のお知らせ（令和8年公演 終演後） ═══════ -->
 <section class="kl-next" id="next">
   <div class="kl-next-inner">
-    <p class="kl-next-label">NEXT PERFORMANCE</p>
-    <h2 class="kl-next-title">令和8年 定期公演</h2>
+    <p class="kl-next-label">THANK YOU</p>
+    <h2 class="kl-next-title">令和8年 定期公演　終演御礼</h2>
+    <p class="kl-next-thanks">初上演の「曽根崎心中」は、満員のお客さまに見守られて幕を下ろしました。<br>用意したパンフレット200部がなくなるほどのご来場、ありがとうございました。</p>
     <div class="kl-next-info">
-      <div class="kl-next-play">
-        <span class="kl-next-icon">🎭</span>
-        <div>
-          <strong>曽根崎心中</strong>
-          <span>原作 近松門左衛門・全三場</span>
-        </div>
-      </div>
       <div class="kl-next-date">
         <span class="kl-next-icon">📅</span>
         <div>
-          <strong>2026年9月26日（土）</strong>
-          <span>毎年9月第4土曜日</span>
-        </div>
-      </div>
-      <div class="kl-next-time">
-        <span class="kl-next-icon">🕕</span>
-        <div>
-          <strong>18:00開演</strong>
-          <span>17:00開場</span>
+          <strong>次回　令和9年（2027年）9月（予定）</strong>
+          <span>毎年9月第4土曜日（白山神社祭礼）・日時は決まり次第お知らせします</span>
         </div>
       </div>
       <div class="kl-next-venue">
@@ -194,8 +141,8 @@ export function keraOfficialPageHTML() {
       </div>
     </div>
     <div class="kl-next-btns">
-      <a href="/kerakabuki/pc" class="kl-next-btn">令和8年公演のご来場ガイド →</a>
-      <a href="/kerakabuki/guide" class="kl-next-btn">観劇ガイド・アクセスを見る →</a>
+      <a href="/kerakabuki/annai" class="kl-next-btn">次回公演のご案内を受け取る →</a>
+      <a href="/kerakabuki/archive" class="kl-next-btn">これまでの公演を見る →</a>
     </div>
   </div>
 </section>
@@ -252,7 +199,7 @@ export function keraOfficialPageHTML() {
     <div class="kl-tl-item kl-reveal"><span class="kl-tl-year">2005</span><div class="kl-tl-dot"></div><div class="kl-tl-body"><strong>気良歌舞伎復活</strong><br>17年ぶりに白山神社祭礼での歌舞伎奉納を再開</div></div>
     <div class="kl-tl-item kl-reveal"><span class="kl-tl-year">2024</span><div class="kl-tl-dot"></div><div class="kl-tl-body"><strong>気良座こけら落とし</strong><br>旧明方小学校の木造講堂が芝居小屋として生まれ変わる</div></div>
     <div class="kl-tl-item kl-reveal"><span class="kl-tl-year">2025</span><div class="kl-tl-dot"></div><div class="kl-tl-body"><strong>五代目座長 林克彦</strong><br>襲名披露公演・ぎふ清流座公演</div></div>
-    <div class="kl-tl-item kl-tl-current kl-reveal"><span class="kl-tl-year">2026</span><div class="kl-tl-dot"></div><div class="kl-tl-body"><strong>令和8年公演「曽根崎心中」（予定）</strong></div></div>
+    <div class="kl-tl-item kl-tl-current kl-reveal"><span class="kl-tl-year">2026</span><div class="kl-tl-dot"></div><div class="kl-tl-body"><strong>令和8年公演「曽根崎心中」（初上演・満員御礼）</strong></div></div>
   </div>
   <p class="kl-tl-more kl-reveal"><a href="/kerakabuki/press#timeline">沿革の全年表を見る</a>　<a href="/kerakabuki/archive">公演アーカイブ →</a></p>
 </section>
@@ -716,6 +663,10 @@ img { max-width: 100%; display: block; }
   color: #c5a255;
   letter-spacing: 0.15em;
   margin-bottom: 1.5rem;
+}
+.kl-next-thanks {
+  margin: -0.4rem auto 1.8rem; max-width: 34em;
+  font-size: 0.9rem; line-height: 1.95; color: #b8a88a;
 }
 .kl-next-info {
   display: flex;
