@@ -1,7 +1,8 @@
 import type { Env } from '../types';
+import { requiredImageCredits, isPhotoOnlyDate } from './publication-policy';
 import { assetUrl,captionFor,currentJob,ensureCrossposts,jstDate,publicBase,settings } from './reels';
 interface PublishPost {
-  id:number; post_date:string; auto_publish:number; status:string; instagram_posted:number;
+  id:number; image_id:number; post_date:string; auto_publish:number; status:string; instagram_posted:number;
   instagram_text:string|null; instagram_hashtags:string|null; r2_key:string|null;
   verified:number; privacy_excluded:number; content_type:string; publish_state:string;
   publish_container_id:string|null; publish_started_at:string|null; published_media_key:string|null;
@@ -65,11 +66,15 @@ export async function publishInstagram(env:Env,postId:number,automatic=false):Pr
     if(p.publish_state==='creating'&&p.publish_started_at&&Date.now()-Date.parse(p.publish_started_at.replace(' ','T')+'Z')<120000)
       return {platform:'instagram',success:false,pending:true,error:'メディアを登録しています'};
     let key=p.r2_key,isReel=false;
-    if(p.content_type==='reel'&&s.reels_enabled==='1') {
+    let caption=captionFor(p.instagram_text,p.instagram_hashtags,requiredImageCredits(s,[p.image_id]));
+    if(p.content_type==='reel'&&s.reels_enabled==='1'&&!isPhotoOnlyDate(s,p.post_date)) {
       const job=await currentJob(env,p.id);
-      if(job?.status==='ready'&&job.video_key){key=job.video_key;isReel=true;}
+      if(job?.status==='ready'&&job.video_key){
+        key=job.video_key;isReel=true;
+        // currentJob validates the manifest hash, including every supporting photo's credit.
+        caption=(JSON.parse(job.manifest_json) as {caption:string}).caption;
+      }
     }
-    const caption=captionFor(p.instagram_text,p.instagram_hashtags);
     const lock=await env.DB.prepare(`UPDATE posts SET publish_state='creating',publish_started_at=datetime('now'),published_media_key=?,published_caption=?,publish_error=NULL
       WHERE id=? AND instagram_posted=0 AND publish_container_id IS NULL
       AND (publish_state IN ('idle','failed') OR (publish_state='creating' AND publish_started_at<datetime('now','-2 minutes')))

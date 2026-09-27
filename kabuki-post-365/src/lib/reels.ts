@@ -1,4 +1,5 @@
 import type { Env } from '../types';
+import { creditedCaption, requiredImageCredits, isPhotoOnlyDate } from './publication-policy';
 
 export interface ReelPhoto { id: number; key: string; caption: string }
 export interface ReelManifest {
@@ -32,8 +33,8 @@ export function publicBase(s: Record<string, string>) {
 export function assetUrl(base: string, key: string) {
   return `${base}/media/${key.split('/').map(encodeURIComponent).join('/')}`;
 }
-export function captionFor(text: string | null, tags: string | null) {
-  return [text?.trim(), tags?.trim()].filter(Boolean).join('\n\n');
+export function captionFor(text: string | null, tags: string | null, credits: string[] = []) {
+  return creditedCaption(text, tags, credits);
 }
 export async function sourceHash(value: unknown) {
   const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(JSON.stringify(value)));
@@ -57,7 +58,7 @@ export async function makeManifest(env: Env, postId: number): Promise<ReelManife
   }
   // Keep already-published v2 manifests stable; the emoji-safe layout begins with tomorrow's posts.
   return { version:p.post_date >= '2026-09-16' ? 4 : 2, postId, date:p.post_date, photos, bgmKey:s.reel_bgm_key,
-    title:p.play_name || '気良歌舞伎', caption:captionFor(p.instagram_text,p.instagram_hashtags),
+    title:p.play_name || '気良歌舞伎', caption:captionFor(p.instagram_text,p.instagram_hashtags,requiredImageCredits(s,photos.map(photo=>photo.id))),
     duration:photos.length === 1 ? 12 : photos.length === 2 ? 16 : 20 };
 }
 
@@ -65,12 +66,13 @@ export async function prepareReels(env: Env) {
   const s = await settings(env);
   if (s.reels_enabled !== '1' || !s.reel_bgm_key) return {queued:0};
   const today=jstDate(), through=shiftDate(today,7);
-  const {results} = await env.DB.prepare(`SELECT id FROM posts WHERE post_date BETWEEN ? AND ?
+  const {results} = await env.DB.prepare(`SELECT id,post_date FROM posts WHERE post_date BETWEEN ? AND ?
     AND post_date>=? AND auto_publish=1 AND instagram_posted=0
     AND status IN ('draft','approved') AND publish_state IN ('idle','failed')
-    ORDER BY post_date,id`).bind(today,through,s.reels_start_date || today).all<{id:number}>();
+    ORDER BY post_date,id`).bind(today,through,s.reels_start_date || today).all<{id:number;post_date:string}>();
   let queued=0;
   for (const p of results) {
+    if (isPhotoOnlyDate(s,p.post_date)) continue;
     const manifest=await makeManifest(env,p.id);
     if (!manifest) continue;
     const hash=await sourceHash(manifest);
@@ -100,7 +102,7 @@ export async function claimReel(env: Env) {
     ORDER BY p.post_date,r.id DESC LIMIT 20`).bind(jstDate()).all<ReelJob>();
   for (const job of candidates.results) {
     const m=await makeManifest(env,job.post_id);
-    if (!m || await sourceHash(m)!==job.source_hash) continue;
+    if (!m || isPhotoOnlyDate(s,m.date) || await sourceHash(m)!==job.source_hash) continue;
     const token=crypto.randomUUID();
     const row=await env.DB.prepare(`UPDATE reel_jobs SET status='rendering',lease_token=?,
       lease_until=datetime('now','+15 minutes'),attempts=attempts+1,updated_at=datetime('now'),error=NULL
