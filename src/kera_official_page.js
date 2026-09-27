@@ -116,7 +116,7 @@ export function keraOfficialPageHTML() {
   <div class="kl-next-inner">
     <p class="kl-next-label">THANK YOU</p>
     <h2 class="kl-next-title">令和8年 定期公演　終演御礼</h2>
-    <p class="kl-next-thanks">初上演の「曽根崎心中」は、満員のお客さまに見守られて幕を下ろしました。<br>用意したパンフレット200部がなくなるほどのご来場、ありがとうございました。</p>
+    <p class="kl-next-thanks">初上演の「曽根崎心中」は、満員のお客さまに見守られて幕を下ろしました。<br>用意したパンフレット200部がなくなるほどのご来場、ありがとうございました。<br>岐阜新聞（9月28日）にも「観客約200人を魅了した」と取り上げていただきました。</p>
     <div class="kl-next-info">
       <div class="kl-next-date">
         <span class="kl-next-icon">📅</span>
