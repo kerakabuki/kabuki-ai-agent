@@ -216,3 +216,34 @@ https://www.instagram.com/kerakabuki_official/
 - 公開から1〜2週間後に、YouTube Studio「チャンネル登録者数」の上位のコンテンツで、この横長とショートの登録数を比べる。
 - あわせて、チャンネル紹介動画に設定した期間の「動画以外（チャンネルのページ）」からの登録の増え方を見る。
 - 結果を `docs/youtube/meiserifu-list.md` §1 に追記する。
+
+## 13. パソコンでの作り方（Insta360の映像から組み立てる）
+
+組み立ては `scripts/video/build_clip_video.mjs`、設定は `studio/episodes/makuga_hiraku_made.json`（横長・6分）と `studio/episodes/short_makuga_hiraku.json`（ショート1・28秒）。構成・テロップ・秒数は §3・§9 の案をそのまま入れてある。素材フォルダは `C:/Users/NAO/Videos/2026-09-26_気良歌舞伎_曽根崎心中`、書き出し先はその下の `出力`。
+
+### 準備
+
+- ffmpeg を入れる: PowerShell で `winget install ffmpeg`（ffprobe も入る）。入れたらターミナルを開き直す。
+- 文字は Yu Mincho（テロップ）・Meiryo（試作の注記）。どちらも Windows に標準で入っている。
+
+### 手順
+
+1. Insta360 Studio／アプリで、使う場面を MP4 に書き出して素材フォルダへ入れる（§4）。`.insv` はそのままでは使えない。360度のまま書き出した場合は、設定の `reframe`（`yaw`・`pitch`・`fov`）で向きを切り出せる。
+2. 素材を一覧にする。
+   `node scripts/video/build_clip_video.mjs --inventory "C:/Users/NAO/Videos/2026-09-26_気良歌舞伎_曽根崎心中"`
+   → `出力/inventory/inventory.md`（長さ・解像度・音声の有無）と `thumbs/*.jpg`（1本あたり24コマのコンタクトシート。各コマの秒は inventory.md の表）。
+3. 設定JSONの各ブロックの `clips` に素材と開始秒を入れる。`"src": "TODO"` を素材フォルダからの相対パスに、`in` を開始秒にする。1ブロックに複数並べてよい（`dur` を省いたものは残りの時間を等分）。記録写真は `{"img": "…"}`。縦横比の違う素材は `"fit": "contain"`（余白はぼかし）。
+4. 試作を書き出す。
+   `node scripts/video/build_clip_video.mjs --config studio/episodes/makuga_hiraku_made.json --draft`
+   → 素材が未定のブロックは仮の画になり、左上に「試作」と「ここに：…」が出る。見て直したブロックだけ `--blocks C1,D2` で作り直せる。
+   固まったら `--draft` なしで書き出す（`TODO` や見つからない素材が残っていれば、一覧を出して止まる）。書き出す前に `outputName` の `_draft` を外す。
+5. `出力/<名前>.chapters.txt` のチャプターを説明欄（§5）に貼る。
+
+### ローカルの Claude への依頼文（例）
+
+> docs/youtube/makunouchi-2026.md の §13 に従って、C:/Users/NAO/Videos/2026-09-26_気良歌舞伎_曽根崎心中 の映像で『幕が開くまで』の試作を作って。まず --inventory で素材を見て、各ブロック（§3 の「探すもの」）に使う場面と開始秒の案を出して相談して。決まったら studio/episodes/makuga_hiraku_made.json の clips に入れて --draft で書き出し、要所のコマを見せて。
+
+### 注意
+
+- 公開前に §11 のチェックリストを必ず通す。
+- 素材フォルダの映像と書き出した動画はリポジトリに入れない（コミットするのは設定JSONの変更だけ）。

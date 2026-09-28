@@ -1,0 +1,60 @@
+{
+  "_使い方": [
+    "node scripts/video/build_clip_video.mjs --config <このファイル> [--draft] [--blocks A,B]（手順: docs/youtube/makunouchi-2026.md §13）",
+    "clips の1要素 = 動画 {\"src\": \"素材フォルダからの相対パス\", \"in\": 開始秒, \"dur\": 秒(省略=残りを等分), \"fit\": \"cover\"|\"contain\", \"focusX\": 0〜1, \"focusY\": 0〜1, \"vol\": 音量倍率, \"reframe\": {\"yaw\": 度, \"pitch\": 度, \"fov\": 横の画角}}",
+    "　または 写真 {\"img\": \"パス\", \"dur\": 秒, \"focusX\": 0〜1, \"focusY\": 0〜1}。src が \"TODO\" のままだと --draft では fallbackImg（無ければ暗い仮画面）、--draft なしでは止まる",
+    "captions の style: Main / Title / Place / Label / Time / Tagline / MainV / SmallV。start・end はブロックの頭からの秒。改行は \\N"
+  ],
+  "episode": {
+    "title": "【ショート1】幕が開くと、満員の客席｜気良歌舞伎『曽根崎心中』",
+    "srcDir": "C:/Users/NAO/Videos/2026-09-26_気良歌舞伎_曽根崎心中",
+    "outDir": "C:/Users/NAO/Videos/2026-09-26_気良歌舞伎_曽根崎心中/出力",
+    "workName": "work_short_makuga",
+    "outputName": "SHORT_幕が開く_draft_v1.mp4"
+  },
+  "settings": {
+    "W": 1080,
+    "H": 1920,
+    "FPS": 30,
+    "CRF": "20",
+    "preset": "medium",
+    "fadeDur": 0.5,
+    "audioFade": 0.08,
+    "kenburns": 0.06,
+    "blurSigma": 40,
+    "loudnorm": true,
+    "shade": true,
+    "font": "Yu Mincho",
+    "noteFont": "Meiryo",
+    "mainVFontSize": 66,
+    "mainVTop": 0.57,
+    "smallVFontSize": 42,
+    "smallVTop": 0.6,
+    "noteFontSize": 30,
+    "noteMarginV": 150
+  },
+  "blocks": [
+    {
+      "id": "V1",
+      "dur": 8,
+      "note": "ここに：幕の内側（Insta360を縦に切り出し）",
+      "fadeIn": 0.6,
+      "fadeOut": 0,
+      "clips": [{"src": "TODO", "in": 0, "fit": "cover"}],
+      "captions": [{"style": "MainV", "text": "この幕の向こうに、\\N約200人。", "start": 1, "end": 7.8}]
+    },
+    {
+      "id": "V2",
+      "dur": 20,
+      "note": "ここに：舞台側から見た、満員の客席",
+      "fadeIn": 0,
+      "fadeOut": 0.8,
+      "clips": [{"src": "TODO", "in": 0, "fit": "cover"}],
+      "fallbackImg": "assets/photos/2025-soga-mie.webp",
+      "captions": [
+        {"style": "MainV", "text": "ご来場、\\Nありがとうございました。", "start": 7, "end": 14.5},
+        {"style": "SmallV", "text": "気良歌舞伎『曽根崎心中』\\N令和8年9月26日", "start": 15, "end": 19.4}
+      ]
+    }
+  ]
+}

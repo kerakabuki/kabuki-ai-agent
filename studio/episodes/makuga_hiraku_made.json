@@ -1,0 +1,224 @@
+{
+  "_使い方": [
+    "node scripts/video/build_clip_video.mjs --config <このファイル> [--draft] [--blocks A,B]（手順: docs/youtube/makunouchi-2026.md §13）",
+    "clips の1要素 = 動画 {\"src\": \"素材フォルダからの相対パス\", \"in\": 開始秒, \"dur\": 秒(省略=残りを等分), \"fit\": \"cover\"|\"contain\", \"focusX\": 0〜1, \"focusY\": 0〜1, \"vol\": 音量倍率, \"reframe\": {\"yaw\": 度, \"pitch\": 度, \"fov\": 横の画角}}",
+    "　または 写真 {\"img\": \"パス\", \"dur\": 秒, \"focusX\": 0〜1, \"focusY\": 0〜1}。src が \"TODO\" のままだと --draft では fallbackImg（無ければ暗い仮画面）、--draft なしでは止まる",
+    "captions の style: Main / Title / Place / Label / Time / Tagline / MainV / SmallV。start・end はブロックの頭からの秒。改行は \\N"
+  ],
+  "episode": {
+    "title": "幕が開くまで｜気良歌舞伎『曽根崎心中』（横長）",
+    "srcDir": "C:/Users/NAO/Videos/2026-09-26_気良歌舞伎_曽根崎心中",
+    "outDir": "C:/Users/NAO/Videos/2026-09-26_気良歌舞伎_曽根崎心中/出力",
+    "workName": "work_makuga",
+    "outputName": "幕が開くまで_draft_v1.mp4"
+  },
+  "settings": {
+    "W": 1920,
+    "H": 1080,
+    "FPS": 30,
+    "CRF": "20",
+    "preset": "medium",
+    "fadeDur": 0.5,
+    "audioFade": 0.08,
+    "kenburns": 0.06,
+    "blurSigma": 40,
+    "loudnorm": true,
+    "shade": true,
+    "font": "Yu Mincho",
+    "noteFont": "Meiryo",
+    "mainFontSize": 56,
+    "mainMarginV": 118,
+    "placeFontSize": 40,
+    "placeMarginV": 124,
+    "labelFontSize": 44,
+    "labelMarginL": 138,
+    "labelMarginV": 112,
+    "titleFontSize": 124,
+    "titleSubFontSize": 34,
+    "timeFontSize": 76,
+    "taglineFontSize": 56,
+    "taglineMarginV": 150,
+    "noteFontSize": 25,
+    "noteMarginV": 28
+  },
+  "blocks": [
+    {
+      "id": "A",
+      "dur": 10,
+      "chapter": "幕の向こうに",
+      "note": "ここに：幕の内側の暗がり。幕越しに客席のざわめき（現場音）",
+      "fadeIn": 0.8,
+      "fadeOut": 0,
+      "clips": [{"src": "TODO", "in": 0, "fit": "cover"}],
+      "captions": [{"style": "Main", "text": "この幕の向こうに、約200人。", "start": 2, "end": 9.4}]
+    },
+    {
+      "id": "B",
+      "dur": 30,
+      "chapter": "気良座",
+      "note": "ここに：夕方の気良座の外観と、灯りのつく入口",
+      "fadeIn": 0.6,
+      "fadeOut": 0.4,
+      "clips": [{"src": "TODO", "in": 0, "fit": "cover"}],
+      "fallbackImg": "assets/photos/hero-kiraza.webp",
+      "captions": [
+        {"style": "Main", "text": "約130世帯の山里で、", "start": 1, "end": 6},
+        {"style": "Main", "text": "約40人の一座が、", "start": 6.3, "end": 11.3},
+        {"style": "Main", "text": "1937年築の講堂を芝居小屋にした。", "start": 11.6, "end": 17.6},
+        {"style": "Place", "text": "気良座　岐阜県郡上市明宝気良", "start": 18, "end": 22.6},
+        {"style": "Title", "text": "幕が開くまで\\N気良歌舞伎『曽根崎心中』　令和8年9月26日", "start": 23.2, "end": 29.6}
+      ]
+    },
+    {
+      "id": "C1",
+      "dur": 24,
+      "chapter": "開演前の楽屋",
+      "note": "ここに：化粧の手元・鏡越しの画（着替えの場面は使わない）",
+      "fadeIn": 0.5,
+      "fadeOut": 0.4,
+      "clips": [{"src": "TODO", "in": 0, "fit": "cover"}],
+      "fallbackImg": "assets/photos/about-kesho.webp",
+      "captions": [
+        {"style": "Main", "text": "開演前の楽屋", "start": 1, "end": 6.5},
+        {"style": "Label", "text": "化粧", "start": 8, "end": 21}
+      ]
+    },
+    {
+      "id": "C2",
+      "dur": 23,
+      "note": "ここに：かつら・衣装の支度",
+      "fadeIn": 0.4,
+      "fadeOut": 0.4,
+      "clips": [{"src": "TODO", "in": 0, "fit": "cover"}],
+      "fallbackImg": "assets/photos/2025-gakuya.webp",
+      "captions": [{"style": "Label", "text": "かつら", "start": 2, "end": 20.5}]
+    },
+    {
+      "id": "C3",
+      "dur": 23,
+      "note": "ここに：衣装をつけて、舞台裏を行き来する役者",
+      "fadeIn": 0.4,
+      "fadeOut": 0.5,
+      "clips": [{"src": "TODO", "in": 0, "fit": "cover"}],
+      "fallbackImg": "assets/photos/about-butaiura.webp",
+      "captions": [{"style": "Label", "text": "衣装", "start": 2, "end": 20.5}]
+    },
+    {
+      "id": "D1",
+      "dur": 20,
+      "chapter": "天神森の準備",
+      "note": "ここに：大道具の据え付け",
+      "fadeIn": 0.5,
+      "fadeOut": 0.5,
+      "clips": [{"src": "TODO", "in": 0, "fit": "cover"}],
+      "fallbackImg": "assets/photos/about-enmoku.webp",
+      "captions": [{"style": "Label", "text": "大道具", "start": 2, "end": 17.5}]
+    },
+    {
+      "id": "D2",
+      "dur": 30,
+      "note": "ここに：プロジェクターの設置と、月夜の森の映像の試し映し",
+      "fadeIn": 0.6,
+      "fadeOut": 0.5,
+      "clips": [{"src": "TODO", "in": 0, "fit": "cover"}],
+      "captions": [
+        {"style": "Main", "text": "第三場『天神森』の背景には、", "start": 1, "end": 8.6},
+        {"style": "Main", "text": "生成AIで作った月夜の森の映像を、", "start": 9, "end": 17.2},
+        {"style": "Main", "text": "プロジェクションマッピングで映します。", "start": 17.6, "end": 26.5}
+      ]
+    },
+    {
+      "id": "E1",
+      "dur": 25,
+      "chapter": "客席が埋まっていく",
+      "note": "ここに：入口に人が集まり、客席が埋まっていく様子（引きの画）",
+      "fadeIn": 0.5,
+      "fadeOut": 0.4,
+      "clips": [{"src": "TODO", "in": 0, "fit": "cover"}],
+      "fallbackImg": "assets/photos/hero-kiraza.webp",
+      "captions": [
+        {"style": "Main", "text": "開演が近づき、客席が埋まっていきます。", "start": 2, "end": 10},
+        {"style": "Label", "text": "入場無料", "start": 12, "end": 21}
+      ]
+    },
+    {
+      "id": "E2",
+      "dur": 25,
+      "note": "ここに：袖や客席の後ろから見た、埋まっていく客席（顔が大きく映らない引きの画）",
+      "fadeIn": 0.4,
+      "fadeOut": 0.5,
+      "clips": [{"src": "TODO", "in": 0, "fit": "cover"}],
+      "fallbackImg": "assets/photos/2025-shiranami.webp",
+      "captions": []
+    },
+    {
+      "id": "F",
+      "dur": 40,
+      "chapter": "お初と徳兵衛は二組で",
+      "note": "ここに：衣装をつけて、袖で出番を待つ役者の後ろ姿",
+      "fadeIn": 0.6,
+      "fadeOut": 0.5,
+      "clips": [{"src": "TODO", "in": 0, "fit": "cover"}],
+      "fallbackImg": "assets/photos/2025-portrait.webp",
+      "captions": [
+        {"style": "Main", "text": "お初と徳兵衛は、二組で演じます。", "start": 3, "end": 12.5},
+        {"style": "Main", "text": "第三場『天神森』は、若手が初めて挑みます。", "start": 13.5, "end": 25}
+      ]
+    },
+    {
+      "id": "G1",
+      "dur": 18,
+      "chapter": "開演",
+      "note": "ここに：役者が舞台で位置につく・黒衣の準備",
+      "fadeIn": 0.5,
+      "fadeOut": 0.6,
+      "clips": [{"src": "TODO", "in": 0, "fit": "cover"}],
+      "fallbackImg": "assets/photos/about-kuroko.webp",
+      "captions": []
+    },
+    {
+      "id": "G2",
+      "dur": 22,
+      "note": "ここに：幕の内側の静けさ。柝の音（現場音。録れていなければ効果音は足さない）",
+      "fadeIn": 0.8,
+      "fadeOut": 0,
+      "clips": [{"src": "TODO", "in": 0, "fit": "cover"}],
+      "captions": [{"style": "Time", "text": "18:00　開演", "start": 6, "end": 18}]
+    },
+    {
+      "id": "H",
+      "dur": 30,
+      "chapter": "幕が開く",
+      "note": "ここに：舞台側から、幕が開いて満員の客席が見える画",
+      "fadeIn": 0,
+      "fadeOut": 0.4,
+      "clips": [{"src": "TODO", "in": 0, "fit": "cover"}],
+      "fallbackImg": "assets/photos/2025-shiranami.webp",
+      "captions": [{"style": "Main", "text": "満員の客席。", "start": 8, "end": 18}]
+    },
+    {
+      "id": "I",
+      "dur": 20,
+      "note": "ここに：満員の客席の引き、または夜の外観",
+      "fadeIn": 0.4,
+      "fadeOut": 0.4,
+      "clips": [{"src": "TODO", "in": 0, "fit": "cover"}],
+      "fallbackImg": "assets/photos/hero-kiraza.webp",
+      "captions": [
+        {"style": "Main", "text": "用意したパンフレット200部は、すべてなくなりました。", "start": 1, "end": 7.2},
+        {"style": "Main", "text": "ご来場、ありがとうございました。", "start": 7.6, "end": 13.3},
+        {"style": "Main", "text": "本編は、プロの撮影映像で後日公開します。", "start": 13.7, "end": 19.6}
+      ]
+    },
+    {
+      "id": "J",
+      "dur": 20,
+      "note": "動画2本と登録ボタンは、YouTube Studioの終了画面で重ねる（位置の目安）",
+      "fadeIn": 0.4,
+      "fadeOut": 1.2,
+      "clips": [{"src": "TODO", "in": 0, "fit": "cover"}],
+      "fallbackImg": "assets/photos/hero-kiraza.webp",
+      "captions": [{"style": "Tagline", "text": "山里に灯る、もうひとつの舞台。", "start": 1, "end": 19.5}]
+    }
+  ]
+}
