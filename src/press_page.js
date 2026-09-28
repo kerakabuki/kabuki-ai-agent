@@ -319,7 +319,7 @@ export function pressPageHTML() {
         <span class="kp-news-cat kp-cat-media">メディア掲載</span>
       </div>
       <h3 class="kp-news-title">岐阜新聞掲載：気良歌舞伎×AIプロジェクションマッピング　曽根崎心中 息のむクライマックス</h3>
-      <p class="kp-news-desc">9月26日の令和8年公演を岐阜新聞が報道（9月28日）。地歌舞伎では珍しい「曽根崎心中」を、生成AIで作成したプロジェクションマッピングを背景に上演し、観客約200人を魅了した様子や、お初が「死ぬる覚悟が聞きたい」と語る場面で客席から拍手が起こったことが紹介された。</p>
+      <p class="kp-news-desc">9月26日の令和8年公演を岐阜新聞が県内総合面で報道（9月28日）。地歌舞伎では珍しい「曽根崎心中」を、生成AIで作成したプロジェクションマッピングを背景に上演し、観客約200人を魅了した様子や、お初が「死ぬる覚悟が聞きたい」と語る場面で客席から拍手が起こったことが紹介された。</p>
     </article>
     <article class="kp-news-item kp-reveal" data-cat="お知らせ">
       <div class="kp-news-meta">
