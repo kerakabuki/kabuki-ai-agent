@@ -1,6 +1,6 @@
 {
   "_使い方": [
-    "node scripts/video/build_clip_video.mjs --config <このファイル> [--draft] [--blocks A,B]（手順: docs/youtube/makunouchi-2026.md §13）",
+    "node scripts/video/build_clip_video.mjs --config <このファイル> [--draft] [--blocks \"A,B\"]（手順: docs/youtube/makunouchi-2026.md §13）",
     "clips の1要素 = 動画 {\"src\": \"素材フォルダからの相対パス\", \"in\": 開始秒, \"dur\": 秒(省略=残りを等分), \"fit\": \"cover\"|\"contain\", \"focusX\": 0〜1, \"focusY\": 0〜1, \"vol\": 音量倍率, \"reframe\": {\"yaw\": 度, \"pitch\": 度, \"fov\": 横の画角}}",
     "　または 写真 {\"img\": \"パス\", \"dur\": 秒, \"focusX\": 0〜1, \"focusY\": 0〜1}。src が \"TODO\" のままだと --draft では fallbackImg（無ければ暗い仮画面）、--draft なしでは止まる",
     "captions の style: Main / Title / Place / Label / Time / Tagline / MainV / SmallV。start・end はブロックの頭からの秒。改行は \\N"

@@ -229,13 +229,15 @@ https://www.instagram.com/kerakabuki_official/
 ### 手順
 
 1. Insta360 Studio／アプリで、使う場面を MP4 に書き出して素材フォルダへ入れる（§4）。`.insv` はそのままでは使えない。360度のまま書き出した場合は、設定の `reframe`（`yaw`・`pitch`・`fov`）で向きを切り出せる。
+   - 書き出しは SDR（HDR にしない）。HDR だと色が眠くなる。
+   - 空間音声はオフで書き出す（ふつうのステレオにする）。
 2. 素材を一覧にする。
    `node scripts/video/build_clip_video.mjs --inventory "C:/Users/NAO/Videos/2026-09-26_気良歌舞伎_曽根崎心中"`
    → `出力/inventory/inventory.md`（長さ・解像度・音声の有無）と `thumbs/*.jpg`（1本あたり24コマのコンタクトシート。各コマの秒は inventory.md の表）。
 3. 設定JSONの各ブロックの `clips` に素材と開始秒を入れる。`"src": "TODO"` を素材フォルダからの相対パスに、`in` を開始秒にする。1ブロックに複数並べてよい（`dur` を省いたものは残りの時間を等分）。記録写真は `{"img": "…"}`。縦横比の違う素材は `"fit": "contain"`（余白はぼかし）。
 4. 試作を書き出す。
    `node scripts/video/build_clip_video.mjs --config studio/episodes/makuga_hiraku_made.json --draft`
-   → 素材が未定のブロックは仮の画になり、左上に「試作」と「ここに：…」が出る。見て直したブロックだけ `--blocks C1,D2` で作り直せる。
+   → 素材が未定のブロックは仮の画になり、左上に「試作」と「ここに：…」が出る。見て直したブロックだけ `--blocks "C1,D2"`（引用符で囲む）で作り直せる。
    固まったら `--draft` なしで書き出す（`TODO` や見つからない素材が残っていれば、一覧を出して止まる）。書き出す前に `outputName` の `_draft` を外す。
 5. `出力/<名前>.chapters.txt` のチャプターを説明欄（§5）に貼る。
 

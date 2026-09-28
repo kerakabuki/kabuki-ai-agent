@@ -6,10 +6,11 @@
 //   素材一覧   node scripts/video/build_clip_video.mjs --inventory <素材フォルダ> [--out <出力フォルダ>]
 //              → inventory.md（長さ・解像度・fps・音声）と thumbs/<名前>.jpg（コンタクトシート 6×4）
 //              出力先の既定は <素材フォルダ>/出力/inventory/
-//   組み立て   node scripts/video/build_clip_video.mjs --config <json> [--blocks A,B] [--draft]
+//   組み立て   node scripts/video/build_clip_video.mjs --config <json> [--blocks "A,B"] [--draft]
 //                [--src <素材フォルダ上書き>] [--out <出力フォルダ上書き>]
 //              --draft   : 素材が未定（"TODO"）・見つからないクリップを仮の画にして、左上に「試作」と note を重ねる
 //              --blocks  : 指定ブロックだけ作り直し、他は作業フォルダの既存 seg を使う
+//                          （PowerShell は未クオートの A,B を2引数に割るので "A,B" と囲む。割れても次のオプションまで集める）
 //
 // パイプライン（組み立て）:
 //   1. ブロックごとに クリップ（動画／写真／仮の画）を並べる → テロップ ASS を焼き込む → 映像・音声フェード
@@ -41,17 +42,40 @@ function fail(msg) {
 }
 function warn(msg) { console.warn(`  注意: ${msg}`); }
 
-function argVal(name) {
-  const i = process.argv.indexOf(name);
-  if (i < 0) return null;
-  const v = process.argv[i + 1];
-  if (v == null || v.startsWith('--')) fail(`${name} のあとに値を書いてください。`);
-  return v;
+// ---- 引数 ----
+// 値の数: 0=フラグ、1=値1つ、'many'=次のオプションまで全部（PowerShell は未クオートの C1,D2 を2引数に割るため）
+const OPTIONS = {
+  '--inventory': 1, '--config': 1, '--out': 1, '--src': 1,
+  '--blocks': 'many', '--draft': 0, '--help': 0, '-h': 0,
+};
+function parseArgs(argv) {
+  const out = {};
+  for (let i = 0; i < argv.length; i++) {
+    const a = argv[i];
+    const kind = OPTIONS[a];
+    if (kind === undefined) {
+      fail(a.startsWith('-')
+        ? `知らないオプションです: ${a}（使えるのは ${Object.keys(OPTIONS).join(' ')}）`
+        : `余分な引数があります: ${a}（空白を含むパスは "…" で囲んでください）`);
+    }
+    if (a in out) fail(`${a} が2回書かれています。`);
+    if (kind === 0) { out[a] = true; continue; }
+    const vals = [];
+    while (i + 1 < argv.length && !argv[i + 1].startsWith('-') && (kind === 'many' || vals.length < 1)) vals.push(argv[++i]);
+    if (!vals.length) fail(`${a} のあとに値を書いてください。`);
+    out[a] = kind === 'many' ? vals.join(',') : vals[0];
+  }
+  return out;
 }
-const hasFlag = (name) => process.argv.includes(name);
+const ARGS = parseArgs(process.argv.slice(2));
+const argVal = (name) => ARGS[name] ?? null;
+const hasFlag = (name) => ARGS[name] === true;
+// 相対パスは今のフォルダから絶対パスにして / にそろえる（ffmpeg は作業フォルダを cwd にして動くため）
+const absPath = (p) => (isAbs(p) ? slash(p) : slash(resolve(p)));
 
 // ffmpeg 実行（失敗したら日本語のメッセージと ffmpeg のエラー末尾を出して止める）
-function ffmpeg(args, cwd, label) {
+// soft=true のときは止めずに注意を出して null を返す（素材一覧で1本壊れていても続けるため）
+function ffmpeg(args, cwd, label, soft = false) {
   try {
     return execFileSync('ffmpeg', ['-hide_banner', '-nostdin', '-y', '-loglevel', 'error', ...args], {
       cwd, stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 256 * 1024 * 1024,
@@ -59,6 +83,7 @@ function ffmpeg(args, cwd, label) {
   } catch (e) {
     if (e.code === 'ENOENT') failNoFfmpeg();
     const tail = (e.stderr?.toString() ?? '').trim().split(/\r?\n/).slice(-15).join('\n');
+    if (soft) { warn(`${label}に失敗しました: ${tail.split('\n').pop() || e.message}`); return null; }
     fail(`${label}に失敗しました（ffmpeg のエラー）:\n${tail || e.message}`);
   }
 }
@@ -201,6 +226,13 @@ function runInventory(dirArg) {
       console.log('読めない');
       return;
     }
+    if (!(info.dur > 0)) {
+      // 長さが取れない（書き出し途中で止まった等）→ 表には残し、コンタクトシートは作らない
+      rows.push({ r, dur: '長さ不明（壊れている可能性）', res: `${info.w}×${info.h}`, fps: '?',
+        audio: info.hasAudio ? `あり（${info.channels}ch）` : 'なし', note: '長さが取れないのでコンタクトシートは作っていない', sheet: '' });
+      console.log('長さ不明（壊れている可能性）');
+      return;
+    }
     const notes = [];
     if (info.w > 0 && info.w === info.h * 2) notes.push('360度（正距円筒）の可能性。設定の reframe で向きを切り出せる');
     if (info.h > info.w) notes.push('縦長');
@@ -217,14 +249,15 @@ function runInventory(dirArg) {
     // 長い素材はキーフレームだけ読む（5.7K の 360度素材を全部読むと時間がかかるため）
     const keyOnly = info.dur > 180;
     const sheetRel = `thumbs/${name}.jpg`;
-    ffmpeg([
+    const made = ffmpeg([
       ...(keyOnly ? ['-skip_frame', 'nokey'] : []),
       '-i', file, '-an', '-sn',
       // fps フィルタは k 番目の出力に「(k+0.5)×間隔 の直前のコマ」を使う → 区間の中央のコマになる
       '-vf', `fps=fps=${(1 / step).toFixed(6)}:start_time=0,scale=320:-2,tile=6x4`,
       '-frames:v', '1', '-q:v', '3', sheetRel,
-    ], outDir, `コンタクトシート（${r}）の作成`);
-    sheets.push({ r, sheetRel, times, keyOnly });
+    ], outDir, `コンタクトシート（${r}）の作成`, true);
+    if (made) sheets.push({ r, sheetRel, times, keyOnly });
+    else notes.push('コンタクトシートを作れなかった（壊れている可能性）');
     rows.push({
       r,
       dur: `${fmtClock(info.dur)}（${info.dur.toFixed(1)}秒）`,
@@ -232,9 +265,9 @@ function runInventory(dirArg) {
       fps: fmtFps(info.fps),
       audio: info.hasAudio ? `あり（${info.channels}ch）` : 'なし',
       note: notes.join('。'),
-      sheet: `[${name}.jpg](${encodeURI(sheetRel)})`,
+      sheet: made ? `[${name}.jpg](${encodeURI(sheetRel)})` : '',
     });
-    console.log('完了');
+    console.log(made ? '完了' : 'コンタクトシートなし');
   });
 
   // ---- inventory.md ----
@@ -296,10 +329,15 @@ function runBuild(configPath) {
 
   // ---- パス ----
   const srcOverride = argVal('--src');
-  const SRC = slash(srcOverride ?? EP.srcDir ?? '');
-  if (!SRC) fail('episode.srcDir（素材フォルダ）が設定されていません。');
+  const srcRaw = srcOverride ?? EP.srcDir ?? '';
+  if (!srcRaw) fail('episode.srcDir（素材フォルダ）が設定されていません。');
+  const SRC = absPath(srcRaw);
+  // 打ち間違いで 出力/work_… を作らないよう、素材フォルダが無ければ止める（空のフォルダは通す）
+  if (!existsSync(SRC) || !statSync(SRC).isDirectory()) {
+    fail(`素材フォルダが見つかりません: ${SRC}\n${srcOverride ? '--src' : `設定JSONの episode.srcDir`} を確かめてください。`);
+  }
   // --src だけ上書きしたときは、出力もその素材フォルダの下（出力）にする
-  const OUT = slash(resolve(argVal('--out') ?? (srcOverride ? `${SRC}/出力` : (EP.outDir ?? `${SRC}/出力`))));
+  const OUT = absPath(argVal('--out') ?? (srcOverride ? `${SRC}/出力` : (EP.outDir ?? `${SRC}/出力`)));
   const WORK = `${OUT}/${EP.workName ?? 'work'}`;
   if (!EP.outputName) fail('episode.outputName（書き出すファイル名）が設定されていません。');
   const FINAL = `${OUT}/${EP.outputName}`;
@@ -326,7 +364,7 @@ function runBuild(configPath) {
   const only = (() => {
     const v = argVal('--blocks');
     if (!v) return null;
-    const list = v.split(',').map(s => s.trim()).filter(Boolean);
+    const list = [...new Set(v.split(/[,\s]+/).map(s => s.trim()).filter(Boolean))];
     const unknown = list.filter(id => !ids.has(id));
     if (unknown.length) fail(`--blocks に無いブロックがあります: ${unknown.join(', ')}（あるのは ${[...ids].join(', ')}）`);
     return list;
@@ -439,6 +477,9 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     b.fadeIn = b.fadeIn ?? FADE_DUR;
     b.fadeOut = b.fadeOut ?? FADE_DUR;
     const clips = Array.isArray(b.clips) && b.clips.length ? b.clips : [{ src: 'TODO' }];
+    // --blocks のときは、作り直すブロックのことだけ知らせる（他は既存の seg を使う）
+    const isTarget = !only || only.includes(b.id);
+    const bwarn = (msg) => { if (isTarget) warn(msg); };
 
     // 尺: dur 省略のクリップはブロックの残り時間を等分
     const fixed = clips.filter(c => c.dur != null).reduce((a, c) => a + c.dur, 0);
@@ -448,10 +489,10 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     let durs = clips.map(c => c.dur ?? rest / free);
     const sum = durs.reduce((a, d) => a + d, 0);
     if (sum < b.D - 1e-6) {
-      warn(`ブロック${b.id}: クリップの合計（${num(sum)}秒）がブロック（${b.D}秒）より短いので、最後のクリップを延ばします。`);
+      bwarn(`ブロック${b.id}: クリップの合計（${num(sum)}秒）がブロック（${b.D}秒）より短いので、最後のクリップを延ばします。`);
       durs[durs.length - 1] += b.D - sum;
     } else if (sum > b.D + 1e-6) {
-      warn(`ブロック${b.id}: クリップの合計（${num(sum)}秒）がブロック（${b.D}秒）より長いので、後ろを切ります。`);
+      bwarn(`ブロック${b.id}: クリップの合計（${num(sum)}秒）がブロック（${b.D}秒）より長いので、後ろを切ります。`);
       let left = b.D;
       durs = durs.map(d => { const x = Math.min(d, left); left -= x; return x; });
     }
@@ -475,18 +516,29 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
       } else {
         item.kind = 'video';
         item.path = c.src && c.src !== 'TODO' ? srcPath(c.src) : '';
+        if (c.reframe) {
+          const r = {};
+          for (const k of ['yaw', 'pitch', 'roll', 'fov', 'h_fov', 'v_fov']) {
+            if (c.reframe[k] == null || c.reframe[k] === '') continue;
+            r[k] = Number(c.reframe[k]);
+            if (!Number.isFinite(r[k])) fail(`ブロック${b.id} ${item.n}本目: reframe.${k} は数（度）で書いてください: ${JSON.stringify(c.reframe[k])}`);
+          }
+          if (c.reframe.interp) r.interp = String(c.reframe.interp);
+          item.reframe = r;
+        }
         if (!c.src || c.src === 'TODO') reason = '素材が未指定（"TODO"）';
         else if (!existsSync(item.path)) reason = `ファイルがありません: ${item.path}`;
         else {
           const info = probe(item.path);
           if (!info || !info.hasVideo) reason = `動画として読めません: ${item.path}`;
+          else if (!(info.dur > 0)) reason = `長さが取れません（壊れている可能性）: ${item.path}`;
           else {
             item.info = info;
             const inSec = Number(c.in ?? 0);
             if (!(inSec >= 0)) fail(`ブロック${b.id} ${item.n}本目: in（開始秒）が正しくありません: ${c.in}`);
             if (inSec >= info.dur) reason = `開始秒 in=${inSec} が素材の長さ（${info.dur.toFixed(1)}秒）を超えています: ${c.src}`;
             else if (inSec + item.d > info.dur + 0.05) {
-              warn(`ブロック${b.id} ${item.n}本目: ${c.src} は ${inSec}秒から ${item.d.toFixed(1)}秒ぶん取れません（素材は ${info.dur.toFixed(1)}秒）。足りない所は最後のコマで止めます。`);
+              bwarn(`ブロック${b.id} ${item.n}本目: ${c.src} は ${inSec}秒から ${item.d.toFixed(1)}秒ぶん取れません（素材は ${info.dur.toFixed(1)}秒）。足りない所は最後のコマで止めます。`);
             }
           }
         }
@@ -494,15 +546,15 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
       if (reason) {
         if (DRAFT) {
           // TODO は想定どおりなので黙って仮の画に。指定したのに使えない素材だけ知らせる
-          if (!/TODO/.test(reason)) warn(`ブロック${b.id} ${item.n}本目: ${reason} → 仮の画にします。`);
+          if (!/TODO/.test(reason)) bwarn(`ブロック${b.id} ${item.n}本目: ${reason} → 仮の画にします。`);
           // 試作: fallbackImg（リポジトリの写真）をゆっくりズーム。無ければ暗い仮画面
           const fb = b.fallbackImg ? repoPath(b.fallbackImg) : null;
           if (fb && existsSync(fb)) { item.kind = 'image'; item.path = fb; item.fallback = true; }
           else {
-            if (fb) warn(`ブロック${b.id}: fallbackImg が見つからないので暗い仮画面にします: ${fb}`);
+            if (fb) bwarn(`ブロック${b.id}: fallbackImg が見つからないので暗い仮画面にします: ${fb}`);
             item.kind = 'placeholder'; item.fallback = true;
           }
-        } else if (!only || only.includes(b.id)) {
+        } else if (isTarget) {
           missing.push(`  ブロック${b.id}（${bi + 1}番目）${clips.length > 1 ? `の${item.n}本目` : ''}: ${reason}`);
         }
       }
@@ -511,7 +563,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     b.plan = plan;
     for (const c of b.captions ?? []) {
       if (!CAPTION_STYLES.includes(c.style)) fail(`ブロック${b.id}: テロップのスタイル "${c.style}" はありません（使えるのは ${CAPTION_STYLES.join(', ')}）。`);
-      if (c.end > b.D + 0.01) warn(`ブロック${b.id}: テロップ「${c.text}」の終わり（${c.end}秒）がブロックの長さを超えています。`);
+      if (c.end > b.D + 0.01) bwarn(`ブロック${b.id}: テロップ「${c.text}」の終わり（${c.end}秒）がブロックの長さを超えています。`);
     }
     return b;
   });
@@ -542,8 +594,8 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
       fail(`ブロック${b.id}のセグメントが作業フォルダにありません（${WORK}）。--blocks を外して全部書き出してください。`);
     }
     const m = JSON.parse(readFileSync(meta, 'utf8'));
-    if (m.W !== W || m.H !== H || m.FPS !== FPS || m.frames !== b.frames) {
-      fail(`ブロック${b.id}の既存セグメントは設定と大きさ・長さが違います。--blocks ${b.id} を足して作り直してください。`);
+    if (m.W !== W || m.H !== H || m.FPS !== FPS || m.frames !== b.frames || m.CRF !== CRF || m.preset !== PRESET) {
+      fail(`ブロック${b.id}の既存セグメントは設定と大きさ・長さ・画質（CRF・preset）が違います。--blocks ${b.id} を足して作り直してください。`);
     }
     if (m.draft && !DRAFT) {
       fail(`ブロック${b.id}の既存セグメントは試作（--draft）のままです。--blocks を外すか、--blocks に ${b.id} を足して作り直してください。`);
@@ -625,7 +677,9 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         }
       } else if (c.kind === 'image') {
         const i = inIdx++;
-        args.push('-loop', '1', '-framerate', String(FPS), '-t', num(c.d + 0.5), '-i', c.path);
+        // 静止画は image2 に固定する（新しい ffmpeg は .webp に専用デマクサを選び、-loop が使えないことがある）。
+        // pattern_type none: ファイル名の % を連番パターンとして扱わせない
+        args.push('-f', 'image2', '-pattern_type', 'none', '-loop', '1', '-framerate', String(FPS), '-t', num(c.d + 0.5), '-i', c.path);
         if (KENBURNS > 0) {
           // 2倍で組み立ててから zoompan で等倍に（ズームのがたつきを抑える）
           const w2 = W * 2, h2 = H * 2;
@@ -661,7 +715,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
       `seg${b.id}.mp4`,
       '-map', '[ao2]', '-c:a', 'pcm_s16le', '-ar', String(SR), `seg${b.id}.wav`,
     ], WORK, `ブロック${b.id}の書き出し`);
-    writeFileSync(`${WORK}/seg${b.id}.json`, JSON.stringify({ draft: DRAFT, W, H, FPS, frames: b.frames, at: new Date().toISOString() }) + '\n', 'utf8');
+    writeFileSync(`${WORK}/seg${b.id}.json`, JSON.stringify({ draft: DRAFT, W, H, FPS, CRF, preset: PRESET, frames: b.frames, at: new Date().toISOString() }) + '\n', 'utf8');
     console.log(`完了（${((Date.now() - t0) / 1000).toFixed(1)}秒）`);
   });
 
@@ -732,10 +786,14 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 // ============================================================================
 const USAGE = `使い方:
   素材一覧: node scripts/video/build_clip_video.mjs --inventory <素材フォルダ> [--out <出力フォルダ>]
-  組み立て: node scripts/video/build_clip_video.mjs --config <設定JSON> [--blocks A,B] [--draft] [--src <素材フォルダ>] [--out <出力フォルダ>]`;
+  組み立て: node scripts/video/build_clip_video.mjs --config <設定JSON> [--blocks "A,B"] [--draft] [--src <素材フォルダ>] [--out <出力フォルダ>]`;
 
 const invDir = argVal('--inventory');
 const cfg = argVal('--config');
+if (invDir && cfg) fail('--inventory と --config は一緒に使えません。');
+const allowed = invDir ? ['--inventory', '--out'] : ['--config', '--blocks', '--draft', '--src', '--out'];
+const extra = Object.keys(ARGS).filter(k => (invDir || cfg) && !allowed.includes(k) && k !== '--help' && k !== '-h');
+if (extra.length) fail(`${invDir ? '素材一覧（--inventory）' : '組み立て（--config）'}では ${extra.join(' ')} は使えません。\n${USAGE}`);
 if (hasFlag('--help') || hasFlag('-h')) {
   console.log(USAGE);
 } else if (invDir) {
