@@ -320,6 +320,7 @@ export function pressPageHTML() {
       </div>
       <h3 class="kp-news-title">岐阜新聞掲載：気良歌舞伎×AIプロジェクションマッピング　曽根崎心中 息のむクライマックス</h3>
       <p class="kp-news-desc">9月26日の令和8年公演を岐阜新聞が県内総合面で報道（9月28日）。地歌舞伎では珍しい「曽根崎心中」を、生成AIで作成したプロジェクションマッピングを背景に上演し、観客約200人を魅了した様子や、お初が「死ぬる覚悟が聞きたい」と語る場面で客席から拍手が起こったことが紹介された。</p>
+      <a class="kp-news-link" href="https://www.gifu-np.co.jp/articles/-/775380" target="_blank" rel="noopener">記事を読む（岐阜新聞デジタル・会員限定）→</a>
     </article>
     <article class="kp-news-item kp-reveal" data-cat="お知らせ">
       <div class="kp-news-meta">
@@ -336,6 +337,7 @@ export function pressPageHTML() {
       </div>
       <h3 class="kp-news-title">中日新聞掲載：「曽根崎心中」映像で演出　郡上であす「気良歌舞伎」公演</h3>
       <p class="kp-news-desc">9月26日の令和8年公演を前に、中日新聞（中濃版）が報道。初上演の「曽根崎心中」で、クライマックスの天神森ノ場に生成AIで制作した月夜の森の映像をプロジェクションマッピングで映し出す演出や、初主演の若手2人の意気込みが紹介された。</p>
+      <a class="kp-news-link" href="https://www.chunichi.co.jp/article/1316066" target="_blank" rel="noopener">記事を読む（中日新聞Web）→</a>
     </article>
     <article class="kp-news-item kp-reveal" data-cat="メディア掲載">
       <div class="kp-news-meta">
@@ -384,6 +386,7 @@ export function pressPageHTML() {
       </div>
       <h3 class="kp-news-title">中日新聞掲載：襲名口上披露に観客喝采　郡上で気良歌舞伎公演</h3>
       <p class="kp-news-desc">9月27日の定期公演を中日新聞が報道。五代目座長 林克彦の襲名口上や、「封印切」での明宝ハムなど地元題材を取り入れた演出が紹介された。</p>
+      <a class="kp-news-link" href="https://www.chunichi.co.jp/article/1140898" target="_blank" rel="noopener">記事を読む（中日新聞Web）→</a>
     </article>
     <article class="kp-news-item kp-reveal" data-cat="イベント">
       <div class="kp-news-meta">
@@ -408,6 +411,7 @@ export function pressPageHTML() {
       </div>
       <h3 class="kp-news-title">中日新聞掲載：役者や公演の画像いかが　気良歌舞伎、NFTで販売</h3>
       <p class="kp-news-desc">役者と公演写真をNFTとして販売する取り組みを中日新聞が報道。20種類のブロマイド風NFTで地歌舞伎の魅力を世界に発信。</p>
+      <a class="kp-news-link" href="https://www.chunichi.co.jp/article/1074606" target="_blank" rel="noopener">記事を読む（中日新聞Web）→</a>
     </article>
     <article class="kp-news-item kp-reveal" data-cat="メディア掲載">
       <div class="kp-news-meta">
@@ -416,6 +420,7 @@ export function pressPageHTML() {
       </div>
       <h3 class="kp-news-title">中日新聞掲載：気良歌舞伎、自立へ一歩　28日に旧明方小講堂で公演、大道具など自作</h3>
       <p class="kp-news-desc">気良座のこけら落とし公演を前に中日新聞が報道。大道具を自作するなど自立へ踏み出す一座の姿と、指導にあたる高雄歌舞伎保存会の古参による「県内に30ある地歌舞伎の中でもかなりうまい方」という評価が紹介された。</p>
+      <a class="kp-news-link" href="https://www.chunichi.co.jp/article/963791" target="_blank" rel="noopener">記事を読む（中日新聞Web）→</a>
     </article>
     <article class="kp-news-item kp-reveal" data-cat="イベント">
       <div class="kp-news-meta">
@@ -448,6 +453,7 @@ export function pressPageHTML() {
       </div>
       <h3 class="kp-news-title">中日新聞掲載：県内4団体が地歌舞伎の競演　郡上で飛騨・美濃歌舞伎大会</h3>
       <p class="kp-news-desc">郡上市総合文化センターで開かれた「飛騨・美濃歌舞伎大会ぐじょう2022」を中日新聞が報道。県内4団体が出演し、気良歌舞伎は「義経千本桜 すし屋の場」を熱演した。</p>
+      <a class="kp-news-link" href="https://www.chunichi.co.jp/article/586194" target="_blank" rel="noopener">記事を読む（中日新聞Web）→</a>
     </article>
     <article class="kp-news-item kp-reveal" data-cat="イベント">
       <div class="kp-news-meta">
@@ -464,6 +470,7 @@ export function pressPageHTML() {
       </div>
       <h3 class="kp-news-title">中日新聞掲載：郡上の「気良歌舞伎」が4夜連続配信</h3>
       <p class="kp-news-desc">「通し上演 仮名手本忠臣蔵」の舞台映像を、インターネットとケーブルテレビで4夜連続で配信することを中日新聞が報道。</p>
+      <a class="kp-news-link" href="https://www.chunichi.co.jp/article/379180" target="_blank" rel="noopener">記事を読む（中日新聞Web）→</a>
     </article>
     <article class="kp-news-item kp-reveal" data-cat="お知らせ">
       <div class="kp-news-meta">
@@ -480,6 +487,7 @@ export function pressPageHTML() {
       </div>
       <h3 class="kp-news-title">中日新聞掲載：「気良歌舞伎」ネット配信　19日にユーチューブと郡上市内CATVで</h3>
       <p class="kp-news-desc">コロナ禍で公演を中止し、無観客で収録した「弁天娘女男白浪」の舞台映像をYouTubeと郡上ケーブルテレビで配信することを中日新聞が報道。</p>
+      <a class="kp-news-link" href="https://www.chunichi.co.jp/article/121756" target="_blank" rel="noopener">記事を読む（中日新聞Web）→</a>
     </article>
     <article class="kp-news-item kp-reveal" data-cat="お知らせ">
       <div class="kp-news-meta">
@@ -1111,6 +1119,11 @@ img { max-width: 100%; display: block; }
   font-size: 0.82rem; color: #b8a88a;
   line-height: 1.65;
 }
+.kp-news-link {
+  display: inline-block; margin-top: 0.45rem;
+  font-size: 0.78rem; color: #c5a255; text-decoration: none;
+}
+.kp-news-link:hover { text-decoration: underline; }
 
 /* ── Footer ── */
 .kp-footer {
