@@ -143,7 +143,7 @@ export function keraOfficialPageHTML() {
       </div>
     </div>
     <div class="kl-next-btns">
-      ${surveyOpen(SURVEY_2026) ? `<a href="/kerakabuki/survey/2026" class="kl-next-btn">ご来場の皆さまへ　アンケートのお願い →</a>` : ""}
+      ${surveyOpen(SURVEY_2026) ? `<a href="/kerakabuki/survey/2026" class="kl-next-btn">ご来場者アンケートのお願い →</a>` : ""}
       <a href="/kerakabuki/annai" class="kl-next-btn">次回公演のご案内を受け取る →</a>
       <a href="/kerakabuki/archive" class="kl-next-btn">これまでの公演を見る →</a>
     </div>

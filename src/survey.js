@@ -29,6 +29,9 @@ const parse = text => { try { const v = JSON.parse(text); return v && typeof v =
 const jst = iso => { const t = Date.parse(iso); return Number.isNaN(t) ? '' : new Date(t + 9 * 3600000).toISOString().slice(0, 16).replace('T', ' '); };
 
 export const surveyOpen = (survey, now = Date.now()) => now <= Date.parse(survey.closesAt);
+// 動作確認用のローカル環境に限り、締切の判定に使う現在時刻を差し替える。
+// 本番は RECEPTION_PREVIEW を設定しないので常に実際の時刻で判定する。
+const clock = env => env.RECEPTION_PREVIEW === '1' && env.SURVEY_NOW ? Date.parse(env.SURVEY_NOW) : Date.now();
 
 export function validateAnswers(survey, answers) {
   if (!answers || typeof answers !== 'object' || Array.isArray(answers)) throw fail('回答内容をご確認ください。');
@@ -135,14 +138,16 @@ export async function handleSurvey(request, env) {
   if (!(path.startsWith(SURVEY_PATH + '/') || path.startsWith(SURVEY_API + '/'))) return null;
   try {
     const page = path.startsWith(SURVEY_PATH + '/') ? path.slice(SURVEY_PATH.length + 1).match(/^([^/]+)(\/admin)?$/) : null;
-    if (page && request.method === 'GET') {
+    // 画面はHEADも受ける（本文なしで同じヘッダーを返す）。
+    if (page && ['GET', 'HEAD'].includes(request.method)) {
       const survey = Object.hasOwn(SURVEYS, page[1]) ? SURVEYS[page[1]] : null;
       if (!survey) return json({ error: 'この操作は利用できません。' }, 404);
       const preview = env.RECEPTION_PREVIEW === '1';
-      if (!page[2]) return html(surveyPage(survey, { open: surveyOpen(survey), available: await tableReady(env), preview }));
+      const head = request.method === 'HEAD';
+      if (!page[2]) return html(head ? null : surveyPage(survey, { open: surveyOpen(survey, clock(env)), available: await tableReady(env), preview }));
       const access = await requireGroupRole(request, env, 'kera', 'manager');
-      if (!access.ok) return html(surveyLoginPage(survey, access.status), access.status);
-      return html(surveyAdminPage(survey, { preview }));
+      if (!access.ok) return html(head ? null : surveyLoginPage(survey, access.status), access.status);
+      return html(head ? null : surveyAdminPage(survey, { preview }));
     }
     const api = path.startsWith(SURVEY_API + '/') ? path.slice(SURVEY_API.length + 1).match(/^([^/]+)(?:\/admin(?:\/(export|\d+))?)?$/) : null;
     const survey = api && Object.hasOwn(SURVEYS, api[1]) ? SURVEYS[api[1]] : null;
@@ -152,7 +157,7 @@ export async function handleSurvey(request, env) {
     const db = env.RECEPTION_DB;
     if (!admin && request.method === 'POST') {
       const body = await readJSON(request);
-      if (!surveyOpen(survey)) throw fail('アンケートの受付は終了しました。ご協力ありがとうございました。', 410);
+      if (!surveyOpen(survey, clock(env))) throw fail('アンケートの受付は終了しました。ご協力ありがとうございました。', 410);
       if (!body || typeof body !== 'object' || Array.isArray(body)) throw fail('回答内容をご確認ください。');
       if (typeof body.request_id !== 'string' || !UUID.test(body.request_id)) throw fail('画面を開き直してください。');
       if (body.website) throw fail('送信内容をご確認ください。');
@@ -161,7 +166,7 @@ export async function handleSurvey(request, env) {
       const payloadHash = await hash(text);
       let existing = await bind(db, 'SELECT id, payload_hash FROM survey_responses WHERE request_id = ?', [body.request_id]).first();
       if (!existing) {
-        if (env.RECEPTION_LIMITER && !(await env.RECEPTION_LIMITER.limit({ key: 'survey:' + (request.headers.get('CF-Connecting-IP') || 'local') })).success) throw fail('少し時間をおいて、もう一度送信してください。', 429);
+        if (env.SURVEY_LIMITER && !(await env.SURVEY_LIMITER.limit({ key: 'survey:' + (request.headers.get('CF-Connecting-IP') || 'local') })).success) throw fail('少し時間をおいて、もう一度送信してください。', 429);
         const now = new Date().toISOString();
         await bind(db, 'INSERT INTO survey_responses (survey_id,request_id,payload_hash,answers,created_at,updated_at) VALUES (?,?,?,?,?,?) ON CONFLICT(request_id) DO NOTHING', [survey.id, body.request_id, payloadHash, text, now, now]).run();
         existing = await bind(db, 'SELECT id, payload_hash FROM survey_responses WHERE request_id = ?', [body.request_id]).first();

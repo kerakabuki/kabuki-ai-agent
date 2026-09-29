@@ -6,7 +6,8 @@ import { surveyOpen, validateAnswers, tallySurvey, surveyCSV } from '../src/surv
 import { surveyPage, surveyAdminPage, surveyLoginPage } from '../src/survey_page.js';
 import { keraOfficialPageHTML } from '../src/kera_official_page.js';
 import { postcardPageHTML } from '../src/postcard_page.js';
-const { mf, db } = await runtime();
+// 締切の判定はローカル環境だけ SURVEY_NOW で固定し、実行日に左右されないようにする。
+const { mf, db } = await runtime({ bindings: { SURVEY_NOW: '2026-10-01T12:00:00+09:00' } });
 const origin = 'https://kabukiplus.com';
 const api = '/api/kerakabuki/survey/2026';
 const base = '/kerakabuki/survey/2026';
@@ -39,6 +40,18 @@ try {
   check('共有用のOGPがある', formHTML.includes('property="og:title" content="令和八年 気良歌舞伎公演 ご来場者アンケート"') && formHTML.includes('og:image'));
   check('フォームに全設問がある', questions.every(q => formHTML.includes(`name="${q.id}"`)) && formHTML.includes('name="website"'));
   check('本番のテーブルがあれば準備中にしない', !formHTML.includes('アンケートの準備中です') && formHTML.includes('id="surveyForm"'));
+  check('共有URLをog:urlで示す', formHTML.includes('<meta property="og:url" content="https://kabukiplus.com/kerakabuki/survey/2026">'));
+  check('スクリプトが止まっても感想をURLに載せない', formHTML.includes('<form id="surveyForm" method="post" novalidate>'));
+  check('ヒントとエラーを各入力に結び付ける', formHTML.includes('name="overall" value="great" aria-describedby="overall-error"') && formHTML.includes('name="highlights" value="scene1" aria-describedby="highlights-hint highlights-error"') && formHTML.includes('aria-describedby="comment-hint comment-error comment-count"') && !/<fieldset[^>]*aria-describedby/.test(formHTML));
+  check('受付済みの案内は通常は隠す', /<p class="notice" id="alreadyNotice" hidden>この回答は、すでに受け付けています/.test(formHTML));
+  const idLine = formHTML.match(/const newId=[^\n]*;/)[0];
+  const makeId = vm.runInNewContext(idLine + 'newId', { crypto: { getRandomValues: a => crypto.getRandomValues(a) } });
+  const ids = Array.from({ length: 500 }, makeId);
+  check('randomUUIDのない端末でもサーバーが受け付けるUUID v4を作る', ids.every(id => /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(id)) && new Set(ids).size === ids.length);
+  const head = await call(base, 'HEAD');
+  check('回答画面はHEADに本文なしで答える', head.status === 200 && head.headers.get('cache-control').includes('no-store') && head.headers.get('content-type').startsWith('text/html') && (await head.arrayBuffer()).byteLength === 0);
+  const adminHead = await call(base + '/admin', 'HEAD');
+  check('集計画面のHEADも権限を確かめる', adminHead.status === 401 && (await adminHead.arrayBuffer()).byteLength === 0 && (await call(base + '/admin', 'HEAD', undefined, manager)).status === 200);
   check('未知の年度は404', (await call('/kerakabuki/survey/2027')).status === 404 && (await call('/api/kerakabuki/survey/2027', 'POST', answer())).status === 404);
   check('/kerakabuki/survey 自体は他のルートに渡す', !(await (await call('/kerakabuki/survey')).text()).includes('この操作は利用できません。'));
 
@@ -140,5 +153,14 @@ try {
   check('テーブルがなければ準備中を表示しフォームを出さない', pending.includes('アンケートの準備中です') && !pending.includes('id="surveyForm"'));
   check('テーブルがなければ送信は503', (await post(answer())).status === 503);
   await db.prepare('ALTER TABLE survey_responses_hold RENAME TO survey_responses').run();
+  // 期限後の環境を別に立て、画面と送信の両方が締め切られることを確かめる。
+  const late = await runtime({ bindings: { SURVEY_NOW: '2026-11-01T00:00:00+09:00' } });
+  try {
+    const closed = await (await late.mf.dispatchFetch(origin + base)).text();
+    check('期限後は回答画面が受付終了でフォームなし', closed.includes('アンケートの受付は終了しました') && !closed.includes('id="surveyForm"'));
+    const lateAnswer = answer();
+    const lateSend = await late.mf.dispatchFetch(origin + api, { method: 'POST', headers: { 'content-type': 'application/json', origin }, body: JSON.stringify(lateAnswer) });
+    check('期限後の送信は410', lateSend.status === 410 && (await lateSend.json()).error.includes('受付は終了しました') && (await late.db.prepare('SELECT COUNT(*) AS n FROM survey_responses').first()).n === 0);
+  } finally { await late.mf.dispose(); }
   console.log(JSON.stringify({ passed: checks.length, checks }, null, 2));
 } finally { await mf.dispose(); }

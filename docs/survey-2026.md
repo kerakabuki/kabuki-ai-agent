@@ -16,7 +16,9 @@
 
 ## 保存と個人情報
 
-無記名。氏名・連絡先はうかがわず、IPアドレス・ブラウザー情報も保存しない（受付と同じ送信制限 1IPあたり120回/60秒 の判定にだけIPを使う）。回答は受付と同じD1 `kerakabuki-reception`（`RECEPTION_DB`）の `survey_responses` に、正規化したJSONで保存する。受付と同じく送信番号（UUID）とハッシュで二重送信を防ぐ。ご感想の欄には「お名前やご連絡先は書かないでください」と案内している。
+無記名。氏名・連絡先はうかがわず、IPアドレス・ブラウザー情報も保存しない（送信制限の判定にだけIPを使う）。回答は受付と同じD1 `kerakabuki-reception`（`RECEPTION_DB`）の `survey_responses` に、正規化したJSONで保存する。受付と同じく送信番号（UUID）とハッシュで二重送信を防ぐ。ご感想の欄には「お名前やご連絡先は書かないでください」と案内している。
+
+送信制限はアンケート専用の `SURVEY_LIMITER`（`wrangler.toml`）で、1IPあたり10回/60秒。無記名の公開フォームの連投対策で、受付の `RECEPTION_LIMITER`（120回/60秒）とは別に数える。同じ回答の再送は制限の対象外（送信番号で重複を判定してから数える）。
 
 ご感想を公式サイトやSNSで紹介するのは、回答者が「紹介してよい」を選んだものに限り、担当者が判断する。「地域と年代を添える」を許可された場合も、明宝・郡上市内の方は「郡上市」とまとめるなど、狭い地域と年代の組み合わせで人が特定されないよう注意する。
 
@@ -38,9 +40,28 @@
 
 ## 公開手順
 
-1. **mainへマージする前に** migrationを適用する：`npx wrangler d1 migrations apply kerakabuki-reception --remote`（`0003_survey.sql`）。未適用のまま公開すると、回答画面は「アンケートの準備中です」表示になる（回答者が全問答えてから送信で失敗することはない）。
+1. **mainへマージする前に** migrationを適用する。リポジトリ直下（`wrangler.toml` のある場所）で実行する：
+   ```powershell
+   npx wrangler d1 migrations apply kerakabuki-reception --remote
+   npx wrangler d1 migrations list kerakabuki-reception --remote
+   ```
+   2つ目のコマンドで `0003_survey.sql` が適用済み（未適用の一覧に出ない）ことを確かめる。未適用のまま公開すると、回答画面は「アンケートの準備中です」表示になる（回答者が全問答えてから送信で失敗することはない）。
 2. mainへのpushで既存のGitHub Actionsがデプロイする。
-3. 公開後、回答画面の表示と送信を確かめる。テスト回答をしたら、担当者画面で「集計から除外」する。未ログインで担当者URL・CSVが開けないことも確認する。
+3. 公開後、回答画面の表示と送信を確かめる。未ログインで担当者URL・CSVが開けないことも確認する。
+
+## テスト回答・荒らしの片付け
+
+公開後のテスト回答は、担当者画面の「集計から除外」で足りる。CSVや除外件数にも残したくなければ、集計画面の回答番号（No.）を確かめて、リポジトリ直下で削除する：
+
+```powershell
+npx wrangler d1 execute kerakabuki-reception --remote --command "DELETE FROM survey_responses WHERE survey_id='2026' AND id=番号"
+```
+
+連投・荒らしがあった場合は、時刻の範囲でまとめて集計から除外する（削除はしないので、必要なら画面の「集計に戻す」で個別に戻せる）。`created_at` はUTCのISO文字列（例：日本時間 10月2日 21:00 は `2026-10-02T12:00:00.000Z`）なので、日本時間から9時間引いて指定する：
+
+```powershell
+npx wrangler d1 execute kerakabuki-reception --remote --command "UPDATE survey_responses SET excluded=1, updated_at='2026-10-03T00:00:00.000Z', updated_by='wrangler' WHERE survey_id='2026' AND created_at BETWEEN '2026-10-02T12:00:00.000Z' AND '2026-10-02T12:30:00.000Z'"
+```
 
 ## 開発・検証
 
@@ -50,6 +71,6 @@ node scripts/reception-test.mjs
 node scripts/reception-preview.mjs
 ```
 
-依存が別の場所にある場合は `RECEPTION_DEPS` にminiflare・esbuildを含むpackage.jsonの絶対パスを指定する。テストは一時D1・KVを使い、migrationを自動で適用する。回答の送信を含むため、回答期限内に実行する（期限後は送信系の項目が410で失敗する）。
+依存が別の場所にある場合は `RECEPTION_DEPS` にminiflare・esbuildを含むpackage.jsonの絶対パスを指定する。テストは一時D1・KVを使い、migrationを自動で適用する。締切の判定に使う現在時刻は、ローカル環境（`RECEPTION_PREVIEW=1`）に限り `SURVEY_NOW` で固定しているので、実行日に左右されない（本番には影響しない）。
 
 プレビューは `http://127.0.0.1:8789/kerakabuki/survey/2026`。集計画面は `/preview-admin` で架空の担当者としてログインしたあと、`/kerakabuki/survey/2026/admin` を開く。ローカルDB・KVを本番へ取り込まない。
