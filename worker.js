@@ -26,6 +26,7 @@
 // =========================================================
 import { handleQuizMessage, loadQuizState, clearQuizCache } from "./src/quiz.js";
 import { handleReception } from "./src/reception.js";
+import { handleSurvey } from "./src/survey.js";
 
 import { mainMenuFlex, mainMenuMessage } from "./src/flex_menu.js";
 
@@ -377,6 +378,8 @@ export default {
     let path = url.pathname;
     const receptionResponse = await handleReception(request, env);
     if (receptionResponse) return receptionResponse;
+    const surveyResponse = await handleSurvey(request, env);
+    if (surveyResponse) return surveyResponse;
     // originを保持（メニューの稽古モードリンク生成用）
     env._origin = url.origin;
 
@@ -514,6 +517,7 @@ self.addEventListener('fetch', (event) => {
 
   // API・認証はネットワーク直通（キャッシュしない）
   if (url.pathname.startsWith('/kerakabuki/reception/') ||
+      url.pathname.startsWith('/kerakabuki/survey/') ||
       url.pathname.startsWith('/api/') ||
       url.pathname.startsWith('/auth/') ||
       url.pathname.startsWith('/line')) {
