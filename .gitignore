@@ -16,3 +16,7 @@ travel-writer/
 .claude/settings.local.json
 .gemini_api_key
 studio/episodes/*.bak
+.reception-build/
+.reception-preview-state/
+.reception-preview-kv/
+test-results.json

@@ -7,6 +7,8 @@
 // =========================================================
 
 import { KERA_SITE_URL, KERA_OGP_URL } from "./kera_brand.js";
+import { SURVEY_2026 } from "./survey_2026.js";
+import { surveyOpen } from "./survey.js";
 
 export function postcardPageHTML() {
 
@@ -100,7 +102,7 @@ export function postcardPageHTML() {
 <body>
 
 <!-- ═══════ HERO ═══════ -->
-<div class="pc-ended">令和八年公演は、満員のうちに終演しました。ご来場ありがとうございました。<br><a href="/kerakabuki/annai">次回公演のご案内を受け取る →</a></div>
+<div class="pc-ended">令和八年公演は、満員のうちに終演しました。ご来場ありがとうございました。<br><a href="/kerakabuki/annai">次回公演のご案内を受け取る →</a>${surveyOpen(SURVEY_2026) ? `<br><a href="/kerakabuki/survey/2026">ご来場の皆さまへ：アンケートにご協力ください →</a>` : ""}</div>
 <header class="pc-hero">
   <p class="pc-hero-kicker">令和八年　気良歌舞伎公演</p>
   <h1 class="pc-hero-title">曽根崎心中</h1>
