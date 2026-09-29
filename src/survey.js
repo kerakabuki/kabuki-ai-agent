@@ -71,7 +71,7 @@ export function validateAnswers(survey, answers) {
   };
   // 依存先の回答が決まってから依存する設問を判定する（定義順に依存しない）。
   questions.filter(q => !q.dependsOn).forEach(check);
-  questions.filter(q => q.dependsOn && !blank(picked[q.dependsOn])).forEach(check);
+  questions.filter(q => q.dependsOn && !blank(picked[q.dependsOn]) && (q.dependsValue === undefined || picked[q.dependsOn] === q.dependsValue)).forEach(check);
   for (const q of questions) if (q.required && blank(picked[q.id])) throw fail(`「${q.label}」にお答えください。`);
   // 定義順に並べ直し、保存内容とハッシュを入力の並び順に左右されないようにする。
   const result = {};
@@ -83,8 +83,8 @@ export function validateAnswers(survey, answers) {
 }
 
 export function tallySurvey(survey, rows) {
-  const questions = questionsOf(survey).filter(q => (q.type === 'single' || q.type === 'multi') && !q.dependsOn);
-  const tallies = Object.fromEntries(questions.map(q => [q.id, { answered: 0, counts: Object.fromEntries(q.options.map(([v]) => [v, 0])), other: [] }]));
+  const questions = questionsOf(survey).filter(q => (q.type === 'single' || q.type === 'multi') && (!q.dependsOn || q.dependsValue !== undefined));
+  const tallies = Object.fromEntries(questions.map(q => [q.id, { answered: 0, eligible: 0, counts: Object.fromEntries(q.options.map(([v]) => [v, 0])), other: [] }]));
   let total = 0, excluded = 0, comments = 0, quotable = 0, lastAt = null;
   for (const row of rows) {
     if (Number(row.excluded) === 1) { excluded++; continue; }
@@ -95,7 +95,10 @@ export function tallySurvey(survey, rows) {
     if (typeof answers.comment === 'string' && answers.comment) comments++;
     if (['profile', 'anonymous'].includes(answers.quote)) quotable++;
     for (const q of questions) {
-      const tally = tallies[q.id]; const value = answers[q.id];
+      const tally = tallies[q.id];
+      if (q.dependsOn && answers[q.dependsOn] !== q.dependsValue) continue;
+      tally.eligible++;
+      const value = answers[q.id];
       const chosen = (q.type === 'single' ? [value] : Array.isArray(value) ? value : []).filter(v => typeof v === 'string' && Object.hasOwn(tally.counts, v));
       if (!chosen.length) continue;
       tally.answered++;
