@@ -38,7 +38,7 @@ try {
   check('回答画面をキャッシュしない', form.headers.get('cache-control').includes('no-store'));
   check('回答画面を検索に載せない', form.headers.get('x-robots-tag').includes('noindex') && formHTML.includes('content="noindex,nofollow"'));
   check('共有用のOGPがある', formHTML.includes('property="og:title" content="令和八年 気良歌舞伎公演 ご来場者アンケート"') && formHTML.includes('og:image'));
-  check('フォームに全設問がある', questions.every(q => formHTML.includes(`name="${q.id}"`)) && formHTML.includes('name="website"'));
+  check('フォームに全設問がある', questions.filter(q => !q.legacy).every(q => formHTML.includes(`name="${q.id}"`)) && formHTML.includes('name="website"'));
   check('本番のテーブルがあれば準備中にしない', !formHTML.includes('アンケートの準備中です') && formHTML.includes('id="surveyForm"'));
   check('共有URLをog:urlで示す', formHTML.includes('<meta property="og:url" content="https://kabukiplus.com/kerakabuki/survey/2026">'));
   check('スクリプトが止まっても感想をURLに載せない', formHTML.includes('<form id="surveyForm" method="post" novalidate>'));
@@ -137,6 +137,45 @@ try {
   check('tallySurveyは壊れた行と除外を数えない', unit.total === 1 && unit.excluded === 1 && unit.tallies.overall.counts.bad === 0 && unit.comments === 1 && unit.quotable === 0 && unit.last_at === 'a');
   check('tallySurveyは全選択肢を0で初期化', Object.keys(unit.tallies.highlights.counts).length === 11 && unit.tallies.highlights.answered === 0);
   check('validateAnswersは依存先があれば紹介の可否を残す', validateAnswers(SURVEY_2026, { quote: 'private', comment: 'x', overall: 'fair' }).quote === 'private');
+
+  // 公開後の設問追加: 保存・集計・旧回答の再送まで検証する。
+  const prefectureQuestion = questions.find(q => q.id === 'prefecture');
+  check('都道府県は47都道府県と海外の48択で重複しない', prefectureQuestion.options.length === 48 && new Set(prefectureQuestion.options.map(o => o[0])).size === 48 && new Set(prefectureQuestion.options.map(o => o[1])).size === 48 && prefectureQuestion.options[0][1] === '北海道' && prefectureQuestion.options.at(-2)[1] === '沖縄県' && prefectureQuestion.options.at(-1)[1] === '海外');
+  check('都道府県は任意の選択欄で旧地域設問は表示しない', formHTML.includes('<select id="prefecture" name="prefecture"') && formHTML.includes('選択してください（任意）') && !formHTML.includes('name="region"') && !prefectureQuestion.required);
+  check('岐阜県内の地域は最初は非表示かつ無効', formHTML.includes('<fieldset class="q" id="q-gifu_area" hidden disabled>'));
+  check('幕間解説とイヤホンガイドを独立した選択肢として表示', formHTML.includes('value="okuda_intermission"') && formHTML.includes('おくだ健太郎氏による幕間解説') && formHTML.includes('value="earphone_guide"') && formHTML.includes('イヤホンガイド'));
+  const beforeInvalidRegion = await count();
+  check('一覧にない都道府県を拒否', (await post(answer({ prefecture: 'unknown' }))).status === 400);
+  check('都道府県に配列を渡すと拒否', (await post(answer({ prefecture: ['gifu'] }))).status === 400);
+  check('岐阜県の無効な地域を拒否', (await post(answer({ prefecture: 'gifu', gifu_area: 'unknown' }))).status === 400);
+  check('解説も特になしとの同時選択を拒否', (await post(answer({ aids: ['none', 'okuda_intermission'] }))).status === 400 && (await post(answer({ aids: ['none', 'earphone_guide'] }))).status === 400);
+  check('無効な地域や解説の回答は保存しない', await count() === beforeInvalidRegion);
+  const newGifu = answer({ prefecture: 'gifu', gifu_area: 'meiho', aids: ['earphone_guide', 'okuda_intermission'] });
+  check('岐阜県と明宝と解説2項目を保存', (await post(newGifu)).status === 200 && JSON.stringify(await stored(newGifu.request_id)) === JSON.stringify({ overall: 'great', aids: ['okuda_intermission', 'earphone_guide'], prefecture: 'gifu', gifu_area: 'meiho' }));
+  const withoutArea = answer({ prefecture: 'gifu' });
+  check('岐阜県内の地域は未回答でも送信可能', (await post(withoutArea)).status === 200 && !('gifu_area' in await stored(withoutArea.request_id)));
+  const newIshikawa = answer({ prefecture: 'ishikawa', gifu_area: 'gujo' });
+  check('他県の回答に岐阜県内の地域を混ぜて保存しない', (await post(newIshikawa)).status === 200 && (await stored(newIshikawa.request_id)).prefecture === 'ishikawa' && !('gifu_area' in await stored(newIshikawa.request_id)));
+  const noRegion = answer({ gifu_area: 'meiho' });
+  check('都道府県の未回答を許可し従属地域は捨てる', (await post(noRegion)).status === 200 && JSON.stringify(await stored(noRegion.request_id)) === '{"overall":"great"}');
+  const overseas = answer({ prefecture: 'abroad' });
+  check('海外を保存できる', (await post(overseas)).status === 200 && (await stored(overseas.request_id)).prefecture === 'abroad');
+  const beforeRetry = await count();
+  check('新しい地域・解説の再送でも重複しない', (await post(newGifu)).status === 200 && await count() === beforeRetry);
+  // 旧版が保存した正規化済みJSONとハッシュを直接用意し、改修後に同じ内容を再送する。
+  const legacyAnswers = { overall: 'great', aids: ['pamphlet', 'kaisetsu'], visits: 'first', region: 'meiho', age: '40s' };
+  const legacyText = JSON.stringify(legacyAnswers);
+  const legacyHash = Buffer.from(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(legacyText))).toString('hex');
+  const legacyId = crypto.randomUUID();
+  await db.prepare('INSERT INTO survey_responses (survey_id,request_id,payload_hash,answers,created_at,updated_at) VALUES (?,?,?,?,?,?)').bind('2026', legacyId, legacyHash, legacyText, '2026-09-29T10:00:00.000Z', '2026-09-29T10:00:00.000Z').run();
+  const beforeLegacyRetry = await count();
+  check('変更前に保存した回答を再送しても200で件数を増やさない', (await post(answer(legacyAnswers, { request_id: legacyId }))).status === 200 && await count() === beforeLegacyRetry);
+  check('旧回答の保存内容とハッシュを変更しない', (await db.prepare('SELECT answers,payload_hash FROM survey_responses WHERE request_id=?').bind(legacyId).first()).answers === legacyText && (await db.prepare('SELECT payload_hash FROM survey_responses WHERE request_id=?').bind(legacyId).first()).payload_hash === legacyHash);
+  const updated = await summary();
+  check('新しい都道府県と解説を担当者APIで集計', updated.tallies.prefecture.counts.gifu === 2 && updated.tallies.prefecture.counts.ishikawa === 1 && updated.tallies.prefecture.counts.abroad === 1 && updated.tallies.aids.counts.okuda_intermission === 1 && updated.tallies.aids.counts.earphone_guide === 1);
+  check('岐阜県内集計の対象は岐阜県回答者だけ', updated.tallies.gifu_area.eligible === 2 && updated.tallies.gifu_area.answered === 1 && updated.tallies.gifu_area.counts.meiho === 1 && updated.tallies.gifu_area.counts.gujo === 0);
+  const updatedCSV = await (await call(api + '/admin/export', 'GET', undefined, manager)).text();
+  check('CSVに新しい地域と解説を日本語で出力し旧地域も残す', updatedCSV.includes('"お住まい","都道府県","岐阜県内の地域"') && updatedCSV.includes('"石川県"') && updatedCSV.includes('"岐阜県","明宝（気良を含む）"') && updatedCSV.includes('おくだ健太郎氏による幕間解説、イヤホンガイド') && updatedCSV.includes('"明宝（気良を含む）","",""'));
 
   const closes = Date.parse(SURVEY_2026.closesAt);
   check('締切前はsurveyOpenがtrue', surveyOpen(SURVEY_2026, Date.parse('2026-09-27T09:00:00+09:00')) && surveyOpen(SURVEY_2026, closes));

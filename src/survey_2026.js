@@ -1,6 +1,15 @@
 // 令和八年 気良歌舞伎公演「曽根崎心中」ご来場者アンケートの設問定義。
 // 文言・選択肢を変えるときはこのファイルだけを直す。
 // 選択肢の値（英字）はDBに保存されるので公開後は変えない（表示名だけ直す）。
+const PREFECTURES = [
+  ['hokkaido', '北海道'], ['aomori', '青森県'], ['iwate', '岩手県'], ['miyagi', '宮城県'], ['akita', '秋田県'], ['yamagata', '山形県'], ['fukushima', '福島県'],
+  ['ibaraki', '茨城県'], ['tochigi', '栃木県'], ['gunma', '群馬県'], ['saitama', '埼玉県'], ['chiba', '千葉県'], ['tokyo', '東京都'], ['kanagawa', '神奈川県'],
+  ['niigata', '新潟県'], ['toyama', '富山県'], ['ishikawa', '石川県'], ['fukui', '福井県'], ['yamanashi', '山梨県'], ['nagano', '長野県'], ['gifu', '岐阜県'], ['shizuoka', '静岡県'], ['aichi', '愛知県'],
+  ['mie', '三重県'], ['shiga', '滋賀県'], ['kyoto', '京都府'], ['osaka', '大阪府'], ['hyogo', '兵庫県'], ['nara', '奈良県'], ['wakayama', '和歌山県'],
+  ['tottori', '鳥取県'], ['shimane', '島根県'], ['okayama', '岡山県'], ['hiroshima', '広島県'], ['yamaguchi', '山口県'],
+  ['tokushima', '徳島県'], ['kagawa', '香川県'], ['ehime', '愛媛県'], ['kochi', '高知県'],
+  ['fukuoka', '福岡県'], ['saga', '佐賀県'], ['nagasaki', '長崎県'], ['kumamoto', '熊本県'], ['oita', '大分県'], ['miyazaki', '宮崎県'], ['kagoshima', '鹿児島県'], ['okinawa', '沖縄県'],
+];
 export const SURVEY_2026 = {
   id: '2026',
   eyebrow: '令和八年 気良歌舞伎公演 · 2026.9.26',
@@ -16,11 +25,14 @@ export const SURVEY_2026 = {
       { id: 'relay', type: 'single', label: '第一場・第二場と第三場で、お初と徳兵衛を別の役者が演じ継ぐ「配役リレー」はいかがでしたか', short: '配役リレー', options: [['great', 'とてもよかった'], ['good', 'よかった'], ['neutral', 'どちらともいえない'], ['confusing', 'わかりにくかった'], ['unnoticed', '気づかなかった']] },
       { id: 'video', type: 'single', label: '舞台の背景に映像を映す演出（プロジェクションマッピング）はいかがでしたか', short: '映像の演出', options: [['great', 'とてもよかった'], ['good', 'よかった'], ['neutral', 'どちらともいえない'], ['without', 'ないほうがよかった'], ['unnoticed', '覚えていない']] },
       { id: 'story', type: 'single', label: 'お話の筋はわかりましたか', short: '筋のわかりやすさ', options: [['clear', 'よくわかった'], ['mostly', 'だいたいわかった'], ['partly', 'あまりわからなかった'], ['unclear', 'わからなかった']] },
-      { id: 'aids', type: 'multi', exclusive: 'none', label: 'お話をつかむ助けになったものをお選びください', hint: 'いくつでもお選びいただけます。', short: '理解の助けになったもの', options: [['pamphlet', '当日のパンフレット'], ['kaisetsu', '演目解説のページ（QRコード）'], ['youtube', 'YouTubeの解説動画'], ['web', 'noteの記事・ウェブの演目ガイド'], ['film', '映画『国宝』'], ['known', 'もともと知っていた'], ['none', '特になし']] },
+      { id: 'aids', type: 'multi', exclusive: 'none', label: 'お話をつかむ助けになったものをお選びください', hint: 'いくつでもお選びいただけます。', short: '理解の助けになったもの', options: [['pamphlet', '当日のパンフレット'], ['okuda_intermission', 'おくだ健太郎氏による幕間解説'], ['earphone_guide', 'イヤホンガイド'], ['kaisetsu', '演目解説のページ（QRコード）'], ['youtube', 'YouTubeの解説動画'], ['web', 'noteの記事・ウェブの演目ガイド'], ['film', '映画『国宝』'], ['known', 'もともと知っていた'], ['none', '特になし']] },
     ] },
     { title: 'あなたについて', questions: [
       { id: 'visits', type: 'single', label: '気良歌舞伎をご覧になるのは何回目ですか', short: '観劇回数', options: [['first', 'はじめて'], ['few', '2〜4回目'], ['many', '5回以上']] },
-      { id: 'region', type: 'single', label: 'どちらからお越しになりましたか', short: 'お住まい', options: [['meiho', '明宝（気良を含む）'], ['gujo', '郡上市内（明宝以外）'], ['gifu', '岐阜県内（郡上市外）'], ['aichi', '愛知県'], ['other_pref', 'その他の都道府県'], ['abroad', '海外']] },
+      // 公開当初の回答と、開いたままの旧フォームからの送信・再送を保持する。新しい回答画面には出さない。
+      { id: 'region', legacy: true, type: 'single', label: 'どちらからお越しになりましたか', short: 'お住まい', options: [['meiho', '明宝（気良を含む）'], ['gujo', '郡上市内（明宝以外）'], ['gifu', '岐阜県内（郡上市外）'], ['aichi', '愛知県'], ['other_pref', 'その他の都道府県'], ['abroad', '海外']] },
+      { id: 'prefecture', type: 'single', presentation: 'select', label: 'お住まいの都道府県をお選びください', short: '都道府県', options: [...PREFECTURES, ['abroad', '海外']] },
+      { id: 'gifu_area', type: 'single', dependsOn: 'prefecture', dependsValue: 'gifu', label: '岐阜県内のどちらからお越しになりましたか', hint: '差し支えなければお選びください。', short: '岐阜県内の地域', options: [['meiho', '明宝（気良を含む）'], ['gujo', '郡上市内（明宝以外）'], ['other_gifu', '岐阜県内（郡上市外）']] },
       { id: 'age', type: 'single', label: '年代をお選びください', short: '年代', options: [['u19', '10代以下'], ['20s', '20代'], ['30s', '30代'], ['40s', '40代'], ['50s', '50代'], ['60s', '60代'], ['70p', '70代以上']] },
       { id: 'source', type: 'multi', other: true, label: 'この公演を何で知りましたか', hint: 'いくつでもお選びいただけます。', short: '知ったきっかけ', options: [['postcard', '案内のはがき'], ['word', '家族・知人から'], ['cast', '出演者・関係者から'], ['newspaper', '新聞'], ['sns', 'Instagram・Facebookなど SNS'], ['youtube', 'YouTube'], ['website', 'ウェブサイト'], ['flyer', 'チラシ・ポスター'], ['local', '地域の回覧・お知らせ'], ['regular', '毎年来ている'], ['other', 'その他']] },
       { id: 'kokuho', type: 'single', label: '映画『国宝』をご覧になりましたか', short: '映画『国宝』', options: [['trigger', '観た（今回の来場のきっかけになった）'], ['seen', '観た（来場のきっかけではない）'], ['not_seen', '観ていない']] },

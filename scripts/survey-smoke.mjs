@@ -8,13 +8,17 @@ const api = '/api/kerakabuki/survey/2026';
 const results = [];
 const check = (name, ok, detail = '') => { results.push(ok); console.log(`${ok ? 'OK' : 'NG'}  ${name}${detail ? '（' + detail + '）' : ''}`); };
 const get = path => fetch(base + path, { redirect: 'manual', headers: { 'cache-control': 'no-cache' } });
-const answer = request_id => JSON.stringify({ request_id, website: '', answers: { overall: 'great', comment: '【動作確認】公開後の送信テストです。確認後すぐに削除します。' } });
+const answer = request_id => JSON.stringify({ request_id, website: '', answers: { overall: 'great', prefecture: 'gifu', gifu_area: 'meiho', aids: ['okuda_intermission', 'earphone_guide'], comment: '【動作確認】公開後の送信テストです。確認後すぐに削除します。' } });
 const send = (request_id, from) => fetch(base + api, { method: 'POST', headers: { 'content-type': 'application/json', origin: from }, body: answer(request_id) });
 
 const page = await get(survey);
 const html = await page.text();
 check('回答画面が表示される', page.status === 200, String(page.status));
 check('フォームがある（「準備中」ではない）', html.includes('id="surveyForm"'));
+const prefectureSelect = html.match(/<select id="prefecture"[^>]*>([\s\S]*?)<\/select>/)?.[1] || '';
+check('47都道府県と海外を選択できる', [...prefectureSelect.matchAll(/<option value="[^"]+"/g)].length === 48 && prefectureSelect.includes('北海道') && prefectureSelect.includes('沖縄県') && prefectureSelect.includes('海外'));
+check('岐阜県内の地域は選択前に表示しない', html.includes('<fieldset class="q" id="q-gifu_area" hidden disabled>'));
+check('幕間解説とイヤホンガイドを選べる', html.includes('value="okuda_intermission"') && html.includes('おくだ健太郎氏による幕間解説') && html.includes('value="earphone_guide"'));
 check('回答画面をキャッシュしない', (page.headers.get('cache-control') || '').includes('no-store'));
 check('回答画面を検索に載せない', (page.headers.get('x-robots-tag') || '').includes('noindex'));
 const top = await get('/kerakabuki');
