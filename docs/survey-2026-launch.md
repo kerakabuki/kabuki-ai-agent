@@ -195,4 +195,4 @@ DELETE の条件には必ず `request_id` を入れる。ほかの行は消さ�
 
 - KABUKI PLUS+ にログインした状態で、担当者画面 https://kabukiplus.com/kerakabuki/survey/2026/admin が開けることを確かめる
 - SNSで告知する。文面は `docs/pr/sns-survey-2026.md`、画像は `assets/sns/survey-2026-feed.jpg`（フィード用）と `assets/sns/survey-2026-story.jpg`（ストーリーズ用）
-- 10月24日ごろにリマインドを投稿する。10月31日の締切を過ぎたら、Instagram のプロフィールのリンクと固定表示を元に戻す
+- 10月24日ごろにリマインドを投稿する。10月31日の締切を過ぎたら、Linktree（Instagram のプロフィールのリンク）からアンケートのリンクを外し、固定表示も外す
