@@ -177,6 +177,83 @@ try {
   const updatedCSV = await (await call(api + '/admin/export', 'GET', undefined, manager)).text();
   check('CSVに新しい地域と解説を日本語で出力し旧地域も残す', updatedCSV.includes('"お住まい","都道府県","岐阜県内の地域"') && updatedCSV.includes('"石川県"') && updatedCSV.includes('"岐阜県","明宝（気良を含む）"') && updatedCSV.includes('おくだ健太郎氏による幕間解説、イヤホンガイド') && updatedCSV.includes('"明宝（気良を含む）","",""'));
 
+  // 10月の設問追加（座席の位置）: 表示・保存・集計・掛け合わせを検証する。
+  const seatRadios = [...formHTML.matchAll(/<input type="radio" name="seat" value="([^"]+)"/g)].map(m => m[1]);
+  check('座席の位置は4択のラジオで「会場で気になったこと」より前に出る', JSON.stringify(seatRadios) === JSON.stringify(['front', 'middle', 'back', 'standing']) && formHTML.indexOf('name="seat"') < formHTML.indexOf('name="improve"') && !questions.find(q => q.id === 'seat').required);
+  const beforeInvalidSeat = await count();
+  check('選択肢にない座席の位置を拒否し保存しない', (await post(answer({ seat: 'balcony' }))).status === 400 && (await post(answer({ seat: ['back'] }))).status === 400 && await count() === beforeInvalidSeat);
+  const seated = answer({ seat: 'back', improve: ['seats', 'sound'] });
+  check('座席の位置を保存できる', (await post(seated)).status === 200 && JSON.stringify(await stored(seated.request_id)) === JSON.stringify({ overall: 'great', seat: 'back', improve: ['seats', 'sound'] }));
+  const seatRows = [
+    { id: 1, answers: '{"overall":"great","seat":"back","improve":["sound"]}', excluded: 0, created_at: 'a' },
+    { id: 2, answers: '{"overall":"great","seat":"back","improve":["seats"]}', excluded: 0, created_at: 'b' },
+    { id: 3, answers: '{"overall":"great","seat":"front","improve":["none"]}', excluded: 0, created_at: 'c' },
+    { id: 4, answers: '{"overall":"great","seat":"middle"}', excluded: 0, created_at: 'd' },
+    { id: 5, answers: '{"overall":"great","improve":["sound"]}', excluded: 0, created_at: 'e' },
+    { id: 6, answers: '{"overall":"great","seat":"back","improve":["sound"]}', excluded: 1, created_at: 'f' },
+    { id: 7, answers: '{"seat":"back",壊れた', excluded: 0, created_at: 'g' },
+  ];
+  const seatUnit = tallySurvey(SURVEY_2026, seatRows);
+  check('tallySurveyは座席の位置を数える', seatUnit.tallies.seat.answered === 4 && seatUnit.tallies.seat.counts.back === 2 && seatUnit.tallies.seat.counts.front === 1 && seatUnit.tallies.seat.counts.middle === 1 && seatUnit.tallies.seat.counts.standing === 0);
+  const seatTab = seatUnit.crosstabs.find(c => c.id === 'seat_improve');
+  const seatLine = v => seatTab.rows.find(r => r.value === v);
+  check('掛け合わせは座席の位置を定義順に並べ、両方に答えた人だけを分母にする', seatUnit.crosstabs.length === 1 && seatTab.by === 'seat' && seatTab.target === 'improve' && seatTab.values.join() === 'sound,seats' && seatTab.rows.map(r => r.value).join() === 'front,middle,back,standing'
+    && seatLine('back').n === 2 && seatLine('back').counts.sound === 1 && seatLine('back').counts.seats === 1
+    && seatLine('front').n === 1 && seatLine('front').counts.sound === 0 && seatLine('front').counts.seats === 0
+    && seatLine('middle').n === 0 && seatLine('standing').n === 0 && seatLine('standing').counts.sound === 0);
+  check('掛け合わせのない調査は空配列', JSON.stringify(tallySurvey({ ...SURVEY_2026, crosstabs: undefined }, seatRows).crosstabs) === '[]');
+  const oddTab = tallySurvey(SURVEY_2026, [
+    { id: 1, answers: '{"overall":"great","seat":"balcony","improve":["sound"]}', excluded: 0, created_at: 'a' },
+    { id: 2, answers: '{"overall":"great","seat":"back","improve":"sound"}', excluded: 0, created_at: 'b' },
+    { id: 3, answers: '{"overall":"great","seat":"back","improve":["bogus"]}', excluded: 0, created_at: 'c' },
+  ]).crosstabs[0];
+  check('掛け合わせは選択肢にない座席・配列でない回答・選択肢にない値だけの回答を数えない', oddTab.rows.every(r => r.n === 0));
+  const seatSummary = await summary();
+  const apiTab = seatSummary.crosstabs?.find(c => c.id === 'seat_improve');
+  check('担当者APIに掛け合わせが入る', apiTab && apiTab.title === '座席の位置と「会場で気になったこと」' && apiTab.rows.find(r => r.value === 'back').n === 1 && apiTab.rows.find(r => r.value === 'back').counts.sound === 1 && apiTab.rows.find(r => r.value === 'back').counts.seats === 1 && seatSummary.tallies.seat.counts.back === 1);
+  const adminHTML = surveyAdminPage(SURVEY_2026);
+  check('担当者画面に掛け合わせ欄と座席の位置の注記を埋め込む', adminHTML.includes('<h2 style="margin-top:30px">掛け合わせ</h2><div id="crosstabs"></div>') && adminHTML.includes('"adminNote":"回答受付の途中（10月）に追加した設問です。') && adminHTML.includes("label('seat',a.seat)") && !surveyAdminPage({ ...SURVEY_2026, crosstabs: [] }).includes('id="crosstabs"'));
+  // 担当者画面のスクリプトを簡易DOMで動かし、掛け合わせ表・注記・回答一覧の座席の位置を確かめる。
+  class FakeNode {
+    constructor(tagName) { Object.assign(this, { tagName, children: [], attributes: {}, style: {}, textContent: '', className: '' }); }
+    append(...nodes) { this.children.push(...nodes); }
+    replaceChildren(...nodes) { this.children = nodes; }
+    setAttribute(k, v) { this.attributes[k] = String(v); }
+    removeAttribute(k) { delete this.attributes[k]; }
+    focus() {}
+  }
+  const nodes = {};
+  const fakeData = { ...seatUnit, responses: [{ id: 3, created_at: '2026-10-02T00:00:00.000Z', excluded: 0, answers: { overall: 'great', age: '40s', seat: 'front', improve: ['none'], comment: 'x' } }, { id: 4, created_at: '2026-10-02T00:00:00.000Z', excluded: 0, answers: { overall: 'great', age: '40s', comment: 'y' } }] };
+  vm.runInNewContext(adminHTML.match(/<script>([\s\S]*?)<\/script>/)[1], {
+    document: { getElementById: id => (nodes[id] ||= new FakeNode('div')), createElement: tag => new FakeNode(tag) },
+    fetch: async () => ({ ok: true, status: 200, json: async () => fakeData }),
+  });
+  await new Promise(r => setTimeout(r, 20));
+  const walk = n => [n, ...n.children.flatMap(walk)];
+  const text = n => n.textContent + n.children.map(text).join('');
+  const tableNodes = walk(nodes.crosstabs).filter(n => n.tagName === 'tr').map(tr => tr.children.map(c => (c.tagName === 'th' ? c.scope + ':' : '') + text(c)));
+  check('担当者画面の掛け合わせ表を行見出し・列見出し・割合つきで描く', JSON.stringify(tableNodes) === JSON.stringify([
+    ['col:座席の位置', 'col:回答者', 'col:台詞・音の聞こえ方', 'col:座席・舞台の見やすさ'],
+    ['row:前のほう（舞台の近く）', '1人', '0人（0.0%）', '0人（0.0%）'],
+    ['row:中ほど', '0人', '—', '—'],
+    ['row:後ろのほう', '2人', '1人（50.0%）', '1人（50.0%）'],
+    ['row:立ち見', '0人', '—', '—'],
+  ]) && walk(nodes.crosstabs).some(n => n.textContent === '両方の設問に答えた人を分母にしています。') && walk(nodes.crosstabs).some(n => n.className === 'tableWrap'));
+  const seatTally = nodes.tallies.children.find(card => card.children[0].textContent === 'どのあたりでご覧になりましたか');
+  check('座席の位置の集計カードに追加時期の注記を出す', seatTally && seatTally.children[2].className === 'qnote' && seatTally.children[2].textContent.startsWith('回答受付の途中（10月）') && nodes.tallies.children.filter(card => card.children.some(c => c.className === 'qnote')).length === 1);
+  const metas = walk(nodes.responses).filter(n => n.className === 'respMeta').map(n => n.textContent);
+  check('回答一覧の見出しに年代の後ろへ座席の位置を出す（未回答なら出さない）', metas[0].endsWith('40代・前のほう（舞台の近く）') && metas[1].endsWith('40代'));
+  const emptyData = { ...tallySurvey(SURVEY_2026, []), responses: [] };
+  const emptyNodes = {};
+  vm.runInNewContext(adminHTML.match(/<script>([\s\S]*?)<\/script>/)[1], {
+    document: { getElementById: id => (emptyNodes[id] ||= new FakeNode('div')), createElement: tag => new FakeNode(tag) },
+    fetch: async () => ({ ok: true, status: 200, json: async () => emptyData }),
+  });
+  await new Promise(r => setTimeout(r, 20));
+  check('掛け合わせに回答者がいなければ「まだ回答がありません」', walk(emptyNodes.crosstabs).some(n => n.textContent === 'まだ回答がありません') && !walk(emptyNodes.crosstabs).some(n => n.tagName === 'table'));
+  const seatCSV = await (await call(api + '/admin/export', 'GET', undefined, manager)).text();
+  check('CSVに「座席の位置」列を「会場で気になったこと」の前に出す', seatCSV.split('\r\n')[0].includes('"再来場の意向","座席の位置","会場で気になったこと"') && seatCSV.includes('"後ろのほう","座席・舞台の見やすさ、台詞・音の聞こえ方"'));
+
   const closes = Date.parse(SURVEY_2026.closesAt);
   check('締切前はsurveyOpenがtrue', surveyOpen(SURVEY_2026, Date.parse('2026-09-27T09:00:00+09:00')) && surveyOpen(SURVEY_2026, closes));
   check('締切後はsurveyOpenがfalse', !surveyOpen(SURVEY_2026, closes + 1000) && !surveyOpen(SURVEY_2026, Date.parse('2027-01-01T00:00:00+09:00')));
