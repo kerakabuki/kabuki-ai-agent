@@ -19,6 +19,7 @@ const prefectureSelect = html.match(/<select id="prefecture"[^>]*>([\s\S]*?)<\/s
 check('47都道府県と海外を選択できる', [...prefectureSelect.matchAll(/<option value="[^"]+"/g)].length === 48 && prefectureSelect.includes('北海道') && prefectureSelect.includes('沖縄県') && prefectureSelect.includes('海外'));
 check('岐阜県内の地域は選択前に表示しない', html.includes('<fieldset class="q" id="q-gifu_area" hidden disabled>'));
 check('幕間解説とイヤホンガイドを選べる', html.includes('value="okuda_intermission"') && html.includes('おくだ健太郎氏による幕間解説') && html.includes('value="earphone_guide"'));
+check('座席の位置を選べる', html.includes('name="seat"') && html.includes('value="standing"'));
 check('回答画面をキャッシュしない', (page.headers.get('cache-control') || '').includes('no-store'));
 check('回答画面を検索に載せない', (page.headers.get('x-robots-tag') || '').includes('noindex'));
 const top = await get('/kerakabuki');

@@ -18,6 +18,8 @@ export const SURVEY_2026 = {
   shareDescription: '「曽根崎心中」にご来場くださった皆さまへ。3分ほどのアンケートにご協力ください。',
   closesAt: '2026-10-31T23:59:59+09:00',
   closesLabel: '2026年10月31日（土）',
+  // 担当者画面の掛け合わせ表。by の選択肢ごとに、target で values を選んだ人数を数える（分母は両方に答えた人）。
+  crosstabs: [{ id: 'seat_improve', title: '座席の位置と「会場で気になったこと」', by: 'seat', target: 'improve', values: ['sound', 'seats'] }],
   sections: [
     { title: '「曽根崎心中」について', questions: [
       { id: 'overall', type: 'single', required: true, label: '公演はいかがでしたか', short: '総合評価', options: [['great', 'とてもよかった'], ['good', 'よかった'], ['fair', 'ふつう'], ['poor', 'あまりよくなかった'], ['bad', 'よくなかった']] },
@@ -39,6 +41,7 @@ export const SURVEY_2026 = {
       { id: 'revisit', type: 'single', label: 'また気良歌舞伎を観に来たいと思いますか', short: '再来場の意向', options: [['definitely', 'ぜひ来たい'], ['maybe', '都合が合えば来たい'], ['unsure', 'わからない'], ['no', 'あまり思わない']] },
     ] },
     { title: '会場について', questions: [
+      { id: 'seat', type: 'single', label: 'どのあたりでご覧になりましたか', hint: '聞こえ方・見え方を、席の位置と合わせて確かめるためにうかがいます。', short: '座席の位置', adminNote: '回答受付の途中（10月）に追加した設問です。追加より前の回答は「無回答」に含まれます。', options: [['front', '前のほう（舞台の近く）'], ['middle', '中ほど'], ['back', '後ろのほう'], ['standing', '立ち見']] },
       { id: 'improve', type: 'multi', other: true, exclusive: 'none', label: '会場で気になったこと・改善してほしいことをお選びください', hint: 'いくつでもお選びいただけます。', short: '会場で気になったこと', options: [['seats', '座席・舞台の見やすさ'], ['sound', '台詞・音の聞こえ方'], ['temperature', '暑さ・寒さ'], ['toilet', 'トイレ'], ['parking', '駐車場・道順'], ['time', '開演・終演の時刻'], ['guidance', '受付・場内の案内'], ['other', 'その他'], ['none', '特になし']] },
     ] },
     { title: 'ひとこと', questions: [
