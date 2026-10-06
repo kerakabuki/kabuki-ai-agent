@@ -19,6 +19,33 @@ export function enmokuDetailSSR({ id, data, catalogEntry, relatedColumns = [], g
   const cast = Array.isArray(data.cast) ? data.cast : [];
   const authors = Array.isArray(data.authors) ? data.authors : [];
 
+  // Verified Kera Kabuki videos for these two Japanese play guides.
+  const videoGuides = {
+    moritunajinya: {
+      intro: "人物関係を短い解説でつかんだら、気良歌舞伎の舞台で名場面を味わってみませんか。",
+      links: [
+        { label: "解説①から観る（人物関係・約3分）", url: "https://www.youtube.com/watch?v=g-jOXVm8GYA&list=PLIdn3IkNf4aFIopbTGiR4e2HeCHbB78sZ&index=7" },
+        { label: "2013年公演の本編を観る（リマスター版）", url: "https://www.youtube.com/watch?v=w7juB7FcrVw" }
+      ]
+    },
+    yamashinakankyo: {
+      intro: "解説①〜⑤で人物の思いをたどり、気良歌舞伎の2021年「通し上演 仮名手本忠臣蔵」の本編へ。短い解説から順に楽しめます。",
+      links: [
+        { label: "解説①〜⑤と公演本編を順に観る", url: "https://www.youtube.com/playlist?list=PLdhiRi_70f2M" },
+        { label: "2021年公演の本編を観る", url: "https://www.youtube.com/watch?v=KcDDs1XdqSM" }
+      ]
+    }
+  };
+  const videoGuide = lang === "ja" && Object.hasOwn(videoGuides, id) ? videoGuides[id] : null;
+  const videoGuideHTML = videoGuide ? `
+      <section class="enmoku-section" id="sec-videos" aria-labelledby="video-guide-title">
+        <h2 class="enmoku-section-title" id="video-guide-title">気良歌舞伎の動画で観る</h2>
+        <p class="detail-text">${e(videoGuide.intro)}</p>
+        <div style="display:grid;gap:0.5rem;">
+          ${videoGuide.links.map(link => `<a href="${e(link.url)}" style="display:block;padding:12px 14px;border:1px solid var(--border,#e5e5e5);border-radius:8px;line-height:1.6;overflow-wrap:anywhere;">${e(link.label)} →</a>`).join("")}
+        </div>
+      </section>` : "";
+
   const lp = langPrefix(lang);
 
   // あらすじの先頭120文字をdescriptionに
@@ -155,6 +182,8 @@ export function enmokuDetailSSR({ id, data, catalogEntry, relatedColumns = [], g
         <h2 class="enmoku-section-title">${t("enmoku.section_highlights", lang)}</h2>
         <div class="detail-text">${formatSSR(highlights)}</div>
       </section>` : ""}
+
+      ${videoGuideHTML}
 
       ${cast.length ? `
       <section class="enmoku-section" id="sec-cast">
