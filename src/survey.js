@@ -85,6 +85,9 @@ export function validateAnswers(survey, answers) {
 export function tallySurvey(survey, rows) {
   const questions = questionsOf(survey).filter(q => (q.type === 'single' || q.type === 'multi') && (!q.dependsOn || q.dependsValue !== undefined));
   const tallies = Object.fromEntries(questions.map(q => [q.id, { answered: 0, eligible: 0, counts: Object.fromEntries(q.options.map(([v]) => [v, 0])), other: [] }]));
+  // 掛け合わせ: by の選択肢ごとの行を定義順に用意する。分母 n は by と target の両方に答えた人。
+  const byQuestion = Object.fromEntries(questionsOf(survey).map(q => [q.id, q]));
+  const crosstabs = (survey.crosstabs || []).map(({ id, title, by, target, values }) => ({ id, title, by, target, values: [...values], rows: byQuestion[by].options.map(([value]) => ({ value, n: 0, counts: Object.fromEntries(values.map(v => [v, 0])) })) }));
   let total = 0, excluded = 0, comments = 0, quotable = 0, lastAt = null;
   for (const row of rows) {
     if (Number(row.excluded) === 1) { excluded++; continue; }
@@ -106,8 +109,16 @@ export function tallySurvey(survey, rows) {
       const other = answers[q.id + '_other'];
       if (q.other && typeof other === 'string' && other) tally.other.push(other);
     }
+    for (const c of crosstabs) {
+      const by = answers[c.by]; const target = answers[c.target];
+      const line = typeof by === 'string' ? c.rows.find(r => r.value === by) : null;
+      // 設問ごとの集計と同じく、選択肢にない値だけの回答は答えていないものとして扱う。
+      if (!line || !Array.isArray(target) || !target.some(v => byQuestion[c.target].options.some(([o]) => o === v))) continue;
+      line.n++;
+      for (const v of c.values) if (target.includes(v)) line.counts[v]++;
+    }
   }
-  return { total, excluded, comments, quotable, last_at: lastAt, tallies };
+  return { total, excluded, comments, quotable, last_at: lastAt, tallies, crosstabs };
 }
 
 export function surveyCSV(survey, rows) {
