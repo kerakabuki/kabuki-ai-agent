@@ -3362,7 +3362,12 @@ ${phraseReport}
           if (endM < 1) { endM = 12; endY = fyNum; }
           const lastDay = new Date(endY, endM, 0).getDate();
           const end = `${endY}-${pad2(endM)}-${pad2(lastDay)}`;
-          expenses = expenses.filter(e => (e.date || "") >= start && (e.date || "") <= end);
+          // 計上年度 fy が指定されたエントリはそれを優先（前年度分の支払いなど）
+          expenses = expenses.filter(e => {
+            const ov = parseInt(e.fy);
+            if (ov > 0) return ov === fyNum;
+            return (e.date || "") >= start && (e.date || "") <= end;
+          });
         } else if (month) {
           expenses = expenses.filter(e => (e.date || "").startsWith(month));
         }
