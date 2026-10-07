@@ -3241,13 +3241,15 @@ ${phraseReport}
         try {
           const body = await request.json();
           const MAX_EXPENSES = 500;
-          let expenses = body.expenses || [];
+          const rawExpenses = body.expenses || [];
+          let expenses = rawExpenses;
           if (expenses.length > MAX_EXPENSES) expenses = expenses.slice(-MAX_EXPENSES);
           const expenseCategories = body.expenseCategories || body.categories || defaultExpCats;
           const incomeCategories = body.incomeCategories || defaultIncCats;
           const fyStartMonth = (body.fyStartMonth >= 1 && body.fyStartMonth <= 12) ? body.fyStartMonth : undefined;
           const carryForward = (body.carryForward && typeof body.carryForward === "object") ? body.carryForward : null;
           const categoryMapping = (body.categoryMapping && typeof body.categoryMapping === "object") ? body.categoryMapping : null;
+          const closedFYs = (body.closedFYs && typeof body.closedFYs === "object" && !Array.isArray(body.closedFYs)) ? body.closedFYs : null;
           const saveData = { expenses, expenseCategories, incomeCategories, updatedAt: new Date().toISOString() };
           if (fyStartMonth) saveData.fyStartMonth = fyStartMonth;
           // Preserve existing carryForward/categoryMapping, merge if body sends new values
@@ -3255,6 +3257,54 @@ ${phraseReport}
             const existing = await env.CHAT_HISTORY.get(kvKey);
             if (existing) {
               const prev = JSON.parse(existing);
+              // 締め済み年度（closedFYs）の明細・繰越は変更を拒否する
+              const prevClosed = (prev.closedFYs && typeof prev.closedFYs === "object") ? prev.closedFYs : {};
+              // 締めは「既存 ∪ 送信分」。解除は unlockFY で明示されたときだけ（古い画面からの保存で黙って外れないように）
+              const nextClosed = Object.assign({}, prevClosed, closedFYs || {});
+              const unlockFY = String(body.unlockFY || "");
+              if (unlockFY) delete nextClosed[unlockFY];
+              const stillClosed = Object.keys(prevClosed).filter(k => nextClosed[k]);
+              const sm = prev.fyStartMonth || 4;
+              const fyOf = (e) => {
+                const ov = parseInt(e.fy);
+                if (ov > 0) return ov;
+                const [y, m] = String(e.date || "0-1").split("-").map(Number);
+                return m >= sm ? y : y - 1;
+              };
+              // 件数上限の切り捨ては締め済み年度の明細を対象外にする（締めた年度が黙って欠けないように）
+              if (rawExpenses.length > MAX_EXPENSES && Object.keys(nextClosed).length) {
+                const isLocked = (e) => !!nextClosed[String(fyOf(e))];
+                const lockedCount = rawExpenses.filter(isLocked).length;
+                const room = MAX_EXPENSES - lockedCount;
+                if (room < 0) {
+                  return corsResponse(request, jsonResponse({ error: `明細が上限（${MAX_EXPENSES}件）を超えています。締め済み年度を解除して古い明細を整理してください` }, 400));
+                }
+                let dropLeft = rawExpenses.length - MAX_EXPENSES;
+                expenses = rawExpenses.filter(e => {
+                  if (isLocked(e) || dropLeft <= 0) return true;
+                  dropLeft--;
+                  return false;
+                });
+                saveData.expenses = expenses;
+              }
+              if (stillClosed.length) {
+                if (fyStartMonth && fyStartMonth !== sm) {
+                  return corsResponse(request, jsonResponse({ error: "締め済みの年度があるため、年度の開始月は変更できません" }, 409));
+                }
+                const snapshot = (list, fy) => JSON.stringify(
+                  (list || []).filter(e => fyOf(e) === fy).sort((x, y) => String(x.id).localeCompare(String(y.id)))
+                );
+                const prevCf = prev.carryForward || {};
+                const nextCf = Object.assign({}, prevCf, carryForward || {});
+                for (const k of stillClosed) {
+                  const fy = parseInt(k);
+                  if (snapshot(prev.expenses, fy) !== snapshot(rawExpenses, fy) || (prevCf[k] || 0) !== (nextCf[k] || 0)) {
+                    return corsResponse(request, jsonResponse({ error: `${fy}年度は締め済みのため変更できません。先に締めを解除してください` }, 409));
+                  }
+                }
+              }
+              // closedFYs: 既存 ∪ 送信分 から unlockFY を除いたもの
+              if (Object.keys(nextClosed).length || prev.closedFYs) { saveData.closedFYs = nextClosed; }
               if (prev.carryForward) {
                 saveData.carryForward = carryForward
                   ? Object.assign({}, prev.carryForward, carryForward)
@@ -3268,10 +3318,12 @@ ${phraseReport}
             } else {
               if (carryForward) saveData.carryForward = carryForward;
               if (categoryMapping) saveData.categoryMapping = categoryMapping;
+              if (closedFYs) saveData.closedFYs = closedFYs;
             }
           } catch(_) {
             if (carryForward) saveData.carryForward = carryForward;
             if (categoryMapping) saveData.categoryMapping = categoryMapping;
+            if (closedFYs) saveData.closedFYs = closedFYs;
           }
           await env.CHAT_HISTORY.put(kvKey, JSON.stringify(saveData));
           return corsResponse(request, jsonResponse({ ok: true }));

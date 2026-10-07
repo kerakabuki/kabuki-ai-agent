@@ -40,6 +40,8 @@ export function groupAccountingPageHTML(group) {
       var viewType = "all"; // "all" | "expense" | "income"
       var carryForward = {};  // FY → 金額  e.g. {"2025": 500000}
       var categoryMapping = {}; // 帳簿科目→決算科目  e.g. {"衣装・かつら":"衣装費"}
+      var closedFYs = {};     // 締め済み年度  e.g. {"2025": {closedAt: "..."}}
+      var _unlockFY = null;   // 次の保存で解除を明示する年度（サーバは明示されたときだけ締めを外す）
       var showLedger = false; // 残高推移テーブル表示フラグ
       var _batchResults = [];
       var _batchEditIdx = null;
@@ -107,6 +109,22 @@ export function groupAccountingPageHTML(group) {
         return ov > 0 ? ov : dateToFY((e && e.date) || "");
       }
       function isEntryInFY(e, fy) { return entryFY(e) === fy; }
+
+      // 年度の締め（ロック）
+      function isClosed(fy) { return !!closedFYs[String(fy)]; }
+      function anyClosed() { return Object.keys(closedFYs).length > 0; }
+      // 年度の期末残高（繰越 + 収入 − 支出）
+      function fyEndBalance(fy) {
+        var bal = carryForward[String(fy)] || 0;
+        expenses.forEach(function(e){
+          if (!isEntryInFY(e, fy)) return;
+          bal += (e.type === "income") ? (e.amount||0) : -(e.amount||0);
+        });
+        return bal;
+      }
+      function closedAlert(fy) {
+        alert(fy + "年度（" + toWareki(fy) + "度）は締め済みのため変更できません。\\n修正するには年度の 🔓 で締めを解除してください。");
+      }
 
       function initFY() {
         var d = new Date();
@@ -176,6 +194,7 @@ export function groupAccountingPageHTML(group) {
             if (data.fyStartMonth) { fyStartMonth = data.fyStartMonth; initFY(); }
             if (data.carryForward && typeof data.carryForward === "object") carryForward = data.carryForward;
             if (data.categoryMapping && typeof data.categoryMapping === "object") categoryMapping = data.categoryMapping;
+            if (data.closedFYs && typeof data.closedFYs === "object") closedFYs = data.closedFYs;
             if (data.expenseCategories && data.expenseCategories.length) expenseCategories = data.expenseCategories;
             if (data.incomeCategories && data.incomeCategories.length) incomeCategories = data.incomeCategories;
             // 後方互換: 旧 categories フィールド
@@ -214,6 +233,7 @@ export function groupAccountingPageHTML(group) {
         });
         var cfAmount = carryForward[String(currentFY)] || 0;
         var balance = cfAmount + monthIncome - monthExpense;
+        var closed = isClosed(currentFY);
 
         // フィルタ後の合計
         var filteredTotal = 0;
@@ -233,18 +253,22 @@ export function groupAccountingPageHTML(group) {
         // 年度ナビ
         html += '<div class="ga-month-nav">'
           + '<button class="ga-month-btn" onclick="GA.prevFY()">◀</button>'
-          + '<span class="ga-month-label">' + esc(fyLabel(currentFY)) + '</span>'
+          + '<span class="ga-month-label">' + esc(fyLabel(currentFY)) + (closed ? ' <span class="ga-closed-badge">締め済み</span>' : '') + '</span>'
           + '<button class="ga-month-btn" onclick="GA.nextFY()">▶</button>'
           + '<button class="ga-fy-setting-btn" onclick="GA.showFYSetting()" title="決算月の設定">⚙</button>'
           + '<button class="ga-fy-setting-btn" onclick="GA.showCategoryMapping()" title="決算科目の設定">📋</button>'
+          + '<button class="ga-fy-setting-btn" onclick="GA.toggleClose()" title="' + (closed ? '締めを解除' : 'この年度を締める') + '">' + (closed ? '🔓' : '🔒') + '</button>'
           + '</div>';
+        if (closed) {
+          html += '<div class="ga-closed-banner">🔒 この年度は締め済みです。明細と繰越の変更はできません。修正が必要なときは 🔓 で締めを解除してください。</div>';
+        }
 
         // 繰越金エリア
         html += '<div class="ga-carry-forward">'
           + '<div class="ga-cf-display" id="ga-cf-display">'
           + '<span class="ga-cf-label">前年度繰越:</span> '
           + '<span class="ga-cf-amount">' + formatYen(cfAmount) + '</span> '
-          + '<button class="ga-cf-edit-btn" onclick="GA.editCarryForward()" title="繰越金を編集">✏</button>'
+          + (closed ? '' : '<button class="ga-cf-edit-btn" onclick="GA.editCarryForward()" title="繰越金を編集">✏</button>')
           + '</div>'
           + '<div class="ga-cf-form" id="ga-cf-form" style="display:none">'
           + '<input type="number" id="ga-cf-input" value="' + cfAmount + '" placeholder="0" min="0">'
@@ -311,8 +335,8 @@ export function groupAccountingPageHTML(group) {
           + '<button class="ga-type-tab ga-tab-income' + (viewType==="income"?" ga-type-tab-active":"") + '" onclick="GA.setView(\\'income\\')">収入</button>'
           + '</div>';
 
-        // メインCTA
-        html += '<div class="ga-cta">'
+        // メインCTA（締め済み年度では出さない）
+        if (!closed) html += '<div class="ga-cta">'
           + '<button class="btn btn-primary ga-scan-btn" onclick="GA.startScan()">📷 写真で読み取り</button>'
           + '<button class="btn btn-secondary" onclick="GA.showAddForm(\\'expense\\')">✏️ 支出を追加</button>'
           + '<button class="btn btn-secondary ga-income-btn" onclick="GA.showAddForm(\\'income\\')">💰 収入を追加</button>'
@@ -371,16 +395,19 @@ export function groupAccountingPageHTML(group) {
               });
               html += '</div>';
             }
-            html += '<div class="ga-card-actions">'
-              + '<button class="gr-btn-edit" onclick="GA.editExpense(' + idx + ')">編集</button>'
-              + '<button class="gr-btn-del" onclick="GA.delExpense(' + idx + ')">削除</button>'
-              + '</div></div>';
+            if (!closed) {
+              html += '<div class="ga-card-actions">'
+                + '<button class="gr-btn-edit" onclick="GA.editExpense(' + idx + ')">編集</button>'
+                + '<button class="gr-btn-del" onclick="GA.delExpense(' + idx + ')">削除</button>'
+                + '</div>';
+            }
+            html += '</div>';
           });
         }
 
         // 未分類チェック
         var uncatCount = monthAll.filter(function(e){ return !e.category; }).length;
-        if (uncatCount) {
+        if (uncatCount && !closed) {
           html += '<div class="ga-uncat-warn" onclick="GA.showUncategorized()">'
             + '⚠ カテゴリ未設定が <strong>' + uncatCount + '件</strong> あります（タップして修正）'
             + '</div>';
@@ -609,8 +636,10 @@ export function groupAccountingPageHTML(group) {
 
       function saveAllBatch() {
         var count = 0;
+        var blocked = 0;
         _batchResults.forEach(function(r) {
           if (r._saved || r._skipped || r._error) return;
+          if (isClosed(dateToFY(r.date || today()))) { blocked++; return; }
           var entry = {
             id: "exp_" + Date.now() + "_" + Math.random().toString(36).slice(2,6),
             type: r.type || "expense",
@@ -635,9 +664,11 @@ export function groupAccountingPageHTML(group) {
             var batchFY = entryFY(lastEntry);
             if (batchFY !== currentFY) currentFY = batchFY;
           }
-          saveToServer(count + "件を保存しました");
+          saveToServer(count + "件を保存しました" + (blocked ? "（締め済み年度の" + blocked + "件は保存していません）" : ""));
           render();
           showBatchResults();
+        } else if (blocked) {
+          alert("締め済み年度の明細は保存できません（" + blocked + "件）。日付を確認するか、年度の締めを解除してください。");
         }
       }
 
@@ -842,6 +873,9 @@ export function groupAccountingPageHTML(group) {
         if (fyOv && fyOv !== dateToFY(entry.date)) entry.fy = fyOv;
         if (!entry.date) { alert("日付を入力してください。"); return; }
         if (!amount) { alert("金額を入力してください。"); return; }
+        // 締め済み年度への追加・締め済み年度の明細の変更は拒否
+        if (isClosed(entryFY(entry))) { closedAlert(entryFY(entry)); return; }
+        if (idx !== null && idx !== undefined && expenses[idx] && isClosed(entryFY(expenses[idx]))) { closedAlert(entryFY(expenses[idx])); return; }
 
         if (idx !== null && idx !== undefined && idx >= 0) {
           expenses[idx] = entry;
@@ -872,6 +906,7 @@ export function groupAccountingPageHTML(group) {
       }
 
       function delExpense(idx) {
+        if (expenses[idx] && isClosed(entryFY(expenses[idx]))) { closedAlert(entryFY(expenses[idx])); return; }
         if (!confirm("この経費を削除しますか？")) return;
         expenses.splice(idx, 1);
         saveToServer("削除しました");
@@ -879,7 +914,8 @@ export function groupAccountingPageHTML(group) {
       }
 
       function saveToServer(successMsg) {
-        var payload = JSON.stringify({ expenses: expenses, expenseCategories: expenseCategories, incomeCategories: incomeCategories, fyStartMonth: fyStartMonth, carryForward: carryForward, categoryMapping: categoryMapping });
+        var payload = JSON.stringify({ expenses: expenses, expenseCategories: expenseCategories, incomeCategories: incomeCategories, fyStartMonth: fyStartMonth, carryForward: carryForward, categoryMapping: categoryMapping, closedFYs: closedFYs, unlockFY: _unlockFY });
+        _unlockFY = null;
         console.log("[saveToServer] sending", expenses.length, "items, payload size:", payload.length);
         fetch("/api/groups/" + encodeURIComponent(GID) + "/expenses", {
           method: "POST",
@@ -934,6 +970,10 @@ export function groupAccountingPageHTML(group) {
         var sel = document.getElementById("ga-fy-start-select");
         if (!sel) return;
         var newMonth = parseInt(sel.value);
+        if (newMonth !== fyStartMonth && anyClosed()) {
+          alert("締め済みの年度があるため、年度の開始月は変更できません。先に締めを解除してください。");
+          return;
+        }
         if (newMonth >= 1 && newMonth <= 12 && newMonth !== fyStartMonth) {
           fyStartMonth = newMonth;
           initFY();
@@ -1028,7 +1068,7 @@ export function groupAccountingPageHTML(group) {
           var val = selects[i].value;
           if (val) {
             var idx = parseInt(selects[i].getAttribute("data-idx"));
-            if (expenses[idx]) { expenses[idx].category = val; changed++; }
+            if (expenses[idx] && !isClosed(entryFY(expenses[idx]))) { expenses[idx].category = val; changed++; }
           }
         }
         if (changed) {
@@ -1277,6 +1317,31 @@ export function groupAccountingPageHTML(group) {
 
       initFY();
 
+      // 年度を締める／解除する
+      function toggleClose() {
+        var fy = currentFY;
+        if (isClosed(fy)) {
+          if (!confirm(fy + "年度（" + toWareki(fy) + "度）の締めを解除しますか？\\n解除すると明細と繰越を変更できるようになります。")) return;
+          delete closedFYs[String(fy)];
+          _unlockFY = fy;
+          saveToServer(fy + "年度の締めを解除しました");
+          render();
+          return;
+        }
+        var endBal = fyEndBalance(fy);
+        var nextKey = String(fy + 1);
+        var nextCf = carryForward[nextKey] || 0;
+        var msg = fy + "年度（" + toWareki(fy) + "度）を締めます。\\n\\n期末残高: " + formatYen(endBal) + "\\n";
+        if (!nextCf) msg += "→ " + (fy + 1) + "年度の前年度繰越にこの金額を入れます。\\n";
+        else if (nextCf !== endBal) msg += "※ " + (fy + 1) + "年度の前年度繰越（" + formatYen(nextCf) + "）と一致していません。\\n";
+        msg += "\\n締めると、この年度の明細と繰越は変更できなくなります（解除は可能）。";
+        if (!confirm(msg)) return;
+        closedFYs[String(fy)] = { closedAt: new Date().toISOString() };
+        if (!nextCf && !isClosed(fy + 1)) carryForward[nextKey] = endBal;
+        saveToServer(fy + "年度を締めました");
+        render();
+      }
+
       function editCarryForward() {
         var d = document.getElementById("ga-cf-display");
         var f = document.getElementById("ga-cf-form");
@@ -1287,6 +1352,7 @@ export function groupAccountingPageHTML(group) {
       }
 
       function saveCarryForward() {
+        if (isClosed(currentFY)) { closedAlert(currentFY); return; }
         var input = document.getElementById("ga-cf-input");
         var val = parseInt(input ? input.value : 0) || 0;
         carryForward[String(currentFY)] = val;
@@ -1342,6 +1408,7 @@ export function groupAccountingPageHTML(group) {
         saveCategoryMapping: saveCategoryMapping,
         editCarryForward: editCarryForward,
         saveCarryForward: saveCarryForward,
+        toggleClose: toggleClose,
         cancelCarryForward: cancelCarryForward,
         toggleLedger: toggleLedger,
         setView: function(v){ viewType = v; filterCat = "all"; render(); },
@@ -1408,6 +1475,14 @@ export function groupAccountingPageHTML(group) {
         color: var(--text-tertiary); padding: 4px; margin-left: 2px; transition: color 0.15s;
       }
       .ga-fy-setting-btn:hover { color: var(--gold-dark); }
+      .ga-closed-badge {
+        font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600;
+        background: #efebe9; color: #6d4c41; vertical-align: middle; margin-left: 4px;
+      }
+      .ga-closed-banner {
+        background: #efebe9; border: 1px solid #d7ccc8; border-radius: 8px;
+        padding: 10px 14px; margin-bottom: 1rem; font-size: 13px; color: #5d4037; text-align: center;
+      }
       /* ── 決算科目マッピング ── */
       .ga-catmap-row {
         display: flex; align-items: center; gap: 8px;
