@@ -101,6 +101,13 @@ export function groupAccountingPageHTML(group) {
         return dateStr >= fyStart(fy) && dateStr <= fyEnd(fy);
       }
 
+      // エントリの計上年度（fy を指定していればそれを優先、なければ日付から）
+      function entryFY(e) {
+        var ov = parseInt(e && e.fy);
+        return ov > 0 ? ov : dateToFY((e && e.date) || "");
+      }
+      function isEntryInFY(e, fy) { return entryFY(e) === fy; }
+
       function initFY() {
         var d = new Date();
         var m = d.getMonth() + 1;
@@ -129,7 +136,7 @@ export function groupAccountingPageHTML(group) {
       // 年度内のエントリをフィルタ
       function filteredExpenses() {
         var list = expenses.filter(function(e) {
-          return isInFY(e.date||"", currentFY);
+          return isEntryInFY(e, currentFY);
         });
         if (viewType !== "all") {
           list = list.filter(function(e) { return (e.type || "expense") === viewType; });
@@ -175,10 +182,10 @@ export function groupAccountingPageHTML(group) {
             if (!data.expenseCategories && data.categories && data.categories.length) expenseCategories = data.categories;
             // 当年度にデータがなければ、データがある最新年度へ自動ジャンプ
             if (expenses.length > 0) {
-              var hasCurrentFY = expenses.some(function(e){ return isInFY(e.date||"", currentFY); });
+              var hasCurrentFY = expenses.some(function(e){ return isEntryInFY(e, currentFY); });
               if (!hasCurrentFY) {
-                var latestDate = expenses.reduce(function(max, e){ var d = e.date||""; return d > max ? d : max; }, "");
-                if (latestDate) currentFY = dateToFY(latestDate);
+                var latestFY = expenses.reduce(function(max, e){ var f = entryFY(e); return f > max ? f : max; }, 0);
+                if (latestFY) currentFY = latestFY;
               }
             }
             render();
@@ -196,7 +203,7 @@ export function groupAccountingPageHTML(group) {
         var filtered = filteredExpenses();
 
         // 年度内の全エントリ
-        var monthAll = expenses.filter(function(e){ return isInFY(e.date||"", currentFY); });
+        var monthAll = expenses.filter(function(e){ return isEntryInFY(e, currentFY); });
         var monthIncome = 0, monthExpense = 0;
         var catTotals = {};
         monthAll.forEach(function(e){
@@ -270,7 +277,7 @@ export function groupAccountingPageHTML(group) {
           + '</button></div>';
 
         if (showLedger) {
-          var ledgerAll = expenses.filter(function(e){ return isInFY(e.date||"", currentFY); });
+          var ledgerAll = expenses.filter(function(e){ return isEntryInFY(e, currentFY); });
           ledgerAll.sort(function(a,b){ return (a.date||"").localeCompare(b.date||""); });
           var running = cfAmount;
           html += '<div class="ga-ledger">'
@@ -286,7 +293,7 @@ export function groupAccountingPageHTML(group) {
             var shortDate = (function(d){ var p = d.split("-"); return p.length >= 3 ? parseInt(p[1]) + "/" + parseInt(p[2]) : d; })(e.date||"");
             html += '<tr>'
               + '<td>' + esc(shortDate) + '</td>'
-              + '<td>' + esc(e.vendor || e.memo || e.category || "") + '</td>'
+              + '<td>' + esc(e.vendor || e.memo || e.category || "") + (e.fy && entryFY(e) !== dateToFY(e.date||"") ? ' <span class="ga-badge-fy ga-card-type-badge">' + entryFY(e) + '年度計上</span>' : '') + '</td>'
               + '<td class="ga-ledger-right ga-income-val">' + (isIncome ? formatYen(amt) : '') + '</td>'
               + '<td class="ga-ledger-right ga-expense-val">' + (isIncome ? '' : formatYen(amt)) + '</td>'
               + '<td class="ga-ledger-right ga-ledger-bal">' + formatYen(running) + '</td>'
@@ -341,6 +348,7 @@ export function groupAccountingPageHTML(group) {
               + '<span class="ga-card-date">' + esc((function(d){ var p=d.split("-"); return p.length>=3 ? parseInt(p[1])+"/"+parseInt(p[2]) : d; })(e.date||"")) + '</span>'
               + '<span class="ga-card-vendor">' + esc(e.vendor||"（不明）") + '</span>'
               + (isIncome ? '<span class="ga-card-type-badge ga-badge-income">収入</span>' : '')
+              + (e.fy && entryFY(e) !== dateToFY(e.date||"") ? '<span class="ga-card-type-badge ga-badge-fy" title="日付と違う年度に計上">' + entryFY(e) + '年度計上</span>' : '')
               + '</div>'
               + '<span class="ga-card-amount' + (isIncome ? ' ga-income-val' : '') + '">' + (isIncome ? '+' : '') + formatYen(e.amount) + '</span>'
               + '</div>'
@@ -624,7 +632,7 @@ export function groupAccountingPageHTML(group) {
           // 最後に保存したエントリの年度に自動切替
           var lastEntry = expenses[expenses.length - 1];
           if (lastEntry) {
-            var batchFY = dateToFY(lastEntry.date);
+            var batchFY = entryFY(lastEntry);
             if (batchFY !== currentFY) currentFY = batchFY;
           }
           saveToServer(count + "件を保存しました");
@@ -755,6 +763,17 @@ export function groupAccountingPageHTML(group) {
         receiptPreview += '<button type="button" class="btn btn-secondary ga-add-evidence-btn" onclick="GA.addEvidence()">📷 証憑を追加</button>'
           + '</div>';
 
+        // 計上年度の選択肢: 自動（日付どおり） / 日付の年度の前後
+        var dateFY = dateToFY(entry.date || today());
+        var ovFY = parseInt(entry.fy) || 0;
+        var fyOptions = '<option value=""' + (!ovFY ? ' selected' : '') + '>日付どおり（' + dateFY + '年度）</option>';
+        var fyChoices = [dateFY - 1, dateFY + 1];
+        if (ovFY && fyChoices.indexOf(ovFY) < 0 && ovFY !== dateFY) fyChoices.unshift(ovFY);
+        fyChoices.sort(function(a,b){ return a - b; });
+        fyChoices.forEach(function(f){
+          fyOptions += '<option value="' + f + '"' + (f === ovFY ? ' selected' : '') + '>' + f + '年度（' + toWareki(f) + '度）' + (f < dateFY ? ' ← 前年度分' : '') + '</option>';
+        });
+
         var isIncome = entryType === "income";
         var formTitle = isEdit ? (isIncome ? '収入を編集' : '支出を編集') : (isIncome ? '収入を追加' : '支出を追加');
         var vendorLabel = isIncome ? '支払元' : '支払先';
@@ -769,6 +788,8 @@ export function groupAccountingPageHTML(group) {
           + '<button type="button" class="ga-toggle-btn ga-toggle-income' + (isIncome ? ' ga-toggle-active' : '') + '" onclick="GA.switchFormType(\\'income\\',' + (isEdit?idx:"null") + ')">収入</button>'
           + '</div>'
           + '<div class="gr-form-row"><label>日付</label><input type="date" id="gaf-date" value="' + esc(entry.date||today()) + '"></div>'
+          + '<div class="gr-form-row"><label>計上年度</label><select id="gaf-fy">' + fyOptions + '</select>'
+          + '<div style="font-size:12px;color:var(--text-tertiary);margin-top:4px">前年度分の支払いなど、日付と違う年度に入れたいときだけ選ぶ</div></div>'
           + '<div class="gr-form-row"><label>' + vendorLabel + '</label><input type="text" id="gaf-vendor" value="' + esc(entry.vendor||"") + '" placeholder="' + vendorPlaceholder + '"></div>'
           + '<div class="gr-form-row"><label>金額</label><input type="number" id="gaf-amount" value="' + (entry.amount||0) + '" placeholder="0" min="0"></div>'
           + '<div class="gr-form-row"><label>カテゴリ</label><select id="gaf-category">' + catOptions + '</select>'
@@ -816,6 +837,9 @@ export function groupAccountingPageHTML(group) {
           created_at: (idx !== null && expenses[idx]) ? expenses[idx].created_at : new Date().toISOString(),
           status: "confirmed"
         };
+        var fyEl = document.getElementById("gaf-fy");
+        var fyOv = fyEl ? parseInt(fyEl.value) || 0 : 0;
+        if (fyOv && fyOv !== dateToFY(entry.date)) entry.fy = fyOv;
         if (!entry.date) { alert("日付を入力してください。"); return; }
         if (!amount) { alert("金額を入力してください。"); return; }
 
@@ -826,9 +850,9 @@ export function groupAccountingPageHTML(group) {
         }
 
         // 保存したエントリの年度が表示中と違う場合、自動切替
-        var entryFY = dateToFY(entry.date);
-        if (entryFY !== currentFY) {
-          currentFY = entryFY;
+        var savedFY = entryFY(entry);
+        if (savedFY !== currentFY) {
+          currentFY = savedFY;
         }
 
         // バッチ編集フロー
@@ -925,7 +949,7 @@ export function groupAccountingPageHTML(group) {
         if (!area) { render(); area = document.getElementById("ga-form-area"); }
         var uncatItems = [];
         expenses.forEach(function(e, idx){
-          if (!e.category && isInFY(e.date||"", currentFY)) {
+          if (!e.category && isEntryInFY(e, currentFY)) {
             uncatItems.push({ idx: idx, entry: e });
           }
         });
@@ -1021,7 +1045,7 @@ export function groupAccountingPageHTML(group) {
         var area = document.getElementById("ga-form-area");
         if (!area) { render(); area = document.getElementById("ga-form-area"); }
         // 当年度のexpenses内にあるカテゴリを収集
-        var fyExpenses = expenses.filter(function(e){ return isInFY(e.date||"", currentFY); });
+        var fyExpenses = expenses.filter(function(e){ return isEntryInFY(e, currentFY); });
         var usedExpCats = [], usedIncCats = [];
         var seen = {};
         fyExpenses.forEach(function(e){
@@ -1103,7 +1127,7 @@ export function groupAccountingPageHTML(group) {
 
       function generatePDF() {
         // HTML → PDF via doc.html() でブラウザフォントを利用
-        var monthAll = expenses.filter(function(e){ return isInFY(e.date||"", currentFY); });
+        var monthAll = expenses.filter(function(e){ return isEntryInFY(e, currentFY); });
         monthAll.sort(function(a,b){ return (a.date||"").localeCompare(b.date||""); });
 
         var totalIncome = 0, totalExpense = 0;
@@ -1176,7 +1200,7 @@ export function groupAccountingPageHTML(group) {
           var isInc = (e.type === "income");
           pdfHtml += '<tr>'
             + '<td style="padding:3px 6px;border:1px solid #ddd;color:' + (isInc ? '#2e7d32' : '#c62828') + '">' + (isInc ? '収入' : '支出') + '</td>'
-            + '<td style="padding:3px 6px;border:1px solid #ddd;white-space:nowrap">' + esc(e.date||"") + '</td>'
+            + '<td style="padding:3px 6px;border:1px solid #ddd;white-space:nowrap">' + esc(e.date||"") + (e.fy && entryFY(e) !== dateToFY(e.date||"") ? '<br><span style="font-size:9px;color:#888">' + entryFY(e) + '年度計上</span>' : '') + '</td>'
             + '<td style="padding:3px 6px;border:1px solid #ddd">' + esc(e.vendor||"") + '</td>'
             + '<td style="padding:3px 6px;border:1px solid #ddd">' + esc(categoryMapping[e.category] || e.category || "") + '</td>'
             + '<td style="text-align:right;padding:3px 6px;border:1px solid #ddd;white-space:nowrap">¥' + (e.amount||0).toLocaleString() + '</td>'
@@ -1288,11 +1312,13 @@ export function groupAccountingPageHTML(group) {
         var vendorEl = document.getElementById("gaf-vendor");
         var amountEl = document.getElementById("gaf-amount");
         var memoEl = document.getElementById("gaf-memo");
+        var fyEl = document.getElementById("gaf-fy");
         var receiptUrlsEl = document.getElementById("gaf-receipt-urls");
         var receiptUrls = [];
         if (receiptUrlsEl) { try { receiptUrls = JSON.parse(receiptUrlsEl.value); } catch(e){} }
         var entry = {
           type: newType,
+          fy: fyEl ? parseInt(fyEl.value) || 0 : 0,
           date: dateEl ? dateEl.value : today(),
           vendor: vendorEl ? vendorEl.value : "",
           amount: amountEl ? parseInt(amountEl.value)||0 : 0,
@@ -1491,6 +1517,7 @@ export function groupAccountingPageHTML(group) {
         font-size: 10px; padding: 1px 6px; border-radius: 3px; font-weight: 600;
       }
       .ga-badge-income { background: #e8f5e9; color: #2e7d32; }
+      .ga-badge-fy { background: #fff3e0; color: #e65100; }
       .ga-card-receipts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
       .ga-card-receipt-thumb {
         width: 48px; height: 48px; object-fit: cover; border-radius: 4px;
