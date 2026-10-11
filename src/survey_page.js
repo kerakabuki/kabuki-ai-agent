@@ -62,10 +62,10 @@ ${survey.sections.map(s => `<div class="card"><h2>${escape(s.title)}</h2>${s.que
 <div id="error" class="error" hidden role="alert" tabindex="-1"></div>
 <button type="submit" id="submit" class="full">回答を送信する</button>
 </form></section>
-<section id="thanksSection" hidden><div class="card thanks"><div class="eyebrow">THANK YOU</div><h2 tabindex="-1" id="thanksTitle">ご回答ありがとうございました</h2><p>いただいたご感想は、座員みんなで読ませていただきます。来年の舞台づくりに生かしてまいります。</p><p class="notice" id="alreadyNotice" hidden>この回答は、すでに受け付けています（最初にお送りいただいた内容で記録しています）。</p></div>
+<section id="thanksSection" hidden><div class="card thanks"><div class="eyebrow">THANK YOU</div><h2 tabindex="-1" id="thanksTitle">ご回答ありがとうございました</h2><p>いただいたご感想は、座員みんなで読ませていただきます。来年の舞台づくりに生かしてまいります。</p><p>気良歌舞伎の公演映像や、台詞の解説をYouTubeでお届けしています。これからの公演も楽しんでいただけるよう、ぜひチャンネル登録をお願いします。</p><a class="button dark full" href="https://www.youtube.com/@kerakabuki" target="_blank" rel="noopener noreferrer">YouTubeで見る・チャンネル登録</a><p class="notice" id="alreadyNotice" hidden>この回答は、すでに受け付けています（最初にお送りいただいた内容で記録しています）。</p></div>
 <div class="card"><h2>ご来場記念デジタルカード</h2><p>お礼に、白浪五人男の来場記念カードをお受け取りください。スマートフォンに保存できます。</p><ul class="giftList">${gifts}</ul><p class="hint">保存できないときは「開く」から、長押しや共有メニューで保存してください。</p></div>
 ${nextCard()}
-<div class="card"><h2>気良歌舞伎をもっと</h2><div class="links"><a class="button secondary" href="/kerakabuki">公式サイト</a><a class="button dark" href="https://www.youtube.com/@kerakabuki" target="_blank" rel="noopener noreferrer">YouTube ↗</a><a class="button secondary" href="https://www.instagram.com/kerakabuki_official/" target="_blank" rel="noopener noreferrer">Instagram ↗</a></div></div>
+<div class="card"><h2>気良歌舞伎をもっと</h2><div class="links"><a class="button secondary" href="/kerakabuki">公式サイト</a><a class="button secondary" href="https://www.instagram.com/kerakabuki_official/" target="_blank" rel="noopener noreferrer">Instagram ↗</a></div></div>
 <button type="button" id="another" class="secondary full">別の方の回答をする</button></section>`;
   const questions = questionsOf(survey).filter(q => !q.legacy).map(({ id, type, presentation, required, other, exclusive, dependsOn, dependsValue, label, short, max }) => ({ id, type, presentation, required: !!required, other: !!other, exclusive: exclusive || null, dependsOn: dependsOn || null, dependsValue: dependsValue ?? null, label, short, max: max || null }));
   const script = commonJS + String.raw`
