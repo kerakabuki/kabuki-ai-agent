@@ -19,6 +19,7 @@ argument-hint: コラムID（ケバブケース。例 shiranami-serifu）
    - noteへのリンクや自己紹介は除去
    - 見出し・段落構成を整理
    - マークダウン形式で記述
+   - 日付つきの公演告知や「現在上演中」「今月の公演」など、時期に依存する記述は除く（コラムは恒久ページ。2026-03公開の `sonezaki-guide` に南座公演の告知が残り、手で消した実害あり）
 3. 以下のJSON構造で `column/{id}.json` を生成（作業ファイルは `__tmp_column-{id}.json`。`__tmp_*` は.gitignore対象）:
 ```json
 {
@@ -38,13 +39,13 @@ argument-hint: コラムID（ケバブケース。例 shiranami-serifu）
 ```bash
 npx wrangler r2 object put kerakabuki-content/column/{id}.json --file __tmp_column-{id}.json --remote
 ```
-5. `columns.json` を更新（R2から取得→追記→再アップロード）:
+5. `columns.json` を更新（R2から取得→追記→再アップロード）。既存エントリと同じキー構成で1件足す。同じ id が既にあれば、足さずにそのエントリを置き換える:
 ```bash
 npx wrangler r2 object get kerakabuki-content/columns.json --file __tmp_columns.json --remote
 # JSONに新エントリを追加
 npx wrangler r2 object put kerakabuki-content/columns.json --file __tmp_columns.json --remote
 ```
-6. 反映確認: `https://kabukiplus.com/kabuki/navi/column/{id}` を開いて表示を確認する
+6. 反映確認: `https://kabukiplus.com/kabuki/navi/column/{id}` を開いて表示を確認する（記事ページはすぐ出る。一覧の `columns.json` は Worker 内で5分キャッシュされるので、一覧に出るまで数分かかることがある）
 
 ## カテゴリ
 - `serifu` — 台詞解説・超訳

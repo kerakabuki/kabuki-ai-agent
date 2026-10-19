@@ -12,7 +12,7 @@ color: cyan
 ## 定番の情報源
 - 公演情報: kabuki-bito.jp（歌舞伎美人）、kabukiplus.com/api/performances
 - 演目・用語: enmokudb.kabuki.ne.jp、文化デジタルライブラリー、kotobank
-- 学術文献: ndlsearch.ndl.go.jp、cir.nii.ac.jp、jstage.jst.go.jp（地芝居研究は research/ に既収集データ1,295件あり — 重複収集する前にまず既存JSONをgrepする）
+- 学術文献: ndlsearch.ndl.go.jp、cir.nii.ac.jp、jstage.jst.go.jp（地芝居研究は research/jishibai/ に既収集データ（論文1,295件＋NDL書籍573冊）あり — 重複収集する前にまず既存JSONをgrepする）
 
 ## ルール
 - すべての事実に出典URLを付ける。出典のない情報は「未確認」と明記

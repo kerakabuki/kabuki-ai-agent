@@ -4,13 +4,24 @@ description: 本番デプロイを一括実行する。対象を自動判定（�
 argument-hint: 対象（省略=自動判定 / main / post365 / all）
 ---
 
-「$ARGUMENTS」を対象に本番デプロイを実行してください。省略時は `git status` と直近の変更ファイルから対象を自動判定する（worker.js / src/ / wrangler.toml → main、kabuki-post-365/ → post365、両方なら all）。
+「$ARGUMENTS」を対象に本番デプロイを実行してください。省略時は `git status` と直近の変更ファイルから対象を自動判定する（worker.js / src/ / wrangler.toml / migrations/reception/ → main、kabuki-post-365/ → post365、両方なら all）。
+
+## 事前チェック（全対象・省略しない）
+
+`wrangler deploy` は**いまの作業ツリーをそのまま本番に上げる**。main 以外のブランチから上げると、main にだけ入っている修正を本番から消してしまう。
+
+1. `git fetch origin main` のあと、対象パスで origin/main にだけある変更を調べる:
+   `git log --oneline --cherry-pick --right-only HEAD...origin/main -- <対象パス>`
+   （main: `worker.js src wrangler.toml migrations/reception`／post365: `kabuki-post-365`）
+   **1件でも出たら中断して、その一覧を報告する**（そのままデプロイすると、その変更が本番から消える）
+2. 対象パスに未コミットの変更があれば、デプロイは進めてよいが報告に必ず書く（本番の中身が git に無い状態になる。main は次の自動デプロイで上書きされる）
 
 ## main（メインWorker kerakabuki）
 
-1. `node --check worker.js` で構文確認（エラー時は中断して報告）
-2. リポジトリルートで `npx wrangler deploy`
-3. 注: mainブランチへのpushでもGitHub Actionsが自動デプロイされる。push直後なら手動デプロイせず `gh api repos/kerakabuki/kabuki-ai-agent/actions/runs?per_page=1` でCIの結果を確認するだけでよい
+1. 構文確認（CIと同じ）: `node --check worker.js` と `for f in src/*.js; do node --check "$f"; done`。エラー時は中断して報告
+2. 受付DB（RECEPTION_DB）の未適用マイグレーションを確認: `npx wrangler d1 migrations list kerakabuki-reception --remote`。あれば `npx wrangler d1 migrations apply kerakabuki-reception --remote` を先に適用する
+3. リポジトリルートで `npx wrangler deploy`
+4. 注: mainブランチへのpushでもGitHub Actionsが自動デプロイされる。push直後なら手動デプロイせず `gh api repos/kerakabuki/kabuki-ai-agent/actions/runs?per_page=1` でCIの結果を確認するだけでよい
 
 ## post365（kabuki-post-365）
 
@@ -20,5 +31,5 @@ argument-hint: 対象（省略=自動判定 / main / post365 / all）
 ## 共通
 
 - 完了後、デプロイされたバージョンIDとWorker URLを報告する
-- エラーが出たら自分でログを読んで原因を特定し、修正可能なら修正して再実行、不可能なら状況を報告する
+- エラーが出たら自分でログを読んで原因を特定する。認証・依存・環境の問題は直して再実行してよい。**コードの修正が必要なら直さずに止めて報告する**（ここで直したコードはレビューを通らずに本番へ出る）
 - デプロイ後の動作確認: main は `https://kabukiplus.com` の応答、post365 は `https://kabuki-post-365.kerakabuki.workers.dev` の応答を確認する

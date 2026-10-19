@@ -13,7 +13,7 @@ This repo is **not only the Workers** — it also holds the operator's kabuki re
 | Path | What it is | Deployed? |
 |---|---|---|
 | `worker.js` + `src/` | **kerakabuki** (main Worker) — LINE Bot + SSR web. Documented below. | ✅ push=本番 |
-| `kabuki-post-365/` | 2nd Worker — automated daily SNS posting. **See `kabuki-post-365/CLAUDE.md`** (architecture, pipeline, platform rules, D1 gotchas). | ✅ `npm run deploy` |
+| `kabuki-post-365/` | 2nd Worker — Instagram の毎日自動投稿（Facebook・X へは Codex が転記）。リール動画は `.github/workflows/instagram-reels.yml` が生成。**See `kabuki-post-365/CLAUDE.md`** (architecture, pipeline, photo privacy, D1 gotchas). | ✅ `npm run deploy` |
 | `studio/` | 「超訳！歌舞伎ナビ」動画制作のローカルWebアプリ（`start_studio.cmd` で起動、Node製ローカルサーバ）。エピソード定義は `studio/episodes/*.json`。 | ローカル専用 |
 | `scripts/video/` | 動画制作（`build_sonezaki_video.mjs`＝ffmpeg自動組み立て、ElevenLabsナレーション／BGM／画像生成）。 | ローカル専用 |
 | `scripts/research/` | 論文・書籍収集と分析（CiNii/J-STAGE/NDL）。出力先は `research/jishibai/`。`joruri_extract/` は浄瑠璃音源の書き起こし処理。 | ローカル専用 |
@@ -47,21 +47,25 @@ This repo is **not only the Workers** — it also holds the operator's kabuki re
 | Agent | Model | 役割 | 権限 |
 |---|---|---|---|
 | `builder` | Opus | 仕様確定済みの実装（コード） | 読み書き＋実行 |
-| `writer` | Opus | note記事・台本・告知文（日本語長文） | 読み書き |
+| `writer` | Opus | note記事・台本・告知文（日本語長文） | 読み書き＋実行・Web取得 |
 | `runner` | Sonnet | デプロイ・wrangler操作・定型実行 | 読み書き＋実行 |
 | `reviewer` | Fable | **push前レビュー（push=本番デプロイのため、自明でない変更は必須ゲート）** | 読み取り専用 |
 | `triager` | Haiku | 要約・分類・カウント・下処理 | 読み取り専用 |
-| `researcher` | Sonnet | Web調査・文献収集・公演情報の裏取り | 読み取り＋Web |
+| `researcher` | Sonnet | Web調査・文献収集・公演情報の裏取り | 読み取り＋Web（`research/` への保存可） |
 
 ## Build & Deploy
 
 ```bash
-node --check worker.js     # main worker の唯一の検証手段（テストもリンタも無い）
-npx wrangler deploy        # main worker を手動デプロイ（repo root）
+node --check worker.js; for f in src/*.js; do node --check "$f"; done   # main worker の唯一の検証手段（CIと同じ。テストもリンタも無い）
+npx wrangler deploy        # main worker を手動デプロイ（repo root）。手順と事前チェックは /deploy が正本
 cd kabuki-post-365 && npm run deploy   # tsc --noEmit → frontend build → deploy
 ```
 
-**Pushing to main auto-deploys the main worker to production** via GitHub Actions (`.github/workflows/deploy.yml`, gated by `node --check`, triggered only by worker.js / src/ / wrangler.toml changes). kabuki-post-365 は自動デプロイ対象外（`npm run deploy` が必要）。
+**Pushing to main auto-deploys the main worker to production** via GitHub Actions (`.github/workflows/deploy.yml`, gated by `node --check` on worker.js and every src/*.js, triggered by changes to worker.js / src/ / wrangler.toml or the workflow file itself). kabuki-post-365 は自動デプロイ対象外（`npm run deploy` が必要）。
+
+**push による自動デプロイは受付DB（RECEPTION_DB）のマイグレーションを適用しない**（deploy.yml に D1 の手順が無い）。新しいマイグレーションに依存する変更は、push の前に `npx wrangler d1 migrations apply kerakabuki-reception --remote` を済ませる。
+
+**手動の `wrangler deploy` は作業ツリーをそのまま本番に上げる。** main 以外のブランチから上げると、main にだけ入っている修正が本番から消える（/deploy の事前チェックはこれを止めるためにある）。
 
 No test suite exists. worker.js is plain JS (no linter; eslint exists only in `kabuki-post-365/frontend`).
 
@@ -81,7 +85,7 @@ No test suite exists. worker.js is plain JS (no linter; eslint exists only in `k
 
 ## Architecture — Main Worker
 
-### `worker.js` (~7.7k lines, single entry point)
+### `worker.js` (~7.9k lines, single entry point)
 
 All routing lives here — LINE webhook, Web SSR pages, REST APIs, cron triggers. Locate key functions by grep (line numbers rot):
 
@@ -90,11 +94,11 @@ All routing lives here — LINE webhook, Web SSR pages, REST APIs, cron triggers
 - `callGemini()` / `callGeminiVision()` — Gemini 2.5 Flash API calls
 - `getKeraTools()` — 5 function-calling tools (search_performances, search_news, lookup_glossary, lookup_enmoku, get_group_info)
 
-### Modular Pages (`src/`, ~74 JS files)
+### Modular Pages (`src/`, ~82 JS files)
 
 Each `*_page.js` exports an HTML generator for SSR, using `web_layout.js` as the shared shell. Pattern: `export function fooPageHTML(env, lang, ...) → string`.
 
-Key non-page modules: `auth.js` (LINE Login + Google Sign-In, roles master/editor/manager/member), `news.js` (Google News RSS + KV cache), `kabuki_bito.js` (schedule scraping + KV cache), `quiz.js`, `i18n.js` (multilingual), `user_log.js` (KABUKI RECO), `flex_*.js` (LINE Flex Messages).
+Key non-page modules: `auth.js` (LINE Login + Google Sign-In, roles master/editor/manager/member), `news.js` (Google News RSS + KV cache), `kabuki_bito.js` (schedule scraping + KV cache), `quiz.js`, `i18n.js` (multilingual), `user_log.js` (KABUKI RECO), `flex_*.js` (LINE Flex Messages), `reception.js` (令和八年公演の来場・祝儀受付。画面は `/kerakabuki/reception/2026`、APIは `/api/kerakabuki/reception/2026`。worker.js の先頭近くで `handleReception()` が先に受ける).
 
 ### Storage (main worker)
 
@@ -106,6 +110,8 @@ Key non-page modules: `auth.js` (LINE Login + Google Sign-In, roles master/edito
 | `ENMOKU_BUCKET` | R2 | Play (enmoku) guide data (22 plays) |
 | `QUIZ_BUCKET` | R2 | Quiz question data |
 | `AI` | Workers AI | Llama 3.1 8B fallback when Gemini unavailable |
+| `RECEPTION_DB` | D1 (`kerakabuki-reception`) | 令和八年公演の来場・祝儀受付。マイグレーションは `migrations/reception/`（/deploy main が適用を確認する） |
+| `RECEPTION_LIMITER` | Rate limit | 受付APIの流量制限（120回/60秒） |
 
 ### Important Patterns (main worker)
 

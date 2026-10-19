@@ -2,10 +2,24 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "studio",
-      "runtimeExecutable": "node",
-      "runtimeArgs": ["studio/server.mjs"],
-      "port": 3555
+      "name": "spot-marker",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "scripts/video/r8_fullcut/spot_marker/server.py"
+      ],
+      "port": 8765
+    },
+    {
+      "name": "main-worker",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "wrangler",
+        "dev",
+        "--port",
+        "8787",
+        "--local"
+      ],
+      "port": 8787
     }
   ]
 }
