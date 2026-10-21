@@ -1,7 +1,9 @@
 ---
 title: 仮名手本忠臣蔵のあらすじと見どころ
 created: 2026-10-21
-status: draft
+status: published
+published: 2026-10-21
+note_url: https://note.com/kerakabuki/n/nfebbf063c053
 category: enmoku
 note: 表はnote非対応のため行形式に変換済み。太字の閉じ記号直後の半角空白は意図的（消すと崩れる）
 ---
