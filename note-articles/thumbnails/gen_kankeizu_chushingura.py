@@ -2,15 +2,16 @@
 r"""
 note記事の本文図 ―― 『仮名手本忠臣蔵』三つの家の人物関係（写真入り）
 
-記事「全十一段をひと目で見る」の直前に置く一枚。
+記事「全十一段をひと目で見る」の直前に置く一枚。note 向けの縦長。
+家系図の作法で描く: 夫婦は並べて二重線でつなぎ、子は二重線の中点から下へ垂らす。
 塩冶家・桃井家・勘平の家（山崎）の三つの箱に、気良歌舞伎 2021年 忠臣蔵通し上演の
-口上用写真（役ごとの人物写真）を丸く抜いて並べ、箱をまたぐ線（許嫁・横恋慕など）を引く。
-顔世御前だけ写真が無いので名前のみ。天川屋は省く。
+口上用写真（役ごとの人物写真）を丸く抜いて置き、箱をまたぐ線（許嫁・抱き止める・横恋慕など）を引く。
+顔世御前だけ写真が無いので名前のみ。天川屋は省く。師直は塩冶家の箱の外、上に置く。
 
 写真の元: D:\気良歌舞伎\歌舞伎２０２１年\口上用写真\{演者}\{役名}.jpg
 CROPS は原寸の (left, top, right, bottom)。顔が丸の上寄り三分の一に来るように切る。
 
-出力: note-articles/thumbnails/chushingura_kankeizu.png (1280x1080)
+出力: note-articles/thumbnails/chushingura_kankeizu.png (1080x1680)
 """
 import os
 import math
@@ -18,7 +19,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageOps
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-W, H = 1280, 1080
+W, H = 1080, 1810
 
 WASHI = np.array([236, 229, 212], dtype=np.float32)
 SUMI = (52, 44, 36)
@@ -52,7 +53,7 @@ CROPS = {
     "hangan":  (890, 320, 1190, 620),
     "moronao": (905, 40, 1325, 460),
     "wakasa":  (756, 170, 1276, 690),
-    "honzo":   (880, 40, 1240, 400),
+    "honzo":   (800, -50, 1200, 350),
     "tonase":  (800, 190, 1220, 610),
     "konami":  (662, 220, 1222, 780),
     "yura":    (790, 60, 1270, 540),
@@ -101,6 +102,12 @@ def round_photo(key, d=D):
     """原寸写真を CROPS で切り、直径 d の丸に抜く（マスクは4倍で描いて縮小）。"""
     im = ImageOps.exif_transpose(Image.open(os.path.join(PHOTO_ROOT, PHOTOS[key]))).convert("RGB")
     l, t, r, b = CROPS[key]
+    if t < 0:
+        # 顔が写真の上端ぎりぎりのとき: 上端の平均色で上に足して、丸の中で顔を下げる
+        pad = -t
+        edge = tuple(int(v) for v in np.array(im)[:8].reshape(-1, 3).mean(axis=0))
+        im = ImageOps.expand(im, border=(0, pad, 0, 0), fill=edge)
+        t, b = 0, b + pad
     l, t = max(0, l), max(0, t)
     r, b = min(im.width, r), min(im.height, b)
     side = min(r - l, b - t)
@@ -125,6 +132,7 @@ class Fig:
         self.f_box = font(MIN, 24)
         self.f_note = font(MIN, 18)
         self.circles = {}   # key -> (cx, cy, r)
+        self.text_bottom = {}  # key -> 名前・役どころの下端 y（下へ出る線はここから引く）
 
     def _bbox(self, text, f):
         l, t, r, b = self.d.textbbox((0, 0), text, font=f)
@@ -155,21 +163,34 @@ class Fig:
             self.circles[key] = (cx, cy, D / 2)
         w, h = self._bbox(name, self.f_name)
         self.d.text((cx - w / 2, top + D + 8), name, font=self.f_name, fill=SUMI)
+        bottom = top + D + 8 + h + 6
         if role:
             rw, rh = self._bbox(role, self.f_role)
-            self.d.text((cx - rw / 2, top + D + 8 + h + 6), role, font=self.f_role, fill=SUMI_DIM)
+            self.d.text((cx - rw / 2, bottom), role, font=self.f_role, fill=SUMI_DIM)
+            bottom += rh + 6
+        self.text_bottom[key] = bottom + 4
 
     def _edge(self, key, toward):
+        """丸の縁の点。相手がほぼ真下なら、名前と役どころの下端から出す（文字を線が横切らないように）。"""
         cx, cy, r = self.circles[key]
         dx, dy = toward[0] - cx, toward[1] - cy
+        if dy > r and abs(dx) <= 160 and key in self.text_bottom:
+            return cx, self.text_bottom[key]
         n = math.hypot(dx, dy) or 1
         return cx + dx / n * (r + 4), cy + dy / n * (r + 4)
 
-    def link(self, a, b, label="", width=2, color=LINE, offset=(0, 0), arrow=False, t=0.5):
-        """a→b に丸の縁から縁へ線。label は線上の位置 t（0=a側）に offset を足して置く。"""
+    def link(self, a, b, label="", width=2, color=LINE, offset=(0, 0), arrow=False, t=0.5, shift=0):
+        """a→b に丸の縁から縁へ線。label は線上の位置 t（0=a側）に offset を足して置く。
+        shift は線を垂直方向にずらす量（同じ二人の間に往復の線を引くとき用）。"""
         ca, cb = self.circles[a][:2], self.circles[b][:2]
         p = self._edge(a, cb)
         q = self._edge(b, ca)
+        if shift:
+            dx, dy = q[0] - p[0], q[1] - p[1]
+            n = math.hypot(dx, dy) or 1
+            nx, ny = -dy / n * shift, dx / n * shift
+            p = (p[0] + nx, p[1] + ny)
+            q = (q[0] + nx, q[1] + ny)
         self.d.line([p, q], fill=color, width=width)
         if arrow:
             ang = math.atan2(q[1] - p[1], q[0] - p[0])
@@ -186,11 +207,70 @@ class Fig:
             self.d.text((mx - w / 2, my - h / 2 - 2), label, font=self.f_rel, fill=AKANE)
 
     def box(self, x0, y0, x1, y1, title):
-        self.d.rounded_rectangle([x0, y0, x1, y1], radius=14, outline=BOX, width=2)
+        self.d.rounded_rectangle([x0, y0, x1, y1], radius=14, fill=(229, 221, 203), outline=BOX, width=2)
         w, h = self._bbox(title, self.f_box)
         self.d.rectangle([x0 + 22, y0 - h / 2 - 6, x0 + 22 + w + 16, y0 + h / 2 + 6],
                          fill=tuple(int(v) for v in WASHI))
         self.d.text((x0 + 30, y0 - h / 2 - 4), title, font=self.f_box, fill=AKANE)
+
+    def polyline(self, points, label="", label_at=None, color=LINE, width=2, arrow=False, dashed=False):
+        """折れ線。label は label_at の座標に紙色の下地を敷いて置く。arrow で終点に矢尻、dashed で破線。"""
+        if dashed:
+            for (x0, y0), (x1, y1) in zip(points, points[1:]):
+                n = math.hypot(x1 - x0, y1 - y0)
+                k = max(1, int(n / 14))
+                for i in range(k):
+                    if i % 2 == 0:
+                        self.d.line([(x0 + (x1 - x0) * i / k, y0 + (y1 - y0) * i / k),
+                                     (x0 + (x1 - x0) * (i + 1) / k, y0 + (y1 - y0) * (i + 1) / k)],
+                                    fill=color, width=width)
+        else:
+            self.d.line(points, fill=color, width=width, joint="curve")
+        if arrow:
+            p, q = points[-2], points[-1]
+            ang = math.atan2(q[1] - p[1], q[0] - p[0])
+            s = 11
+            self.d.polygon([q, (q[0] - s * math.cos(ang - 0.45), q[1] - s * math.sin(ang - 0.45)),
+                            (q[0] - s * math.cos(ang + 0.45), q[1] - s * math.sin(ang + 0.45))],
+                           fill=color)
+        if label and label_at:
+            w, h = self._bbox(label, self.f_rel)
+            mx, my = label_at
+            self.d.rectangle([mx - w / 2 - 6, my - h / 2 - 3, mx + w / 2 + 6, my + h / 2 + 5],
+                             fill=tuple(int(v) for v in WASHI))
+            self.d.text((mx - w / 2, my - h / 2 - 2), label, font=self.f_rel, fill=color if color != LINE else AKANE)
+
+    # ---- 家系図の作法 ----
+    def couple(self, a, b, label="", gap=5):
+        """同じ段に並んだ夫婦を二重線でつなぐ。戻り値は二重線の中点（子の線の起点）。"""
+        (ax, ay, ar), (bx, by, br) = self.circles[a], self.circles[b]
+        x0, x1 = min(ax, bx) + ar + 4, max(ax, bx) - br - 4
+        y = ay
+        for dy in (-gap, gap):
+            self.d.line([(x0, y + dy), (x1, y + dy)], fill=LINE, width=2)
+        if label:
+            w, h = self._bbox(label, self.f_rel)
+            mx = (x0 + x1) / 2
+            self.d.text((mx - w / 2, y - gap - h - 8), label, font=self.f_rel, fill=AKANE)
+        return ((x0 + x1) / 2, y)
+
+    def children(self, mid, keys, bar_y=None):
+        """二重線の中点 mid から下へ線を垂らし、子（複数なら横棒で分岐）につなぐ。"""
+        tops = [(self.circles[k][0], self.circles[k][1] - self.circles[k][2] - 4) for k in keys]
+        if len(keys) == 1:
+            cx, top = tops[0]
+            if abs(cx - mid[0]) < 1:
+                self.d.line([mid, (cx, top)], fill=LINE, width=2)
+            else:
+                by = bar_y if bar_y else (mid[1] + top) / 2
+                self.d.line([mid, (mid[0], by), (cx, by), (cx, top)], fill=LINE, width=2, joint="curve")
+            return
+        by = bar_y if bar_y else (mid[1] + min(t for _, t in tops)) / 2
+        self.d.line([mid, (mid[0], by)], fill=LINE, width=2)
+        xs = [cx for cx, _ in tops]
+        self.d.line([(min(xs), by), (max(xs), by)], fill=LINE, width=2)
+        for cx, top in tops:
+            self.d.line([(cx, by), (cx, top)], fill=LINE, width=2)
 
 
 def main():
@@ -201,54 +281,94 @@ def main():
     title = "『仮名手本忠臣蔵』三つの家の人物関係"
     w, _ = fg._bbox(title, fg.f_title)
     d.text(((W - w) / 2, 30), title, font=fg.f_title, fill=SUMI)
-    d.rectangle([(W - 62) / 2, 90, (W + 62) / 2, 93], fill=AKANE)
 
-    # 箱を先に描き、写真はその上に載せる
-    fg.box(40, 320, 625, 775, "塩冶家")
-    fg.box(655, 320, 1240, 775, "桃井家")
-    fg.box(40, 830, 1240, 1040, "勘平の家（山崎）")
+    # 箱は家老の家（大星家・加古川家）と勘平の家。主君と師直は箱の上に置く
+    fg.box(40, 640, 520, 1170, "大星家")
+    fg.box(560, 640, 1040, 1170, "加古川家")
+    fg.box(40, 1210, 1040, 1715, "勘平の家（山崎）")
 
-    # 敵役
-    fg.node("moronao", 640, 112, "高師直", "足利家の執事", photo="moronao")
+    # 最上段: 師直（判官の真上）
+    fg.node("moronao", 390, 100, "高師直", "足利家の執事", photo="moronao")
 
-    # 塩冶家
-    fg.node("hangan", 190, 345, "塩冶判官", "主君", photo="hangan")
-    fg.node("kaoyo", 450, 345, "顔世御前", "判官の妻")
-    fg.node("yura", 140, 575, "大星由良之助", "家老", photo="yura")
-    fg.node("oishi", 340, 575, "お石", "由良之助の妻", photo="oishi")
-    fg.node("rikiya", 540, 575, "力弥", "息子", photo="rikiya")
-    fg.link("hangan", "kaoyo", "夫婦")
-    fg.link("hangan", "yura", "主従", t=0.75)
-    fg.link("yura", "oishi", "夫婦")
-    fg.link("oishi", "rikiya", "親子")
+    # 主君の段: 塩冶判官（と妻の顔世御前）、桃井若狭之助（本蔵の真上）
+    fg.node("kaoyo", 170, 400, "顔世御前", "判官の妻")
+    fg.node("hangan", 390, 400, "塩冶判官", "塩冶家の主君", photo="hangan")
+    fg.node("wakasa", 720, 400, "桃井若狭之助", "桃井家の主君", photo="wakasa")
 
-    # 桃井家
-    fg.node("wakasa", 1090, 345, "桃井若狭之助", "主君", photo="wakasa")
-    fg.node("konami", 740, 575, "小浪", "娘", photo="konami")
-    fg.node("tonase", 940, 575, "戸無瀬", "本蔵の妻・継母", photo="tonase")
-    fg.node("honzo", 1140, 575, "加古川本蔵", "家老", photo="honzo")
-    fg.link("wakasa", "honzo", "主従", t=0.75)
-    fg.link("honzo", "tonase", "夫婦")
-    fg.link("tonase", "konami", "親子")
+    # 大星家（塩冶家の家老）
+    fg.node("oishi", 170, 690, "お石", "由良之助の妻", photo="oishi")
+    fg.node("yura", 390, 690, "大星由良之助", "塩冶家の家老", photo="yura")
+    fg.node("rikiya", 280, 960, "力弥", "由良之助の息子", photo="rikiya")
 
-    # 家をまたぐ線
-    fg.link("rikiya", "konami", "許嫁", color=AKANE, width=3)
-    fg.link("moronao", "kaoyo", "横恋慕", arrow=True, t=0.6, offset=(42, 0))
-    fg.link("moronao", "hangan", "侮辱", arrow=True, t=0.72, offset=(-38, 0))
-    fg.link("wakasa", "moronao", "斬ろうとする", arrow=True, t=0.5, offset=(0, -18))
+    # 加古川家（桃井家の家老）
+    fg.node("honzo", 720, 690, "加古川本蔵", "桃井家の家老", photo="honzo")
+    fg.node("tonase", 940, 690, "戸無瀬", "本蔵の妻・小浪の継母", photo="tonase")
+    fg.node("konami", 830, 960, "小浪", "本蔵の娘", photo="konami")
 
     # 勘平の家（山崎）
-    fg.node("kanpei", 180, 855, "早野勘平", "判官の供", photo="kanpei")
-    fg.node("okaru", 450, 855, "おかる", "顔世御前の腰元", photo="okaru")
-    fg.node("oyako", 730, 855, "与市兵衛・おかや", "おかるの両親", photos=["yoichi", "okaya"])
-    fg.node("heiemon", 1020, 855, "寺岡平右衛門", "おかるの兄・足軽", photo="heiemon")
-    fg.link("kanpei", "okaru", "恋人・夫婦")
-    fg.link("okaru", "oyako", "親子")
-    fg.link("oyako", "heiemon", "親子")
+    fg.node("yoichi", 610, 1250, "与市兵衛", "百姓", photo="yoichi")
+    fg.node("okaya", 830, 1250, "おかや", "与市兵衛の妻", photo="okaya")
+    fg.node("kanpei", 390, 1500, "早野勘平", "塩冶家の家来・判官の供", photo="kanpei")
+    fg.node("okaru", 610, 1500, "おかる", "顔世御前の腰元", photo="okaru")
+    fg.node("heiemon", 830, 1500, "寺岡平右衛門", "おかるの兄・足軽", photo="heiemon")
 
-    note = "写真は気良歌舞伎 2021年「仮名手本忠臣蔵」通し上演の人物写真。顔世御前は写真なし。線の言葉は劇中の関係。"
+    # 夫婦（二重線）と子
+    fg.couple("kaoyo", "hangan")
+    m = fg.couple("oishi", "yura")
+    fg.children(m, ["rikiya"])
+    m = fg.couple("honzo", "tonase")
+    fg.children(m, ["konami"])
+    m = fg.couple("yoichi", "okaya")
+    fg.children(m, ["okaru", "heiemon"], bar_y=1460)
+    fg.couple("kanpei", "okaru", label="恋人・夫婦")
+
+    # 主従（縦の直線）: 判官 → 由良之助 → 勘平、若狭之助 → 本蔵
+    fg.link("hangan", "yura", "主従", offset=(36, 0))
+    fg.link("wakasa", "honzo", "主従", offset=(36, 0))
+    yx, _, _ = fg.circles["yura"]
+    kx, ky, kr = fg.circles["kanpei"]
+    fg.polyline([(yx, fg.text_bottom["yura"]), (kx, ky - kr - 4)], label="主従", label_at=(yx, 1190))
+
+    # 許嫁（破線）
+    (rx, ry, rr), (cx_, cy_, cr) = fg.circles["rikiya"], fg.circles["konami"]
+    fg.polyline([(rx + rr + 4, ry), (cx_ - cr - 4, cy_)], label="許嫁", label_at=(540, ry), dashed=True)
+
+    # 事件の動き（柿色の矢印、直角配線）
+    CONF = AKANE
+    mx_, my_, mr = fg.circles["moronao"]
+    kx_, ky2, kr2 = fg.circles["kaoyo"]
+    fg.polyline([(mx_ - mr - 4, my_), (kx_, my_), (kx_, ky2 - kr2 - 4)],
+                label="横恋慕", label_at=(kx_, 300), color=CONF, arrow=True)
+    fg.link("moronao", "hangan", "侮辱", arrow=True, t=0.5, offset=(-36, 0), shift=-8, color=CONF)
+    fg.link("hangan", "moronao", "斬りかかる", arrow=True, t=0.5, offset=(64, 0), shift=-8, color=CONF)
+    wx, wy, wr = fg.circles["wakasa"]
+    fg.polyline([(wx, wy - wr - 4), (wx, my_), (mx_ + mr + 4, my_)],
+                label="斬ろうとするが、思いとどまる", label_at=(620, my_ - 36), color=CONF, arrow=True)
+    hx, hy, hr = fg.circles["honzo"]
+    jx, jy, jr = fg.circles["hangan"]
+    fg.polyline([(hx - hr - 4, hy), (540, hy), (540, jy), (jx + jr + 4, jy)],
+                label="抱き止める", label_at=(540, 600), color=CONF, arrow=True)
+
+    # 凡例
+    lx, ly = 70, 1740
+    fg.d.line([(lx, ly), (lx + 40, ly)], fill=LINE, width=2)
+    fg.d.line([(lx, ly + 7), (lx + 40, ly + 7)], fill=LINE, width=2)
+    fg.d.text((lx + 50, ly - 10), "夫婦（子は中点から下へ）", font=fg.f_note, fill=SUMI_DIM)
+    lx = 380
+    fg.d.line([(lx, ly + 3), (lx + 40, ly + 3)], fill=LINE, width=2)
+    fg.d.text((lx + 50, ly - 10), "主従", font=fg.f_note, fill=SUMI_DIM)
+    lx = 520
+    for i in range(0, 40, 14):
+        fg.d.line([(lx + i, ly + 3), (lx + i + 7, ly + 3)], fill=LINE, width=2)
+    fg.d.text((lx + 50, ly - 10), "許嫁", font=fg.f_note, fill=SUMI_DIM)
+    lx = 660
+    fg.d.line([(lx, ly + 3), (lx + 40, ly + 3)], fill=CONF, width=2)
+    fg.d.polygon([(lx + 40, ly + 3), (lx + 30, ly - 2), (lx + 30, ly + 8)], fill=CONF)
+    fg.d.text((lx + 50, ly - 10), "事件の動き", font=fg.f_note, fill=SUMI_DIM)
+
+    note = "写真は気良歌舞伎 2021年「仮名手本忠臣蔵」通し上演の人物写真。顔世御前は写真なし。"
     w, _ = fg._bbox(note, fg.f_note)
-    d.text(((W - w) / 2, 1052), note, font=fg.f_note, fill=SUMI_DIM)
+    d.text(((W - w) / 2, 1775), note, font=fg.f_note, fill=SUMI_DIM)
 
     out = os.path.join(HERE, "chushingura_kankeizu.png")
     img.save(out)
