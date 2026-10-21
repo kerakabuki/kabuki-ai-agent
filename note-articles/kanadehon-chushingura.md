@@ -34,8 +34,8 @@ note: 表はnote非対応のため行形式に変換済み。太字の閉じ記�
 **[二段目](https://www2.ntj.jac.go.jp/dglib/contents/learn/edc21/himotoku/d2/2a.html)　桃井館** ―― 本蔵（ほんぞう）・若狭之助、小浪（こなみ）・力弥（りきや）
 主君を案じる家老の働きと、娘の縁談が動き出す。〔主従・親子・恋〕
 
-**[三段目](https://www2.ntj.jac.go.jp/dglib/contents/learn/edc21/himotoku/d3/3a.html)　殿中の刃傷（にんじょう）と裏門** ―― 判官・師直・本蔵、勘平・おかる
-侮辱に耐えかねた判官が斬りかかり、本蔵が止める。その間、供の勘平は恋人おかると会っていて居合わせない。〔主従・夫婦・恋〕
+**[三段目](https://www2.ntj.jac.go.jp/dglib/contents/learn/edc21/himotoku/d3/3a.html)　進物・松の間刃傷（にんじょう）・裏門** ―― 判官・師直・本蔵、勘平・おかる
+本蔵の進物のあと、侮辱に耐えかねた判官が斬りかかり、本蔵が止める。その間、供の勘平は恋人おかると会っていて居合わせない。〔主従・夫婦・恋〕
 
 **[四段目](https://www2.ntj.jac.go.jp/dglib/contents/learn/edc21/himotoku/d4/2a.html)　切腹と城明渡し** ―― 判官・由良之助
 主君の最期の無念を、家臣が引き受ける。〔主従〕
