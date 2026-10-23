@@ -136,6 +136,32 @@ export function keraArchivePageHTML() {
   /* Sources: kerakabuki.jimdofree.com + YouTube @kerakabuki */
   var PERFORMANCES = [
     {
+      year: 2026,
+      events: [
+        {
+          title: "令和8年公演「曽根崎心中」（初上演）",
+          date: "9月26日（土）",
+          venue: "気良座",
+          plays: [
+            { name: "曽根崎心中 第一幕「生玉社前」", ytId: "NwXVqTocWBE" },
+            { name: "曽根崎心中 第二幕「天満屋」", ytId: "3qxJ-wG4mVc" },
+            { name: "曽根崎心中 第三幕「天神森」" }
+          ],
+          note: "お初と徳兵衛を二組で演じる「配役リレー」で、第三幕は若手が初めて挑んだ。天神森の背景には、生成AIで作った映像をプロジェクションマッピングで映した。満員御礼。"
+        },
+        {
+          title: "曽根崎心中を知る（解説動画）",
+          plays: [
+            { name: "お初「死ぬる覚悟が聞きたい」", ytId: "LJWgy_nh12g", note: "台詞を現代語訳" },
+            { name: "九平次「取れる金なら取ってみんかい」", ytId: "nbw1SQY2k78", note: "台詞を現代語訳" },
+            { name: "徳兵衛「男も立たず、身も立たず」", ytId: "_soAJIa3Yx8", note: "台詞を現代語訳" },
+            { name: "久右衛門「必ず死んではならぬぞよ」", ytId: "ETSBVfnBK_Q", note: "台詞を現代語訳" },
+            { name: "曽根崎心中ってどんな話？", ytId: "LVxIwWGDrCU", note: "超訳！歌舞伎ナビ" }
+          ]
+        }
+      ]
+    },
+    {
       year: 2025,
       events: [
         {
