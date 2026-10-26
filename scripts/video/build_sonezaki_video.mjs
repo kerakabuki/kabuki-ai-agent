@@ -190,10 +190,21 @@ function wrapLine(s, max = WRAP_MAX) {
 const SUB_WRAP_BALANCED = S.subWrap === 'balanced';
 const KATA = /[ァ-ヶー]/, KANJI = /[一-龯々]/, PARTICLE = /[はがをにでとものへや]/;
 function breakScore(s, i) {  // s[i-1] と s[i] の間で切るときの点数（高いほど良い）
+  const base = breakScoreBase(s, i);
+  // 台詞（「」の中）で切るより、台詞の外の切れ目を選ぶ（「さあ斬ってみろ、斬れ、／斬れ」を防ぐ）
+  const open = (s.slice(0, i).match(/「/g) ?? []).length - (s.slice(0, i).match(/」/g) ?? []).length;
+  return base > 0 && open > 0 ? base - 4 : base;
+}
+function breakScoreBase(s, i) {
   const l = s[i - 1], r = s[i];
+  if (l === '」' && r === '「') return 11;  // 「…」「…」と台詞が続く継ぎ目
   if (l === '、') return 10;
+  if (l === '　') return 9;                 // 和歌などの句の切れ目（全角スペース）の後ろ
+  if (l === '」') return 7;                 // 台詞の終わり（「…」とあおる）
   if (KATA.test(l) && KATA.test(r)) return -20;
   if (KANJI.test(l) && KANJI.test(r)) return -10;
+  // かな同士の間で、次の行が助詞で始まる切り方はしない（「抱き止めたの／は」のような行頭の助詞を防ぐ）
+  if (/[ぁ-ゖ]/.test(l) && PARTICLE.test(r)) return -5;
   if (PARTICLE.test(l) && !/[ぁ-ゖ]/.test(r)) return 4;
   if (PARTICLE.test(l)) return 1;
   return 0;
@@ -575,13 +586,15 @@ for (const b of BLOCKS) {
     let end = Math.min(s.end + SUB_TAIL, b.dur);
     const next = b.sents[i + 1];
     if (SUB_NO_OVERLAP && next) end = Math.min(end, next.start - 0.01);
+    // 「…だ」。のような閉じカッコ直後の句点は字幕に出さない（台本側の句点は文の区切りとして残す）
+    const text = s.text.replace(/([」』])。/g, '$1');
     if (SUB_WRAP_BALANCED) {
-      for (const c of subtitleCues(s.text, s.start, end)) {
+      for (const c of subtitleCues(text, s.start, end)) {
         ass += `Dialogue: 0,${fmtAss(c.start)},${fmtAss(c.end - 0.01)},Sub,,0,0,0,,${c.text}\n`;
       }
       return;
     }
-    ass += `Dialogue: 0,${fmtAss(s.start)},${fmtAss(end)},Sub,,0,0,0,,${wrapLine(s.text)}\n`;
+    ass += `Dialogue: 0,${fmtAss(s.start)},${fmtAss(end)},Sub,,0,0,0,,${wrapLine(text)}\n`;
   });
   for (const c of (b.captions ?? [])) {
     const start = c.start ?? (c.frac ? LEAD + c.frac[0] * b.narrDur : 0.2);
