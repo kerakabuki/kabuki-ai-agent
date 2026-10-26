@@ -1,0 +1,1004 @@
+{
+  "episode": {
+    "title": "仮名手本忠臣蔵 三段目｜判官は、なぜ刀を抜いた？ 松の間刃傷の台詞を超訳（超訳！歌舞伎ナビ）",
+    "epDir": "歌舞伎ナビ08仮名手本忠臣蔵三段目",
+    "workName": "work_sandanme_v1",
+    "number": null,
+    "outputName": "仮名手本忠臣蔵三段目_判官はなぜ刀を抜いた_v1.mp4",
+    "voiceId": "xOKkuQfZt5N7XfbFdn9W",
+    "ttsModel": "eleven_v3",
+    "ttsOutputFormat": "mp3_44100_128"
+  },
+  "layout": {
+    "series": "超訳！歌舞伎ナビ",
+    "title": "仮名手本忠臣蔵",
+    "background": "common:v6レイアウト/青海波背景.jpg",
+    "kera": "common:v6レイアウト/けらのすけ立ち姿.png",
+    "keraLive": "common:けらのすけ口パク",
+    "keraMotion": "video"
+  },
+  "settings": {
+    "W": 1920,
+    "H": 1080,
+    "FPS": 24,
+    "LEAD": 0.4,
+    "TAIL": 0.8,
+    "CRF": "18",
+    "wrapMax": 20,
+    "capFontSize": 48,
+    "subNoOverlap": true,
+    "subStyle": {
+      "fontName": "BIZ UDGothic",
+      "fontSize": 66,
+      "bold": 0,
+      "borderStyle": 4,
+      "outline": 16,
+      "shadow": 0,
+      "primaryColour": "&H00FFFFFF",
+      "outlineColour": "&H5A000000",
+      "backColour": "&H5A000000",
+      "marginL": 180,
+      "marginR": 180,
+      "marginV": 48
+    },
+    "bgm": "common:BGM/Moment_HMIX.mp3",
+    "bgmVolNormal": 0.32,
+    "bgmMuteOnClip": true,
+    "slideXfade": 0.4,
+    "edSrc": "common:けらのすけ動画/けらのすけED.mp4",
+    "edBackground": "common:背景.png",
+    "subWrap": "balanced",
+    "slideTiming": "sentence",
+    "bgmSections": [
+      {
+        "from": "1",
+        "to": "2",
+        "file": "common:BGM/華志の舞_HMIX.mp3",
+        "vol": 0.18,
+        "offset": 0
+      },
+      {
+        "from": "3",
+        "to": "9",
+        "file": "common:BGM/Moment_HMIX.mp3",
+        "vol": 0.2,
+        "offset": 0.8
+      },
+      {
+        "from": "10",
+        "to": "10",
+        "file": "common:BGM/華志の舞_HMIX.mp3",
+        "vol": 0.18,
+        "offset": 170
+      }
+    ],
+    "bgmSectionFade": 1.2
+  },
+  "blocks": [
+    {
+      "id": "1",
+      "audio": "voice:ブロック1.mp3",
+      "avatar": "none",
+      "styleTag": "[serious, calm Japanese narration]",
+      "subtitleText": "「殿中で刀を抜けば、お家は取りつぶしだ」。そう言われて、一度は刀を収めた塩冶判官。それなのに判官は、そのすぐあとで、師直に斬りかかった。いったい、何があったのかな。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 1,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:stage_01_刀に手.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.42
+              }
+            }
+          },
+          {
+            "sentFrom": 2,
+            "sentTo": 3,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:stage_02_斬りかかる.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomOut",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.42
+              }
+            }
+          }
+        ]
+      },
+      "chapterTitle": "一度は収めた刀を、なぜ",
+      "ttsText": "[serious, calm Japanese narration] 「デンチュウで刀を抜けば、おいえは取りつぶしだ」。そう言われて、一度は刀を収めた、えんやはんがん。それなのに、はんがんは、そのすぐあとで、もろのうに斬りかかった。いったい、何があったのかな。"
+    },
+    {
+      "id": "2",
+      "audio": "voice:ブロック2.mp3",
+      "avatar": "none",
+      "styleTag": "[cheerful, friendly, warm Japanese narration]",
+      "subtitleText": "こんにちは、けらのすけだよ。今回は『仮名手本忠臣蔵』の三段目、「松の間刃傷」。判官は、なぜ刀を抜いたのか。その答えを、台詞を今の言葉に超訳しながら探っていこう。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 3,
+            "header": false,
+            "kera": "large",
+            "photoLayer": {
+              "img": "stage:stage_10_刀に手2.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 1080,
+              "move": "none",
+              "focus": {
+                "x": 0.5,
+                "y": 0.38
+              },
+              "dim": 0.42,
+              "shade": "left"
+            },
+            "heading": {
+              "tone": "light",
+              "font": "gothic",
+              "lead": "仮名手本忠臣蔵　三段目",
+              "lines": [
+                "判官は、なぜ",
+                "刀を抜いたのか"
+              ],
+              "size": 104,
+              "emphasis": "刀を抜いた",
+              "x": 128,
+              "y": 330
+            }
+          }
+        ]
+      },
+      "chapterTitle": "判官は、なぜ刀を抜いたのか",
+      "ttsText": "[cheerful, friendly, warm Japanese narration] こんにちは。けらのすけ、だよ。今回は『かなでほん、ちゅうしんぐら』の三段目、「まつのま、にんじょう」。はんがんは、なぜ刀を抜いたのか。その答えを、台詞を今の言葉に超訳しながら、探っていこう。",
+      "seBySent": [
+        {
+          "file": "common:効果音/拍子木1.mp3",
+          "sent": 0,
+          "vol": 0.5
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "audio": "voice:ブロック3.mp3",
+      "avatar": "none",
+      "styleTag": "[friendly, serious Japanese narration]",
+      "subtitleText": "まず押さえておきたいのは、この日の師直が、とても機嫌が悪かったこと。理由は二つ。ひとつは、判官の妻・顔世御前に恋文を送って、まだ返事をもらえていないこと。もうひとつは、ついさっき、若狭之助に頭を下げて謝らされたこと。若狭之助の家老・本蔵から贈り物を受け取った手前、斬りかかってきた若狭之助に、師直は平謝りするしかなかったんだ。そこへやって来たのが、判官だよ。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 1,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:frame_4870_東えびす.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.42
+              }
+            }
+          },
+          {
+            "sentFrom": 2,
+            "sentTo": 2,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:frame_4140_貞女.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomOut",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.42
+              }
+            }
+          },
+          {
+            "sentFrom": 3,
+            "sentTo": 4,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:stage_08_若狭之助に詫びる師直.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.42
+              }
+            }
+          },
+          {
+            "sentFrom": 5,
+            "sentTo": 5,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:frame_4110_二人.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomOut",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.42
+              }
+            }
+          }
+        ]
+      },
+      "chapterTitle": "この日の師直が不機嫌だった二つの理由",
+      "ttsText": "[friendly, serious Japanese narration] まず押さえておきたいのは、この日の、もろのうが、とても機嫌が悪かったこと。理由は二つ。ひとつは、はんがんの妻、かおよごぜんに恋文を送って、まだ返事をもらえていないこと。もうひとつは、ついさっき、わかさのすけに頭を下げて、謝らされたこと。わかさのすけの家老、ほんぞうから贈り物を受け取った手前、斬りかかってきた、わかさのすけに、もろのうは、平謝りするしかなかったんだ。そこへやって来たのが、はんがんだよ。"
+    },
+    {
+      "id": "4",
+      "audio": "voice:ブロック4.mp3",
+      "avatar": "none",
+      "styleTag": "[gentle, serious Japanese narration]",
+      "subtitleText": "判官が登城すると、顔世御前から文箱が届く。中に入っていたのは、師直の恋文への返事。一首の歌だった。「さなきだに　重きが上の小夜衣　わが夫ならぬ　つまな重ねそ」。超訳すると、「ただでさえ重たい夜着の上に、夫でもないお方の褄まで、重ねてくださいますな」。「つま」は、着物の褄と、連れ合いの「つま」の掛詞。夫のある身です、言い寄らないでください。古い歌を借りて、角を立てずに、でもはっきりと断ったんだ。師直は、恋が破れたと知る。そして、顔世が夫に打ち明けたに違いない、と思い込むんだ。でもね、判官は、この手紙の中身を読んでいない。何も知らないんだよ。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 2,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:frame_4005_文箱.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.42
+              }
+            }
+          },
+          {
+            "sentFrom": 3,
+            "sentTo": 5,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:frame_4020_返歌を読む.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.35
+              }
+            }
+          },
+          {
+            "sentFrom": 6,
+            "sentTo": 9,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:frame_4045_返歌を読む2.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomOut",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.35
+              }
+            }
+          },
+          {
+            "sentFrom": 10,
+            "sentTo": 11,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:frame_4470_こらえる判官.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.35
+              }
+            }
+          }
+        ]
+      },
+      "chapterTitle": "顔世御前の返歌を超訳",
+      "ttsText": "[gentle, serious Japanese narration] はんがんが、とじょうすると、かおよごぜんから、ふばこが届く。中に入っていたのは、もろのうの恋文への返事。一首の歌だった。「さなきだに、おもきがうえの、さよごろも。わがつまならぬ、つまなかさねそ」。超訳すると、「ただでさえ重たい、よぎの上に、夫でもないお方の、つままで、重ねてくださいますな」。「つま」は、着物のつまと、連れ合いの「つま」の、かけことば。夫のある身です、言い寄らないでください。古い歌を借りて、角を立てずに、でも、はっきりと断ったんだ。もろのうは、恋が破れたと知る。そして、かおよが、夫に打ち明けたに違いない、と思い込むんだ。でもね、はんがんは、この手紙の中身を読んでいない。何も知らないんだよ。"
+    },
+    {
+      "id": "5",
+      "audio": "voice:ブロック5.mp3",
+      "avatar": "none",
+      "styleTag": "[friendly, serious Japanese narration]",
+      "subtitleText": "師直は、怒りを判官にぶつけ始める。「おたくの奥方は、たいした貞女でいらっしゃる。字はお上手、器量もよし。せいぜい自慢なさるがいい」。「奥方のそばにべったりだから、登城も遅れるわけだ」。判官は笑って受け流そうとする。「ご冗談ですか。それとも、お酒が入っておられるのか」。すると師直は、その言葉を逆手に取る。「酒くさいのはそっちだ。奥方と差しつ差されつ、それで遅れてきたのか。そんなに奥方が大事なら、明日からお勤めに来なくてよろしい」。妻をからかわれ、役目まで取り上げるような言い方をされる。でも判官には、なぜ責められているのか、まだ分からないんだ。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 4,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:frame_4140_貞女.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.35
+              }
+            }
+          },
+          {
+            "sentFrom": 5,
+            "sentTo": 7,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:frame_4250_判官笑う.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomOut",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.35
+              }
+            }
+          },
+          {
+            "sentFrom": 8,
+            "sentTo": 11,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:frame_4300_酒.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.42
+              }
+            }
+          },
+          {
+            "sentFrom": 12,
+            "sentTo": 13,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:frame_4110_二人.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.42
+              }
+            }
+          }
+        ]
+      },
+      "chapterTitle": "師直の悪口（貞女・酒）",
+      "ttsText": "[friendly, serious Japanese narration] もろのうは、怒りを、はんがんにぶつけ始める。「おたくの奥方は、たいした貞女でいらっしゃる。字はお上手、器量もよし。せいぜい自慢なさるがいい」。「奥方のそばにべったりだから、とじょうも遅れるわけだ」。はんがんは、笑って受け流そうとする。「ご冗談ですか。それとも、お酒が入っておられるのか」。すると、もろのうは、その言葉を逆手に取る。「酒くさいのは、そっちだ。奥方と、さしつさされつ、それで遅れてきたのか。そんなに奥方が大事なら、明日から、お勤めに来なくてよろしい」。妻をからかわれ、役目まで取り上げるような言い方をされる。でも、はんがんには、なぜ責められているのか、まだ分からないんだ。"
+    },
+    {
+      "id": "6",
+      "audio": "voice:ブロック6.mp3",
+      "avatar": "none",
+      "styleTag": "[friendly, serious Japanese narration]",
+      "subtitleText": "そして始まるのが、歌舞伎ではおなじみの「鮒」のたとえ。「鮒というやつは、たった三尺か四尺の井戸の中を、この世のすべてだと思っている。大川へ放してやると、浮かれてふらふら、橋の杭に鼻をぶつけて、ピリピリっと死んでしまう」。「おぬしもそれだ。小さな屋敷から大広間に出てきて、うろうろするうちに、廊下の柱に鼻をぶつけて死ぬんだ」。狭い世界しか知らない田舎者だ、とあざけっているんだね。そして、とどめの一言。気良歌舞伎の舞台で観てみよう。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 2,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:frame_4385_鮒.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.35
+              }
+            }
+          },
+          {
+            "sentFrom": 3,
+            "sentTo": 4,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:frame_4445_ふらふら.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomOut",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.35
+              }
+            }
+          },
+          {
+            "sentFrom": 5,
+            "sentTo": 7,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:frame_4425_鮒2.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.35
+              }
+            }
+          }
+        ]
+      },
+      "chapterTitle": "井戸の鮒と「鮒侍」",
+      "ttsText": "[friendly, serious Japanese narration] そして始まるのが、歌舞伎ではおなじみの、「ふな」のたとえ。「ふなというやつは、たった、さんじゃくか、よんしゃくの井戸の中を、この世のすべてだと思っている。おおかわへ放してやると、浮かれて、ふらふら。橋の杭に鼻をぶつけて、ピリピリっと死んでしまう」。「おぬしも、それだ。小さな屋敷から、大広間に出てきて、うろうろするうちに、廊下の柱に鼻をぶつけて死ぬんだ」。狭い世界しか知らない田舎者だ、とあざけっているんだね。そして、とどめの一言。けらかぶきの舞台で、観てみよう。"
+    },
+    {
+      "id": "6v",
+      "clip": {
+        "src": "D:/気良歌舞伎/youtubeチャンネル用/超訳！歌舞伎ナビ/歌舞伎ナビ08仮名手本忠臣蔵三段目/映像/clip1_鮒侍.mp4",
+        "start": 0,
+        "dur": 19.5,
+        "vol": 0.85
+      },
+      "fade": false,
+      "note": "2021年 第一夜 4504.0〜4523.5秒。師直「鮒だ鮒だ、鮒侍だ」〜見得。超訳字幕は焼き込み済み（映像/clip1_鮒侍.ass）"
+    },
+    {
+      "id": "7",
+      "audio": "voice:ブロック7.mp3",
+      "avatar": "none",
+      "styleTag": "[serious, tense Japanese narration]",
+      "subtitleText": "さすがの判官も、言い返す。「伯耆の国の城主、塩冶判官高定を、魚にたとえるとは。正気とは思えぬ。気でも違われたか、武蔵守どの」。武蔵守は、師直の官名だよ。でも師直は、「正気だとも、正気なら、どうするというのだ」と開き直る。判官の手が、刀にかかる。その瞬間、師直が言い放つんだ。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 3,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:frame_4560_判官の反論.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.35
+              }
+            }
+          },
+          {
+            "sentFrom": 4,
+            "sentTo": 5,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:frame_4635_本性.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomOut",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.35
+              }
+            }
+          },
+          {
+            "sentFrom": 6,
+            "sentTo": 7,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:stage_01_刀に手.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.45
+              }
+            }
+          }
+        ]
+      },
+      "chapterTitle": "「殿中だぞ」",
+      "ttsText": "[serious, tense Japanese narration] さすがの、はんがんも、言い返す。「ほうきの国の城主、えんやはんがん、たかさだを、魚にたとえるとは。正気とは思えぬ。気でも違われたか、むさしのかみどの」。むさしのかみは、もろのうの、かんめいだよ。でも、もろのうは、「正気だとも。正気なら、どうするというのだ」と、開き直る。はんがんの手が、刀にかかる。その瞬間、もろのうが、言い放つんだ。"
+    },
+    {
+      "id": "7v",
+      "clip": {
+        "src": "D:/気良歌舞伎/youtubeチャンネル用/超訳！歌舞伎ナビ/歌舞伎ナビ08仮名手本忠臣蔵三段目/映像/clip2_殿中.mp4",
+        "start": 0,
+        "dur": 21.5,
+        "vol": 0.98
+      },
+      "fade": false,
+      "note": "2021年 第一夜 4672.0〜4693.5秒。師直「殿中だ……家は断絶じゃ」。超訳字幕は焼き込み済み（映像/clip2_殿中.ass）"
+    },
+    {
+      "id": "8",
+      "audio": "voice:ブロック8.mp3",
+      "avatar": "none",
+      "styleTag": "[serious, calm Japanese narration]",
+      "subtitleText": "殿中、つまり将軍家の御殿の中で刀を抜けば、自分だけでなく、家来も家族も、すべてを失う。師直はそれを分かっていて、「さあ斬ってみろ、斬れ、斬れ」とあおるんだ。判官は、こらえた。「その手は何だ」と問われて、刀にかけた手を、そのまま床につく。「この手をついて、お詫び申し上げる」。理由も分からないまま、家と家来を守るために頭を下げたんだね。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 1,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:stage_10_刀に手2.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.45
+              }
+            }
+          },
+          {
+            "sentFrom": 2,
+            "sentTo": 4,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:stage_05_詫びる判官.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.5
+              }
+            }
+          },
+          {
+            "sentFrom": 5,
+            "sentTo": 5,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:stage_06_詫びる判官2.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomOut",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.5
+              }
+            }
+          }
+        ]
+      },
+      "chapterTitle": "一度はこらえた判官",
+      "ttsText": "[serious, calm Japanese narration] デンチュウ、つまり、将軍家の御殿の中で刀を抜けば、自分だけでなく、家来も家族も、すべてを失う。もろのうは、それを分かっていて、「さあ、斬ってみろ。斬れ、斬れ」と、あおるんだ。はんがんは、こらえた。「その手は何だ」と問われて、刀にかけた手を、そのまま、ゆかにつく。「この手をついて、お詫び申し上げる」。理由も分からないまま、家と家来を守るために、頭を下げたんだね。"
+    },
+    {
+      "id": "9",
+      "audio": "voice:ブロック9.mp3",
+      "avatar": "none",
+      "styleTag": "[serious, tense Japanese narration]",
+      "subtitleText": "ところが師直は、頭を下げた判官を笑う。「謝るのか。おや、泣いているのか。かわいそうに」。「では今日のお役目の作法、何もかも教えて……」「では、私に」。「おぬしじゃない、若狭どのにだ。東の田舎侍が知るようなことではないわ」。謝っても笑われ、役目の場からも外され、最後に田舎者と呼ばれる。若狭之助に頭を下げさせられた腹いせまで、判官に向けられたんだ。立ち去ろうとする師直の袴を、判官が踏みつける。「師直、待て」「まだ何か用か」「その用は――」。斬りかかった判官を、後ろから抱き止めたのは、若狭之助の家老・加古川本蔵。師直は傷を負っただけで、逃げのびてしまうんだ。",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 3,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:frame_4760_泣かっしゃるか.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.35
+              }
+            }
+          },
+          {
+            "sentFrom": 4,
+            "sentTo": 6,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:frame_4870_東えびす.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomOut",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.35
+              }
+            }
+          },
+          {
+            "sentFrom": 7,
+            "sentTo": 8,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:frame_4470_こらえる判官.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.35
+              }
+            }
+          },
+          {
+            "sentFrom": 9,
+            "sentTo": 9,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:frame_4900_袴を踏む.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.45
+              }
+            }
+          },
+          {
+            "sentFrom": 10,
+            "sentTo": 10,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:frame_4915_待て.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.4
+              }
+            }
+          },
+          {
+            "sentFrom": 11,
+            "sentTo": 11,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:stage_03_抱き止める.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.45
+              }
+            }
+          },
+          {
+            "sentFrom": 12,
+            "sentTo": 12,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:stage_04_刃傷.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomOut",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.45
+              }
+            }
+          }
+        ]
+      },
+      "chapterTitle": "最後の一言と刃傷",
+      "ttsText": "[serious, tense Japanese narration] ところが、もろのうは、頭を下げた、はんがんを笑う。「謝るのか。おや、泣いているのか。かわいそうに」。「では、今日のお役目の作法、何もかも教えて」。「では、私に」。「おぬしじゃない、わかさどのにだ。東の田舎侍が知るようなことではないわ」。謝っても笑われ、役目の場からも外され、最後に田舎者と呼ばれる。わかさのすけに頭を下げさせられた腹いせまで、はんがんに向けられたんだ。立ち去ろうとする、もろのうの袴を、はんがんが踏みつける。「もろのう、待て」。「まだ何か用か」。「その用は」。斬りかかった、はんがんを、後ろから抱き止めたのは、わかさのすけの家老、かこがわほんぞう。もろのうは、傷を負っただけで、逃げのびてしまうんだ。",
+      "seBySent": [
+        {
+          "file": "common:効果音/和太鼓でドン.mp3",
+          "sent": 11,
+          "vol": 0.5
+        }
+      ]
+    },
+    {
+      "id": "10",
+      "audio": "voice:ブロック10.mp3",
+      "avatar": "none",
+      "styleTag": "[gentle, warm Japanese narration]",
+      "subtitleText": "判官は、なぜ刀を抜いたのか。妻をからかわれ、鮒にたとえられ、家を盾に脅され、謝っても笑われた。一つひとつは、こらえられたかもしれない。でも、積み重なった侮辱の最後に、判官は武士としての誇りを選んだんだね。そして、師直がなぜここまで怒っていたのか。その本当の理由を、判官だけが知らない。客席だけが知っている。判官はこのあと、四段目で切腹し、家老の由良之助がその無念を引き継ぐことになるよ。気良歌舞伎の「松の間刃傷」の本編と、三段目のあらすじをまとめたnoteは、概要欄からチェックしてみてね！",
+      "layout": {
+        "states": [
+          {
+            "sentFrom": 0,
+            "sentTo": 3,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:stage_02_斬りかかる.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomOut",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.45
+              }
+            }
+          },
+          {
+            "sentFrom": 4,
+            "sentTo": 6,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:frame_4020_返歌を読む.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.35
+              }
+            }
+          },
+          {
+            "sentFrom": 7,
+            "sentTo": 7,
+            "header": false,
+            "kera": false,
+            "photoLayer": {
+              "img": "stage:stage_09_取り押さえ.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1920,
+              "h": 1080,
+              "move": "zoomIn",
+              "amount": 0.04,
+              "focus": {
+                "x": 0.5,
+                "y": 0.4
+              }
+            }
+          },
+          {
+            "sentFrom": 8,
+            "sentTo": 8,
+            "header": false,
+            "kera": "large",
+            "photoLayer": {
+              "img": "stage:stage_10_刀に手2.jpg",
+              "x": 0,
+              "y": 0,
+              "w": 1440,
+              "h": 1080,
+              "move": "none",
+              "focus": {
+                "x": 0.5,
+                "y": 0.38
+              },
+              "dim": 0.45,
+              "shade": "left"
+            },
+            "heading": {
+              "tone": "light",
+              "font": "gothic",
+              "lead": "気良歌舞伎チャンネル＆note",
+              "lines": [
+                "松の間刃傷の本編は",
+                "概要欄からチェック！"
+              ],
+              "size": 76,
+              "emphasis": "概要欄",
+              "x": 128,
+              "y": 350
+            }
+          }
+        ]
+      },
+      "chapterTitle": "判官だけが知らない理由",
+      "ttsText": "[gentle, warm Japanese narration] はんがんは、なぜ刀を抜いたのか。妻をからかわれ、ふなにたとえられ、家を盾に脅され、謝っても笑われた。一つひとつは、こらえられたかもしれない。でも、積み重なった侮辱の最後に、はんがんは、武士としての誇りを選んだんだね。そして、もろのうが、なぜここまで怒っていたのか。その本当の理由を、はんがんだけが知らない。客席だけが知っている。はんがんは、このあと、よだんめで切腹し、家老の、ゆらのすけが、そのむねんを引き継ぐことになるよ。けらかぶきの、「まつのま、にんじょう」の本編と、三段目のあらすじをまとめたノートは、概要欄から、チェックしてみてね！"
+    }
+  ],
+  "chapters": [
+    {
+      "block": "1",
+      "label": "一度は収めた刀を、なぜ"
+    },
+    {
+      "block": "2",
+      "label": "判官は、なぜ刀を抜いたのか"
+    },
+    {
+      "block": "3",
+      "label": "この日の師直が不機嫌だった二つの理由"
+    },
+    {
+      "block": "4",
+      "label": "顔世御前の返歌を超訳"
+    },
+    {
+      "block": "5",
+      "label": "師直の悪口（貞女・酒）"
+    },
+    {
+      "block": "6",
+      "label": "井戸の鮒と「鮒侍」"
+    },
+    {
+      "block": "7",
+      "label": "「殿中だぞ」"
+    },
+    {
+      "block": "8",
+      "label": "一度はこらえた判官"
+    },
+    {
+      "block": "9",
+      "label": "最後の一言と刃傷"
+    },
+    {
+      "block": "10",
+      "label": "判官だけが知らない理由"
+    }
+  ],
+  "youtube": {
+    "title": "仮名手本忠臣蔵 三段目｜判官は、なぜ刀を抜いた？ 松の間刃傷の台詞を超訳（超訳！歌舞伎ナビ）",
+    "titleCandidates": [
+      "仮名手本忠臣蔵 三段目｜判官は、なぜ刀を抜いた？ 松の間刃傷の台詞を超訳（超訳！歌舞伎ナビ）",
+      "判官は、なぜ刀を抜いた？｜仮名手本忠臣蔵 三段目「松の間刃傷」（超訳！歌舞伎ナビ）"
+    ],
+    "description": "『仮名手本忠臣蔵（かなでほんちゅうしんぐら）』三段目「松の間刃傷（まつのまにんじょう）」。\n「殿中で刀を抜けば、お家は取りつぶし」と知りながら、塩冶判官はなぜ高師直に斬りかかったのか。\n顔世御前の返歌と、師直の悪口を今の言葉に超訳しながら、判官が一度こらえ、それでも刀を抜くまでをたどります。\n※動画内で三段目の結末まで触れています。\n\n▼ 三段目のあらすじ・見どころ（note）\nhttps://note.com/kerakabuki/n/nba2bdf7cb812\n\n▼ 気良歌舞伎『仮名手本忠臣蔵』三段目 公演本編（2021年）\n・松の間刃傷 https://youtu.be/O-DFPblYYxo\n・門前進物 https://youtu.be/5QEPGtUs7UY\n・第一夜 全編（解説・口上を含む） https://youtu.be/ko7QYxHhzq0\n\n▼ 全十一段を「三つの家」で読む（超訳！歌舞伎ナビ）\n【公開後にURLを記入】\n\n▼ 全十一段のあらすじと人物関係図（note）\nhttps://note.com/kerakabuki/n/nfebbf063c053\n\n▼ チャプター\n0:00 一度は収めた刀を、なぜ\n0:20 判官は、なぜ刀を抜いたのか\n0:40 この日の師直が不機嫌だった二つの理由\n1:15 顔世御前の返歌を超訳\n2:14 師直の悪口（貞女・酒）\n3:18 井戸の鮒と「鮒侍」\n4:24 「殿中だぞ」\n5:24 一度はこらえた判官\n6:04 最後の一言と刃傷\n7:11 判官だけが知らない理由\n\nナレーション: けらのすけ（AI音声）\n写真・映像: 気良歌舞伎 2021年 通し狂言『仮名手本忠臣蔵』\n音楽: H/MIX GALLERY「華志の舞」「Moment」\n\n#仮名手本忠臣蔵 #忠臣蔵 #歌舞伎 #超訳歌舞伎ナビ #松の間刃傷 #地歌舞伎 #気良歌舞伎 #けらのすけ",
+    "tags": [
+      "仮名手本忠臣蔵",
+      "忠臣蔵",
+      "歌舞伎",
+      "三段目",
+      "松の間刃傷",
+      "塩冶判官",
+      "高師直",
+      "顔世御前",
+      "鮒侍",
+      "殿中",
+      "超訳歌舞伎ナビ",
+      "気良歌舞伎",
+      "地歌舞伎",
+      "けらのすけ"
+    ]
+  }
+}
