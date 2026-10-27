@@ -2,7 +2,7 @@
   "episode": {
     "title": "超訳！歌舞伎ナビ「仮名手本忠臣蔵 五段目」",
     "epDir": "歌舞伎ナビ忠臣蔵五段目",
-    "outputName": "忠臣蔵五段目_超訳歌舞伎ナビ_draft_v1.mp4",
+    "outputName": "忠臣蔵五段目_超訳歌舞伎ナビ_v1.mp4",
     "voiceId": "xOKkuQfZt5N7XfbFdn9W",
     "ttsModel": "eleven_v3",
     "ttsOutputFormat": "mp3_44100_128"
