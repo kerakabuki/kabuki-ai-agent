@@ -134,7 +134,7 @@ function startBuild(blocks) {
   const job = { running: true, log: '', exitCode: null };
   jobs.set(jobId, job);
 
-  const args = [join(__dirname, '..', 'scripts', 'build_sonezaki_video.mjs'), '--config', CONFIG_PATH];
+  const args = [join(REPO, 'scripts', 'video', 'build_sonezaki_video.mjs'), '--config', CONFIG_PATH];
   if (blocks) { args.push('--blocks', blocks); }
 
   const child = spawn(process.execPath, args, { cwd: REPO });
