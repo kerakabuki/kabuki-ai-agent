@@ -211,9 +211,14 @@ for (const b of BLOCKS) {
 
   // 字幕ASS
   let ass = ASS_HEADER;
-  for (const s of b.sents) {
-    ass += `Dialogue: 0,${fmtAss(s.start)},${fmtAss(Math.min(s.end + 0.15, b.dur))},Sub,,0,0,0,,${wrapLine(s.text)}\n`;
-  }
+  b.sents.forEach((s, i) => {
+    // 「…だ」。のような閉じカッコ直後の句点は字幕に出さない（台本側の句点は文の区切りとして残す）
+    const text = s.text.replace(/([」』])。/g, '$1');
+    // 余韻の0.15秒は次の文に重ねない（重なると一瞬3行に積み上がる）
+    const next = b.sents[i + 1];
+    const end = Math.min(s.end + 0.15, b.dur, next ? next.start - 0.01 : Infinity);
+    ass += `Dialogue: 0,${fmtAss(s.start)},${fmtAss(end)},Sub,,0,0,0,,${wrapLine(text)}\n`;
+  });
   for (const c of (b.captions ?? [])) {
     const start = c.start ?? (c.frac ? LEAD + c.frac[0] * b.narrDur : 0.2);
     const end = c.end ?? (c.frac ? LEAD + c.frac[1] * b.narrDur : b.dur);
