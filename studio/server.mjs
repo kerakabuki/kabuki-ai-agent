@@ -1,5 +1,5 @@
 // 歌舞伎ナビ スタジオ — ローカル制作管理サーバ（Node標準モジュールのみ・外部依存なし）
-// 起動: node studio/server.mjs
+// 起動: node studio/server.mjs [--config studio/episodes/<エピソード>.json]（省略時は sonezaki05.json）
 // バインド: http://127.0.0.1:3555
 //
 // 提供API:
@@ -20,14 +20,23 @@
 import http from 'node:http';
 import { readFileSync, writeFileSync, copyFileSync, existsSync, createReadStream, statSync, mkdirSync } from 'node:fs';
 import { readdir } from 'node:fs/promises';
-import { join, dirname, extname, basename } from 'node:path';
+import { join, dirname, extname, basename, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFile, spawn } from 'node:child_process';
 import { makePaths, resolveAsset, isPathAllowed, ROOT } from './paths.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO = join(__dirname, '..');
-const CONFIG_PATH = join(__dirname, 'episodes', 'sonezaki05.json');
+// 設定JSON: --config で指定（相対パスは起動したフォルダから）。省略時は曽根崎心中
+function argVal(name) {
+  const i = process.argv.indexOf(name);
+  return i >= 0 ? process.argv[i + 1] : null;
+}
+const CONFIG_PATH = resolve(argVal('--config') || join(__dirname, 'episodes', 'sonezaki05.json'));
+if (!existsSync(CONFIG_PATH)) {
+  console.error(`設定JSONが見つかりません: ${CONFIG_PATH}`);
+  process.exit(1);
+}
 const HOST = '127.0.0.1';
 // 通常は3555。環境変数 STUDIO_PORT で上書き可（検証用に別ポートで並行起動するため）
 const PORT = Number(process.env.STUDIO_PORT) || 3555;
@@ -365,12 +374,13 @@ const server = http.createServer(async (req, res) => {
     // 素材一覧
     if (req.method === 'GET' && path === '/api/assets') {
       const P = currentPaths();
-      const [bgmCommon, bgmEp, se, gen, photo, voiceNames] = await Promise.all([
+      const [bgmCommon, bgmEp, se, gen, photo, stage, voiceNames] = await Promise.all([
         listDir(join(P.COMMON, 'BGM'), ['.mp3']),
         listDir(P.BGM, ['.mp3']),
         listDir(join(P.COMMON, '効果音'), ['.mp3']),
         listDir(P.GEN, ['.png', '.jpg', '.jpeg']),
         listDir(P.PHOTO, ['.jpg', '.jpeg', '.png']),
+        listDir(P.STAGE, ['.jpg', '.jpeg', '.png']),
         listDir(P.VOICE, ['.mp3']),
       ]);
       // 音声は秒数付き
@@ -388,6 +398,7 @@ const server = http.createServer(async (req, res) => {
         images: {
           gen: gen.map(n => ({ name: n, path: `gen:${n}` })),
           photo: photo.map(n => ({ name: n, path: `photo:${n}` })),
+          stage: stage.map(n => ({ name: n, path: `stage:${n}` })),
         },
         voices,
       });

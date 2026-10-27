@@ -178,11 +178,12 @@ async function loadAll() {
   renderPublish();
 }
 
-// 画像セレクト用の選択肢（gen: と photo:）
+// 画像セレクト用の選択肢（gen: と photo: と stage:）
 function imageOptions() {
   const opts = [];
   for (const g of (assets.images.gen || [])) opts.push(g.path);
   for (const p of (assets.images.photo || [])) opts.push(p.path);
+  for (const s of (assets.images.stage || [])) opts.push(s.path);
   // common: の画像類も候補に（タイトル/背景など）
   return opts;
 }
@@ -446,7 +447,7 @@ function renderAssets() {
   // 画像グリッド
   const imgSec = el('div', { className: 'sec' }, [el('h2', { textContent: '画像素材' })]);
   const grid = el('div', { className: 'asset-grid' });
-  for (const g of [...(assets.images.gen || []), ...(assets.images.photo || [])]) {
+  for (const g of [...(assets.images.gen || []), ...(assets.images.photo || []), ...(assets.images.stage || [])]) {
     grid.append(el('figure', {}, [
       el('img', { src: fileUrl(g.path), loading: 'lazy' }),
       el('figcaption', { textContent: g.path }),

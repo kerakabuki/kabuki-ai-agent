@@ -11,7 +11,7 @@
 //   4. OP正規化 + ED再構築(グリーンバック合成) + 本編 を連結 → 完成mp4
 
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync, readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { makePaths, resolveAsset } from '../../studio/paths.mjs';
 
@@ -156,6 +156,23 @@ const only = (() => {
   const i = process.argv.indexOf('--blocks');
   return i >= 0 ? process.argv[i + 1].split(',') : null;
 })();
+
+// 0) 素材の存在確認（ffmpeg の途中で止まらないよう、足りないものを一度に一覧して止める）
+const missing = new Set();
+const need = (f) => { if (f && !existsSync(f)) missing.add(f); };
+for (const b of BLOCKS) {
+  need(b.audio);
+  for (const s of [...(b.slides ?? []), ...(b.slidesBySent ?? [])]) need(s.img);
+  for (const s of [...(b.se ?? []), ...(b.seBySent ?? [])]) need(s.file);
+  for (const v of (AVATAR[b.avatar]?.videos ?? [])) need(v);
+}
+need(asset(S.bgm));
+if (S.op) need(asset(S.op));
+if (S.edSrc) { need(asset(S.edSrc)); need(asset(S.edBackground)); }
+if (missing.size) {
+  console.error(`素材が見つかりません（${missing.size}件）:\n${[...missing].map(f => `  ${f}`).join('\n')}`);
+  process.exit(1);
+}
 
 // 1) 各ブロックの長さを確定
 for (const b of BLOCKS) {
