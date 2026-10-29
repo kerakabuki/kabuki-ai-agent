@@ -4,6 +4,15 @@
 // レシートスキャン（AI OCR）・収支一覧・CSV/PDFエクスポート
 // =========================================================
 import { pageShell, escHTML } from "./web_layout.js";
+import { EVIDENCE_ACCEPT, EVIDENCE_TYPES, MAX_EVIDENCE_BYTES } from "./accounting_evidence.js";
+import { normalizeAccountingEvidenceURL } from "./accounting_access.js";
+
+export function groupAccountingAccessPageHTML(status) {
+  return pageShell({
+    title: "収支管理", brand: "jikabuki", activeNav: "base",
+    bodyHTML: `<div class="empty-state"><p>${status === 401 ? "ログインしてから収支管理を開いてください。" : "収支管理は、この団体に所属する管理担当者のみ利用できます。団体の管理者に権限をご確認ください。"}</p><a class="btn btn-primary" href="/jikabuki/base">BASEへ戻る・ログイン</a></div>`,
+  });
+}
 
 export function groupAccountingPageHTML(group) {
   if (!group) {
@@ -43,6 +52,10 @@ export function groupAccountingPageHTML(group) {
       var showLedger = false; // 残高推移テーブル表示フラグ
       var _batchResults = [];
       var _batchEditIdx = null;
+      var _evidenceUpload = null;
+      var evidenceTypes = ${JSON.stringify(EVIDENCE_TYPES)};
+      var normalizeAccountingEvidenceURL = ${normalizeAccountingEvidenceURL.toString()};
+      window.addEventListener("pageshow", function(event){ if (event.persisted) window.location.reload(); });
 
       var DEFAULT_EXP_CATS = ["衣装・かつら","小道具・大道具","会場費","交通費","食費・飲料","通信・印刷","その他"];
       var DEFAULT_INC_CATS = ["補助金・助成金","公演収入","会費","寄付・協賛金","物販収入","その他収入"];
@@ -367,7 +380,7 @@ export function groupAccountingPageHTML(group) {
             if (cardUrls.length) {
               html += '<div class="ga-card-receipts">';
               cardUrls.forEach(function(url) {
-                html += '<img src="' + esc(url) + '" class="ga-card-receipt-thumb" onclick="window.open(\\'' + esc(url) + '\\')">';
+                html += receiptLinkHTML(url, "ga-card-receipt-thumb");
               });
               html += '</div>';
             }
@@ -412,7 +425,7 @@ export function groupAccountingPageHTML(group) {
         var input = document.createElement("input");
         input.type = "file";
         input.accept = "image/*";
-        input.capture = "environment";
+        input.setAttribute("capture", "environment");
         input.onchange = function() {
           var file = input.files && input.files[0];
           if (!file) {
@@ -648,44 +661,81 @@ export function groupAccountingPageHTML(group) {
         if (area) area.innerHTML = "";
       }
 
-      // 証憑画像の追加（OCR付きで再読み取り → フォーム更新）
-      // 証憑画像を追加（OCRなし、画像保存のみ）
-      function addEvidence() {
+      // 撮影と保存済みファイル選択を分離。どちらもOCRなしで証憑を添付する。
+      function addEvidence(fromFiles) {
+        var urlsEl = document.getElementById("gaf-receipt-urls");
+        if (!urlsEl || (_evidenceUpload && _evidenceUpload.urlsEl === urlsEl)) return;
         var input = document.createElement("input");
         input.type = "file";
-        input.accept = "image/*";
-        input.capture = "environment";
+        input.accept = fromFiles ? ${JSON.stringify(EVIDENCE_ACCEPT)} : "image/*";
+        if (!fromFiles) input.setAttribute("capture", "environment");
         input.onchange = function() {
           if (!input.files || !input.files.length) return;
-          uploadEvidence(input.files[0]);
+          if (document.getElementById("gaf-receipt-urls") !== urlsEl) return;
+          uploadEvidence(input.files[0], urlsEl);
         };
+        // 開くたびに新しいinputなので、キャンセル後も同じファイルを再選択できる。
         input.click();
       }
 
-      function uploadEvidence(file) {
+      function uploadEvidence(file, urlsEl) {
+        if (!file.size) { showToast("空のファイルは添付できません。"); return; }
+        if (file.size > ${MAX_EVIDENCE_BYTES}) { showToast("ファイルは5MB以下にしてください。"); return; }
+        if (file.type && file.type !== "application/octet-stream" && !Object.prototype.hasOwnProperty.call(evidenceTypes, file.type)) {
+          showToast("JPEG・PNG・WebP画像またはPDFを選んでください。"); return;
+        }
+        var job = { urlsEl: urlsEl };
+        _evidenceUpload = job;
         var section = document.getElementById("gaf-receipt-section");
         if (section) {
           section.innerHTML = '<div class="ga-scanning" style="padding:8px 0"><div class="ga-spinner"></div><span>保存中…</span></div>';
         }
+        var saveBtn = document.getElementById("gaf-save");
+        if (saveBtn) saveBtn.disabled = true;
         var fd = new FormData();
         fd.append("file", file);
-        fetch("/api/groups/" + encodeURIComponent(GID) + "/expenses/upload", {
-          method: "POST", credentials: "same-origin", body: fd
+        var abortCtrl = (typeof AbortController !== "undefined") ? new AbortController() : null;
+        var abortTimer = abortCtrl ? setTimeout(function(){ abortCtrl.abort(); }, 60000) : null;
+        var opts = { method: "POST", credentials: "same-origin", body: fd };
+        if (abortCtrl) opts.signal = abortCtrl.signal;
+        fetch("/api/groups/" + encodeURIComponent(GID) + "/expenses/upload", opts)
+        .then(function(r){
+          return r.json().then(function(data){
+            if (!r.ok || data.error || !data.receipt_url) throw new Error(data.error || "証憑の保存に失敗しました (HTTP " + r.status + ")");
+            return data;
+          });
         })
-        .then(function(r){ return r.json(); })
         .then(function(data) {
-          var urlsEl = document.getElementById("gaf-receipt-urls");
+          // 保存中にフォームを閉じたり別の明細を開いても、そちらへ混入させない。
+          if (document.getElementById("gaf-receipt-urls") !== urlsEl) return;
           var urls = [];
           try { urls = JSON.parse(urlsEl.value); } catch(e) {}
-          if (data.receipt_url) urls.push(data.receipt_url);
+          urls.push(data.receipt_url);
           urlsEl.value = JSON.stringify(urls);
-          renderReceiptThumbs();
-          showToast("証憑画像を追加しました");
+          showToast("証憑を追加しました。明細の「保存」で確定してください。");
         })
-        .catch(function() {
+        .catch(function(err) {
+          if (document.getElementById("gaf-receipt-urls") !== urlsEl) return;
+          showToast(err.name === "AbortError" ? "保存がタイムアウトしました。もう一度選んでください。" : (err.message || "証憑の保存に失敗しました"));
+        })
+        .finally(function() {
+          if (abortTimer) clearTimeout(abortTimer);
+          if (_evidenceUpload === job) _evidenceUpload = null;
+          if (document.getElementById("gaf-receipt-urls") !== urlsEl) return;
+          if (saveBtn) saveBtn.disabled = false;
           renderReceiptThumbs();
-          showToast("画像の保存に失敗しました");
         });
+      }
+
+      function receiptLinkHTML(url, thumbClass) {
+        url = normalizeAccountingEvidenceURL(url, GID);
+        if (!url) return '<span class="gaf-evidence-help">この証憑のリンクは利用できません。管理担当者にご確認ください。</span>';
+        var pdf = /\\.pdf(?:[?#]|$)/i.test(url);
+        return '<a href="' + esc(url) + '" target="_blank" rel="noopener noreferrer"'
+          + (pdf ? ' class="' + thumbClass + ' ga-receipt-pdf"' : '')
+          + ' aria-label="' + (pdf ? 'PDFの証憑を開く' : '画像の証憑を開く') + '">'
+          + (pdf ? '📄<span>PDFを開く</span>' : '<img src="' + esc(url) + '" class="' + thumbClass + '" alt="証憑">')
+          + '</a>';
       }
 
       function renderReceiptThumbs() {
@@ -700,13 +750,16 @@ export function groupAccountingPageHTML(group) {
           html += '<div class="gaf-receipt-thumbs">';
           urls.forEach(function(url, i) {
             html += '<div class="gaf-receipt-thumb-wrap">'
-              + '<img src="' + esc(url) + '" class="gaf-receipt-thumb">'
-              + '<button type="button" class="gaf-receipt-del" onclick="GA.removeReceipt(' + i + ')">✕</button>'
+              + receiptLinkHTML(url, "gaf-receipt-thumb")
+              + '<button type="button" class="gaf-receipt-del" aria-label="証憑を外す" onclick="GA.removeReceipt(' + i + ')">✕</button>'
               + '</div>';
           });
           html += '</div>';
         }
-        html += '<button type="button" class="btn btn-secondary ga-add-evidence-btn" onclick="GA.addEvidence()">📷 証憑を追加</button>';
+        html += '<div class="gaf-evidence-actions">'
+          + '<button type="button" class="btn btn-secondary ga-add-evidence-btn" onclick="GA.addEvidence()">📷 撮影して追加</button>'
+          + '<button type="button" class="btn btn-secondary ga-add-evidence-btn" onclick="GA.addEvidence(true)">📁 画像・PDFを選ぶ</button>'
+          + '</div><div class="gaf-evidence-help">JPEG・PNG・WebP・PDF／1ファイル5MBまで。PDFは全ページを保存します。</div>';
         section.innerHTML = html;
       }
 
@@ -749,19 +802,7 @@ export function groupAccountingPageHTML(group) {
 
         var receiptUrls = entry.receipt_urls || (entry.receipt_url ? [entry.receipt_url] : []);
         var receiptPreview = '<input type="hidden" id="gaf-receipt-urls" value="' + esc(JSON.stringify(receiptUrls)) + '">'
-          + '<div id="gaf-receipt-section">';
-        if (receiptUrls.length) {
-          receiptPreview += '<div class="gaf-receipt-thumbs">';
-          receiptUrls.forEach(function(url, i) {
-            receiptPreview += '<div class="gaf-receipt-thumb-wrap">'
-              + '<img src="' + esc(url) + '" class="gaf-receipt-thumb">'
-              + '<button type="button" class="gaf-receipt-del" onclick="GA.removeReceipt(' + i + ')">✕</button>'
-              + '</div>';
-          });
-          receiptPreview += '</div>';
-        }
-        receiptPreview += '<button type="button" class="btn btn-secondary ga-add-evidence-btn" onclick="GA.addEvidence()">📷 証憑を追加</button>'
-          + '</div>';
+          + '<div id="gaf-receipt-section"></div>';
 
         // 計上年度の選択肢: 自動（日付どおり） / 日付の年度の前後
         var dateFY = dateToFY(entry.date || today());
@@ -797,11 +838,12 @@ export function groupAccountingPageHTML(group) {
           + '<div class="gr-form-row"><label>メモ</label><input type="text" id="gaf-memo" value="' + esc(entry.memo||"") + '" placeholder="' + memoPlaceholder + '"></div>'
           + '<div class="gr-form-row"><label>明細</label><div id="gaf-items">' + itemsHtml + '</div>'
           + '<button type="button" class="btn btn-secondary" onclick="GA.addItemRow()" style="font-size:12px;padding:4px 10px;margin-top:4px">+ 行を追加</button></div>'
-          + '<div class="gr-form-row"><label>証憑画像</label>' + receiptPreview + '</div>'
+          + '<div class="gr-form-row"><label>証憑（画像・PDF）</label>' + receiptPreview + '</div>'
           + '<div class="gr-form-actions">'
-          + '<button class="btn btn-primary" onclick="GA.saveForm(' + (isEdit ? idx : "null") + ')">保存</button>'
+          + '<button id="gaf-save" class="btn btn-primary" onclick="GA.saveForm(' + (isEdit ? idx : "null") + ')">保存</button>'
           + '<button class="btn btn-secondary" onclick="GA.cancelForm()">キャンセル</button>'
           + '</div></div>';
+        renderReceiptThumbs();
         area.scrollIntoView({ behavior: "smooth" });
       }
 
@@ -818,6 +860,9 @@ export function groupAccountingPageHTML(group) {
       }
 
       function saveForm(idx) {
+        if (_evidenceUpload && _evidenceUpload.urlsEl === document.getElementById("gaf-receipt-urls")) {
+          showToast("証憑の保存が終わるまでお待ちください。"); return;
+        }
         var amount = parseInt(document.getElementById("gaf-amount").value) || 0;
         var entryType = document.getElementById("gaf-type") ? document.getElementById("gaf-type").value : "expense";
         var receiptUrlsEl = document.getElementById("gaf-receipt-urls");
@@ -1307,6 +1352,9 @@ export function groupAccountingPageHTML(group) {
       }
 
       function switchFormType(newType, idx) {
+        if (_evidenceUpload && _evidenceUpload.urlsEl === document.getElementById("gaf-receipt-urls")) {
+          showToast("証憑の保存が終わるまでお待ちください。"); return;
+        }
         // フォームの現在値を保持してタイプ切替
         var dateEl = document.getElementById("gaf-date");
         var vendorEl = document.getElementById("gaf-vendor");
@@ -1627,7 +1675,7 @@ export function groupAccountingPageHTML(group) {
       }
       .gaf-item-del:hover { border-color: var(--accent-1); color: var(--accent-1); }
 
-      /* ── 証憑画像（複数対応） ── */
+      /* ── 証憑画像・PDF（複数対応） ── */
       .gaf-receipt-thumbs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
       .gaf-receipt-thumb-wrap { position: relative; }
       .gaf-receipt-thumb {
@@ -1642,6 +1690,14 @@ export function groupAccountingPageHTML(group) {
         line-height: 1;
       }
       .ga-add-evidence-btn { font-size: 12px !important; padding: 6px 12px !important; }
+      .gaf-evidence-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+      .gaf-evidence-help { margin-top: 6px; font-size: 12px; color: var(--text-secondary); }
+      .ga-receipt-pdf {
+        display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
+        box-sizing: border-box; background: var(--bg-page); color: var(--text-primary);
+        text-decoration: none; font-size: 20px;
+      }
+      .ga-receipt-pdf span { font-size: 10px; white-space: nowrap; }
 
       /* ── バッチスキャン ── */
       .ga-progress-bar {

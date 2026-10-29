@@ -157,7 +157,9 @@ import { groupNotesPageHTML } from "./src/group_notes_page.js";
 import { groupScriptListPageHTML, groupScriptViewerPageHTML, groupScriptTextViewerHTML, groupScriptPdfViewerHTML } from "./src/group_script_page.js";
 import { groupTrainingPageHTML } from "./src/group_training_page.js";
 import { groupSchedulePageHTML } from "./src/group_schedule_page.js";
-import { groupAccountingPageHTML } from "./src/group_accounting_page.js";
+import { groupAccountingPageHTML, groupAccountingAccessPageHTML } from "./src/group_accounting_page.js";
+import { readEvidenceFile } from "./src/accounting_evidence.js";
+import { requireAccountingAccess, accountingResponse, accountingJSON, accountingWriteAllowed, isAccountingEvidenceFilename, validAccountingEvidenceReferences } from "./src/accounting_access.js";
 import { groupOnboardingPageHTML } from "./src/group_onboarding_page.js";
 import { groupDeleteRequestPageHTML } from "./src/group_delete_request_page.js";
 import { sharedScriptsPageHTML } from "./src/shared_scripts_page.js";
@@ -390,6 +392,33 @@ export default {
       path = path.replace(/^\/en/, "") || "/";
     }
 
+    const HTML_HEADERS = {
+      "Content-Type": "text/html; charset=utf-8",
+      "X-Frame-Options": "DENY",
+      "X-Content-Type-Options": "nosniff",
+      "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+      "Referrer-Policy": "strict-origin-when-cross-origin",
+      "X-Robots-Tag": "index, follow",
+      "Content-Language": lang,
+    };
+
+    // 会計の全操作をルーティング前に保護する（/en/別名も同じ条件）。
+    const accountingPageRoute = path.match(/^\/groups\/([a-zA-Z0-9_-]+)\/accounting$/);
+    const accountingApiRoute = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/expenses(?:\/(.*))?$/);
+    if (accountingPageRoute || accountingApiRoute) {
+      const gid = (accountingPageRoute || accountingApiRoute)[1];
+      const access = await requireAccountingAccess(request, env, gid);
+      if (!access.ok) {
+        if (accountingPageRoute) return accountingResponse(new Response(request.method === "HEAD" ? null : groupAccountingAccessPageHTML(access.status), { status: access.status, headers: HTML_HEADERS }));
+        return accountingJSON({ error: access.error }, access.status);
+      }
+      const action = accountingApiRoute && accountingApiRoute[2];
+      const methods = accountingPageRoute || action === "export" ? ["GET", "HEAD"] : !action ? ["GET", "HEAD", "POST"] : ["POST"];
+      if (action && !["scan", "upload", "export"].includes(action)) return accountingJSON({ error: "Not Found" }, 404);
+      if (!methods.includes(request.method)) return accountingResponse(new Response(null, { status: 405, headers: { Allow: methods.join(", ") } }));
+      if (request.method === "POST" && !accountingWriteAllowed(request)) return accountingJSON({ error: "この画面から操作してください。" }, 403);
+    }
+
     /* ─── 気良歌舞伎の共有画像（og:image / twitter:image） ─── */
     if (path === KERA_OGP_PATH && (request.method === "GET" || request.method === "HEAD")) {
       return new Response(request.method === "HEAD" ? null : KERA_OGP_BYTES, {
@@ -476,7 +505,7 @@ export default {
     if (path === "/sw.js") {
       const swCode = `
 // KABUKI PLUS+ Service Worker
-const CACHE_VERSION = 'kp-v4';
+const CACHE_VERSION = 'kp-v5-accounting-private';
 const STATIC_CACHE = CACHE_VERSION + '-static';
 const RUNTIME_CACHE = CACHE_VERSION + '-runtime';
 
@@ -515,12 +544,14 @@ self.addEventListener('fetch', (event) => {
   // 同一オリジンのみ処理
   if (url.origin !== self.location.origin) return;
 
-  // API・認証はネットワーク直通（キャッシュしない）
-  if (url.pathname.startsWith('/kerakabuki/reception/') ||
-      url.pathname.startsWith('/kerakabuki/survey/') ||
-      url.pathname.startsWith('/api/') ||
-      url.pathname.startsWith('/auth/') ||
-      url.pathname.startsWith('/line')) {
+  // API・会計・認証は英語別名も含めネットワーク直通。
+  const route = url.pathname.startsWith('/en/') ? url.pathname.slice(3) : url.pathname;
+  if (route.startsWith('/kerakabuki/reception/') ||
+      route.startsWith('/kerakabuki/survey/') ||
+      route.startsWith('/api/') ||
+      (route.startsWith('/groups/') && route.endsWith('/accounting')) ||
+      route.startsWith('/auth/') ||
+      route.startsWith('/line')) {
     return;
   }
 
@@ -530,7 +561,7 @@ self.addEventListener('fetch', (event) => {
       caches.match(request).then(cached => {
         if (cached) return cached;
         return fetch(request).then(response => {
-          if (response.ok) {
+          if (response.ok && !/no-store|private/i.test(response.headers.get('Cache-Control') || '')) {
             const clone = response.clone();
             caches.open(RUNTIME_CACHE).then(cache => cache.put(request, clone));
           }
@@ -546,7 +577,7 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(request)
         .then(response => {
-          if (response.ok) {
+          if (response.ok && !/no-store|private/i.test(response.headers.get('Cache-Control') || '')) {
             const clone = response.clone();
             caches.open(RUNTIME_CACHE).then(cache => cache.put(request, clone));
           }
@@ -894,16 +925,6 @@ ${glossaryI18nPairs.map(g => `  <url>
     /* =====================================================
        0.3) WEBページ（フルページ）
     ===================================================== */
-    const HTML_HEADERS = {
-      "Content-Type": "text/html; charset=utf-8",
-      "X-Frame-Options": "DENY",
-      "X-Content-Type-Options": "nosniff",
-      "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
-      "Referrer-Policy": "strict-origin-when-cross-origin",
-      "X-Robots-Tag": "index, follow",
-      "Content-Language": lang,
-    };
-
     if (path === "/") {
       return new Response(topPageHTML({ lang }), { headers: HTML_HEADERS });
     }
@@ -1458,7 +1479,7 @@ ${glossaryI18nPairs.map(g => `  <url>
     const groupAccountingMatch = path.match(/^\/groups\/([a-zA-Z0-9_-]+)\/accounting$/);
     if (groupAccountingMatch) {
       const group = await getGroup(env, groupAccountingMatch[1]);
-      return new Response(groupAccountingPageHTML(group), { headers: { ...HTML_HEADERS, "Cache-Control": "no-cache, no-store, must-revalidate", "Pragma": "no-cache" } });
+      return accountingResponse(new Response(request.method === "HEAD" ? null : groupAccountingPageHTML(group), { headers: HTML_HEADERS }));
     }
 
     /* /groups/:groupId/invite/:token → 招待リンクランディングページ */
@@ -2001,21 +2022,25 @@ ${glossaryI18nPairs.map(g => `  <url>
     // ★ 団体削除申請を承認（マスターのみ → 団体削除 + GATE除外 + 申請削除）
     if (path === "/api/groups/requests/delete/approve" && request.method === "POST") {
       const session = await getSession(request, env);
-      if (!session) return corsResponse(request, jsonResponse({ error: "ログインが必要です" }, 401));
+      if (!session) return accountingJSON({ error: "ログインが必要です" }, 401);
       const isMaster = await checkIsMaster(env, session.userId);
-      if (!isMaster) return corsResponse(request, jsonResponse({ error: "マスター権限が必要です" }, 403));
+      if (!isMaster) return accountingJSON({ error: "マスター権限が必要です" }, 403);
+      if (!accountingWriteAllowed(request)) return accountingJSON({ error: "この画面から操作してください。" }, 403);
       try {
         const body = await request.json();
-        if (!body.requestId) return corsResponse(request, jsonResponse({ error: "requestId is required" }, 400));
+        if (!body.requestId) return accountingJSON({ error: "requestId is required" }, 400);
         const raw = await env.CHAT_HISTORY.get(`group_delete_request:${body.requestId}`);
-        if (!raw) return corsResponse(request, jsonResponse({ error: "申請が見つかりません" }, 404));
+        if (!raw) return accountingJSON({ error: "申請が見つかりません" }, 404);
         const reqData = JSON.parse(raw);
+        // 会計データも削除するため、masterの既存条件に対象団体への所属を加える。
+        const access = await requireAccountingAccess(request, env, reqData.groupId);
+        if (!access.ok) return accountingJSON({ error: access.error }, access.status);
         const result = await cleanupGroup(env, reqData.groupId);
         await removeFromGateRegistry(env, reqData.groupId);
         await env.CHAT_HISTORY.delete(`group_delete_request:${body.requestId}`);
-        return corsResponse(request, jsonResponse({ ok: true, groupId: reqData.groupId, cleanup: result }));
+        return accountingJSON({ ok: true, groupId: reqData.groupId, cleanup: result });
       } catch (e) {
-        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+        return accountingJSON({ error: String(e) }, 500);
       }
     }
 
@@ -2208,15 +2233,18 @@ ${glossaryI18nPairs.map(g => `  <url>
     if (groupDeleteMatch && request.method === "DELETE") {
       const gid = groupDeleteMatch[1];
       const session = await getSession(request, env);
-      if (!session) return corsResponse(request, jsonResponse({ error: "ログインが必要です" }, 401));
+      if (!session) return accountingJSON({ error: "ログインが必要です" }, 401);
       const isMaster = await checkIsMaster(env, session.userId);
-      if (!isMaster) return corsResponse(request, jsonResponse({ error: "マスター権限が必要です" }, 403));
+      if (!isMaster) return accountingJSON({ error: "マスター権限が必要です" }, 403);
+      if (!accountingWriteAllowed(request)) return accountingJSON({ error: "この画面から操作してください。" }, 403);
+      const access = await requireAccountingAccess(request, env, gid);
+      if (!access.ok) return accountingJSON({ error: access.error }, access.status);
       try {
         const result = await cleanupGroup(env, gid);
         await removeFromGateRegistry(env, gid);
-        return corsResponse(request, jsonResponse(result));
+        return accountingJSON(result);
       } catch (e) {
-        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+        return accountingJSON({ error: String(e) }, 500);
       }
     }
 
@@ -3105,6 +3133,7 @@ ${phraseReport}
         const formData = await request.formData();
         const file = formData.get("file");
         const imgType = (formData.get("type") || "misc").replace(/[^a-z0-9_-]/g, "");
+        if (isAccountingEvidenceFilename(imgType + "-")) return accountingJSON({ error: "証憑は会計画面から追加してください。" }, 400);
         if (!file || !file.name) {
           return corsResponse(request, jsonResponse({ error: "No file provided" }, 400));
         }
@@ -3131,46 +3160,52 @@ ${phraseReport}
     }
 
     const imageServeMatch = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/images\/([a-zA-Z0-9_.\-]+)$/);
-    if (imageServeMatch && request.method === "GET") {
+    if (imageServeMatch) {
       const gid = imageServeMatch[1];
       const filename = imageServeMatch[2];
+      const privateEvidence = isAccountingEvidenceFilename(filename);
+      if (privateEvidence) {
+        const access = await requireAccountingAccess(request, env, gid, "member");
+        if (!access.ok) return accountingJSON({ error: access.error }, access.status);
+      }
+      if (!["GET", "HEAD"].includes(request.method)) {
+        const response = new Response(null, { status: 405, headers: { Allow: "GET, HEAD" } });
+        return privateEvidence ? accountingResponse(response) : response;
+      }
       const r2Key = `images/${gid}/${filename}`;
       const obj = await env.CONTENT_BUCKET.get(r2Key);
-      if (!obj) return new Response("Not Found", { status: 404 });
+      if (!obj) {
+        const response = new Response(request.method === "HEAD" ? null : "Not Found", { status: 404 });
+        return privateEvidence ? accountingResponse(response) : response;
+      }
       const ext = (filename.match(/\.([a-z0-9]+)$/i) || [])[1] || "jpg";
-      const ctMap = { jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp", gif: "image/gif" };
+      const ctMap = { jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp", gif: "image/gif", pdf: "application/pdf" };
       const ct = ctMap[ext.toLowerCase()] || "image/jpeg";
-      return new Response(obj.body, {
+      const response = new Response(request.method === "HEAD" ? null : obj.body, {
         headers: {
           "Content-Type": ct,
+          "X-Content-Type-Options": "nosniff",
+          ...(ct === "application/pdf" ? { "Content-Disposition": `inline; filename="${filename}"` } : {}),
           "Cache-Control": "public, max-age=31536000",
           "Access-Control-Allow-Origin": "*"
         }
       });
+      return privateEvidence ? accountingResponse(response) : response;
     }
 
     // ★ 経費管理 API — レシートスキャン
     const expenseScanMatch = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/expenses\/scan$/);
     if (expenseScanMatch && request.method === "POST") {
       const gid = expenseScanMatch[1];
-      // 認証: ログイン済みならmanagerロールを確認（メンバー未登録なら許可）
-      const scanSession = await getSession(request, env);
-      if (scanSession) {
-        const scanMembers = await loadGroupMembers(env, gid);
-        if (scanMembers.length > 0) {
-          const authCheck = await requireGroupRole(request, env, gid, "manager");
-          if (!authCheck.ok) return corsResponse(request, jsonResponse({ error: authCheck.error }, authCheck.status));
-        }
-      }
       try {
         // レート制限チェック
         const withinLimit = await checkGeminiRateLimit(env);
-        if (!withinLimit) return corsResponse(request, jsonResponse({ error: "AI利用が上限に達しました。1分後に再試行してください。" }, 429));
+        if (!withinLimit) return accountingJSON({ error: "AI利用が上限に達しました。1分後に再試行してください。" }, 429);
 
         const formData = await request.formData();
         const files = formData.getAll("file").filter(f => f && f.name);
         const docTypes = formData.getAll("docType"); // 各画像の書類タイプ（receipt / invoice）
-        if (!files.length) return corsResponse(request, jsonResponse({ error: "No file provided" }, 400));
+        if (!files.length) return accountingJSON({ error: "No file provided" }, 400);
         const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
         const extMap = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
 
@@ -3179,8 +3214,8 @@ ${phraseReport}
         const imageParts = [];
         for (let fi = 0; fi < files.length; fi++) {
           const file = files[fi];
-          if (file.size > 5 * 1024 * 1024) return corsResponse(request, jsonResponse({ error: "File too large (max 5MB)" }, 400));
-          if (!allowedTypes.includes(file.type)) return corsResponse(request, jsonResponse({ error: "Unsupported file type" }, 400));
+          if (file.size > 5 * 1024 * 1024) return accountingJSON({ error: "File too large (max 5MB)" }, 400);
+          if (!allowedTypes.includes(file.type)) return accountingJSON({ error: "Unsupported file type" }, 400);
           const ext = extMap[file.type] || "jpg";
           const filename = `receipt-${Date.now()}-${Math.random().toString(36).slice(2,5)}.${ext}`;
           const r2Key = `images/${gid}/${filename}`;
@@ -3214,47 +3249,33 @@ ${phraseReport}
           if (!doc.docType && docTypes[di]) doc.docType = docTypes[di];
         });
 
-        return corsResponse(request, jsonResponse({
+        return accountingJSON({
           receipt_urls: receiptUrls,
           receipt_url: receiptUrls[0] || null,
           ocr: documents[0],
           documents,
-        }));
+        });
       } catch (e) {
-        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+        return accountingJSON({ error: String(e) }, 500);
       }
     }
 
-    // ★ 経費管理 API — 証憑画像アップロード（OCRなし）
+    // ★ 経費管理 API — 証憑（画像・PDF）アップロード（OCRなし）
     const expenseUploadMatch = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/expenses\/upload$/);
     if (expenseUploadMatch && request.method === "POST") {
       const gid = expenseUploadMatch[1];
-      // 認証: ログイン済みならmanagerロールを確認（メンバー未登録なら許可）
-      const uploadSession = await getSession(request, env);
-      if (uploadSession) {
-        const uploadMembers = await loadGroupMembers(env, gid);
-        if (uploadMembers.length > 0) {
-          const authCheck = await requireGroupRole(request, env, gid, "manager");
-          if (!authCheck.ok) return corsResponse(request, jsonResponse({ error: authCheck.error }, authCheck.status));
-        }
-      }
       try {
         const formData = await request.formData();
         const file = formData.get("file");
-        if (!file || !file.name) return corsResponse(request, jsonResponse({ error: "No file provided" }, 400));
-        if (file.size > 5 * 1024 * 1024) return corsResponse(request, jsonResponse({ error: "File too large (max 5MB)" }, 400));
-        const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
-        if (!allowedTypes.includes(file.type)) return corsResponse(request, jsonResponse({ error: "Unsupported file type" }, 400));
-        const extMap = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
-        const ext = extMap[file.type] || "jpg";
-        const filename = `evidence-${Date.now()}-${Math.random().toString(36).slice(2,6)}.${ext}`;
+        const evidence = await readEvidenceFile(file);
+        if (evidence.error) return accountingJSON({ error: evidence.error }, 400);
+        const filename = `evidence-${crypto.randomUUID()}.${evidence.extension}`;
         const r2Key = `images/${gid}/${filename}`;
-        const arrayBuffer = await file.arrayBuffer();
-        await env.CONTENT_BUCKET.put(r2Key, arrayBuffer, { httpMetadata: { contentType: file.type } });
+        await env.CONTENT_BUCKET.put(r2Key, evidence.bytes, { httpMetadata: { contentType: evidence.contentType } });
         const receiptUrl = `/api/groups/${gid}/images/${filename}`;
-        return corsResponse(request, jsonResponse({ receipt_url: receiptUrl }));
+        return accountingJSON({ receipt_url: receiptUrl });
       } catch (e) {
-        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+        return accountingJSON({ error: String(e) }, 500);
       }
     }
 
@@ -3265,27 +3286,13 @@ ${phraseReport}
       const kvKey = `group_expenses:${gid}`;
       const defaultExpCats = ["衣装・かつら","小道具・大道具","会場費","交通費","食費・飲料","通信・印刷","その他"];
       const defaultIncCats = ["補助金・助成金","公演収入","会費","寄付・協賛金","物販収入","その他収入"];
-      // 認証: ログイン済みならmanagerロールを確認（メンバー未登録なら許可）
-      console.log(`[expenses] ${request.method} /api/groups/${gid}/expenses`);
-      const session = await getSession(request, env);
-      if (session) {
-        const expMembers = await loadGroupMembers(env, gid);
-        console.log(`[expenses] session=${session.userId}, members=${expMembers.length}`);
-        if (expMembers.length > 0) {
-          const authCheck = await requireGroupRole(request, env, gid, "manager");
-          if (!authCheck.ok) {
-            console.log(`[expenses] AUTH DENIED: ${authCheck.error}`);
-            return corsResponse(request, jsonResponse({ error: authCheck.error }, authCheck.status));
-          }
-        }
-      } else {
-        console.log("[expenses] no session (anonymous)");
-      }
+      if (request.method === "HEAD") return accountingResponse(new Response(null, { headers: { "Content-Type": "application/json; charset=utf-8" } }));
       if (request.method === "POST") {
         try {
           const body = await request.json();
           const MAX_EXPENSES = 500;
           let expenses = body.expenses || [];
+          if (!validAccountingEvidenceReferences(expenses, gid)) return accountingJSON({ error: "証憑には、この団体の会計画面で追加した画像・PDFを指定してください。" }, 400);
           if (expenses.length > MAX_EXPENSES) expenses = expenses.slice(-MAX_EXPENSES);
           const expenseCategories = body.expenseCategories || body.categories || defaultExpCats;
           const incomeCategories = body.incomeCategories || defaultIncCats;
@@ -3318,34 +3325,25 @@ ${phraseReport}
             if (categoryMapping) saveData.categoryMapping = categoryMapping;
           }
           await env.CHAT_HISTORY.put(kvKey, JSON.stringify(saveData));
-          return corsResponse(request, jsonResponse({ ok: true }));
+          return accountingJSON({ ok: true });
         } catch (e) {
-          return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+          return accountingJSON({ error: String(e) }, 500);
         }
       }
       // GET
       try {
         const raw = await env.CHAT_HISTORY.get(kvKey);
         const data = raw ? JSON.parse(raw) : { expenses: [], expenseCategories: defaultExpCats, incomeCategories: defaultIncCats };
-        return corsResponse(request, jsonResponse(data));
+        return accountingJSON(data);
       } catch (e) {
-        return corsResponse(request, jsonResponse({ expenses: [], error: String(e) }, 500));
+        return accountingJSON({ expenses: [], error: String(e) }, 500);
       }
     }
 
     // ★ 経費管理 API — CSVエクスポート
     const expenseExportMatch = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/expenses\/export$/);
-    if (expenseExportMatch && request.method === "GET") {
+    if (expenseExportMatch && ["GET", "HEAD"].includes(request.method)) {
       const gid = expenseExportMatch[1];
-      // 認証: ログイン済みならmanagerロールを確認（メンバー未登録なら許可）
-      const exportSession = await getSession(request, env);
-      if (exportSession) {
-        const exportMembers = await loadGroupMembers(env, gid);
-        if (exportMembers.length > 0) {
-          const authCheck = await requireGroupRole(request, env, gid, "manager");
-          if (!authCheck.ok) return corsResponse(request, jsonResponse({ error: authCheck.error }, authCheck.status));
-        }
-      }
       try {
         const url = new URL(request.url);
         const fy = url.searchParams.get("fy") || "";
@@ -3406,15 +3404,14 @@ ${phraseReport}
         const csv = BOM + header + "\n" + rows.join("\n");
 
         const filename = fy ? `accounting_${fy}.csv` : (month ? `accounting_${month}.csv` : "accounting_all.csv");
-        return new Response(csv, {
+        return accountingResponse(new Response(request.method === "HEAD" ? null : csv, {
           headers: {
             "Content-Type": "text/csv; charset=utf-8",
             "Content-Disposition": `attachment; filename="${filename}"`,
-            "Access-Control-Allow-Origin": "*",
           },
-        });
+        }));
       } catch (e) {
-        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+        return accountingJSON({ error: String(e) }, 500);
       }
     }
 
@@ -4067,6 +4064,8 @@ ${phraseReport}
     }
     {
       const theaterImageMatch = path.match(/^\/api\/theaters\/images\/([a-zA-Z0-9_.\-]+)$/);
+      // images/theaters/ は団体ID=theatersと同じキーになる。証憑の別名配信は禁止する。
+      if (theaterImageMatch && isAccountingEvidenceFilename(theaterImageMatch[1])) return accountingResponse(new Response(null, { status: 404 }));
       if (theaterImageMatch && request.method === "GET") {
         const filename = theaterImageMatch[1];
         const r2Key = `images/theaters/${filename}`;
