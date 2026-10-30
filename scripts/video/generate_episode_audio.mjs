@@ -49,7 +49,7 @@ const apiKey = process.env.ELEVENLABS_API_KEY || env.ELEVENLABS_API_KEY;
 if (!apiKey) { console.error('ELEVENLABS_API_KEY が見つかりません（.env を確認）'); process.exit(1); }
 
 const modelId = args.model || 'eleven_v3';
-const markdown = fs.readFileSync(args.script, 'utf8');
+const markdown = fs.readFileSync(args.script, 'utf8').replace(/\r\n?/g, '\n');  // CRLFの台本でも見出し・フェンスを検出できるようにする
 let blocks = parseBlocks(markdown);
 if (blocks.length === 0) { console.error('台本からブロックを検出できませんでした（見出し形式を確認）'); process.exit(1); }
 if (args.only) {
