@@ -25,6 +25,14 @@ COLORS = {   # シリーズの地色: 対面=赤・封印切=緑・切られ与�
     "purple": ((78, 42, 110), (64, 32, 92)),
     "navy": ((26, 38, 82), (18, 28, 66)),
     "green": ((34, 92, 60), (26, 76, 48)),
+    "ai": ((48, 74, 128), (38, 60, 108)),      # 明るめの藍（紺が重いと言われたときの候補）
+    "asagi": ((34, 112, 128), (26, 94, 108)),  # 浅葱
+    "bengara": ((122, 48, 34), (102, 38, 26)), # 弁柄（祇園の茶屋の紅殻格子。忠臣蔵 七段目）
+    "sumi": ((30, 28, 30), (18, 17, 19)),       # 墨（夜の茶屋・黒塀）
+    "ginnezumi": ((112, 116, 124), (96, 100, 108)),  # 銀鼠（月夜。二階で手紙を盗み読むおかる）
+    "kuchiba": ((150, 104, 44), (128, 86, 34)),  # 朽葉（提灯・釣灯籠の明かり）
+    "sakuranezumi": ((150, 112, 116), (130, 94, 98)),  # 桜鼠（祇園の華やぎを抑えた色）
+    "fuji": ((112, 92, 150), (96, 76, 132)),     # 藤（由良之助の紫を明るく）
 }
 BG, BG_DARK = COLORS["red"]
 W, H = 1920, 1080
@@ -32,6 +40,8 @@ FPS = 30000 / 1001
 
 
 def title_font(size, weight="Black"):
+    if os.environ.get("TITLE_FONT_FILE"):   # 毛筆など別の書体（例: C:\Windows\Fonts\FGCCPKAI_new.TTC。ファイルは配布不可・焼き込みは可）
+        return ImageFont.truetype(os.environ["TITLE_FONT_FILE"], size)
     f = ImageFont.truetype(FONT_SERIF if TITLE_FONT == "mincho" else FONT_GO, size)
     try:
         f.set_variation_by_name(weight)
