@@ -32,7 +32,7 @@ html,body{width:1280px;height:670px;overflow:hidden;background:#000}
   <div class="tag">忠臣蔵 六段目</div>
   <div class="big" style="top:20px;font-size:50px">勘平は、</div>
   <div class="big y" style="top:74px;font-size:100px">いつ腹を切るのか。</div>
-  <div class="series">芸談で読む東の型と上方の型｜歌舞伎研究ノート4</div>
+  <div class="series">芸談で読む東京の型と上方の型｜歌舞伎研究ノート4</div>
 </div></body></html>`;
 
 const browser = await puppeteer.launch({ headless: true, args: ['--font-render-hinting=none', '--force-color-profile=srgb'] });
