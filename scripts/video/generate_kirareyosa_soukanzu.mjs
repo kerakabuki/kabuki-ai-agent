@@ -1,14 +1,22 @@
 // 『切られ与三』あらすじ動画（相関図版）の相関図を、場面ごとの静止画（1920×1080 PNG）に書き出す
 //
 // 使い方:
-//   node scripts/video/generate_kirareyosa_soukanzu.mjs --out <出力フォルダ> [--photos <札写真フォルダ>]
+//   node scripts/video/generate_kirareyosa_soukanzu.mjs --out <出力フォルダ> [--photos <札写真フォルダ>] [--card bromide|circle]
 //
-// --photos のフォルダに「与三郎」「お富」「蝙蝠安」「多左衛門」「赤間源左衛門」の名前の画像（.jpg/.jpeg/.png）を置くと、
-// 札の丸の中に写真を入れる。無い人物は、紋のような一文字（与・富・安・多・源）を入れる。
+// 札の形（--card）:
+//   bromide（既定）… 上に縦長の写真、下に名前。気良歌舞伎のブロマイドや舞台写真を大きく見せる。
+//   circle ………… 丸の中に写真（または紋）、下に名前。
+//
+// 写真（--photos）:
+//   フォルダに「与三郎」「お富」「蝙蝠安」「多左衛門」「赤間源左衛門」の名前の画像（.jpg/.jpeg/.png）を置くと札に入れる。
+//   無い人物は、紋のような一文字（与・富・安・多・源）にする。源左衛門は気良の舞台に出ないので、紋のままでよい。
+//   顔の位置は、同じフォルダの crop.json で人物ごとに調整できる（x・y は 0〜1 で写真のどこを見せるか、zoom は 1 以上で寄り）。
+//     例: { "与三郎": { "x": 0.5, "y": 0.2, "zoom": 1.4 }, "お富": { "y": 0.15 } }
+//   指定がなければ、左右は真ん中、上下は上寄り（y 0.18）で切り抜く。
 //
 // 画面の決まり（台本 docs/youtube/youtube-script-kirareyosa-arasuji.md と同じ）:
 //   赤い実線＝恋／灰色の線＝囲う／点線＋「？」＝嘘・思い違い／墨の太い線＝血のつながり／「×」＝切れた
-// 字幕（画面下）とけらのすけ（右下。small 推奨）にかからないよう、図は x 80〜1480・y 130〜830 に収めている。
+// 字幕（画面下）とけらのすけ（右下。small 推奨）にかからないよう、図は x 80〜1480・y 80〜860 に収めている。
 //
 // ブラウザ: puppeteer（リポジトリの依存）を使う。入っていなければ playwright を使う。
 // フォント: 明朝体（Noto Serif CJK JP → 游明朝 → IPA明朝 の順に探す）。
@@ -29,16 +37,32 @@ function parseArgs(argv) {
 
 const args = parseArgs(process.argv.slice(2));
 if (!args.out) {
-  console.error('必須引数不足: --out <出力フォルダ> [--photos <札写真フォルダ>]');
+  console.error('必須引数不足: --out <出力フォルダ> [--photos <札写真フォルダ>] [--card bromide|circle]');
   process.exit(1);
 }
 const OUT = resolve(args.out);
 const PHOTOS = args.photos ? resolve(args.photos) : null;
+const CARD_STYLE = args.card === 'circle' ? 'circle' : 'bromide';
 mkdirSync(OUT, { recursive: true });
 
 const W = 1920, H = 1080;
-const CARD_W = 250, CARD_H = 236;
 const FONT = `'Noto Serif CJK JP','Noto Serif JP','Yu Mincho','YuMincho','Hiragino Mincho ProN','IPAMincho',serif`;
+
+// 札の寸法と並び（札の左上からの位置で書く）
+const LAYOUTS = {
+  bromide: {
+    w: 220, h: 310, rows: [345, 705],
+    photo: { x: 12, y: 12, w: 196, h: 214, r: 8 },
+    nameY: 264, nameMax: 36, descY: 292, descSize: 20,
+  },
+  circle: {
+    w: 250, h: 236, rows: [360, 700],
+    circle: { cx: 125, cy: 70, r: 54 },
+    nameY: 176, nameMax: 40, descY: 215, descSize: 22,
+  },
+};
+const L = LAYOUTS[CARD_STYLE];
+const COLS = [300, 800, 1300];
 
 // 色（世話物らしく、落ち着いた色に寄せる）
 const C = {
@@ -55,22 +79,29 @@ const C = {
 };
 
 // 人物（札の中心と、紋の一文字・色）
+const [R1, R2] = L.rows;
 const PEOPLE = {
-  yosa:  { name: '与三郎',       mon: '与', color: '#3E5A7A', x: 300,  y: 360, desc: '伊豆屋の若旦那' },
-  otomi: { name: 'お富',         mon: '富', color: '#A8414E', x: 800,  y: 360, desc: '元は江戸の芸者' },
-  taza:  { name: '多左衛門',     mon: '多', color: '#5B6A3C', x: 1300, y: 360, desc: '和泉屋の番頭' },
-  yasu:  { name: '蝙蝠安',       mon: '安', color: '#5A5662', x: 300,  y: 700, desc: 'ゆすりの小悪党' },
-  gen:   { name: '赤間源左衛門', mon: '源', color: '#3A322C', x: 1300, y: 700, desc: '木更津の親分' },
+  yosa:  { name: '与三郎',       mon: '与', color: '#3E5A7A', x: COLS[0], y: R1, desc: '伊豆屋の若旦那' },
+  otomi: { name: 'お富',         mon: '富', color: '#A8414E', x: COLS[1], y: R1, desc: '元は江戸の芸者' },
+  taza:  { name: '多左衛門',     mon: '多', color: '#5B6A3C', x: COLS[2], y: R1, desc: '和泉屋の番頭' },
+  yasu:  { name: '蝙蝠安',       mon: '安', color: '#5A5662', x: COLS[0], y: R2, desc: 'ゆすりの小悪党' },
+  gen:   { name: '赤間源左衛門', mon: '源', color: '#3A322C', x: COLS[2], y: R2, desc: '木更津の親分' },
 };
 
 // 線の形（札のふちからふちへ）
-const half = { w: CARD_W / 2, h: CARD_H / 2 };
+const hw = L.w / 2, hh = L.h / 2;
+const kakouFrom = [COLS[2] - hw + 20, R2 - hh];
+const kakouTo = [COLS[1] + hw - 20, R1 + hh + 4];
+const kakouMid = [(kakouFrom[0] + kakouTo[0]) / 2, (kakouFrom[1] + kakouTo[1]) / 2];
+const yTop = R1 + hh, yBottom = R2 - hh, yMid = (yTop + yBottom) / 2;
+const arcTop = R1 - hh, arcApex = arcTop - 55;
 const GEOM = {
-  koi:    { d: `M ${300 + half.w} 360 L ${800 - half.w} 360`, mid: [550, 360], labelAt: [550, 326] },
-  danna:  { d: `M ${1300 - half.w} 360 L ${800 + half.w} 360`, mid: [1050, 360], labelAt: [1050, 326] },
-  kakou:  { d: `M ${1300 - half.w + 20} ${700 - half.h} L ${800 + half.w - 20} ${360 + half.h + 4}`, mid: [1050, 530], labelAt: [1078, 540] },
-  yusuri: { d: `M 300 ${360 + half.h} L 300 ${700 - half.h}`, mid: [300, 530], labelAt: [300, 530] },
-  arc:    { d: `M ${300 + 40} ${360 - half.h} Q 550 120 ${800 - 40} ${360 - half.h}`, mid: [550, 181], labelAt: [550, 181] },
+  koi:    { d: `M ${COLS[0] + hw} ${R1} L ${COLS[1] - hw} ${R1}`, mid: [(COLS[0] + COLS[1]) / 2, R1], labelAt: [(COLS[0] + COLS[1]) / 2, R1 - 34] },
+  danna:  { d: `M ${COLS[2] - hw} ${R1} L ${COLS[1] + hw} ${R1}`, mid: [(COLS[1] + COLS[2]) / 2, R1], labelAt: [(COLS[1] + COLS[2]) / 2, R1 - 34] },
+  kakou:  { d: `M ${kakouFrom[0]} ${kakouFrom[1]} L ${kakouTo[0]} ${kakouTo[1]}`, mid: kakouMid, labelAt: [kakouMid[0] + 28, kakouMid[1] + 10] },
+  // 上下の札の間が狭いときは、札を線の横に出す
+  yusuri: { d: `M ${COLS[0]} ${yTop} L ${COLS[0]} ${yBottom}`, mid: [COLS[0], yMid], labelAt: yBottom - yTop < 70 ? [COLS[0] + 95, yMid] : [COLS[0], yMid] },
+  arc:    { d: `M ${COLS[0] + 40} ${arcTop} Q ${(COLS[0] + COLS[1]) / 2} ${arcTop - 110} ${COLS[1] - 40} ${arcTop}`, mid: [(COLS[0] + COLS[1]) / 2, arcApex], labelAt: [(COLS[0] + COLS[1]) / 2, arcApex] },
 };
 
 // 線の見た目
@@ -129,7 +160,7 @@ const STATES = [
       { geom: 'danna', style: 'chi', label: '実の兄' }, yusuri()] },
 ];
 
-// 札写真（あれば data URI にして埋め込む）
+// 札写真（あれば data URI にして埋め込む）と、顔の位置の指定
 function photoFor(name) {
   if (!PHOTOS) return null;
   for (const ext of ['jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG']) {
@@ -141,27 +172,62 @@ function photoFor(name) {
   }
   return null;
 }
+const PHOTO = Object.fromEntries(Object.values(PEOPLE).map(p => [p.name, photoFor(p.name)]));
+let CROP = {};
+if (PHOTOS && existsSync(join(PHOTOS, 'crop.json'))) {
+  CROP = JSON.parse(readFileSync(join(PHOTOS, 'crop.json'), 'utf8'));
+}
+const SIZE = {}; // 写真の縦横（ブラウザで読んで、向きの情報も反映した大きさを入れる）
 
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+// 枠（fx, fy, fw, fh）いっぱいに写真を敷き詰めるときの位置と大きさ
+function fitPhoto(name, fx, fy, fw, fh) {
+  const s = SIZE[name];
+  const crop = CROP[name] || {};
+  const zoom = Math.max(1, Number(crop.zoom ?? 1));
+  const px = Math.min(1, Math.max(0, Number(crop.x ?? 0.5)));
+  const py = Math.min(1, Math.max(0, Number(crop.y ?? 0.18)));
+  if (!s) return { x: fx, y: fy, w: fw, h: fh, par: 'xMidYMin slice' };
+  const scale = Math.max(fw / s.w, fh / s.h) * zoom;
+  const dw = s.w * scale, dh = s.h * scale;
+  return { x: fx + (fw - dw) * px, y: fy + (fh - dh) * py, w: dw, h: dh, par: 'none' };
+}
+
+function face(key, p, left, top) {
+  const photo = PHOTO[p.name];
+  if (CARD_STYLE === 'bromide') {
+    const f = L.photo;
+    const fx = left + f.x, fy = top + f.y;
+    if (photo) {
+      const img = fitPhoto(p.name, fx, fy, f.w, f.h);
+      return `<clipPath id="clip-${key}"><rect x="${fx}" y="${fy}" width="${f.w}" height="${f.h}" rx="${f.r}"/></clipPath>
+        <image href="${photo}" x="${img.x}" y="${img.y}" width="${img.w}" height="${img.h}" preserveAspectRatio="${img.par}" clip-path="url(#clip-${key})"/>
+        <rect x="${fx}" y="${fy}" width="${f.w}" height="${f.h}" rx="${f.r}" fill="none" stroke="${p.color}" stroke-width="3"/>`;
+    }
+    return `<rect x="${fx}" y="${fy}" width="${f.w}" height="${f.h}" rx="${f.r}" fill="${p.color}"/>
+      <rect x="${fx + 8}" y="${fy + 8}" width="${f.w - 16}" height="${f.h - 16}" rx="${f.r - 2}" fill="none" stroke="${C.card}" stroke-opacity="0.5" stroke-width="2"/>
+      <text x="${fx + f.w / 2}" y="${fy + f.h / 2 + 34}" text-anchor="middle" font-size="96" font-weight="700" fill="${C.card}">${esc(p.mon)}</text>`;
+  }
+  const c = L.circle;
+  const cx = left + c.cx, cy = top + c.cy, r = c.r;
+  if (photo) {
+    const img = fitPhoto(p.name, cx - r, cy - r, r * 2, r * 2);
+    return `<clipPath id="clip-${key}"><circle cx="${cx}" cy="${cy}" r="${r}"/></clipPath>
+      <image href="${photo}" x="${img.x}" y="${img.y}" width="${img.w}" height="${img.h}" preserveAspectRatio="${img.par}" clip-path="url(#clip-${key})"/>
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${p.color}" stroke-width="4"/>`;
+  }
+  return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${p.color}"/>
+    <circle cx="${cx}" cy="${cy}" r="${r - 7}" fill="none" stroke="${C.card}" stroke-opacity="0.55" stroke-width="2"/>
+    <text x="${cx}" y="${cy + 20}" text-anchor="middle" font-size="58" font-weight="700" fill="${C.card}">${esc(p.mon)}</text>`;
+}
 
 function card(key, opt) {
   const p = PEOPLE[key];
   const { x, y } = p;
-  const left = x - half.w, top = y - half.h;
-  const nameSize = Math.min(40, Math.floor((CARD_W - 44) / p.name.length));
-  const photo = photoFor(p.name);
+  const left = x - hw, top = y - hh;
+  const nameSize = Math.min(L.nameMax, Math.floor((L.w - 36) / p.name.length));
   const desc = opt.noDesc ? null : (opt.desc ?? p.desc);
-  const cy = y - 48, r = 54;
-  let face;
-  if (photo) {
-    face = `<clipPath id="clip-${key}"><circle cx="${x}" cy="${cy}" r="${r}"/></clipPath>
-      <image href="${photo}" x="${x - r}" y="${cy - r}" width="${r * 2}" height="${r * 2}" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip-${key})"/>
-      <circle cx="${x}" cy="${cy}" r="${r}" fill="none" stroke="${p.color}" stroke-width="4"/>`;
-  } else {
-    face = `<circle cx="${x}" cy="${cy}" r="${r}" fill="${p.color}"/>
-      <circle cx="${x}" cy="${cy}" r="${r - 7}" fill="none" stroke="${C.card}" stroke-opacity="0.55" stroke-width="2"/>
-      <text x="${x}" y="${cy + 20}" text-anchor="middle" font-size="58" font-weight="700" fill="${C.card}">${esc(p.mon)}</text>`;
-  }
   let badge = '';
   if (opt.badge) {
     const bw = opt.badge.text.length * 25 + 30;
@@ -172,11 +238,11 @@ function card(key, opt) {
   }
   const faded = opt.faded ? ` opacity="0.32" filter="url(#gray)"` : '';
   return `<g${faded}>
-    <rect x="${left}" y="${top}" width="${CARD_W}" height="${CARD_H}" rx="14" fill="${C.card}" stroke="${C.cardLine}" stroke-width="2" filter="url(#shadow)"/>
-    <rect x="${left + 8}" y="${top + 8}" width="${CARD_W - 16}" height="${CARD_H - 16}" rx="9" fill="none" stroke="${C.cardLine}" stroke-opacity="0.25" stroke-width="1"/>
-    ${face}
-    <text x="${x}" y="${y + 58}" text-anchor="middle" font-size="${nameSize}" font-weight="700" fill="${C.ink}">${esc(p.name)}</text>
-    ${desc ? `<text x="${x}" y="${y + 97}" text-anchor="middle" font-size="22" fill="${C.sub}">${esc(desc)}</text>` : ''}
+    <rect x="${left}" y="${top}" width="${L.w}" height="${L.h}" rx="14" fill="${C.card}" stroke="${C.cardLine}" stroke-width="2" filter="url(#shadow)"/>
+    <rect x="${left + 6}" y="${top + 6}" width="${L.w - 12}" height="${L.h - 12}" rx="10" fill="none" stroke="${C.cardLine}" stroke-opacity="0.22" stroke-width="1"/>
+    ${face(key, p, left, top)}
+    <text x="${x}" y="${top + L.nameY}" text-anchor="middle" font-size="${nameSize}" font-weight="700" fill="${C.ink}">${esc(p.name)}</text>
+    ${desc ? `<text x="${x}" y="${top + L.descY}" text-anchor="middle" font-size="${L.descSize}" fill="${C.sub}">${esc(desc)}</text>` : ''}
     ${badge}
   </g>`;
 }
@@ -206,7 +272,7 @@ function svgFor(state) {
   const cardsSvg = Object.entries(state.cards).map(([k, o]) => card(k, o)).join('\n');
   const linesSvg = state.lines.map(line).join('\n');
   const title = state.title
-    ? `<text x="790" y="128" text-anchor="middle" font-size="40" font-weight="700" fill="${C.ink}" letter-spacing="4">${esc(state.title)}</text>`
+    ? `<text x="790" y="${CARD_STYLE === 'bromide' ? 112 : 128}" text-anchor="middle" font-size="40" font-weight="700" fill="${C.ink}" letter-spacing="4">${esc(state.title)}</text>`
     : '';
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" font-family="${FONT}">
   <defs>
@@ -261,6 +327,16 @@ async function openBrowser() {
 }
 
 const { page: tab, close } = await openBrowser();
+
+// 写真の縦横を、ブラウザで読んだ大きさ（スマホ写真の向きの情報も反映）で取る
+const withPhoto = Object.entries(PHOTO).filter(([, uri]) => uri);
+if (withPhoto.length) {
+  await tab.setContent(`<!doctype html><html><body>${withPhoto.map(([n, uri], i) => `<img id="p${i}" data-name="${esc(n)}" src="${uri}">`).join('')}</body></html>`, { waitUntil: 'load' });
+  const sizes = await tab.evaluate(() => [...document.images].map(im => ({ name: im.dataset.name, w: im.naturalWidth, h: im.naturalHeight })));
+  for (const s of sizes) SIZE[s.name] = { w: s.w, h: s.h };
+  console.log('写真:', sizes.map(s => `${s.name} ${s.w}×${s.h}`).join(' / '));
+}
+
 const made = [];
 for (const st of STATES) {
   await tab.setContent(page(svgFor(st)), { waitUntil: 'load' });
