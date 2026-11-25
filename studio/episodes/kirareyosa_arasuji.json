@@ -1,0 +1,275 @@
+{
+  "_使い方": "台本: docs/youtube/youtube-script-kirareyosa-arasuji.md（第1稿）。ナレーションは studio で ttsText から生成する。id が S で始まるブロックは舞台の声（令和5年 気良歌舞伎の舞台映像から切り出して voice: のファイル名で置く。読み上げは作らない）。S1・H2 がフックで、settings.opAfterBlock により OP の前に置かれる。組み立て: node scripts/video/build_sonezaki_video.mjs --config studio/episodes/kirareyosa_arasuji.json",
+  "episode": {
+    "title": "超訳！歌舞伎ナビ　あらすじ『切られ与三』（相関図版）",
+    "epDir": "歌舞伎ナビ切られ与三_あらすじ",
+    "outputName": "切られ与三_あらすじ_相関図_draft_v1.mp4",
+    "voiceId": "xOKkuQfZt5N7XfbFdn9W",
+    "ttsModel": "eleven_v3",
+    "ttsOutputFormat": "mp3_44100_128"
+  },
+  "settings": {
+    "W": 1920,
+    "H": 1080,
+    "FPS": 24,
+    "LEAD": 0.4,
+    "TAIL": 0.8,
+    "CRF": "18",
+    "subFontSize": 66,
+    "capFontSize": 48,
+    "wrapMax": 24,
+    "bgm": "common:BGM/Neu_Kabuki.mp3",
+    "bgmVolNormal": 0.11,
+    "bgmVolQuiet": 0.045,
+    "opAfterBlock": "H2",
+    "op": "common:OP_ED/歌舞伎ナビOP.mov",
+    "edSrc": "common:けらのすけ動画/けらのすけED.mp4",
+    "edBackground": "common:背景.png"
+  },
+  "avatar": {
+    "normal": {
+      "h": 620,
+      "videos": [
+        "common:けらのすけ動画/クチパクダミー１.mp4",
+        "common:けらのすけ動画/クチパクダミー２.mp4"
+      ]
+    },
+    "small": {
+      "h": 380,
+      "videos": [
+        "common:けらのすけ動画/クチパクダミー１.mp4"
+      ]
+    }
+  },
+  "blocks": [
+    {
+      "id": "S1",
+      "note": "舞台の声：与三郎「いやさお富、久しぶりだなぁ。」",
+      "audio": "voice:舞台1_いやさお富.mp3",
+      "avatar": "none",
+      "tail": 0.6,
+      "subtitleText": "いやさお富、久しぶりだなぁ。",
+      "slides": [
+        { "img": "gen:相関図/00_フック.png", "weight": 1 }
+      ],
+      "captions": [
+        { "text": "与三郎（令和5年 気良歌舞伎）" }
+      ]
+    },
+    {
+      "id": "H2",
+      "audio": "voice:ブロックH2.mp3",
+      "avatar": "small",
+      "styleTag": "[calm, warm, gentle Japanese storytelling]",
+      "subtitleText": "死んだと思っていたお富と、三年ぶりの再会。でも、二人をつなぐ線は、このあと、まだ書き換わるんだ。",
+      "ttsText": "死んだと思っていた、おとみと、三年ぶりの再会。でも、二人をつなぐ線は、このあと、まだ書き換わるんだ。",
+      "slides": [
+        { "img": "gen:相関図/00_フック.png", "weight": 1 }
+      ],
+      "captions": [
+        { "text": "線は、まだ書き換わる。", "frac": [0.45, 1] }
+      ]
+    },
+    {
+      "id": "1",
+      "audio": "voice:ブロック1.mp3",
+      "avatar": "small",
+      "styleTag": "[calm, warm, gentle Japanese storytelling]",
+      "subtitleText": "『与話情浮名横櫛』、通称「切られ与三」。今日は、このお話のあらすじを、相関図でたどるよ。人と人をつなぐ線は、三回、引き直される。最後にどうつながるか、見ていてね。",
+      "ttsText": "『よわなさけうきなのよこぐし』、通称「きられよさ」。今日は、このお話のあらすじを、相関図でたどるよ。人と人をつなぐ線は、三回、引き直される。最後にどうつながるか、見ていてね。",
+      "slides": [
+        { "img": "gen:相関図/01_人物紹介.png", "weight": 1 }
+      ],
+      "captions": [
+        { "text": "『与話情浮名横櫛』（よわなさけうきなのよこぐし）" }
+      ],
+      "se": [
+        { "file": "common:効果音/拍子木1.mp3", "at": 0, "vol": 0.4 }
+      ]
+    },
+    {
+      "id": "2",
+      "audio": "voice:ブロック2.mp3",
+      "avatar": "small",
+      "styleTag": "[calm, warm, gentle Japanese storytelling]",
+      "subtitleText": "はじまりは、木更津の浜。江戸の商家・伊豆屋の若旦那、与三郎は、お富とすれ違って、ひと目で惚れてしまう。お富も、この若旦那に心を寄せる。ここが「見染め」の場面だよ。ところがお富は、土地の親分、赤間源左衛門に囲われている身。親分の留守に、お富は与三郎を別荘へ呼び寄せる。それが子分に知られて、お富は海へ飛び込み、捕まった与三郎は、体じゅう三十四か所も斬られてしまう。ここが「赤間別荘」の場面。これが一回目。二人の線は、ここで切れたんだ。",
+      "ttsText": "はじまりは、きさらづの浜。江戸の商家・いずやの若旦那、よさぶろうは、おとみとすれ違って、ひと目で惚れてしまう。おとみも、この若旦那に心を寄せる。ここが「みそめ」の場面だよ。ところが、おとみは、土地の親分、あかまげんざえもんに、囲われている身。親分の留守に、おとみは、よさぶろうを別荘へ呼び寄せる。それが子分に知られて、おとみは海へ飛び込み、捕まった、よさぶろうは、体じゅう、さんじゅうよんかしょも斬られてしまう。ここが「あかまべっそう」の場面。これが一回目。二人の線は、ここで切れたんだ。",
+      "slidesBySent": [
+        { "img": "gen:相関図/02_見染め.png", "sentFrom": 0, "sentTo": 3 },
+        { "img": "gen:相関図/03_囲う.png", "sentFrom": 4, "sentTo": 5 },
+        { "img": "gen:相関図/04_切れた.png", "sentFrom": 6, "sentTo": 9 }
+      ],
+      "captionsBySent": [
+        { "text": "木更津・見染め", "sentFrom": 0, "sentTo": 3 },
+        { "text": "木更津・赤間別荘", "sentFrom": 5, "sentTo": 7 }
+      ],
+      "seBySent": [
+        { "file": "common:効果音/拍子木1.mp3", "sent": 8, "vol": 0.4 }
+      ]
+    },
+    {
+      "id": "3-1",
+      "audio": "voice:ブロック3-1.mp3",
+      "avatar": "small",
+      "styleTag": "[calm, warm, gentle Japanese storytelling]",
+      "subtitleText": "それから三年。お富は、生きていた。海で助けてくれた和泉屋の番頭、多左衛門の世話になって、鎌倉の源氏店で暮らしているよ。与三郎のほうは、親に勘当されて、顔の傷を売り物にゆすりをする「切られ与三」になっていた。相棒は、頬に蝙蝠の入れ墨をした、蝙蝠安。二人がゆすりに入った家の女主人が、死んだと思ったお富だったんだ。",
+      "ttsText": "それから三年。おとみは、生きていた。海で助けてくれた、いずみやの番頭、たざえもんの世話になって、鎌倉の、げんじだなで暮らしているよ。よさぶろうのほうは、親に勘当されて、顔の傷を売り物に、ゆすりをする「きられよさ」になっていた。相棒は、ほおに、こうもりの入れ墨をした、こうもりやす。二人がゆすりに入った家の女主人が、死んだと思った、おとみだったんだ。",
+      "slidesBySent": [
+        { "img": "gen:相関図/05_三年後.png", "sentFrom": 0, "sentTo": 3 },
+        { "img": "gen:相関図/06_ゆすり.png", "sentFrom": 4, "sentTo": 5 }
+      ],
+      "captionsBySent": [
+        { "text": "三年後・鎌倉 源氏店（げんじだな）", "sentFrom": 0, "sentTo": 2 }
+      ]
+    },
+    {
+      "id": "S2",
+      "note": "舞台の声：与三郎「しがねぇ恋の情けが仇、命の綱の切れたのを、どう取り留めてか木更津から、めぐる月日も三歳越。」",
+      "audio": "voice:舞台2_しがねぇ恋の.mp3",
+      "avatar": "none",
+      "tail": 0.6,
+      "subtitleText": "しがねぇ恋の情けが仇、命の綱の切れたのを、どう取り留めてか木更津から、めぐる月日も三歳越。",
+      "slides": [
+        { "img": "gen:相関図/06_ゆすり.png", "weight": 1 }
+      ],
+      "captions": [
+        { "text": "与三郎（令和5年 気良歌舞伎）" }
+      ]
+    },
+    {
+      "id": "3-2",
+      "audio": "voice:ブロック3-2.mp3",
+      "avatar": "small",
+      "styleTag": "[calm, warm, gentle Japanese storytelling]",
+      "subtitleText": "最初に聞いた「いやさお富、久しぶりだなぁ」も、有名な「しがねぇ恋の情けが仇」も、この再会の台詞だよ。",
+      "ttsText": "最初に聞いた「いやさおとみ、久しぶりだなぁ」も、有名な「しがねぇ恋の、なさけがあだ」も、この再会の台詞だよ。",
+      "slides": [
+        { "img": "gen:相関図/07_再会.png", "weight": 1 }
+      ]
+    },
+    {
+      "id": "4-1",
+      "audio": "voice:ブロック4-1.mp3",
+      "avatar": "small",
+      "tail": 0.4,
+      "styleTag": "[calm, warm, gentle Japanese storytelling]",
+      "subtitleText": "そこへ多左衛門が帰ってくる。あなたは、お富の何にあたるお方かと聞かれて、お富はとっさに……",
+      "ttsText": "そこへ、たざえもんが帰ってくる。あなたは、おとみの、何にあたるお方かと聞かれて、おとみは、とっさに……",
+      "slides": [
+        { "img": "gen:相関図/07_再会.png", "weight": 1 }
+      ]
+    },
+    {
+      "id": "S3",
+      "note": "舞台の声：お富「あ、あ……お前は私の兄さん。」",
+      "audio": "voice:舞台3_お前は私の兄さん.mp3",
+      "avatar": "none",
+      "tail": 0.6,
+      "subtitleText": "あ、あ……お前は私の兄さん。",
+      "slides": [
+        { "img": "gen:相関図/07_再会.png", "weight": 1 }
+      ],
+      "captions": [
+        { "text": "お富（令和5年 気良歌舞伎）" }
+      ]
+    },
+    {
+      "id": "4-2",
+      "audio": "voice:ブロック4-2.mp3",
+      "avatar": "small",
+      "styleTag": "[calm, warm, gentle Japanese storytelling]",
+      "subtitleText": "昔の恋人を、「兄さん」と言い繕ったんだ。これが二回目の線。多左衛門は話を合わせて、与三郎に、堅気になるための元手を渡す。与三郎は安に連れられて、いったん家を出るよ。",
+      "ttsText": "昔の恋人を、「兄さん」と言い繕ったんだ。これが二回目の線。たざえもんは話を合わせて、よさぶろうに、かたぎになるための元手を渡す。よさぶろうは、やすに連れられて、いったん家を出るよ。",
+      "slides": [
+        { "img": "gen:相関図/08_嘘の兄.png", "weight": 1 }
+      ],
+      "seBySent": [
+        { "file": "common:効果音/拍子木1.mp3", "sent": 1, "vol": 0.4 }
+      ]
+    },
+    {
+      "id": "5-1",
+      "audio": "voice:ブロック5-1.mp3",
+      "avatar": "small",
+      "tail": 0.5,
+      "styleTag": "[softly, intimate]",
+      "subtitleText": "でも、本当の線は、別のところにあった。出がけに多左衛門がお富に渡したのは、守り袋。中の書付で、お富は初めて知るんだ。多左衛門こそ、自分の実の兄だって。",
+      "ttsText": "でも、本当の線は、別のところにあった。出がけに、たざえもんが、おとみに渡したのは、まもりぶくろ。中の、かきつけで、おとみは初めて知るんだ。たざえもんこそ、自分の、実の兄だって。",
+      "slidesBySent": [
+        { "img": "gen:相関図/08_嘘の兄.png", "sentFrom": 0, "sentTo": 2 },
+        { "img": "gen:相関図/09_実の兄.png", "sentFrom": 3, "sentTo": 3 }
+      ]
+    },
+    {
+      "id": "5-2",
+      "audio": "voice:ブロック5-2.mp3",
+      "avatar": "small",
+      "styleTag": "[calm, warm, gentle Japanese storytelling]",
+      "subtitleText": "多左衛門のほうは、とうに妹だとわかっていた。だから三年のあいだ、大事に面倒をみてきたし、お富の嘘も、わかったうえで話を合わせたんだね。これが三回目。こっそり戻ってきた与三郎に、お富は打ち明ける。",
+      "ttsText": "たざえもんのほうは、とうに妹だとわかっていた。だから三年のあいだ、大事に面倒をみてきたし、おとみの嘘も、わかったうえで話を合わせたんだね。これが三回目。こっそり戻ってきた、よさぶろうに、おとみは打ち明ける。",
+      "slidesBySent": [
+        { "img": "gen:相関図/09_実の兄.png", "sentFrom": 0, "sentTo": 2 },
+        { "img": "gen:相関図/10_嘘が消える.png", "sentFrom": 3, "sentTo": 3 }
+      ],
+      "se": [
+        { "file": "common:効果音/拍子木1.mp3", "at": 0, "vol": 0.4 }
+      ]
+    },
+    {
+      "id": "S4",
+      "note": "舞台の声：与三郎「切るに切られぬ二人の縁。」お富「再びめぐり会うからは。」与三郎「おいお富。生涯手前を〔チョン〕離しゃぁしねえよ。」（チョンは舞台の柝をそのまま使う）",
+      "audio": "voice:舞台4_切るに切られぬ.mp3",
+      "avatar": "none",
+      "tail": 1.2,
+      "subtitleText": "切るに切られぬ二人の縁。再びめぐり会うからは。おいお富。生涯手前を離しゃぁしねえよ。",
+      "slides": [
+        { "img": "gen:相関図/10_嘘が消える.png", "weight": 0.65 },
+        { "img": "gen:相関図/11_幕切れ.png", "weight": 0.35 }
+      ],
+      "captions": [
+        { "text": "与三郎・お富（令和5年 気良歌舞伎）" }
+      ]
+    },
+    {
+      "id": "6",
+      "audio": "voice:ブロック6.mp3",
+      "avatar": "small",
+      "tail": 1.4,
+      "styleTag": "[calm, warm, gentle Japanese storytelling]",
+      "subtitleText": "最初は恋人、次は嘘の兄、最後に本当の兄。三回引き直した線の先で、二人はもう一度結ばれる。これが「切られ与三」のあらすじだよ。いまの上演は、「源氏店」だけか、「見染め」から続けるかが、ほとんど。観に行く前に、この相関図を思い出してね。",
+      "ttsText": "最初は恋人、次は嘘の兄、最後に本当の兄。三回引き直した線の先で、二人はもう一度結ばれる。これが「きられよさ」のあらすじだよ。いまの上演は、「げんじだな」だけか、「みそめ」から続けるかが、ほとんど。観に行く前に、この相関図を思い出してね。",
+      "slidesBySent": [
+        { "img": "gen:相関図/11_幕切れ.png", "sentFrom": 0, "sentTo": 2 },
+        { "img": "gen:相関図/12_まとめ.png", "sentFrom": 3, "sentTo": 4 }
+      ]
+    }
+  ],
+  "chapters": [
+    { "block": "2", "label": "木更津（見染め・赤間別荘）" },
+    { "block": "3-1", "label": "三年後の源氏店" },
+    { "block": "4-1", "label": "嘘の「兄」" },
+    { "block": "5-1", "label": "本当の兄" },
+    { "block": "6", "label": "まとめ" }
+  ],
+  "youtube": {
+    "title": "【相関図でわかる】『与話情浮名横櫛』あらすじ｜切られ与三とお富、二つの「兄さん」　歌舞伎",
+    "titleCandidates": [
+      "【相関図でわかる】『与話情浮名横櫛』あらすじ｜切られ与三とお富、二つの「兄さん」　歌舞伎",
+      "【3分でわかる】切られ与三のあらすじ｜『与話情浮名横櫛』見染め・源氏店を相関図で　歌舞伎"
+    ],
+    "description": "十二月大歌舞伎（歌舞伎座・第三部）『与話情浮名横櫛』の予習に。\n気良歌舞伎の舞台の台詞を交えて、人物の関係を相関図でたどります。\nくわしい解説は超訳！歌舞伎ナビ『切られ与三』へ。\n\n▼ もっと詳しいあらすじ・登場人物（KABUKI PLUS+ 演目ガイド）\nhttps://kabukiplus.com/kabuki/navi/enmoku/kirareyosa\n\n▼ けらのすけに直接質問もできます（KABUKI PLUS+）\nhttps://kabukiplus.com/\n\n{{chapters}}\n\n舞台映像・写真: 気良歌舞伎 令和5年公演\nナレーション: けらのすけ（AI音声）\n\n#超訳歌舞伎ナビ #切られ与三 #与話情浮名横櫛 #歌舞伎 #けらのすけ #気良歌舞伎",
+    "pinnedComment": "",
+    "tags": [
+      "歌舞伎",
+      "切られ与三",
+      "与話情浮名横櫛",
+      "源氏店",
+      "お富",
+      "十二月大歌舞伎",
+      "あらすじ",
+      "けらのすけ",
+      "超訳歌舞伎ナビ",
+      "気良歌舞伎"
+    ]
+  }
+}
