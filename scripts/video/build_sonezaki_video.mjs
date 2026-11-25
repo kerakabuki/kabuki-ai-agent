@@ -366,9 +366,26 @@ if (S.edSrc) {
 
 // 7) 最終連結（存在するパーツだけ連結）
 console.log('--- 最終連結');
+// settings.opAfterBlock: フック（冒頭のブロック）を OP の前に置く。指定したブロックまでがフック。
+// body_mix を「フック」と「本編」に切り分け、フック → OP → 本編 → ED の順に並べる。
+// 切れ目の BGM が途切れて聞こえないよう、フックの尻と本編の頭に短いフェードを掛ける。
+const hookId = hasOp && S.opAfterBlock != null ? String(S.opAfterBlock) : null;
+let hookEnd = 0;
+if (hookId) {
+  const hb = BLOCKS.find(b => b.id === hookId);
+  if (!hb) throw new Error(`settings.opAfterBlock のブロック ${hookId} がありません`);
+  hookEnd = starts[hookId] + hb.dur;
+  const enc = ['-c:v', 'libx264', '-crf', CRF, '-preset', 'medium', '-pix_fmt', 'yuv420p', '-r', String(FPS),
+    '-c:a', 'aac', '-b:a', '192k', '-ar', '48000'];
+  run(['-i', 'body_mix.mp4', '-t', hookEnd.toFixed(3),
+    '-af', `afade=t=out:st=${Math.max(0, hookEnd - 0.6).toFixed(3)}:d=0.6`, ...enc, 'hook.mp4']);
+  run(['-i', 'body_mix.mp4', '-ss', hookEnd.toFixed(3),
+    '-af', 'afade=t=in:d=0.4', ...enc, 'main.mp4']);
+}
 const finalParts = [];
+if (hookId) finalParts.push('hook.mp4');
 if (hasOp) finalParts.push('op.mp4');
-finalParts.push('body_mix.mp4');
+finalParts.push(hookId ? 'main.mp4' : 'body_mix.mp4');
 if (hasEd) finalParts.push('ed.mp4');
 writeFileSync(join(WORK, 'final.txt'), finalParts.map(f => `file '${f}'`).join('\n'), 'utf8');
 const FINAL = `${OUT}/${config.episode.outputName}`;
@@ -389,7 +406,9 @@ console.log('\n--- 概要欄チャプター（実測） ---');
 // チャプター行を組み立て（先頭は必ずオープニング）
 const chapterList = [{ time: '0:00', title: 'オープニング' }];
 for (const ch of (config.chapters ?? [])) {
-  chapterList.push({ time: fmtChap(opDur + starts[ch.block]), title: ch.label });
+  // フック内のブロックは OP より前なので OP の尺を足さない
+  const inHook = hookId && starts[ch.block] < hookEnd;
+  chapterList.push({ time: fmtChap((inHook ? 0 : opDur) + starts[ch.block]), title: ch.label });
 }
 for (const ch of chapterList) {
   console.log(`${ch.time} ${ch.title}`);

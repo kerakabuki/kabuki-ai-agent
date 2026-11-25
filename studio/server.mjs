@@ -27,7 +27,8 @@ import { makePaths, resolveAsset, isPathAllowed, ROOT } from './paths.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO = join(__dirname, '..');
-const CONFIG_PATH = join(__dirname, 'episodes', 'sonezaki05.json');
+// 編集するエピソード。既定は sonezaki05。環境変数 STUDIO_CONFIG に episodes/ のファイル名（例: kirareyosa_arasuji.json）で切り替える
+const CONFIG_PATH = join(__dirname, 'episodes', basename(process.env.STUDIO_CONFIG || 'sonezaki05.json'));
 const HOST = '127.0.0.1';
 // 通常は3555。環境変数 STUDIO_PORT で上書き可（検証用に別ポートで並行起動するため）
 const PORT = Number(process.env.STUDIO_PORT) || 3555;
@@ -134,7 +135,7 @@ function startBuild(blocks) {
   const job = { running: true, log: '', exitCode: null };
   jobs.set(jobId, job);
 
-  const args = [join(__dirname, '..', 'scripts', 'build_sonezaki_video.mjs'), '--config', CONFIG_PATH];
+  const args = [join(__dirname, '..', 'scripts', 'video', 'build_sonezaki_video.mjs'), '--config', CONFIG_PATH];
   if (blocks) { args.push('--blocks', blocks); }
 
   const child = spawn(process.execPath, args, { cwd: REPO });
@@ -156,6 +157,8 @@ async function generateTTS(blockId) {
   const block = config.blocks.find(b => b.id === blockId);
   if (!block) throw new Error(`ブロック${blockId} が設定に存在しません`);
 
+  // 舞台の声など、切り出した音声を使うブロック（ttsText なし）は読み上げを作らない
+  if (!block.ttsText) throw new Error(`ブロック${blockId} は ttsText が無いため読み上げを作りません（音声ファイルを直接置いてください）`);
   const voiceId = config.episode.voiceId;
   const model = config.episode.ttsModel || 'eleven_v3';
   const fmt = config.episode.ttsOutputFormat || 'mp3_44100_128';
