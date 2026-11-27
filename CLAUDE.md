@@ -65,6 +65,7 @@ This repo is **not only the Workers** — it also holds the operator's kabuki re
 | Antigravity | Gemini にファイル・ブラウザ操作まで含めて任せたいとき | `node scripts/antigravity/agent.mjs new --task <依頼書.md> [--model flash\|pro]`（アプリ起動中のみ。`send` / `status` もある） | 依頼書で書き出し先のファイルを指定し、それを読む（agentapi は本文を返さない） |
 
 - Gemini の依頼書は `.gemini-handoff/requests/` に置く。出力形式（JSON の形）を依頼書で指定し、`--json` で `result.json` に取り出す。ローカルファイルは Files API に一時アップロードし、回答後に削除される。既定モデルは `gemini-pro-latest`（`ask.mjs models` で一覧）。キーは既存の `.gemini_api_key`
+- 他のエージェント向けの要点は `AGENTS.md`（Codex は自動で読む）。CLAUDE.md の禁止事項・リポジトリ構成を変えたら AGENTS.md もそろえる
 - Antigravity の会話にはワークスペースが付かないため、ファイルの書き込みはアプリ側で許可待ちになる（ユーザーが画面で許可する）。許可が要ることを依頼時にユーザーへ伝える
 - 流れの基本形: Gemini が時刻つきの候補を返す → Codex がその時刻で切り出す・加工する（静止画は `scripts/video/extract_frames.mjs`）→ Claude が実物（画像・差分）を見て判断し、ユーザーに報告する。Gemini の時刻や説明は鵜呑みにせず、Claude が画で確かめる
 
