@@ -5,6 +5,7 @@ import { useCalendar } from '../hooks/useData';
 import { api, type InstagramFeedRange } from '../lib/api';
 
 const DAY_LABELS = ['日', '月', '火', '水', '木', '金', '土'];
+const monthDay = new Intl.DateTimeFormat('ja-JP', { month: 'long', day: 'numeric', timeZone: 'UTC' });
 
 const PLATFORM_BADGES: Record<string, { letter: string; label: string; color: string; postedColor: string }> = {
   instagram: { letter: 'I', label: 'Instagram', color: 'bg-pink-100 text-pink-300', postedColor: 'bg-gradient-to-br from-purple-600 to-orange-500 text-white' },
@@ -20,6 +21,8 @@ export default function CalendarPage() {
   const [feed,setFeed]=useState<InstagramFeedRange|null>(null),[feedError,setFeedError]=useState(''),[feedLoading,setFeedLoading]=useState(true);
   useEffect(()=>{let cancelled=false;setFeedLoading(true);setFeedError('');const from=year+'-'+String(month).padStart(2,'0')+'-01',to=year+'-'+String(month).padStart(2,'0')+'-'+String(new Date(year,month,0).getDate()).padStart(2,'0');api.instagramSchedule.range(from,to).then(v=>{if(!cancelled)setFeed(v);}).catch(e=>{if(!cancelled){setFeed(null);setFeedError(String(e.message));}}).finally(()=>{if(!cancelled)setFeedLoading(false);});return()=>{cancelled=true;};},[year,month]);
   const protectedMonth=!!feed&&feed.from<=feed.endDate&&feed.to>=feed.startDate;
+  const startDate = feed?.startDate && monthDay.format(new Date(feed.startDate));
+  const endDate = feed?.endDate && monthDay.format(new Date(feed.endDate));
   const feedFor=(d:string)=>feed?.entries.filter(p=>p.date===d)||[];
   const protectedDate=(d:string)=>!!feed&&d>=feed.startDate&&d<=feed.endDate;
 
@@ -119,8 +122,8 @@ export default function CalendarPage() {
         <button onClick={nextMonth} className="p-2 hover:bg-gray-100 rounded-lg"><ChevronRight size={20} /></button>
       </div>
 
-      {protectedMonth&&<p className="mb-4 p-4 bg-stone-100 rounded-xl text-sm">10月30日〜11月30日は、定時投稿の予定と実際の公開記録を表示します。公開URLは各日の「Instagramで見る」から確認できます。これらの予定はこの画面では変更しません。</p>}
-      {feed&&feed.from>feed.endDate&&<p className="mb-4 p-4 bg-stone-100 rounded-xl text-sm">現在の定時投稿は11月30日までです。以下の従来の下書きは、新しい自動投稿予定を意味しません。</p>}
+      {protectedMonth&&<p className="mb-4 p-4 bg-stone-100 rounded-xl text-sm">{startDate && endDate && `${startDate}〜${endDate}は、`}定時投稿の予定と実際の公開記録を表示します。公開URLは各日の「Instagramで見る」から確認できます。これらの予定はこの画面では変更しません。</p>}
+      {feed&&feed.from>feed.endDate&&<p className="mb-4 p-4 bg-stone-100 rounded-xl text-sm">{endDate && `現在の定時投稿は${endDate}までです。`}以下の従来の下書きは、新しい自動投稿予定を意味しません。</p>}
       {feedError&&<p role="alert" className="mb-4 text-red-700">公開記録を取得できませんでした。{feedError}</p>}
       {loading||feedLoading ? (
         <div className="text-center py-12 text-gray-500">読み込み中...</div>

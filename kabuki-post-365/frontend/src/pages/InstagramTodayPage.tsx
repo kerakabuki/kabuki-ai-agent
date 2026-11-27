@@ -9,6 +9,7 @@ export default function InstagramTodayPage(){
  const [summary,setSummary]=useState<InstagramFeedSummary|null>(null),[posts,setPosts]=useState<Post[]>([]),[jobs,setJobs]=useState<Record<number,Job|null>>({}),[transfers,setTransfers]=useState<Transfer[]>([]);
  const [error,setError]=useState('');
  const date=new Date(Date.now()+32400000).toISOString().slice(0,10);
+ const endDate=summary?.endDate && new Date(summary.endDate).toLocaleDateString('ja-JP', { month: 'long', day: 'numeric', timeZone: 'UTC' });
  const load=useCallback(async()=>{
   try{
    const actual=await api.instagramSchedule.summary(date);setSummary(actual);
@@ -26,7 +27,7 @@ export default function InstagramTodayPage(){
   {error&&<p role="alert" className="text-red-700 bg-red-50 p-4 rounded-xl">公開記録を取得できませんでした。{error}</p>}
   {!summary&&!error&&<p className="p-8 bg-white rounded-xl">投稿予定と公開記録を確認しています。</p>}
   {summary?.mode==='scheduled'&&<>
-   <div className="rounded-2xl bg-stone-100 border border-stone-200 p-5 text-sm leading-7"><strong>朝8時の写真投稿</strong><p>11月30日まで、毎朝8時に投稿します。夕方19時は11月11日・12日・25日・26日に予定があります。</p><p>サーバーに保存された公開記録を表示しています。公開URLから実際の投稿をご覧いただけます。</p></div>
+   <div className="rounded-2xl bg-stone-100 border border-stone-200 p-5 text-sm leading-7"><strong>朝8時の写真投稿</strong><p>{endDate && `${endDate}まで、`}毎朝8時に投稿します。夕方19時の投稿がある日は、その日の欄に表示します。</p><p>サーバーに保存された公開記録を表示しています。公開URLから実際の投稿をご覧いただけます。</p></div>
    {summary.entries.length===0&&<p className="p-8 bg-white rounded-xl">この日の投稿予定はありません。</p>}
    {summary.entries.map(p=><article key={p.requestId} className="bg-white border rounded-2xl p-5 grid md:grid-cols-[260px_1fr] gap-6">
     <img className="w-full max-h-[460px] object-contain rounded-xl bg-stone-100" src={p.imageUrl} alt={p.altText}/>
@@ -38,7 +39,7 @@ export default function InstagramTodayPage(){
     </div>
    </article>)}
   </>}
-  {summary?.mode==='ended'&&<div className="p-6 bg-stone-100 rounded-2xl"><strong>今回の定時投稿期間は終了しました</strong><p>11月30日までの予定でした。次の期間の投稿予定は未設定です。</p></div>}
+  {summary?.mode==='ended'&&<div className="p-6 bg-stone-100 rounded-2xl"><strong>今回の定時投稿期間は終了しました</strong><p>{endDate && `${endDate}までの予定でした。`}次の期間の投稿予定は未設定です。</p></div>}
   {summary?.mode==='legacy'&&posts.map(p=><article key={p.id} className="bg-white border rounded-2xl p-5 grid md:grid-cols-[260px_1fr] gap-6">
    <div>{p.published_media_key?.endsWith('.mp4')||jobs[p.id]?.video_url?<video className="w-full max-h-[460px] rounded-xl" src={p.published_media_key?.endsWith('.mp4')?`/media/${p.published_media_key}`:jobs[p.id]?.video_url||''} controls preload="metadata"/>:p.image_r2_key?<img className="w-full max-h-[460px] object-contain rounded-xl" src={`/media/${p.published_media_key||p.image_r2_key}`} alt="投稿用の写真"/>:<p>画像の準備状況を確認してください。</p>}</div>
    <div className="space-y-4"><span>{p.instagram_posted?'公開済み':labels[p.publish_state]||p.publish_state}</span><p className="whitespace-pre-wrap">{p.instagram_text}</p><div className="flex gap-4"><Link to={`/posts/${p.id}`} className="underline">内容を確認・編集</Link>{p.ig_permalink&&<a href={p.ig_permalink} target="_blank" rel="noreferrer" className="underline">Instagramで見る</a>}</div></div>
