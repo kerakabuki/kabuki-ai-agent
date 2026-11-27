@@ -5,7 +5,7 @@
 // 結果は依頼の中で「このファイルに書く」と指定し、そのファイルを Claude が読む（agentapi は本文を返さないため）。
 //
 // 使い方（リポジトリルートから・Antigravity アプリを起動しておく）:
-//   node scripts/antigravity/agent.mjs new --task <依頼書.md> [--model flash|pro|flash_lite] [--title 題]
+//   node scripts/antigravity/agent.mjs new --task <依頼書.md> [--model gemini-4-neon-medium|gemini-4-neon-high|flash|pro] [--title 題]
 //   node scripts/antigravity/agent.mjs send --to <会話ID> --task <依頼書.md>
 //   node scripts/antigravity/agent.mjs status <会話ID>
 //
@@ -57,7 +57,7 @@ const o = parse(process.argv.slice(2));
 const mode = o._[0];
 const text = () => { if (!o.task) throw new Error('--task <依頼書.md> が必要です'); return fs.readFileSync(path.resolve(o.task), 'utf8'); };
 try {
-  if (mode === 'new') agentapi(['new-conversation', `--model=${o.model || 'flash'}`, ...(o.title ? [`--title=${o.title}`] : []), text()]);
+  if (mode === 'new') agentapi(['new-conversation', `--model=${o.model || 'gemini-4-neon-medium'}`, ...(o.title ? [`--title=${o.title}`] : []), text()]);
   else if (mode === 'send') agentapi(['send-message', ...(o.title ? [`--title=${o.title}`] : []), o.to, text()]);
   else if (mode === 'status') agentapi(['get-conversation-metadata', o._[1]]);
   else { console.error('USAGE: new --task <md> [--model] [--title] | send --to <id> --task <md> | status <id>'); process.exitCode = 2; }
