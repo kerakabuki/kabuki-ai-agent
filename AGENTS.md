@@ -18,7 +18,28 @@
 
 - ユーザーは作りたいものと条件だけを伝える。Claude Code が司令塔として企画・原稿・最終レビューを持ち、各エージェントに依頼書を渡す。
 - 依頼を受けたエージェントは、**依頼書に書かれた範囲だけ**を行う。目的や必須条件を変える判断が要るときは、勝手に決めずに結果にそう書いて戻す。
-- 結果は依頼書で指定されたファイルに書く（Antigravity・Gemini は `.gemini-handoff/`、Codex は `.codex-handoff/runs/` の記録に従う）。
+- 結果は依頼書で指定されたファイルに書く（Antigravity・Gemini は `.gemini-handoff/`、Codex は `.codex-handoff/runs/`、Claude は `.claude-handoff/runs/` の記録に従う）。
+
+## 司令塔を引き継ぐとき（Codex・Antigravity が司令塔になる場合）
+
+ユーザーが「司令塔として動いて」と頼んだときは、Claude の代わりに次の役を持つ。ふだんの司令塔は Claude で、Claude の使用枠が足りないときなどの交代を想定している。
+
+- **役目:** 企画・依頼書づくり・結果の確かめ・ユーザーへの報告。実装や量の多い作業は下の担当へ回し、結果は必ず実物（差分・画像・秒数・ビルド結果）で確かめてから報告する。
+- **依頼の入口（どれもリポジトリのルートから）:**
+
+  | 頼む相手 | 何を | コマンド |
+  |---|---|---|
+  | Claude | 原稿・日本語の長文・最終レビュー | `node scripts/claude/ask.mjs run --task <依頼書.md> [--model opus\|sonnet] [--edit]`（既定は読み取りだけ。結果は `.claude-handoff/runs/<日時>/result.md`） |
+  | Codex | 実装・加工・検証 | `node "C:/Users/NAO/.claude/skills/codex-build/scripts/run.mjs" run --project "C:/Users/NAO/github/kabuki-ai-agent" --task <依頼書.md> [--kind analysis]` |
+  | Gemini API | 映像・資料の分析 | `node scripts/gemini/ask.mjs run --task <依頼書.md> --media <ファイル> [--json]` |
+  | Antigravity | 量の多い読み込み・調べもの | `node scripts/antigravity/agent.mjs new --task <依頼書.md>`（入出力は `.gemini-handoff/antigravity/` に置く） |
+
+  自分自身に頼まない（Codex が司令塔なら Codex へは頼まず自分でやる。Antigravity も同じ）。
+- **依頼書:** 目的・確定事項・読む場所・成果物と完成条件・変えてよい範囲・検証・未決事項を書く。ひな形は `C:\Users\NAO\.claude\skills\codex-build\assets\handoff-template.md`。
+- **手順書:** 定型作業の手順は `.claude/commands/`（`deploy.md`・`note-article.md`・`import-column.md`）にある。Claude のスラッシュコマンド用だが、中身はそのまま手順として読める。
+- **ユーザーの好み・進行中の案件:** Claude の記録 `C:\Users\NAO\.claude\projects\C--Users-NAO-github-kabuki-ai-agent\memory\`（`MEMORY.md` が目次）を必要に応じて読む。書き換えはしない。
+- **残りの確認:** 重い作業の前に `node scripts/ai-models/plans.mjs` で各AIの枠の残りを見る。
+- **push・デプロイ:** 司令塔を引き継いでいても、本番に出す操作（main への push、`npm run deploy`、本番データへの書き込み）は、ユーザーがその場で頼んだときだけ行い、前に必ず Claude（`scripts/claude/ask.mjs`）にレビューさせる。
 
 ## やってはいけないこと
 

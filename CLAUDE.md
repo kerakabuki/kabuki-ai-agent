@@ -68,6 +68,7 @@ This repo is **not only the Workers** — it also holds the operator's kabuki re
 - Codex への委譲は依頼の種類でモデルを分ける: 実装・加工は既定（GPT-6.2-Sol・medium）、分析・解析・計画の立案は `run.mjs ... --kind analysis`（GPT-6.2-Astra・high）
 - 新しいモデルの知らせ: セッション開始時に `scripts/ai-models/check.mjs --hook`（`.claude/settings.local.json` の SessionStart）が Codex・Gemini API・Antigravity のモデル一覧を前回（`scripts/ai-models/known.json`）と比べ、増えていれば Claude に伝える。Claude はユーザーに再設定を提案し、決まったら `--accept` で記録する
 - 契約と利用枠の残り: `node scripts/ai-models/plans.mjs`（Codex・ElevenLabs・Antigravity を読む）。Claude Code は get_usage、Gemini API の料金は Google AI Studio の課金画面（前払いの従量課金）
+- 司令塔の交代: Codex・Antigravity が司令塔になるときの決まりは `AGENTS.md` の「司令塔を引き継ぐとき」。そのとき Claude に頼む入口は `node scripts/claude/ask.mjs run --task <依頼書.md>`（`claude -p`。既定は読み取りだけ、結果は `.claude-handoff/runs/`）
 - 他のエージェント向けの要点は `AGENTS.md`（Codex は自動で読む）。CLAUDE.md の禁止事項・リポジトリ構成を変えたら AGENTS.md もそろえる
 - Antigravity の会話にはワークスペースが付かないため、ファイルの読み書きはアプリ側の許可が要る。`.gemini-handoff/antigravity/` と `AGENTS.md` は Antigravity の Settings → Tool permissions で Allow 済み（2026-11-27）なので、依頼の入出力はこのフォルダに置く
 - 流れの基本形: Gemini が時刻つきの候補を返す → Codex がその時刻で切り出す・加工する（静止画は `scripts/video/extract_frames.mjs`）→ Claude が実物（画像・差分）を見て判断し、ユーザーに報告する。Gemini の時刻や説明は鵜呑みにせず、Claude が画で確かめる
