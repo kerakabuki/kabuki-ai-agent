@@ -3311,7 +3311,8 @@ ${phraseReport}
               // 締め済み年度（closedFYs）の明細・繰越は変更を拒否する
               const prevClosed = (prev.closedFYs && typeof prev.closedFYs === "object") ? prev.closedFYs : {};
               // 締めは「既存 ∪ 送信分」。解除は unlockFY で明示されたときだけ（古い画面からの保存で黙って外れないように）
-              const nextClosed = Object.assign({}, prevClosed, closedFYs || {});
+              const nextClosed = Object.assign({}, prevClosed);
+              for (const [k, v] of Object.entries(closedFYs || {})) { if (v) nextClosed[k] = v; }
               const unlockFY = String(body.unlockFY || "");
               if (unlockFY) delete nextClosed[unlockFY];
               const stillClosed = Object.keys(prevClosed).filter(k => nextClosed[k]);
@@ -3327,7 +3328,7 @@ ${phraseReport}
                 const isLocked = (e) => !!nextClosed[String(fyOf(e))];
                 const lockedCount = rawExpenses.filter(isLocked).length;
                 const room = MAX_EXPENSES - lockedCount;
-                if (room < 0) {
+                if (room <= 0) {
                   return accountingJSON({ error: `明細が上限（${MAX_EXPENSES}件）を超えています。締め済み年度を解除して古い明細を整理してください` }, 400);
                 }
                 let dropLeft = rawExpenses.length - MAX_EXPENSES;
