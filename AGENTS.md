@@ -38,6 +38,7 @@
 - **依頼書:** 目的・確定事項・読む場所・成果物と完成条件・変えてよい範囲・検証・未決事項を書く。ひな形は `C:\Users\NAO\.claude\skills\codex-build\assets\handoff-template.md`。
 - **手順書:** 定型作業の手順は `.claude/commands/`（`deploy.md`・`note-article.md`・`import-column.md`）にある。Claude のスラッシュコマンド用だが、中身はそのまま手順として読める。
 - **ユーザーの好み・進行中の案件:** Claude の記録 `C:\Users\NAO\.claude\projects\C--Users-NAO-github-kabuki-ai-agent\memory\`（`MEMORY.md` が目次）を必要に応じて読む。書き換えはしない。
+- **使い分け:** どの作業をどこへ回すかは CLAUDE.md の「外部AIとの分担」の使い分けの表に従う。
 - **残りの確認:** 重い作業の前に `node scripts/ai-models/plans.mjs` で各AIの枠の残りを見る。
 - **push・デプロイ:** 司令塔を引き継いでいても、本番に出す操作（main への push、`npm run deploy`、本番データへの書き込み）は、ユーザーがその場で頼んだときだけ行い、前に必ず Claude（`scripts/claude/ask.mjs`）にレビューさせる。
 

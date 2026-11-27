@@ -64,6 +64,19 @@ This repo is **not only the Workers** — it also holds the operator's kabuki re
 | Gemini | 映像・音声・PDF・画像の分析（場面探し・内容確認） | `node scripts/gemini/ask.mjs run --task <依頼書.md> --media <ファイル or YouTube URL> [--json]` | `.gemini-handoff/runs/<日時>/result.md`・`result.json` |
 | Antigravity | Gemini にファイル・ブラウザ操作まで含めて任せたいとき | `node scripts/antigravity/agent.mjs new --task <依頼書.md> [--model gemini-4-neon-high]`（既定は Gemini 4 Neon Medium。アプリ起動中のみ。`send` / `status` もある） | 依頼書で書き出し先のファイルを指定し、それを読む（agentapi は本文を返さない） |
 
+**使い分け（枠を効率よく使う）:** いちばん枠が少ないのは Claude Code（Pro）、いちばん余るのは Antigravity（Google AI Pro）。Claude は考える・決める・確かめるに絞り、量の多い作業はほかへ回す。
+
+| 作業 | 回す先 |
+|---|---|
+| 企画・原稿・最終レビュー・ユーザーとのやりとり | Claude（司令塔） |
+| 仕様の決まった実装・動画の組み立て・加工 | Codex（Sol・medium＝既定） |
+| コードの分析・解析・計画の立案 | Codex（`--kind analysis`＝Astra・high） |
+| 長い映像を見る・大量の資料を読む・調べもの | Antigravity（Neon）。1回きりの短い分析なら Gemini API |
+| push 前レビューのやり直し・別の見方 | Antigravity の中の Claude・GPT（Claude Code の枠を使わない） |
+| スクリプトの中の小さな自動処理 | Gemini API（1回数円以下） |
+| ナレーション | ElevenLabs（原稿を確定してから1回で録る。月の文字数に上限） |
+
+- Claude 側の節約: 大きなファイルや映像は Claude が直接読まず、担当に読ませて結果だけ確かめる。作業ごとに新しい会話で始める（長い会話ほど1回の返事で枠を多く使う）。重い作業の前に `plans.mjs` で残りを見て、足りなければ回す先を変える
 - Gemini の依頼書は `.gemini-handoff/requests/` に置く。出力形式（JSON の形）を依頼書で指定し、`--json` で `result.json` に取り出す。ローカルファイルは Files API に一時アップロードし、回答後に削除される。既定モデルは `gemini-pro-latest`（`ask.mjs models` で一覧）。キーは既存の `.gemini_api_key`
 - Codex への委譲は依頼の種類でモデルを分ける: 実装・加工は既定（GPT-6.2-Sol・medium）、分析・解析・計画の立案は `run.mjs ... --kind analysis`（GPT-6.2-Astra・high）
 - 新しいモデルの知らせ: セッション開始時に `scripts/ai-models/check.mjs --hook`（`.claude/settings.local.json` の SessionStart）が Codex・Gemini API・Antigravity のモデル一覧を前回（`scripts/ai-models/known.json`）と比べ、増えていれば Claude に伝える。Claude はユーザーに再設定を提案し、決まったら `--accept` で記録する
