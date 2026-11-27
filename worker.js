@@ -26,6 +26,7 @@
 // =========================================================
 import { handleQuizMessage, loadQuizState, clearQuizCache } from "./src/quiz.js";
 import { handleReception } from "./src/reception.js";
+import { handleSurvey } from "./src/survey.js";
 
 import { mainMenuFlex, mainMenuMessage } from "./src/flex_menu.js";
 
@@ -123,6 +124,8 @@ import { quizPageHTML } from "./src/quiz_page.js";
 import { kawarabanPageHTML } from "./src/kawaraban_page.js";
 import { nftGuidePageHTML } from "./src/nft_guide_page.js";
 import { storyPageHTML } from "./src/story_page.js";
+import { KERA_OGP_PATH } from "./src/kera_brand.js";
+import { keraOgpJPEG } from "./src/kera_ogp_image.js";
 import { keraOfficialPageHTML } from "./src/kera_official_page.js";
 import { pressPageHTML } from "./src/press_page.js";
 import { keraGuidePageHTML } from "./src/kera_guide_page.js";
@@ -154,7 +157,9 @@ import { groupNotesPageHTML } from "./src/group_notes_page.js";
 import { groupScriptListPageHTML, groupScriptViewerPageHTML, groupScriptTextViewerHTML, groupScriptPdfViewerHTML } from "./src/group_script_page.js";
 import { groupTrainingPageHTML } from "./src/group_training_page.js";
 import { groupSchedulePageHTML } from "./src/group_schedule_page.js";
-import { groupAccountingPageHTML } from "./src/group_accounting_page.js";
+import { groupAccountingPageHTML, groupAccountingAccessPageHTML } from "./src/group_accounting_page.js";
+import { readEvidenceFile } from "./src/accounting_evidence.js";
+import { requireAccountingAccess, accountingResponse, accountingJSON, accountingWriteAllowed, isAccountingEvidenceFilename, validAccountingEvidenceReferences } from "./src/accounting_access.js";
 import { groupOnboardingPageHTML } from "./src/group_onboarding_page.js";
 import { groupDeleteRequestPageHTML } from "./src/group_delete_request_page.js";
 import { sharedScriptsPageHTML } from "./src/shared_scripts_page.js";
@@ -179,6 +184,9 @@ import { jikabukiHelpPageHTML } from "./src/jikabuki_help_page.js";
    Utils
 ========================================================= */
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+// 気良歌舞伎の共有画像（OGP）。base64 は起動時に一度だけデコードして使い回す
+const KERA_OGP_BYTES = Uint8Array.from(atob(keraOgpJPEG), c => c.charCodeAt(0));
 
 /** CSV値のエスケープ（ダブルクォート対応） */
 function csvEscape(val) {
@@ -221,16 +229,16 @@ const DEFAULT_GROUPS = {
     group_id: "kera",
     name: "気良歌舞伎",
     name_kana: "けらかぶき",
-    tagline: "素人歌舞伎の真髄がここにある",
+    tagline: "山里に灯る、もうひとつの舞台。",
     prefecture: "岐阜県",
-    description: "岐阜県郡上市明宝気良。世帯数は130世帯ぐらいの小さな集落。\n2005年、地元の若者たちが集まり、地域の活性化のため、17年ぶりに歌舞伎を復活。\nそれから20年が過ぎ、メンバーは20代から50代まで約40名に。今では地域の毎年の恒例行事として皆に楽しみにしていただけるようになった。\n\n我々は歌舞伎保存会ではない。ただ「気良の人たちに元気になってもらいたい」そして「自分たちも楽しもう」──その思いだけでやってきた。",
+    description: "岐阜県郡上市明宝気良。世帯数は130世帯ぐらいの小さな集落。\n2005年、地元の若者たちが集まり、地域の活性化のため、17年ぶりに歌舞伎を復活。\nそれから20年が過ぎ、メンバーは20代から50代まで約40名に。今では地域の毎年の恒例行事として皆に楽しみにしていただけるようになった。",
     venue: {
       name: "気良座",
       address: "岐阜県郡上市明宝気良（旧明方小学校講堂）"
     },
     contact: {
       instagram: "https://www.instagram.com/kerakabuki_official/",
-      website: "https://kerakabuki.jimdofree.com/",
+      website: "https://kabukiplus.com/kerakabuki",
       youtube: "https://www.youtube.com/@kerakabuki",
       x: "https://x.com/KeraKabuki",
       facebook: "https://www.facebook.com/kerakabuki/",
@@ -238,7 +246,7 @@ const DEFAULT_GROUPS = {
     featured_video: "https://www.youtube.com/watch?v=E1FPzo1PORo",
     theater_id: "kera_za",
     faq: [
-      { key: "about_what", category: "{団体名}について", q: "{団体名}とは？（どんな地歌舞伎？）", a: "岐阜県郡上市明宝（めいほう）気良（けら）地区に伝わる地歌舞伎です。地域の人たちが受け継いできた芝居文化として、昔ながらの歌舞伎の心を大切にしながら上演を続けています。正式名称は「気良歌舞伎一座（気良歌舞伎保存会）」です。" },
+      { key: "about_what", category: "{団体名}について", q: "{団体名}とは？（どんな地歌舞伎？）", a: "岐阜県郡上市明宝（めいほう）気良（けら）地区に伝わる地歌舞伎です。地域の人たちが受け継いできた芝居文化として、昔ながらの歌舞伎の心を大切にしながら上演を続けています。" },
       { key: "about_history", category: "{団体名}について", q: "歴史・歩み（いつ頃から／特徴）", a: "江戸時代末期から明治時代にかけて成立したと考えられています。長い歴史の中で一度途絶えましたが、2005年（平成17年）に復活。以来、地域に根ざした活動を続けながら、時代に合わせた新しい取り組みも行っています。" },
       { key: "about_join", category: "{団体名}について", q: "参加したい／手伝いたい（演者・裏方・ボランティア）", a: "新しい仲間を随時募集しています。経験は問いません。稽古に参加できる方であれば歓迎します。" },
       { key: "about_support", category: "{団体名}について", q: "応援したい（ご祝儀・おひねり・寄付・スポンサー）", a: "観覧時のご祝儀・おひねりや公式SNSのフォローも大切な応援の形です。無理のない範囲でお楽しみください。" },
@@ -372,6 +380,8 @@ export default {
     let path = url.pathname;
     const receptionResponse = await handleReception(request, env);
     if (receptionResponse) return receptionResponse;
+    const surveyResponse = await handleSurvey(request, env);
+    if (surveyResponse) return surveyResponse;
     // originを保持（メニューの稽古モードリンク生成用）
     env._origin = url.origin;
 
@@ -380,6 +390,44 @@ export default {
     if (path.startsWith("/en/") || path === "/en") {
       lang = "en";
       path = path.replace(/^\/en/, "") || "/";
+    }
+
+    const HTML_HEADERS = {
+      "Content-Type": "text/html; charset=utf-8",
+      "X-Frame-Options": "DENY",
+      "X-Content-Type-Options": "nosniff",
+      "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+      "Referrer-Policy": "strict-origin-when-cross-origin",
+      "X-Robots-Tag": "index, follow",
+      "Content-Language": lang,
+    };
+
+    // 会計の全操作をルーティング前に保護する（/en/別名も同じ条件）。
+    const accountingPageRoute = path.match(/^\/groups\/([a-zA-Z0-9_-]+)\/accounting$/);
+    const accountingApiRoute = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/expenses(?:\/(.*))?$/);
+    if (accountingPageRoute || accountingApiRoute) {
+      const gid = (accountingPageRoute || accountingApiRoute)[1];
+      const access = await requireAccountingAccess(request, env, gid);
+      if (!access.ok) {
+        if (accountingPageRoute) return accountingResponse(new Response(request.method === "HEAD" ? null : groupAccountingAccessPageHTML(access.status), { status: access.status, headers: HTML_HEADERS }));
+        return accountingJSON({ error: access.error }, access.status);
+      }
+      const action = accountingApiRoute && accountingApiRoute[2];
+      const methods = accountingPageRoute || action === "export" ? ["GET", "HEAD"] : !action ? ["GET", "HEAD", "POST"] : ["POST"];
+      if (action && !["scan", "upload", "export"].includes(action)) return accountingJSON({ error: "Not Found" }, 404);
+      if (!methods.includes(request.method)) return accountingResponse(new Response(null, { status: 405, headers: { Allow: methods.join(", ") } }));
+      if (request.method === "POST" && !accountingWriteAllowed(request)) return accountingJSON({ error: "この画面から操作してください。" }, 403);
+    }
+
+    /* ─── 気良歌舞伎の共有画像（og:image / twitter:image） ─── */
+    if (path === KERA_OGP_PATH && (request.method === "GET" || request.method === "HEAD")) {
+      return new Response(request.method === "HEAD" ? null : KERA_OGP_BYTES, {
+        headers: {
+          "Content-Type": "image/jpeg",
+          "Cache-Control": "public, max-age=31536000, immutable",
+          "Content-Length": String(KERA_OGP_BYTES.byteLength),
+        },
+      });
     }
 
     /* =====================================================
@@ -457,7 +505,7 @@ export default {
     if (path === "/sw.js") {
       const swCode = `
 // KABUKI PLUS+ Service Worker
-const CACHE_VERSION = 'kp-v4';
+const CACHE_VERSION = 'kp-v5-accounting-private';
 const STATIC_CACHE = CACHE_VERSION + '-static';
 const RUNTIME_CACHE = CACHE_VERSION + '-runtime';
 
@@ -496,11 +544,14 @@ self.addEventListener('fetch', (event) => {
   // 同一オリジンのみ処理
   if (url.origin !== self.location.origin) return;
 
-  // API・認証はネットワーク直通（キャッシュしない）
-  if (url.pathname.startsWith('/kerakabuki/reception/') ||
-      url.pathname.startsWith('/api/') ||
-      url.pathname.startsWith('/auth/') ||
-      url.pathname.startsWith('/line')) {
+  // API・会計・認証は英語別名も含めネットワーク直通。
+  const route = url.pathname.startsWith('/en/') ? url.pathname.slice(3) : url.pathname;
+  if (route.startsWith('/kerakabuki/reception/') ||
+      route.startsWith('/kerakabuki/survey/') ||
+      route.startsWith('/api/') ||
+      (route.startsWith('/groups/') && route.endsWith('/accounting')) ||
+      route.startsWith('/auth/') ||
+      route.startsWith('/line')) {
     return;
   }
 
@@ -510,7 +561,7 @@ self.addEventListener('fetch', (event) => {
       caches.match(request).then(cached => {
         if (cached) return cached;
         return fetch(request).then(response => {
-          if (response.ok) {
+          if (response.ok && !/no-store|private/i.test(response.headers.get('Cache-Control') || '')) {
             const clone = response.clone();
             caches.open(RUNTIME_CACHE).then(cache => cache.put(request, clone));
           }
@@ -526,7 +577,7 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(request)
         .then(response => {
-          if (response.ok) {
+          if (response.ok && !/no-store|private/i.test(response.headers.get('Cache-Control') || '')) {
             const clone = response.clone();
             caches.open(RUNTIME_CACHE).then(cache => cache.put(request, clone));
           }
@@ -662,6 +713,14 @@ function offlinePage() {
         { loc: "/jikabuki/info/events",     priority: "0.7",  changefreq: "weekly" },
         { loc: "/jikabuki/info/groups",     priority: "0.8",  changefreq: "monthly" },
         { loc: "/jikabuki/help",            priority: "0.5",  changefreq: "monthly" },
+        // 気良歌舞伎 公式サイト（/kerakabuki/pc ははがきQRのスキャン数を数えているので入れない。/kerakabuki/annai・受付も入れない）
+        { loc: "/kerakabuki",               priority: "0.9",  changefreq: "weekly" },
+        { loc: "/kerakabuki/guide",         priority: "0.8",  changefreq: "monthly" },
+        { loc: "/kerakabuki/press",         priority: "0.7",  changefreq: "monthly" },
+        { loc: "/kerakabuki/archive",       priority: "0.7",  changefreq: "monthly" },
+        { loc: "/kerakabuki/story",         priority: "0.7",  changefreq: "monthly" },
+        { loc: "/kerakabuki/kaisetsu",      priority: "0.6",  changefreq: "yearly" },
+        { loc: "/kerakabuki/nft",           priority: "0.5",  changefreq: "monthly" },
       ];
       // 演目個別ページを動的に追加
       try {
@@ -828,6 +887,22 @@ ${glossaryI18nPairs.map(g => `  <url>
           "- [全国の地歌舞伎団体](https://kabukiplus.com/jikabuki/info/groups)",
           "- [ヘルプ](https://kabukiplus.com/jikabuki/help)",
           "",
+          "## 気良歌舞伎（公式サイト）",
+          "",
+          "URL: https://kabukiplus.com/kerakabuki",
+          "",
+          "岐阜県郡上市明宝気良の地歌舞伎。1988年を最後に途絶え、2005年に地元の若者が復活させた。",
+          "定期公演は毎年9月第4土曜日（白山神社祭礼）。会場は気良座（1937年築の旧明方小学校の木造講堂。郡上市指定重要文化財）。入場無料・予約不要。",
+          "KABUKI PLUS+ / JIKABUKI PLUS+ は気良歌舞伎がプロデュースしています（Produced by KERAKABUKI）。",
+          "",
+          "### ページ一覧",
+          "",
+          "- [気良歌舞伎 公式サイト](https://kabukiplus.com/kerakabuki)",
+          "- [観劇ガイド](https://kabukiplus.com/kerakabuki/guide)",
+          "- [PRESS](https://kabukiplus.com/kerakabuki/press)",
+          "- [公演アーカイブ](https://kabukiplus.com/kerakabuki/archive)",
+          "- [復活ストーリー](https://kabukiplus.com/kerakabuki/story)",
+          "",
           "## AIアシスタント",
           "",
           "けらのすけ — 歌舞伎の「友達」AI。LINE・Webで歌舞伎の質問に回答します。",
@@ -850,16 +925,6 @@ ${glossaryI18nPairs.map(g => `  <url>
     /* =====================================================
        0.3) WEBページ（フルページ）
     ===================================================== */
-    const HTML_HEADERS = {
-      "Content-Type": "text/html; charset=utf-8",
-      "X-Frame-Options": "DENY",
-      "X-Content-Type-Options": "nosniff",
-      "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
-      "Referrer-Policy": "strict-origin-when-cross-origin",
-      "X-Robots-Tag": "index, follow",
-      "Content-Language": lang,
-    };
-
     if (path === "/") {
       return new Response(topPageHTML({ lang }), { headers: HTML_HEADERS });
     }
@@ -1075,7 +1140,7 @@ ${glossaryI18nPairs.map(g => `  <url>
     if (path === "/jikabuki/gate/kera/story") return new Response(null, { status: 301, headers: { "Location": "/kerakabuki/story" } });
 
     /* ─── /kerakabuki/* 気良歌舞伎専用サブページ ─── */
-    if (path === "/kerakabuki/story" || path.startsWith("/kerakabuki/story/") || path.startsWith("/jikabuki/gate/kera/story/")) return new Response(storyPageHTML(), { headers: HTML_HEADERS });
+    if (path === "/kerakabuki/story" || path.startsWith("/kerakabuki/story/") || path.startsWith("/jikabuki/gate/kera/story/")) return new Response(storyPageHTML(path), { headers: HTML_HEADERS });
     if (path === "/kerakabuki/kawaraban" || path === "/jikabuki/gate/kera/kawaraban") return new Response(null, { status: 301, headers: { "Location": "/kerakabuki/press#kawaraban" } });
     if (path === "/kerakabuki/press" || path === "/jikabuki/gate/kera/press") return new Response(pressPageHTML(), { headers: HTML_HEADERS });
     if (path === "/kerakabuki/guide" || path === "/jikabuki/gate/kera/guide") return new Response(keraGuidePageHTML(), { headers: HTML_HEADERS });
@@ -1414,7 +1479,7 @@ ${glossaryI18nPairs.map(g => `  <url>
     const groupAccountingMatch = path.match(/^\/groups\/([a-zA-Z0-9_-]+)\/accounting$/);
     if (groupAccountingMatch) {
       const group = await getGroup(env, groupAccountingMatch[1]);
-      return new Response(groupAccountingPageHTML(group), { headers: { ...HTML_HEADERS, "Cache-Control": "no-cache, no-store, must-revalidate", "Pragma": "no-cache" } });
+      return accountingResponse(new Response(request.method === "HEAD" ? null : groupAccountingPageHTML(group), { headers: HTML_HEADERS }));
     }
 
     /* /groups/:groupId/invite/:token → 招待リンクランディングページ */
@@ -1957,21 +2022,25 @@ ${glossaryI18nPairs.map(g => `  <url>
     // ★ 団体削除申請を承認（マスターのみ → 団体削除 + GATE除外 + 申請削除）
     if (path === "/api/groups/requests/delete/approve" && request.method === "POST") {
       const session = await getSession(request, env);
-      if (!session) return corsResponse(request, jsonResponse({ error: "ログインが必要です" }, 401));
+      if (!session) return accountingJSON({ error: "ログインが必要です" }, 401);
       const isMaster = await checkIsMaster(env, session.userId);
-      if (!isMaster) return corsResponse(request, jsonResponse({ error: "マスター権限が必要です" }, 403));
+      if (!isMaster) return accountingJSON({ error: "マスター権限が必要です" }, 403);
+      if (!accountingWriteAllowed(request)) return accountingJSON({ error: "この画面から操作してください。" }, 403);
       try {
         const body = await request.json();
-        if (!body.requestId) return corsResponse(request, jsonResponse({ error: "requestId is required" }, 400));
+        if (!body.requestId) return accountingJSON({ error: "requestId is required" }, 400);
         const raw = await env.CHAT_HISTORY.get(`group_delete_request:${body.requestId}`);
-        if (!raw) return corsResponse(request, jsonResponse({ error: "申請が見つかりません" }, 404));
+        if (!raw) return accountingJSON({ error: "申請が見つかりません" }, 404);
         const reqData = JSON.parse(raw);
+        // 会計データも削除するため、masterの既存条件に対象団体への所属を加える。
+        const access = await requireAccountingAccess(request, env, reqData.groupId);
+        if (!access.ok) return accountingJSON({ error: access.error }, access.status);
         const result = await cleanupGroup(env, reqData.groupId);
         await removeFromGateRegistry(env, reqData.groupId);
         await env.CHAT_HISTORY.delete(`group_delete_request:${body.requestId}`);
-        return corsResponse(request, jsonResponse({ ok: true, groupId: reqData.groupId, cleanup: result }));
+        return accountingJSON({ ok: true, groupId: reqData.groupId, cleanup: result });
       } catch (e) {
-        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+        return accountingJSON({ error: String(e) }, 500);
       }
     }
 
@@ -2164,15 +2233,18 @@ ${glossaryI18nPairs.map(g => `  <url>
     if (groupDeleteMatch && request.method === "DELETE") {
       const gid = groupDeleteMatch[1];
       const session = await getSession(request, env);
-      if (!session) return corsResponse(request, jsonResponse({ error: "ログインが必要です" }, 401));
+      if (!session) return accountingJSON({ error: "ログインが必要です" }, 401);
       const isMaster = await checkIsMaster(env, session.userId);
-      if (!isMaster) return corsResponse(request, jsonResponse({ error: "マスター権限が必要です" }, 403));
+      if (!isMaster) return accountingJSON({ error: "マスター権限が必要です" }, 403);
+      if (!accountingWriteAllowed(request)) return accountingJSON({ error: "この画面から操作してください。" }, 403);
+      const access = await requireAccountingAccess(request, env, gid);
+      if (!access.ok) return accountingJSON({ error: access.error }, access.status);
       try {
         const result = await cleanupGroup(env, gid);
         await removeFromGateRegistry(env, gid);
-        return corsResponse(request, jsonResponse(result));
+        return accountingJSON(result);
       } catch (e) {
-        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+        return accountingJSON({ error: String(e) }, 500);
       }
     }
 
@@ -3061,6 +3133,7 @@ ${phraseReport}
         const formData = await request.formData();
         const file = formData.get("file");
         const imgType = (formData.get("type") || "misc").replace(/[^a-z0-9_-]/g, "");
+        if (isAccountingEvidenceFilename(imgType + "-")) return accountingJSON({ error: "証憑は会計画面から追加してください。" }, 400);
         if (!file || !file.name) {
           return corsResponse(request, jsonResponse({ error: "No file provided" }, 400));
         }
@@ -3087,46 +3160,52 @@ ${phraseReport}
     }
 
     const imageServeMatch = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/images\/([a-zA-Z0-9_.\-]+)$/);
-    if (imageServeMatch && request.method === "GET") {
+    if (imageServeMatch) {
       const gid = imageServeMatch[1];
       const filename = imageServeMatch[2];
+      const privateEvidence = isAccountingEvidenceFilename(filename);
+      if (privateEvidence) {
+        const access = await requireAccountingAccess(request, env, gid, "member");
+        if (!access.ok) return accountingJSON({ error: access.error }, access.status);
+      }
+      if (!["GET", "HEAD"].includes(request.method)) {
+        const response = new Response(null, { status: 405, headers: { Allow: "GET, HEAD" } });
+        return privateEvidence ? accountingResponse(response) : response;
+      }
       const r2Key = `images/${gid}/${filename}`;
       const obj = await env.CONTENT_BUCKET.get(r2Key);
-      if (!obj) return new Response("Not Found", { status: 404 });
+      if (!obj) {
+        const response = new Response(request.method === "HEAD" ? null : "Not Found", { status: 404 });
+        return privateEvidence ? accountingResponse(response) : response;
+      }
       const ext = (filename.match(/\.([a-z0-9]+)$/i) || [])[1] || "jpg";
-      const ctMap = { jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp", gif: "image/gif" };
+      const ctMap = { jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp", gif: "image/gif", pdf: "application/pdf" };
       const ct = ctMap[ext.toLowerCase()] || "image/jpeg";
-      return new Response(obj.body, {
+      const response = new Response(request.method === "HEAD" ? null : obj.body, {
         headers: {
           "Content-Type": ct,
+          "X-Content-Type-Options": "nosniff",
+          ...(ct === "application/pdf" ? { "Content-Disposition": `inline; filename="${filename}"` } : {}),
           "Cache-Control": "public, max-age=31536000",
           "Access-Control-Allow-Origin": "*"
         }
       });
+      return privateEvidence ? accountingResponse(response) : response;
     }
 
     // ★ 経費管理 API — レシートスキャン
     const expenseScanMatch = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/expenses\/scan$/);
     if (expenseScanMatch && request.method === "POST") {
       const gid = expenseScanMatch[1];
-      // 認証: ログイン済みならmanagerロールを確認（メンバー未登録なら許可）
-      const scanSession = await getSession(request, env);
-      if (scanSession) {
-        const scanMembers = await loadGroupMembers(env, gid);
-        if (scanMembers.length > 0) {
-          const authCheck = await requireGroupRole(request, env, gid, "manager");
-          if (!authCheck.ok) return corsResponse(request, jsonResponse({ error: authCheck.error }, authCheck.status));
-        }
-      }
       try {
         // レート制限チェック
         const withinLimit = await checkGeminiRateLimit(env);
-        if (!withinLimit) return corsResponse(request, jsonResponse({ error: "AI利用が上限に達しました。1分後に再試行してください。" }, 429));
+        if (!withinLimit) return accountingJSON({ error: "AI利用が上限に達しました。1分後に再試行してください。" }, 429);
 
         const formData = await request.formData();
         const files = formData.getAll("file").filter(f => f && f.name);
         const docTypes = formData.getAll("docType"); // 各画像の書類タイプ（receipt / invoice）
-        if (!files.length) return corsResponse(request, jsonResponse({ error: "No file provided" }, 400));
+        if (!files.length) return accountingJSON({ error: "No file provided" }, 400);
         const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
         const extMap = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
 
@@ -3135,8 +3214,8 @@ ${phraseReport}
         const imageParts = [];
         for (let fi = 0; fi < files.length; fi++) {
           const file = files[fi];
-          if (file.size > 5 * 1024 * 1024) return corsResponse(request, jsonResponse({ error: "File too large (max 5MB)" }, 400));
-          if (!allowedTypes.includes(file.type)) return corsResponse(request, jsonResponse({ error: "Unsupported file type" }, 400));
+          if (file.size > 5 * 1024 * 1024) return accountingJSON({ error: "File too large (max 5MB)" }, 400);
+          if (!allowedTypes.includes(file.type)) return accountingJSON({ error: "Unsupported file type" }, 400);
           const ext = extMap[file.type] || "jpg";
           const filename = `receipt-${Date.now()}-${Math.random().toString(36).slice(2,5)}.${ext}`;
           const r2Key = `images/${gid}/${filename}`;
@@ -3170,47 +3249,33 @@ ${phraseReport}
           if (!doc.docType && docTypes[di]) doc.docType = docTypes[di];
         });
 
-        return corsResponse(request, jsonResponse({
+        return accountingJSON({
           receipt_urls: receiptUrls,
           receipt_url: receiptUrls[0] || null,
           ocr: documents[0],
           documents,
-        }));
+        });
       } catch (e) {
-        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+        return accountingJSON({ error: String(e) }, 500);
       }
     }
 
-    // ★ 経費管理 API — 証憑画像アップロード（OCRなし）
+    // ★ 経費管理 API — 証憑（画像・PDF）アップロード（OCRなし）
     const expenseUploadMatch = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/expenses\/upload$/);
     if (expenseUploadMatch && request.method === "POST") {
       const gid = expenseUploadMatch[1];
-      // 認証: ログイン済みならmanagerロールを確認（メンバー未登録なら許可）
-      const uploadSession = await getSession(request, env);
-      if (uploadSession) {
-        const uploadMembers = await loadGroupMembers(env, gid);
-        if (uploadMembers.length > 0) {
-          const authCheck = await requireGroupRole(request, env, gid, "manager");
-          if (!authCheck.ok) return corsResponse(request, jsonResponse({ error: authCheck.error }, authCheck.status));
-        }
-      }
       try {
         const formData = await request.formData();
         const file = formData.get("file");
-        if (!file || !file.name) return corsResponse(request, jsonResponse({ error: "No file provided" }, 400));
-        if (file.size > 5 * 1024 * 1024) return corsResponse(request, jsonResponse({ error: "File too large (max 5MB)" }, 400));
-        const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
-        if (!allowedTypes.includes(file.type)) return corsResponse(request, jsonResponse({ error: "Unsupported file type" }, 400));
-        const extMap = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
-        const ext = extMap[file.type] || "jpg";
-        const filename = `evidence-${Date.now()}-${Math.random().toString(36).slice(2,6)}.${ext}`;
+        const evidence = await readEvidenceFile(file);
+        if (evidence.error) return accountingJSON({ error: evidence.error }, 400);
+        const filename = `evidence-${crypto.randomUUID()}.${evidence.extension}`;
         const r2Key = `images/${gid}/${filename}`;
-        const arrayBuffer = await file.arrayBuffer();
-        await env.CONTENT_BUCKET.put(r2Key, arrayBuffer, { httpMetadata: { contentType: file.type } });
+        await env.CONTENT_BUCKET.put(r2Key, evidence.bytes, { httpMetadata: { contentType: evidence.contentType } });
         const receiptUrl = `/api/groups/${gid}/images/${filename}`;
-        return corsResponse(request, jsonResponse({ receipt_url: receiptUrl }));
+        return accountingJSON({ receipt_url: receiptUrl });
       } catch (e) {
-        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+        return accountingJSON({ error: String(e) }, 500);
       }
     }
 
@@ -3221,28 +3286,14 @@ ${phraseReport}
       const kvKey = `group_expenses:${gid}`;
       const defaultExpCats = ["衣装・かつら","小道具・大道具","会場費","交通費","食費・飲料","通信・印刷","その他"];
       const defaultIncCats = ["補助金・助成金","公演収入","会費","寄付・協賛金","物販収入","その他収入"];
-      // 認証: ログイン済みならmanagerロールを確認（メンバー未登録なら許可）
-      console.log(`[expenses] ${request.method} /api/groups/${gid}/expenses`);
-      const session = await getSession(request, env);
-      if (session) {
-        const expMembers = await loadGroupMembers(env, gid);
-        console.log(`[expenses] session=${session.userId}, members=${expMembers.length}`);
-        if (expMembers.length > 0) {
-          const authCheck = await requireGroupRole(request, env, gid, "manager");
-          if (!authCheck.ok) {
-            console.log(`[expenses] AUTH DENIED: ${authCheck.error}`);
-            return corsResponse(request, jsonResponse({ error: authCheck.error }, authCheck.status));
-          }
-        }
-      } else {
-        console.log("[expenses] no session (anonymous)");
-      }
+      if (request.method === "HEAD") return accountingResponse(new Response(null, { headers: { "Content-Type": "application/json; charset=utf-8" } }));
       if (request.method === "POST") {
         try {
           const body = await request.json();
           const MAX_EXPENSES = 500;
           const rawExpenses = body.expenses || [];
           let expenses = rawExpenses;
+          if (!validAccountingEvidenceReferences(rawExpenses, gid)) return accountingJSON({ error: "証憑には、この団体の会計画面で追加した画像・PDFを指定してください。" }, 400);
           if (expenses.length > MAX_EXPENSES) expenses = expenses.slice(-MAX_EXPENSES);
           const expenseCategories = body.expenseCategories || body.categories || defaultExpCats;
           const incomeCategories = body.incomeCategories || defaultIncCats;
@@ -3277,7 +3328,7 @@ ${phraseReport}
                 const lockedCount = rawExpenses.filter(isLocked).length;
                 const room = MAX_EXPENSES - lockedCount;
                 if (room < 0) {
-                  return corsResponse(request, jsonResponse({ error: `明細が上限（${MAX_EXPENSES}件）を超えています。締め済み年度を解除して古い明細を整理してください` }, 400));
+                  return accountingJSON({ error: `明細が上限（${MAX_EXPENSES}件）を超えています。締め済み年度を解除して古い明細を整理してください` }, 400);
                 }
                 let dropLeft = rawExpenses.length - MAX_EXPENSES;
                 expenses = rawExpenses.filter(e => {
@@ -3289,7 +3340,7 @@ ${phraseReport}
               }
               if (stillClosed.length) {
                 if (fyStartMonth && fyStartMonth !== sm) {
-                  return corsResponse(request, jsonResponse({ error: "締め済みの年度があるため、年度の開始月は変更できません" }, 409));
+                  return accountingJSON({ error: "締め済みの年度があるため、年度の開始月は変更できません" }, 409);
                 }
                 const snapshot = (list, fy) => JSON.stringify(
                   (list || []).filter(e => fyOf(e) === fy).sort((x, y) => String(x.id).localeCompare(String(y.id)))
@@ -3299,7 +3350,7 @@ ${phraseReport}
                 for (const k of stillClosed) {
                   const fy = parseInt(k);
                   if (snapshot(prev.expenses, fy) !== snapshot(rawExpenses, fy) || (prevCf[k] || 0) !== (nextCf[k] || 0)) {
-                    return corsResponse(request, jsonResponse({ error: `${fy}年度は締め済みのため変更できません。先に締めを解除してください` }, 409));
+                    return accountingJSON({ error: `${fy}年度は締め済みのため変更できません。先に締めを解除してください` }, 409);
                   }
                 }
               }
@@ -3326,34 +3377,25 @@ ${phraseReport}
             if (closedFYs) saveData.closedFYs = closedFYs;
           }
           await env.CHAT_HISTORY.put(kvKey, JSON.stringify(saveData));
-          return corsResponse(request, jsonResponse({ ok: true }));
+          return accountingJSON({ ok: true });
         } catch (e) {
-          return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+          return accountingJSON({ error: String(e) }, 500);
         }
       }
       // GET
       try {
         const raw = await env.CHAT_HISTORY.get(kvKey);
         const data = raw ? JSON.parse(raw) : { expenses: [], expenseCategories: defaultExpCats, incomeCategories: defaultIncCats };
-        return corsResponse(request, jsonResponse(data));
+        return accountingJSON(data);
       } catch (e) {
-        return corsResponse(request, jsonResponse({ expenses: [], error: String(e) }, 500));
+        return accountingJSON({ expenses: [], error: String(e) }, 500);
       }
     }
 
     // ★ 経費管理 API — CSVエクスポート
     const expenseExportMatch = path.match(/^\/api\/groups\/([a-zA-Z0-9_-]+)\/expenses\/export$/);
-    if (expenseExportMatch && request.method === "GET") {
+    if (expenseExportMatch && ["GET", "HEAD"].includes(request.method)) {
       const gid = expenseExportMatch[1];
-      // 認証: ログイン済みならmanagerロールを確認（メンバー未登録なら許可）
-      const exportSession = await getSession(request, env);
-      if (exportSession) {
-        const exportMembers = await loadGroupMembers(env, gid);
-        if (exportMembers.length > 0) {
-          const authCheck = await requireGroupRole(request, env, gid, "manager");
-          if (!authCheck.ok) return corsResponse(request, jsonResponse({ error: authCheck.error }, authCheck.status));
-        }
-      }
       try {
         const url = new URL(request.url);
         const fy = url.searchParams.get("fy") || "";
@@ -3414,15 +3456,14 @@ ${phraseReport}
         const csv = BOM + header + "\n" + rows.join("\n");
 
         const filename = fy ? `accounting_${fy}.csv` : (month ? `accounting_${month}.csv` : "accounting_all.csv");
-        return new Response(csv, {
+        return accountingResponse(new Response(request.method === "HEAD" ? null : csv, {
           headers: {
             "Content-Type": "text/csv; charset=utf-8",
             "Content-Disposition": `attachment; filename="${filename}"`,
-            "Access-Control-Allow-Origin": "*",
           },
-        });
+        }));
       } catch (e) {
-        return corsResponse(request, jsonResponse({ error: String(e) }, 500));
+        return accountingJSON({ error: String(e) }, 500);
       }
     }
 
@@ -4075,6 +4116,8 @@ ${phraseReport}
     }
     {
       const theaterImageMatch = path.match(/^\/api\/theaters\/images\/([a-zA-Z0-9_.\-]+)$/);
+      // images/theaters/ は団体ID=theatersと同じキーになる。証憑の別名配信は禁止する。
+      if (theaterImageMatch && isAccountingEvidenceFilename(theaterImageMatch[1])) return accountingResponse(new Response(null, { status: 404 }));
       if (theaterImageMatch && request.method === "GET") {
         const filename = theaterImageMatch[1];
         const r2Key = `images/theaters/${filename}`;

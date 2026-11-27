@@ -5,6 +5,8 @@
 // ダークテーマ、kera_official_page.js と同系統デザイン
 // =========================================================
 
+import { KERA_OGP_URL, KERA_LOGO_URL } from "./kera_brand.js";
+
 export function pressPageHTML() {
   return `<!DOCTYPE html>
 <html lang="ja">
@@ -12,16 +14,16 @@ export function pressPageHTML() {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>PRESS / お知らせ — 気良歌舞伎</title>
-<meta name="description" content="気良歌舞伎のプレスキット・団体情報・お知らせ一覧。取材・メディア掲載のお問い合わせもこちらから。">
+<meta name="description" content="約130世帯の山里で、約40人の一座が、1937年築の講堂を芝居小屋にした。気良歌舞伎のプレスキット・団体情報・お知らせ一覧。取材・メディア掲載のお問い合わせもこちらから。">
 <meta property="og:title" content="PRESS / お知らせ — 気良歌舞伎">
-<meta property="og:description" content="気良歌舞伎のプレスキット・団体情報・お知らせ一覧。">
-<meta property="og:image" content="https://kabukiplus.com/assets/ogp/ogp_kabukiplus_top.png">
+<meta property="og:description" content="約130世帯の山里で、約40人の一座が、1937年築の講堂を芝居小屋にした。気良歌舞伎のプレスキット・団体情報・お知らせ一覧。">
+<meta property="og:image" content="${KERA_OGP_URL}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="気良歌舞伎">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="PRESS / お知らせ — 気良歌舞伎">
-<meta name="twitter:description" content="気良歌舞伎のプレスキット・団体情報・お知らせ一覧。">
-<meta name="twitter:image" content="https://kabukiplus.com/assets/ogp/ogp_kabukiplus_top.png">
+<meta name="twitter:description" content="約130世帯の山里で、約40人の一座が、1937年築の講堂を芝居小屋にした。気良歌舞伎のプレスキット・団体情報・お知らせ一覧。">
+<meta name="twitter:image" content="${KERA_OGP_URL}">
 <link rel="icon" href="/assets/kera-favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/assets/kera-touch-icon.png">
 <meta name="theme-color" content="#0a0a0f">
@@ -37,7 +39,7 @@ export function pressPageHTML() {
   "name": "気良歌舞伎",
   "alternateName": ["Kera Kabuki", "KeraKabuki", "気良歌舞伎保存会"],
   "url": "https://kabukiplus.com/kerakabuki",
-  "logo": "https://kabukiplus.com/assets/ogp/ogp_kabukiplus_top.png",
+  "logo": "${KERA_LOGO_URL}",
   "description": "岐阜県郡上市明宝気良の地歌舞伎団体。2005年に17年ぶりに復活し、約40名のメンバーが毎年秋に気良座で定期公演を行う。",
   "foundingDate": "2005",
   "address": {
@@ -110,6 +112,7 @@ export function pressPageHTML() {
     <a href="#sns">SNS</a>
     <a href="#kawaraban">かわら版</a>
     <a href="#news">お知らせ</a>
+    <a href="#coverage">掲載記事</a>
     <a href="/kerakabuki/archive">アーカイブ</a>
     <a href="/kerakabuki/guide">ガイド</a>
   </div>
@@ -157,7 +160,7 @@ export function pressPageHTML() {
     <div class="kp-stat-card kp-reveal">
       <span class="kp-stat-num">2024</span>
       <span class="kp-stat-label">気良座開場</span>
-      <span class="kp-stat-desc">旧明方小学校木造講堂を改修</span>
+      <span class="kp-stat-desc"><span style="display:inline-block">1937年築・</span><span style="display:inline-block">市指定重要文化財の</span><span style="display:inline-block">講堂を改修</span></span>
     </div>
   </div>
 </section>
@@ -167,6 +170,7 @@ export function pressPageHTML() {
   <h2 class="kp-section-title kp-reveal">団体概要</h2>
   <div class="kp-overview-body">
     <div class="kp-mission kp-reveal">
+      <p><strong><span style="display:inline-block">約130世帯の山里で、</span><span style="display:inline-block">約40人の一座が、</span><span style="display:inline-block">1937年築の講堂を</span><span style="display:inline-block">芝居小屋にした。</span></strong></p>
       <p>岐阜県郡上市明宝気良。世帯数およそ130、山と川に囲まれた小さな集落で、<br>毎年秋に幕が開く地歌舞伎——それが<strong>気良歌舞伎</strong>です。</p>
       <p>「地域の人たちに元気になってほしい」「自分たちも一緒に楽しみたい」。<br>
       その想いで2005年に17年ぶりの復活を遂げて以来、途切れることなく公演を続けています。</p>
@@ -178,7 +182,7 @@ export function pressPageHTML() {
     <div class="kp-info-grid kp-reveal">
       <div class="kp-info-item"><span class="kp-info-label">団体名</span><span>気良歌舞伎</span></div>
       <div class="kp-info-item"><span class="kp-info-label">所在地</span><span>岐阜県郡上市明宝気良</span></div>
-      <div class="kp-info-item"><span class="kp-info-label">会場</span><span>気良座（旧明方小学校木造講堂、2024年開場）</span></div>
+      <div class="kp-info-item"><span class="kp-info-label">会場</span><span>気良座（1937年築の旧明方小学校木造講堂・郡上市指定重要文化財、2024年開場）</span></div>
       <div class="kp-info-item"><span class="kp-info-label">定期公演</span><span>毎年9月第4土曜日（白山神社祭礼）</span></div>
       <div class="kp-info-item"><span class="kp-info-label">メンバー</span><span>20代〜50代 約40名（地域住民中心）</span></div>
       <div class="kp-info-item"><span class="kp-info-label">加盟</span><span>岐阜県地歌舞伎保存振興協議会（2017年〜）</span></div>
@@ -202,7 +206,7 @@ export function pressPageHTML() {
     <div class="kp-tl-item kp-reveal"><span class="kp-tl-year">2023</span><div class="kp-tl-dot"></div><div class="kp-tl-body">清流の国ぎふ 地歌舞伎勢揃い公演・秋 出演</div></div>
     <div class="kp-tl-item kp-reveal"><span class="kp-tl-year">2024</span><div class="kp-tl-dot"></div><div class="kp-tl-body"><strong>気良座こけら落とし公演</strong>（旧明方小学校木造講堂を「気良座」として開場）</div></div>
     <div class="kp-tl-item kp-reveal"><span class="kp-tl-year">2025</span><div class="kp-tl-dot"></div><div class="kp-tl-body"><strong>五代目座長 林克彦</strong><br>座長襲名披露公演<br>ぎふ清流座公演（10月）<br>岐阜大学留学生の歌舞伎体験受入（11月）</div></div>
-    <div class="kp-tl-item kp-tl-current kp-reveal"><span class="kp-tl-year">2026</span><div class="kp-tl-dot"></div><div class="kp-tl-body"><strong>令和8年公演（予定）</strong></div></div>
+    <div class="kp-tl-item kp-tl-current kp-reveal"><span class="kp-tl-year">2026</span><div class="kp-tl-dot"></div><div class="kp-tl-body"><strong>令和8年公演「曽根崎心中」（初上演・満員御礼）</strong></div></div>
   </div>
 </section>
 
@@ -292,7 +296,7 @@ export function pressPageHTML() {
     </div>
     <div class="kp-contact-item">
       <span class="kp-contact-label">所在地</span>
-      <span>〒501-4303 岐阜県郡上市明宝気良気良2264（気良歌舞伎事務局）</span>
+      <span>〒501-4303 岐阜県郡上市明宝気良2264（気良歌舞伎事務局）</span>
     </div>
     <p class="kp-contact-note">取材・メディア掲載に関するお問い合わせは、メールにてお気軽にご連絡ください。</p>
   </div>
@@ -309,6 +313,48 @@ export function pressPageHTML() {
     <button class="kp-filter-btn" data-cat="イベント">イベント</button>
   </div>
   <div class="kp-news-list" id="kp-news-list">
+    <article class="kp-news-item kp-reveal" data-cat="メディア掲載">
+      <div class="kp-news-meta">
+        <time class="kp-news-date">2026.10</time>
+        <span class="kp-news-cat kp-cat-media">メディア掲載</span>
+      </div>
+      <h3 class="kp-news-title">中日新聞掲載：熱演「曽根崎心中」に喝采　郡上 新技術導入し気良歌舞伎公演</h3>
+      <p class="kp-news-desc">9月26日の令和8年公演を中日新聞（中濃版）が報道（10月1日）。地元の人を中心に県内外から200人以上が集い、お初の「死ぬる覚悟が聞きたい」の場面で拍手やおひねりが飛び交った様子、天神森の場に生成AIで作った背景の映像を映したこと、明宝ハムなど地元ネタを交えた演出が紹介された。復活から20年余りで、地域の子どもたちが出演を希望し、地元を離れた若者も公演の時期に戻ってくるようになったことにも触れている。</p>
+    </article>
+    <article class="kp-news-item kp-reveal" data-cat="メディア掲載">
+      <div class="kp-news-meta">
+        <time class="kp-news-date">2026.09</time>
+        <span class="kp-news-cat kp-cat-media">メディア掲載</span>
+      </div>
+      <h3 class="kp-news-title">岐阜新聞掲載：気良歌舞伎×AIプロジェクションマッピング　曽根崎心中 息のむクライマックス</h3>
+      <p class="kp-news-desc">9月26日の令和8年公演を岐阜新聞が県内総合面で報道（9月28日）。地歌舞伎では珍しい「曽根崎心中」を、生成AIで作成したプロジェクションマッピングを背景に上演し、観客約200人を魅了した様子や、お初が「死ぬる覚悟が聞きたい」と語る場面で客席から拍手が起こったことが紹介された。</p>
+      <a class="kp-news-link" href="https://www.gifu-np.co.jp/articles/-/775380" target="_blank" rel="noopener">記事を読む（岐阜新聞デジタル・会員限定）→</a>
+    </article>
+    <article class="kp-news-item kp-reveal" data-cat="お知らせ">
+      <div class="kp-news-meta">
+        <time class="kp-news-date">2026.09</time>
+        <span class="kp-news-cat kp-cat-info">お知らせ</span>
+      </div>
+      <h3 class="kp-news-title">令和8年公演「曽根崎心中」終演・満員御礼</h3>
+      <p class="kp-news-desc">9月26日、気良座での令和8年定期公演「曽根崎心中」（初上演）は、満員のうちに終演しました。用意したパンフレット200部がすべてなくなり、芳名帳への記帳は約180件でした。ご来場ありがとうございました。次回は令和9年9月の予定です。</p>
+    </article>
+    <article class="kp-news-item kp-reveal" data-cat="メディア掲載">
+      <div class="kp-news-meta">
+        <time class="kp-news-date">2026.09</time>
+        <span class="kp-news-cat kp-cat-media">メディア掲載</span>
+      </div>
+      <h3 class="kp-news-title">中日新聞掲載：「曽根崎心中」映像で演出　郡上であす「気良歌舞伎」公演</h3>
+      <p class="kp-news-desc">9月26日の令和8年公演を前に、中日新聞（中濃版）が報道。初上演の「曽根崎心中」で、クライマックスの天神森ノ場に生成AIで制作した月夜の森の映像をプロジェクションマッピングで映し出す演出や、初主演の若手2人の意気込みが紹介された。</p>
+      <a class="kp-news-link" href="https://www.chunichi.co.jp/article/1316066" target="_blank" rel="noopener">記事を読む（中日新聞Web）→</a>
+    </article>
+    <article class="kp-news-item kp-reveal" data-cat="メディア掲載">
+      <div class="kp-news-meta">
+        <time class="kp-news-date">2026.09</time>
+        <span class="kp-news-cat kp-cat-media">メディア掲載</span>
+      </div>
+      <h3 class="kp-news-title">中日新聞掲載：伝統芸能の灯を継ぐのはAI？　情報発信サイト公開、気良歌舞伎保存会</h3>
+      <p class="kp-news-desc">3月に公開した歌舞伎の総合プラットフォーム「KABUKI PLUS+」を中日新聞が報道。演目や用語の解説、歌舞伎関連のニュースや公演日程、観劇記録、かけ声や拍手のタイミングをゲーム感覚で練習できる機能などが紹介された。</p>
+    </article>
     <article class="kp-news-item kp-reveal" data-cat="プレスリリース">
       <div class="kp-news-meta">
         <time class="kp-news-date">2026.03</time>
@@ -348,6 +394,7 @@ export function pressPageHTML() {
       </div>
       <h3 class="kp-news-title">中日新聞掲載：襲名口上披露に観客喝采　郡上で気良歌舞伎公演</h3>
       <p class="kp-news-desc">9月27日の定期公演を中日新聞が報道。五代目座長 林克彦の襲名口上や、「封印切」での明宝ハムなど地元題材を取り入れた演出が紹介された。</p>
+      <a class="kp-news-link" href="https://www.chunichi.co.jp/article/1140898" target="_blank" rel="noopener">記事を読む（中日新聞Web）→</a>
     </article>
     <article class="kp-news-item kp-reveal" data-cat="イベント">
       <div class="kp-news-meta">
@@ -372,6 +419,16 @@ export function pressPageHTML() {
       </div>
       <h3 class="kp-news-title">中日新聞掲載：役者や公演の画像いかが　気良歌舞伎、NFTで販売</h3>
       <p class="kp-news-desc">役者と公演写真をNFTとして販売する取り組みを中日新聞が報道。20種類のブロマイド風NFTで地歌舞伎の魅力を世界に発信。</p>
+      <a class="kp-news-link" href="https://www.chunichi.co.jp/article/1074606" target="_blank" rel="noopener">記事を読む（中日新聞Web）→</a>
+    </article>
+    <article class="kp-news-item kp-reveal" data-cat="メディア掲載">
+      <div class="kp-news-meta">
+        <time class="kp-news-date">2024.09</time>
+        <span class="kp-news-cat kp-cat-media">メディア掲載</span>
+      </div>
+      <h3 class="kp-news-title">中日新聞掲載：気良歌舞伎、自立へ一歩　28日に旧明方小講堂で公演、大道具など自作</h3>
+      <p class="kp-news-desc">気良座のこけら落とし公演を前に中日新聞が報道。大道具を自作するなど自立へ踏み出す一座の姿と、指導にあたる高雄歌舞伎保存会の古参による「県内に30ある地歌舞伎の中でもかなりうまい方」という評価が紹介された。</p>
+      <a class="kp-news-link" href="https://www.chunichi.co.jp/article/963791" target="_blank" rel="noopener">記事を読む（中日新聞Web）→</a>
     </article>
     <article class="kp-news-item kp-reveal" data-cat="イベント">
       <div class="kp-news-meta">
@@ -399,11 +456,29 @@ export function pressPageHTML() {
     </article>
     <article class="kp-news-item kp-reveal" data-cat="メディア掲載">
       <div class="kp-news-meta">
-        <time class="kp-news-date">2022.10</time>
+        <time class="kp-news-date">2022.11</time>
         <span class="kp-news-cat kp-cat-media">メディア掲載</span>
+      </div>
+      <h3 class="kp-news-title">中日新聞掲載：県内4団体が地歌舞伎の競演　郡上で飛騨・美濃歌舞伎大会</h3>
+      <p class="kp-news-desc">郡上市総合文化センターで開かれた「飛騨・美濃歌舞伎大会ぐじょう2022」を中日新聞が報道。県内4団体が出演し、気良歌舞伎は「義経千本桜 すし屋の場」を熱演した。</p>
+      <a class="kp-news-link" href="https://www.chunichi.co.jp/article/586194" target="_blank" rel="noopener">記事を読む（中日新聞Web）→</a>
+    </article>
+    <article class="kp-news-item kp-reveal" data-cat="イベント">
+      <div class="kp-news-meta">
+        <time class="kp-news-date">2022.11</time>
+        <span class="kp-news-cat kp-cat-event">イベント</span>
       </div>
       <h3 class="kp-news-title">飛騨美濃歌舞伎大会ぐじょう2022出演</h3>
       <p class="kp-news-desc">郡上市で開催された飛騨美濃歌舞伎大会に出演。地域を超えた地芝居の交流の場に参加。</p>
+    </article>
+    <article class="kp-news-item kp-reveal" data-cat="メディア掲載">
+      <div class="kp-news-meta">
+        <time class="kp-news-date">2021.12</time>
+        <span class="kp-news-cat kp-cat-media">メディア掲載</span>
+      </div>
+      <h3 class="kp-news-title">中日新聞掲載：郡上の「気良歌舞伎」が4夜連続配信</h3>
+      <p class="kp-news-desc">「通し上演 仮名手本忠臣蔵」の舞台映像を、インターネットとケーブルテレビで4夜連続で配信することを中日新聞が報道。</p>
+      <a class="kp-news-link" href="https://www.chunichi.co.jp/article/379180" target="_blank" rel="noopener">記事を読む（中日新聞Web）→</a>
     </article>
     <article class="kp-news-item kp-reveal" data-cat="お知らせ">
       <div class="kp-news-meta">
@@ -413,6 +488,15 @@ export function pressPageHTML() {
       <h3 class="kp-news-title">「通し上演 仮名手本忠臣蔵」映像配信プロジェクト</h3>
       <p class="kp-news-desc">コロナ禍2年目、全段通し上演という挑戦的な映像作品を制作・配信。地歌舞伎団体によるオンライン公演の先駆的な取り組みとして全国的に注目を集めた。</p>
     </article>
+    <article class="kp-news-item kp-reveal" data-cat="メディア掲載">
+      <div class="kp-news-meta">
+        <time class="kp-news-date">2020.09</time>
+        <span class="kp-news-cat kp-cat-media">メディア掲載</span>
+      </div>
+      <h3 class="kp-news-title">中日新聞掲載：「気良歌舞伎」ネット配信　19日にユーチューブと郡上市内CATVで</h3>
+      <p class="kp-news-desc">コロナ禍で公演を中止し、無観客で収録した「弁天娘女男白浪」の舞台映像をYouTubeと郡上ケーブルテレビで配信することを中日新聞が報道。</p>
+      <a class="kp-news-link" href="https://www.chunichi.co.jp/article/121756" target="_blank" rel="noopener">記事を読む（中日新聞Web）→</a>
+    </article>
     <article class="kp-news-item kp-reveal" data-cat="お知らせ">
       <div class="kp-news-meta">
         <time class="kp-news-date">2020</time>
@@ -421,6 +505,81 @@ export function pressPageHTML() {
       <h3 class="kp-news-title">「おうちで歌舞伎！」地芝居映像配信プロジェクト</h3>
       <p class="kp-news-desc">コロナ禍で公演中止を余儀なくされる中、いち早く映像配信に挑戦。地歌舞伎をオンラインで届ける取り組みは全国的にも注目され、新たな観客層の開拓に繋がった。</p>
     </article>
+  </div>
+</section>
+
+<!-- ═══════ §8 掲載記事アーカイブ ═══════ -->
+<section class="kp-section" id="coverage">
+  <h2 class="kp-section-title kp-reveal">これまでの掲載記事</h2>
+  <p class="kp-archive-intro kp-reveal">新聞で紹介していただいた主な記事です（2012年〜2021年の紙面から）。<br>2020年以降のWeb掲載記事は「お知らせ」をご覧ください。</p>
+  <div class="kp-archive-timeline">
+    <div class="kp-archive-year kp-reveal">
+      <span class="kp-ay-label">2021</span>
+      <ul class="kp-cov-items">
+        <li class="kp-cov-item"><span class="kp-cov-src">岐阜新聞　12月</span>気良歌舞伎 ネットが舞台　明宝の住民「仮名手本忠臣蔵」11日から配信</li>
+      </ul>
+    </div>
+    <div class="kp-archive-year kp-reveal">
+      <span class="kp-ay-label">2020</span>
+      <ul class="kp-cov-items">
+        <li class="kp-cov-item"><span class="kp-cov-src">神社新報　10月26日</span>白山神社に奉納する気良歌舞伎のテレビ放映を紹介</li>
+      </ul>
+    </div>
+    <div class="kp-archive-year kp-reveal">
+      <span class="kp-ay-label">2019</span>
+      <ul class="kp-cov-items">
+        <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　9月</span>おひねり飛び ヤンヤの喝采　明宝の若者ら「気良歌舞伎」</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　7月</span>気良歌舞伎 郡上を飛び出す　14日 岐阜で保存会が初公演</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">岐阜新聞　7月</span>気良歌舞伎 本番へ熱気　明宝の魅力 14日に岐阜市で発信</li>
+      </ul>
+    </div>
+    <div class="kp-archive-year kp-reveal">
+      <span class="kp-ay-label">2018</span>
+      <ul class="kp-cov-items">
+        <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　9月</span>「気良歌舞伎」演技に喝采　明宝 子どもらは「白浪五人男」</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">岐阜新聞　9月</span>「気良歌舞伎」おひねり舞う</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　9月13日</span>子を犠牲にした悲劇演じる　明宝で15日 気良歌舞伎</li>
+      </ul>
+    </div>
+    <div class="kp-archive-year kp-reveal">
+      <span class="kp-ay-label">2017</span>
+      <ul class="kp-cov-items">
+        <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　1月8日</span>「主役脇役」新春特別版　気良歌舞伎事務局 沢奈央也さん</li>
+      </ul>
+    </div>
+    <div class="kp-archive-year kp-reveal">
+      <span class="kp-ay-label">2016</span>
+      <ul class="kp-cov-items">
+        <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　11月23日</span>地歌舞伎 次世代にも　郡上「高雄」「気良」が合同公演</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">岐阜新聞　11月</span>郡上の地歌舞伎 共演　「高雄」250年以上の歴史　「気良」若手中心に復活</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">岐阜新聞　9月</span>キリリ「気良歌舞伎」　郡上市で公演</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">読売新聞　9月</span>気良歌舞伎 世代超え一丸　手作り舞台、花道で稽古</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　4月17日</span>郡上・明宝歴史民俗資料館　昔の衣装や小道具展示</li>
+      </ul>
+    </div>
+    <div class="kp-archive-year kp-reveal">
+      <span class="kp-ay-label">2015</span>
+      <ul class="kp-cov-items">
+        <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　10月27日</span>高雄歌舞伎と気良歌舞伎　切磋琢磨の合同公演</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">岐阜新聞　10月26日</span>郡上の歌舞伎、若手が磨く　伝統の「高雄」、復活の「気良」が合同公演</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">朝日新聞　10月</span>青年歌舞伎 伝統結ぶ合同公演</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">岐阜新聞</span>若者役者が堂々の舞台　郡上市で「気良歌舞伎」上演</li>
+      </ul>
+    </div>
+    <div class="kp-archive-year kp-reveal">
+      <span class="kp-ay-label">2013</span>
+      <ul class="kp-cov-items">
+        <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　9月</span>伝統の息吹 気良歌舞伎　郡上 若者ら時代物悲劇を熱演</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">岐阜新聞　9月</span>若者ら迫真の大見え　明宝で気良歌舞伎</li>
+        <li class="kp-cov-item"><span class="kp-cov-src">中日新聞　9月</span>子、若者が〝魅せます〟　あす明宝の気良歌舞伎</li>
+      </ul>
+    </div>
+    <div class="kp-archive-year kp-reveal">
+      <span class="kp-ay-label">2012</span>
+      <ul class="kp-cov-items">
+        <li class="kp-cov-item"><span class="kp-cov-src">岐阜新聞　9月</span>「きらり中濃 応援歌」若い力、伝統つなぐ　郡上市明宝の気良歌舞伎</li>
+      </ul>
+    </div>
   </div>
 </section>
 
@@ -885,6 +1044,22 @@ img { max-width: 100%; display: block; }
 .kp-ay-date {
   font-size: 0.68rem; color: #6a5d4a;
 }
+/* ── Coverage ── */
+.kp-cov-items {
+  flex: 1; align-self: stretch; list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column; gap: 0.5rem;
+}
+.kp-cov-item {
+  padding: 0.55rem 0.9rem;
+  background: rgba(18,18,28,0.7);
+  border: 1px solid rgba(197,162,85,0.14);
+  border-radius: 8px;
+  font-size: 0.82rem; color: #e8e4dc; line-height: 1.6;
+}
+.kp-cov-src {
+  display: block; font-size: 0.68rem; color: #b8a88a;
+  margin-bottom: 0.15rem;
+}
 
 @media (max-width: 480px) {
   .kp-archive-year { flex-direction: column; gap: 0.4rem; }
@@ -952,6 +1127,11 @@ img { max-width: 100%; display: block; }
   font-size: 0.82rem; color: #b8a88a;
   line-height: 1.65;
 }
+.kp-news-link {
+  display: inline-block; margin-top: 0.45rem;
+  font-size: 0.78rem; color: #c5a255; text-decoration: none;
+}
+.kp-news-link:hover { text-decoration: underline; }
 
 /* ── Footer ── */
 .kp-footer {

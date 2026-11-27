@@ -374,7 +374,7 @@ ${overlayHTML}
 
 <footer>
   <p>${brandName} &mdash; ${brandTagline}</p>
-  <p style="margin-top:4px;font-size:0.72rem;"><a href="${lp}/project" style="color:inherit;text-decoration:none;">${t("footer.project", lang)}</a>｜Produced by <a href="/jikabuki/gate/kera">KERAKABUKI${lang === "en" ? " (Kera Kabuki)" : "（気良歌舞伎）"}</a></p>
+  <p style="margin-top:4px;font-size:0.72rem;"><a href="${lp}/project" style="color:inherit;text-decoration:none;">${t("footer.project", lang)}</a>｜Produced by <a href="/kerakabuki">KERAKABUKI${lang === "en" ? " (Kera Kabuki)" : "（気良歌舞伎）"}</a></p>
   <p style="margin-top:4px;"><a href="${lp}/">${t("footer.home", lang)}</a>｜<a href="${brand === 'jikabuki' ? '/jikabuki/help' : lp + '/kabuki/help'}">${t("footer.help", lang)}</a></p>
 </footer>
 

@@ -3,6 +3,7 @@
 // NFT購入ガイド — /nft-guide（Jimdo より移設）
 // =========================================================
 import { pageShell } from "./web_layout.js";
+import { KERA_SITE_URL, KERA_OGP_URL } from "./kera_brand.js";
 
 export function nftGuidePageHTML() {
   const bodyHTML = `
@@ -114,6 +115,9 @@ export function nftGuidePageHTML() {
     bodyHTML,
     brand: "jikabuki",
     activeNav: "jikabuki",
+    // 共有画像と canonical は気良歌舞伎の看板に揃える（/jikabuki/gate/kera/nft でも同じ内容を出すため）
+    ogImage: KERA_OGP_URL,
+    canonicalUrl: `${KERA_SITE_URL}/nft`,
     headExtra: `<style>
       .nft-intro { margin-bottom: 1.5rem; }
       .nft-en-link { font-size: 0.9rem; margin-top: 0.5rem; }

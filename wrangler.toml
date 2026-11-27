@@ -53,3 +53,8 @@ migrations_dir = "migrations/reception"
 name = "RECEPTION_LIMITER"
 namespace_id = "2026092601"
 simple = { limit = 120, period = 60 }
+# 令和八年公演のご来場者アンケート（無記名の公開フォームの連投対策）
+[[ratelimits]]
+name = "SURVEY_LIMITER"
+namespace_id = "2026092901"
+simple = { limit = 10, period = 60 }

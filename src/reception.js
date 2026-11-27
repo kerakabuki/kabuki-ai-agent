@@ -62,7 +62,7 @@ export function validateEntry(body, staff = false, proxy = false) {
   return entry;
 }
 
-async function readJSON(request) {
+export async function readJSON(request) {
   if (!(request.headers.get('content-type') || '').startsWith('application/json')) throw fail('送信形式をご確認ください。', 415);
   const origin = request.headers.get('origin');
   if (origin !== new URL(request.url).origin || request.headers.get('sec-fetch-site') === 'cross-site') throw fail('この画面から送信してください。', 403);
@@ -84,7 +84,7 @@ async function readBytes(stream, limit) {
   for (const part of parts) { bytes.set(part, offset); offset += part.length; }
   return bytes;
 }
-async function hash(value) {
+export async function hash(value) {
   return [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value)))].map(x => x.toString(16).padStart(2, '0')).join('');
 }
 const receipt = (number) => `R8-${String(number).padStart(4, '0')}`;

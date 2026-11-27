@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ja" data-size="feed">
+<head>
+<meta charset="UTF-8">
+<title>令和八年公演 ご来場者アンケート 告知画像</title>
+<!--
+  気良歌舞伎 令和八年公演 ご来場者アンケートのSNS告知画像（組版テンプレート）
+  ?size=feed  … 1080×1350（Instagramフィード 4:5）
+  ?size=story … 1080×1920（ストーリーズ 9:16。上下各250pxと y=1300〜1560 のリンクスタンプ帯には文字を置かない）
+  写真の下3分の1（手前の子どもたち）は使わず、提灯と入口・大人の後ろ姿が入る範囲だけを見せる。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500;700&family=Noto+Sans+JP:wght@400;500&display=block" rel="stylesheet">
+<style>
+  /* 色は公式トップ（src/kera_official_page.js）に合わせる */
+  :root {
+    --墨: #0a0a0f;
+    --金: #c5a255;
+    --金淡: #e8c96a;
+    --生成: #e8e4dc;
+    --砂: #b8a88a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: var(--墨); }
+  body { overflow: hidden; -webkit-font-smoothing: antialiased; }
+
+  .画面 {
+    position: relative; overflow: hidden;
+    width: 1080px; height: var(--高さ);
+    background: var(--墨);
+    color: var(--生成);
+    font-family: "Noto Sans JP", sans-serif;
+  }
+
+  /* ── 写真 ──
+     元画像 1920×1280 を倍率 --倍率 で配置。
+     横は左右の「気良座」提灯（元 x≈350〜1610）が両方収まる範囲、
+     縦は元 y≈640 より下（子どもたち）がグラデーションで完全に隠れるようにする */
+  .写真 {
+    position: absolute; left: 0; top: 0;
+    width: 1080px; height: var(--写真高さ);
+    overflow: hidden;
+  }
+  .写真 img {
+    position: absolute;
+    width: calc(1920px * var(--倍率));
+    left: calc(-1 * var(--元x) * var(--倍率));
+    top: calc(var(--写真上端) - var(--元y) * var(--倍率));
+    filter: brightness(0.92) saturate(0.95);
+  }
+  .写真::after {
+    content: ''; position: absolute; inset: 0;
+    background:
+      linear-gradient(90deg, rgba(10,10,15,0.55) 0%, rgba(10,10,15,0) 14%, rgba(10,10,15,0) 86%, rgba(10,10,15,0.55) 100%),
+      var(--上ぼかし, linear-gradient(transparent, transparent)),
+      linear-gradient(180deg,
+        rgba(10,10,15,0) var(--ぼかし開始),
+        rgba(10,10,15,0.55) calc(var(--ぼかし開始) + (var(--ぼかし終了) - var(--ぼかし開始)) * 0.45),
+        rgba(10,10,15,0.9) calc(var(--ぼかし開始) + (var(--ぼかし終了) - var(--ぼかし開始)) * 0.75),
+        rgba(10,10,15,1) var(--ぼかし終了));
+  }
+
+  /* ── 文字 ── */
+  .文字 {
+    position: absolute; left: 0; right: 0; top: var(--文字上端);
+    text-align: center;
+  }
+  .小見出し {
+    font-family: "Noto Serif JP", serif; font-weight: 500;
+    font-size: 30px; letter-spacing: 0.08em;
+    color: var(--砂);
+  }
+  .見出し {
+    margin-top: 22px;
+    font-family: "Noto Serif JP", serif; font-weight: 700;
+    font-size: 70px; letter-spacing: 0.06em; line-height: 1.25;
+    color: var(--金);
+  }
+  .区切り {
+    width: 120px; height: 2px; margin: 34px auto 0;
+    background: linear-gradient(90deg, transparent, var(--金) 30%, var(--金) 70%, transparent);
+    opacity: 0.8;
+  }
+  .本文 {
+    margin-top: 34px;
+    font-size: 32px; line-height: 1.8; letter-spacing: 0.04em;
+    color: var(--生成);
+  }
+  .要点 {
+    margin-top: 40px;
+    display: flex; justify-content: center; align-items: center;
+    font-size: 34px; font-weight: 500; letter-spacing: 0.06em;
+    color: var(--金淡);
+  }
+  .要点 span { padding: 0 34px; }
+  .要点 span + span { border-left: 1px solid rgba(197,162,85,0.5); }
+  .URL {
+    display: inline-block;
+    margin-top: 44px; padding: 20px 44px;
+    font-size: 36px; font-weight: 500; letter-spacing: 0.02em;
+    color: var(--生成);
+    background: rgba(197,162,85,0.10);
+    border-radius: 6px;
+  }
+
+  .署名 {
+    position: absolute; left: 0; right: 0; top: var(--署名上端);
+    display: flex; justify-content: center; align-items: center; gap: 18px;
+  }
+  .署名 img { width: 60px; height: 60px; }
+  .署名 span {
+    font-family: "Noto Serif JP", serif; font-weight: 700;
+    font-size: 34px; letter-spacing: 0.3em; margin-right: -0.3em;
+    color: var(--金);
+  }
+
+  /* ── フィード 1080×1350 ── */
+  html[data-size="feed"] {
+    --高さ: 1350px;
+    --倍率: 0.85; --元x: 345px; --元y: 20px;
+    --写真高さ: 600px; --写真上端: 0px;
+    --ぼかし開始: 350px; --ぼかし終了: 530px;
+    --文字上端: 556px;
+    --署名上端: 1220px;
+  }
+
+  /* ── ストーリーズ 1080×1920 ── */
+  html[data-size="story"] {
+    --高さ: 1920px;
+    --倍率: 0.85; --元x: 345px; --元y: 20px;
+    --写真高さ: 800px; --写真上端: 180px;
+    --上ぼかし: linear-gradient(180deg, rgba(10,10,15,1) 0px, rgba(10,10,15,1) 170px, rgba(10,10,15,0) 300px);
+    --ぼかし開始: 530px; --ぼかし終了: 710px;
+    --文字上端: 720px;
+    --署名上端: 1580px;
+  }
+</style>
+</head>
+<body>
+<div class="画面">
+  <div class="写真"><img src="../photos/hero-kiraza.webp" alt=""></div>
+
+  <div class="文字">
+    <p class="小見出し">令和八年　気良歌舞伎公演「曽根崎心中」</p>
+    <h1 class="見出し">ご来場者アンケートのお願い</h1>
+    <div class="区切り"></div>
+    <p class="本文">ご来場ありがとうございました。<br>これからの舞台づくりのため、ご感想をお聞かせください。</p>
+    <p class="要点"><span>3分ほど</span><span>無記名</span><span>10月31日（土）まで</span></p>
+    <p class="URL">kabukiplus.com/kerakabuki/survey/2026</p>
+  </div>
+
+  <div class="署名">
+    <img src="../kera-logo-gold.png" alt="">
+    <span>気良歌舞伎</span>
+  </div>
+</div>
+<script>
+  // ?size=feed / ?size=story を切り替える
+  const 指定 = new URLSearchParams(location.search).get('size');
+  document.documentElement.dataset.size = 指定 === 'story' ? 'story' : 'feed';
+</script>
+</body>
+</html>

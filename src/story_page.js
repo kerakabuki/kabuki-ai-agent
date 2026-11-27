@@ -5,7 +5,17 @@
 // 全10話＋まとめ — 日英バイリンガル全文アーカイブ
 // =========================================================
 
-export function storyPageHTML() {
+import { KERA_SITE_URL, KERA_OGP_URL } from "./kera_brand.js";
+
+// canonical は表示中の話そのもの（一覧 /kerakabuki/story、各話 /kerakabuki/story/:id）。
+// 同じHTMLを画面側で出し分けているため、worker から受け取ったパスで決める。
+// /jikabuki/gate/kera/story/* は /kerakabuki/story/* に読み替える。話として解釈できないパスは一覧に寄せる
+function storyCanonicalURL(path) {
+  const m = String(path || "").replace(/^\/jikabuki\/gate\/kera\/story/, "/kerakabuki/story").match(/^\/kerakabuki\/story\/(\d+|summary)$/);
+  return KERA_SITE_URL + "/story" + (m ? "/" + m[1] : "");
+}
+
+export function storyPageHTML(path) {
   return `<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -15,10 +25,11 @@ export function storyPageHTML() {
 <meta name="description" content="復活から20年。気良歌舞伎の歩みを全10話で辿る。">
 <meta property="og:title" content="気良歌舞伎ストーリー">
 <meta property="og:description" content="復活から20年。気良歌舞伎の歩みを全10話で辿る。">
-<meta property="og:image" content="https://kabukiplus.com/assets/ogp/ogp_kabukiplus_top.png">
+<meta property="og:image" content="${KERA_OGP_URL}">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="気良歌舞伎">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="${storyCanonicalURL(path)}">
 <link rel="icon" href="/assets/kera-favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/assets/kera-touch-icon.png">
 <meta name="theme-color" content="#0a0a0f">

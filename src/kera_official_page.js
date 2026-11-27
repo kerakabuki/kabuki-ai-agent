@@ -5,6 +5,10 @@
 // フルスクロール型ダークテーマLP
 // =========================================================
 
+import { KERA_SITE_URL, KERA_OGP_URL, KERA_LOGO_URL } from "./kera_brand.js";
+import { SURVEY_2026 } from "./survey_2026.js";
+import { surveyOpen } from "./survey.js";
+
 export function keraOfficialPageHTML() {
   return `<!DOCTYPE html>
 <html lang="ja">
@@ -12,16 +16,16 @@ export function keraOfficialPageHTML() {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>気良歌舞伎 — 岐阜県郡上市明宝気良の地歌舞伎</title>
-<meta name="description" content="岐阜県郡上市明宝気良。人口400人の山里で、毎年9月第4土曜日に幕が開く地歌舞伎。2005年の復活から20年、約40名が常設芝居小屋「気良座」で演じ続ける。入場無料。">
+<meta name="description" content="約130世帯の山里で、約40人の一座が、1937年築の講堂を芝居小屋にした。岐阜県郡上市明宝気良の地歌舞伎「気良歌舞伎」。毎年9月第4土曜日、気良座で公演。入場無料。">
 <meta property="og:title" content="気良歌舞伎 — 岐阜県郡上市明宝気良の地歌舞伎">
-<meta property="og:description" content="岐阜県郡上市明宝気良。人口400人の山里で、毎年秋に幕が開く地歌舞伎。2005年の復活から20年。">
-<meta property="og:image" content="https://kabukiplus.com/assets/ogp/ogp_kabukiplus_top.png">
+<meta property="og:description" content="約130世帯の山里で、約40人の一座が、1937年築の講堂を芝居小屋にした。岐阜県郡上市明宝気良の地歌舞伎。">
+<meta property="og:image" content="${KERA_OGP_URL}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="気良歌舞伎">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="気良歌舞伎 — 岐阜県郡上市明宝気良の地歌舞伎">
-<meta name="twitter:description" content="岐阜県郡上市明宝気良。人口400人の山里で、毎年秋に幕が開く地歌舞伎。2005年の復活から20年。">
-<meta name="twitter:image" content="https://kabukiplus.com/assets/ogp/ogp_kabukiplus_top.png">
+<meta name="twitter:description" content="約130世帯の山里で、約40人の一座が、1937年築の講堂を芝居小屋にした。岐阜県郡上市明宝気良の地歌舞伎。">
+<meta name="twitter:image" content="${KERA_OGP_URL}">
 <link rel="icon" href="/assets/kera-favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/assets/kera-touch-icon.png">
 <meta name="theme-color" content="#0a0a0f">
@@ -29,6 +33,7 @@ export function keraOfficialPageHTML() {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>${KERA_LP_CSS}</style>
+<link rel="canonical" href="${KERA_SITE_URL}">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -36,15 +41,24 @@ export function keraOfficialPageHTML() {
   "name": "気良歌舞伎",
   "alternateName": ["Kera Kabuki", "KeraKabuki"],
   "url": "https://kabukiplus.com/kerakabuki",
-  "logo": "https://kabukiplus.com/assets/ogp/ogp_kabukiplus_top.png",
+  "logo": "${KERA_LOGO_URL}",
+  "image": "${KERA_OGP_URL}",
   "description": "岐阜県郡上市明宝気良の地歌舞伎団体。2005年に17年ぶりに復活し、約40名のメンバーが毎年秋に気良座で定期公演を行う。",
   "foundingDate": "2005",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "明宝気良2264",
+    "addressLocality": "郡上市",
+    "addressRegion": "岐阜県",
+    "postalCode": "501-4303",
+    "addressCountry": "JP"
+  },
   "location": {
     "@type": "PerformingArtsTheater",
     "name": "気良座",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "明宝気良2264",
+      "streetAddress": "明宝気良154",
       "addressLocality": "郡上市",
       "addressRegion": "岐阜県",
       "postalCode": "501-4303",
@@ -63,40 +77,6 @@ export function keraOfficialPageHTML() {
   ]
 }
 </script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "TheaterEvent",
-  "name": "気良歌舞伎 令和8年定期公演",
-  "startDate": "2026-09-26",
-  "location": {
-    "@type": "PerformingArtsTheater",
-    "name": "気良座",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "明宝気良2264",
-      "addressLocality": "郡上市",
-      "addressRegion": "岐阜県",
-      "postalCode": "501-4303",
-      "addressCountry": "JP"
-    }
-  },
-  "organizer": {
-    "@type": "PerformingGroup",
-    "name": "気良歌舞伎",
-    "url": "https://kabukiplus.com/kerakabuki"
-  },
-  "eventStatus": "https://schema.org/EventScheduled",
-  "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
-  "isAccessibleForFree": true,
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "JPY",
-    "availability": "https://schema.org/InStock"
-  }
-}
-</script>
 </head>
 <body>
 
@@ -113,6 +93,7 @@ export function keraOfficialPageHTML() {
     <a href="/kerakabuki/archive">アーカイブ</a>
     <a href="#gallery">映像</a>
     <a href="#sns">SNS</a>
+    <a href="/kerakabuki/press">PRESS</a>
   </div>
 </nav>
 
@@ -125,23 +106,25 @@ export function keraOfficialPageHTML() {
     </h1>
     <p class="kl-hero-tagline">山里に灯る、もうひとつの舞台。</p>
     <p class="kl-hero-place">岐阜県郡上市明宝気良</p>
+    <p class="kl-hero-story">約130世帯の山里で、約40人の一座が<br>1937年築の講堂を、芝居小屋にした。</p>
   </div>
   <div class="kl-scroll-hint" aria-hidden="true">
     <span class="kl-scroll-arrow"></span>
   </div>
 </section>
 
-<!-- ═══════ §NEXT 次回公演 ═══════ -->
+<!-- ═══════ §NEXT 公演のお知らせ（令和8年公演 終演後） ═══════ -->
 <section class="kl-next" id="next">
   <div class="kl-next-inner">
-    <p class="kl-next-label">NEXT PERFORMANCE</p>
-    <h2 class="kl-next-title">令和8年 定期公演</h2>
+    <p class="kl-next-label">THANK YOU</p>
+    <h2 class="kl-next-title">令和8年 定期公演　終演御礼</h2>
+    <p class="kl-next-thanks">初上演の「曽根崎心中」は、満員のお客さまに見守られて幕を下ろしました。<br>用意したパンフレット200部がなくなるほどのご来場、ありがとうございました。<br>岐阜新聞（9月28日）と中日新聞（10月1日）にも取り上げていただきました。</p>
     <div class="kl-next-info">
       <div class="kl-next-date">
         <span class="kl-next-icon">📅</span>
         <div>
-          <strong>2026年9月26日（土）</strong>
-          <span>毎年9月第4土曜日</span>
+          <strong>次回　令和9年（2027年）9月（予定）</strong>
+          <span>毎年9月第4土曜日（白山神社祭礼）・日時は決まり次第お知らせします</span>
         </div>
       </div>
       <div class="kl-next-venue">
@@ -159,7 +142,11 @@ export function keraOfficialPageHTML() {
         </div>
       </div>
     </div>
-    <a href="/kerakabuki/guide" class="kl-next-btn">観劇ガイド・アクセスを見る →</a>
+    <div class="kl-next-btns">
+      ${surveyOpen(SURVEY_2026) ? `<a href="/kerakabuki/survey/2026" class="kl-next-btn">ご来場者アンケートのお願い →</a>` : ""}
+      <a href="/kerakabuki/annai" class="kl-next-btn">次回公演のご案内を受け取る →</a>
+      <a href="/kerakabuki/archive" class="kl-next-btn">これまでの公演を見る →</a>
+    </div>
   </div>
 </section>
 
@@ -179,6 +166,7 @@ export function keraOfficialPageHTML() {
     <p>2005年。「もう一度、この地域を盛り上げたい」。地元の若者たちが声をかけ合い、17年ぶりに幕が開いた。</p>
     <figure class="kl-about-photo kl-reveal"><img src="/assets/photos/about-kuroko.webp" alt="黒衣の笑顔 — 裏方が支える舞台" loading="lazy"></figure>
     <p>それから20年。メンバーは20代から50代まで約40名に広がった。毎年秋の定期公演は、気良の一年で最も熱い夜になった。</p>
+    <p>2024年、一座は1937年に建てられた旧明方小学校の木造講堂（郡上市指定重要文化財）を、自分たちの手で芝居小屋「気良座」に生まれ変わらせた。</p>
     <figure class="kl-about-photo kl-reveal"><img src="/assets/photos/about-butaiura.webp" alt="舞台裏 — 出番を待つ役者たち" loading="lazy"></figure>
     <p class="kl-accent">守るために、変わる。</p>
     <p><strong>「地域の人たちに元気になってほしい」</strong>、そして<strong>「自分たちも一緒に楽しみたい」</strong>。原点はいつもそこにある。</p>
@@ -190,7 +178,7 @@ export function keraOfficialPageHTML() {
     <div class="kl-info-item"><span class="kl-info-label">定期公演</span><span>毎年9月第4土曜日（白山神社祭礼）</span></div>
     <div class="kl-info-item"><span class="kl-info-label">メンバー</span><span>20代〜50代 約40名</span></div>
     <div class="kl-info-item"><span class="kl-info-label">加盟</span><span>岐阜県地歌舞伎保存振興協議会（2017年〜）</span></div>
-    <div class="kl-info-item"><span class="kl-info-label">会場</span><span>気良座（旧明方小学校木造講堂、2024年開場）</span></div>
+    <div class="kl-info-item"><span class="kl-info-label">会場</span><span>気良座（1937年築の旧明方小学校木造講堂・郡上市指定重要文化財、2024年開場）</span></div>
   </div>
 </section>
 
@@ -214,7 +202,7 @@ export function keraOfficialPageHTML() {
     <div class="kl-tl-item kl-reveal"><span class="kl-tl-year">2005</span><div class="kl-tl-dot"></div><div class="kl-tl-body"><strong>気良歌舞伎復活</strong><br>17年ぶりに白山神社祭礼での歌舞伎奉納を再開</div></div>
     <div class="kl-tl-item kl-reveal"><span class="kl-tl-year">2024</span><div class="kl-tl-dot"></div><div class="kl-tl-body"><strong>気良座こけら落とし</strong><br>旧明方小学校の木造講堂が芝居小屋として生まれ変わる</div></div>
     <div class="kl-tl-item kl-reveal"><span class="kl-tl-year">2025</span><div class="kl-tl-dot"></div><div class="kl-tl-body"><strong>五代目座長 林克彦</strong><br>襲名披露公演・ぎふ清流座公演</div></div>
-    <div class="kl-tl-item kl-tl-current kl-reveal"><span class="kl-tl-year">2026</span><div class="kl-tl-dot"></div><div class="kl-tl-body"><strong>令和8年公演（予定）</strong></div></div>
+    <div class="kl-tl-item kl-tl-current kl-reveal"><span class="kl-tl-year">2026</span><div class="kl-tl-dot"></div><div class="kl-tl-body"><strong>令和8年公演「曽根崎心中」（初上演・満員御礼）</strong></div></div>
   </div>
   <p class="kl-tl-more kl-reveal"><a href="/kerakabuki/press#timeline">沿革の全年表を見る</a>　<a href="/kerakabuki/archive">公演アーカイブ →</a></p>
 </section>
@@ -317,8 +305,15 @@ export function keraOfficialPageHTML() {
   /* ── Mobile nav toggle ── */
   var toggle = document.getElementById("kl-nav-toggle");
   var links = document.getElementById("kl-nav-links");
-  toggle.addEventListener("click", function(){ links.classList.toggle("kl-nav-open"); toggle.classList.toggle("kl-nav-active"); });
-  links.addEventListener("click", function(e){ if (e.target.tagName === "A") { links.classList.remove("kl-nav-open"); toggle.classList.remove("kl-nav-active"); } });
+  var fabWrap = document.getElementById("kl-fab-wrap");
+  // メニューを開いている間は「けらのすけに聞く」を隠す（小さい画面で下の項目に重なるため）
+  function setMenu(open){
+    links.classList.toggle("kl-nav-open", open);
+    toggle.classList.toggle("kl-nav-active", open);
+    if (fabWrap) fabWrap.classList.toggle("kl-fab-hidden", open);
+  }
+  toggle.addEventListener("click", function(){ setMenu(!links.classList.contains("kl-nav-open")); });
+  links.addEventListener("click", function(e){ if (e.target.tagName === "A") setMenu(false); });
 
   /* ── Sticky nav background on scroll ── */
   var nav = document.getElementById("kl-nav");
@@ -535,6 +530,7 @@ img { max-width: 100%; display: block; }
   transition: color 0.2s;
 }
 .kl-nav-links a:hover { color: #e8c96a; }
+.kl-fab-hidden { display: none !important; }
 .kl-nav-toggle {
   display: none; background: none; border: none;
   cursor: pointer; width: 28px; height: 20px;
@@ -549,6 +545,9 @@ img { max-width: 100%; display: block; }
 .kl-nav-active span:nth-child(2) { opacity: 0; }
 .kl-nav-active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
 
+@media (max-width: 760px) {
+  .kl-nav-links { gap: 1rem; }
+}
 @media (max-width: 640px) {
   .kl-nav-toggle { display: flex; }
   .kl-nav-links {
@@ -616,6 +615,14 @@ img { max-width: 100%; display: block; }
   font-size: 0.78rem; color: #6a5d4a;
   letter-spacing: 0.2em;
 }
+.kl-hero-story {
+  margin: 1.6rem auto 0;
+  font-family: "Noto Serif JP", serif;
+  font-size: clamp(0.8rem, 2.3vw, 0.95rem);
+  color: #a8997c;
+  letter-spacing: 0.08em;
+  line-height: 2;
+}
 .kl-scroll-hint {
   position: absolute; bottom: 2.5rem; left: 50%;
   transform: translateX(-50%);
@@ -660,6 +667,10 @@ img { max-width: 100%; display: block; }
   letter-spacing: 0.15em;
   margin-bottom: 1.5rem;
 }
+.kl-next-thanks {
+  margin: -0.4rem auto 1.8rem; max-width: 34em;
+  font-size: 0.9rem; line-height: 1.95; color: #b8a88a;
+}
 .kl-next-info {
   display: flex;
   flex-direction: column;
@@ -667,7 +678,7 @@ img { max-width: 100%; display: block; }
   text-align: left;
   margin-bottom: 1.5rem;
 }
-.kl-next-date, .kl-next-venue, .kl-next-fee {
+.kl-next-play, .kl-next-date, .kl-next-time, .kl-next-venue, .kl-next-fee {
   display: flex;
   align-items: center;
   gap: 0.8rem;
@@ -701,6 +712,12 @@ img { max-width: 100%; display: block; }
 .kl-next-btn:hover {
   background: #c5a255;
   color: #0a0a0f;
+}
+.kl-next-btns {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
 }
 @media (max-width: 600px) {
   .kl-next-inner { padding: 1.8rem 1.2rem; }

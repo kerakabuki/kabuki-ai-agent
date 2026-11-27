@@ -5,10 +5,12 @@
 // ダークテーマ・CSSプレフィックス: kg-
 // =========================================================
 
+import { KERA_SITE_URL, KERA_OGP_URL } from "./kera_brand.js";
+
 export function keraGuidePageHTML() {
 
   const FAQ_ITEMS = [
-    { q: "公演はいつですか？", a: "毎年9月第4土曜日（白山神社祭礼）に定期公演を行っています。17:00開演が目安ですが、年によって変わることがあります。最新情報は公式InstagramやWebサイトでご確認ください。" },
+    { q: "公演はいつですか？", a: "毎年9月第4土曜日（白山神社祭礼）に定期公演を行っています。次回は令和9年（2027年）9月の予定です。日時は決まり次第、公式サイトや公式Instagramでお知らせします。公演のご案内は、公式サイトの「公演案内の受け取り」から登録できます。" },
     { q: "入場料はかかりますか？予約は必要？", a: "気良座での定期公演は予約不要・自由席・無料です（ご祝儀・おひねり歓迎）。チケットも不要なので、そのまま会場にお越しください。" },
     { q: "写真・動画撮影はできますか？", a: "撮影についてのルールは公演ごとに案内があります。当日のアナウンスや掲示を必ずご確認ください。" },
     { q: "トイレはありますか？", a: "明宝歴史民俗資料館のトイレをご利用ください。" },
@@ -40,10 +42,11 @@ export function keraGuidePageHTML() {
 <meta name="description" content="気良歌舞伎の観劇ガイド。地歌舞伎とは何か、観劇マナー、気良座へのアクセス、周辺情報、よくある質問をまとめました。">
 <meta property="og:title" content="はじめての方へ — 気良歌舞伎">
 <meta property="og:description" content="気良歌舞伎の観劇ガイド。地歌舞伎とは、観劇マナー、アクセス、FAQ。">
-<meta property="og:image" content="https://kabukiplus.com/assets/ogp/ogp_kabukiplus_top.png">
+<meta property="og:image" content="${KERA_OGP_URL}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="気良歌舞伎">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="${KERA_SITE_URL}/guide">
 <link rel="icon" href="/assets/kera-favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/assets/kera-touch-icon.png">
 <meta name="theme-color" content="#0a0a0f">
@@ -87,6 +90,7 @@ export function keraGuidePageHTML() {
     <p class="kg-reveal">「地歌舞伎（じかぶき）」とは、地域の人々が自ら演じる歌舞伎のことです。プロの役者が演じる大歌舞伎（松竹歌舞伎）とは異なり、農家や会社員、学生など、ふだんは別の仕事を持つ人たちが舞台に立ちます。</p>
     <p class="kg-reveal">岐阜県は全国でも地歌舞伎が最も盛んな地域のひとつ。県内には30以上の保存会が活動しており、江戸時代から続く芝居小屋や舞台が数多く残っています。</p>
     <p class="kg-reveal">気良歌舞伎は、岐阜県郡上市明宝気良（けら）地区に伝わる地歌舞伎です。人口400人に満たない山あいの集落で、2005年に17年ぶりに復活。以来、毎年秋の白山神社祭礼で公演を重ねてきました。</p>
+    <p class="kg-reveal"><strong><span style="display:inline-block">約130世帯の山里で、</span><span style="display:inline-block">約40人の一座が、</span><span style="display:inline-block">1937年築の講堂を</span><span style="display:inline-block">芝居小屋にした。</span></strong><br>それが会場の「気良座」です。旧明方小学校の木造講堂（郡上市指定重要文化財）を一座が自分たちの手で改修し、2024年に開場しました。</p>
     <div class="kg-highlight kg-reveal">
       <p><strong>大歌舞伎と地歌舞伎のちがい</strong></p>
       <ul>
@@ -157,7 +161,7 @@ export function keraGuidePageHTML() {
   <div class="kg-access-info kg-reveal">
     <div class="kg-access-venue">
       <h3 class="kg-access-venue-name">気良座（けらざ）</h3>
-      <p class="kg-access-venue-sub">旧明方小学校木造講堂（2024年開場）</p>
+      <p class="kg-access-venue-sub"><span style="display:inline-block">1937年築の旧明方小学校木造講堂</span><span style="display:inline-block">（郡上市指定重要文化財）</span><span style="display:inline-block">・2024年開場</span></p>
     </div>
     <div class="kg-access-detail">
       <div class="kg-access-row">

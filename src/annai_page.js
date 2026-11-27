@@ -6,6 +6,8 @@
 // スタンドアロン HTML・ダークテーマ・CSSプレフィックス: an-
 // =========================================================
 
+import { KERA_SITE_URL, KERA_OGP_URL } from "./kera_brand.js";
+
 export function annaiPageHTML() {
   return `<!DOCTYPE html>
 <html lang="ja">
@@ -16,10 +18,11 @@ export function annaiPageHTML() {
 <meta name="description" content="気良歌舞伎の公演案内を、メール・郵送からお選びいただけます。登録・変更・停止はこのページから。">
 <meta property="og:title" content="公演案内の受け取り方法 — 気良歌舞伎">
 <meta property="og:description" content="メール・郵送からお選びいただけます。">
-<meta property="og:image" content="https://kabukiplus.com/assets/ogp/ogp_kabukiplus_top.png">
+<meta property="og:image" content="${KERA_OGP_URL}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="気良歌舞伎">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="${KERA_SITE_URL}/annai">
 <link rel="icon" href="/assets/kera-favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/assets/kera-touch-icon.png">
 <meta name="theme-color" content="#0a0a0f">

@@ -6,6 +6,10 @@
 // ダークテーマ・CSSプレフィックス: pc-
 // =========================================================
 
+import { KERA_SITE_URL, KERA_OGP_URL } from "./kera_brand.js";
+import { SURVEY_2026 } from "./survey_2026.js";
+import { surveyOpen } from "./survey.js";
+
 export function postcardPageHTML() {
 
   // ── 宿泊（気良・明宝エリア）──
@@ -80,11 +84,12 @@ export function postcardPageHTML() {
 <meta name="description" content="令和八年 気良歌舞伎公演「曽根崎心中」9月26日（土）17:00開場 18:00開演。入場無料・予約不要。アクセス、駐車場、宿泊、観劇のしかたをまとめました。">
 <meta property="og:title" content="ご来場ガイド — 令和八年 気良歌舞伎公演">
 <meta property="og:description" content="9月26日（土）18:00開演「曽根崎心中」。アクセス・宿泊・観劇のしかた。">
-<meta property="og:image" content="https://kabukiplus.com/assets/ogp/ogp_kabukiplus_top.png">
+<meta property="og:image" content="${KERA_OGP_URL}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="気良歌舞伎">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="robots" content="noindex">
+<link rel="canonical" href="${KERA_SITE_URL}/pc">
 <link rel="icon" href="/assets/kera-favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/assets/kera-touch-icon.png">
 <meta name="theme-color" content="#0a0a0f">
@@ -97,6 +102,7 @@ export function postcardPageHTML() {
 <body>
 
 <!-- ═══════ HERO ═══════ -->
+<div class="pc-ended">令和八年公演は、満員のうちに終演しました。ご来場ありがとうございました。<br><a href="/kerakabuki/annai">次回公演のご案内を受け取る →</a>${surveyOpen(SURVEY_2026) ? `<br><a href="/kerakabuki/survey/2026">ご来場の皆さまへ：アンケートにご協力ください →</a>` : ""}</div>
 <header class="pc-hero">
   <p class="pc-hero-kicker">令和八年　気良歌舞伎公演</p>
   <h1 class="pc-hero-title">曽根崎心中</h1>
@@ -241,6 +247,14 @@ body {
 }
 a { color: inherit; }
 img { max-width: 100%; display: block; }
+
+/* ── 終演のお知らせ ── */
+.pc-ended {
+  padding: 0.9rem 1.2rem; text-align: center;
+  font-size: 0.86rem; line-height: 1.8; color: #e8e4dc;
+  background: rgba(197,162,85,0.14); border-bottom: 1px solid rgba(197,162,85,0.3);
+}
+.pc-ended a { color: #e8c96a; text-decoration: none; }
 
 /* ── HERO ── */
 .pc-hero {

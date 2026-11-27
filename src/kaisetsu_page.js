@@ -10,6 +10,7 @@
 // CSSプレフィックス: ks-
 // =========================================================
 
+import { KERA_SITE_URL, KERA_OGP_URL } from "./kera_brand.js";
 import { KAISETSU as K } from "./kera_kaisetsu.js";
 
 export function kaisetsuPageHTML() {
@@ -63,6 +64,8 @@ export function kaisetsuPageHTML() {
 <meta property="og:description" content="全三場のあらすじと見どころ。">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="気良歌舞伎">
+<meta property="og:image" content="${KERA_OGP_URL}">
+<link rel="canonical" href="${KERA_SITE_URL}/kaisetsu">
 <link rel="icon" href="/assets/kera-favicon-32.png" type="image/png" sizes="32x32">
 <meta name="theme-color" content="#07070a">
 <link rel="preconnect" href="https://fonts.googleapis.com">

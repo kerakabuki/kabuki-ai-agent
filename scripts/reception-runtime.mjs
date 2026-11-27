@@ -4,13 +4,13 @@ import { resolve } from 'node:path';
 const require = createRequire(process.env.RECEPTION_DEPS || resolve('kabuki-post-365/package.json'));
 const { Miniflare } = require('miniflare');
 const { build } = require('esbuild');
-export async function runtime({ persist = false } = {}) {
+export async function runtime({ persist = false, bindings = {} } = {}) {
   await mkdir('.reception-build', { recursive: true });
   await build({ entryPoints: ['worker.js'], outfile: '.reception-build/worker.mjs', bundle: true, format: 'esm', platform: 'browser', target: 'es2022', logLevel: 'warning' });
   const mf = new Miniflare({
     modules: true, scriptPath: resolve('.reception-build/worker.mjs'), compatibilityDate: '2026-09-21',
     kvNamespaces: ['CHAT_HISTORY'], d1Databases: ['RECEPTION_DB'], r2Buckets: ['ASSETS_BUCKET', 'CONTENT_BUCKET', 'ENMOKU_BUCKET', 'QUIZ_BUCKET'],
-    bindings: { RECEPTION_PREVIEW: '1' },
+    bindings: { RECEPTION_PREVIEW: '1', ...bindings },
     ...(persist ? { d1Persist: resolve('.reception-preview-state'), kvPersist: resolve('.reception-preview-kv') } : {}),
   });
   const db = await mf.getD1Database('RECEPTION_DB');
