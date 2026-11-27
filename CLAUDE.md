@@ -53,6 +53,19 @@ This repo is **not only the Workers** — it also holds the operator's kabuki re
 | `triager` | Haiku | 要約・分類・カウント・下処理 | 読み取り専用 |
 | `researcher` | Sonnet | Web調査・文献収集・公演情報の裏取り | 読み取り＋Web（`research/` への保存可） |
 
+### 外部AIとの分担（司令塔運用）
+
+ユーザーは「作りたいもの」と条件だけを伝える。Claude が企画・原稿・最終レビューを持ち、外部AIへの依頼と結果回収も Claude が直接行う（**ユーザーに依頼文や結果を別チャットへ貼り直させない**）。
+
+| 担当 | 何を | 入口 | 記録 |
+|---|---|---|---|
+| Claude | 企画・原稿・依頼書・最終レビューと報告 | — | — |
+| Codex | 実装・動画音声の加工・検証 | `/codex-build`（`.codex-handoff/requests/` に依頼書を置いて run） | `.codex-handoff/runs/<日時>/` |
+| Gemini | 映像・音声・PDF・画像の分析（場面探し・内容確認） | `node scripts/gemini/ask.mjs run --task <依頼書.md> --media <ファイル or YouTube URL> [--json]` | `.gemini-handoff/runs/<日時>/result.md`・`result.json` |
+
+- Gemini の依頼書は `.gemini-handoff/requests/` に置く。出力形式（JSON の形）を依頼書で指定し、`--json` で `result.json` に取り出す。ローカルファイルは Files API に一時アップロードし、回答後に削除される。既定モデルは `gemini-pro-latest`（`ask.mjs models` で一覧）。キーは既存の `.gemini_api_key`
+- 流れの基本形: Gemini が時刻つきの候補を返す → Codex がその時刻で切り出す・加工する（静止画は `scripts/video/extract_frames.mjs`）→ Claude が実物（画像・差分）を見て判断し、ユーザーに報告する。Gemini の時刻や説明は鵜呑みにせず、Claude が画で確かめる
+
 ## Build & Deploy
 
 ```bash
