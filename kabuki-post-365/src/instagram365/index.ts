@@ -5,7 +5,8 @@ import type {Env} from '../types';
 import {readFeedSummary,readFeedRangeSummary} from './lib/summary';
 
 const PREFIX='/api/v1/instagram-schedule-20261029';
-const START='2026-10-30',END='2026-11-30',LOG='instagram-schedule-20261029:';
+// 期間は policies.ts の先頭と末尾の日付に合わせる（12月の朝31枠を足して 2026-12-31 まで）
+const START='2026-10-30',END='2026-12-31',LOG='instagram-schedule-20261029:';
 export function clock(at=Date.now()){const d=new Date(at+32400000);return{date:d.toISOString().slice(0,10),hour:d.getUTCHours(),minute:d.getUTCMinutes()};}
 export function select(at=Date.now()){const c=clock(at),slot=c.hour===8?'morning':c.hour===19?'evening':null;return POLICIES.find(p=>p.date===c.date&&p.slot===slot);}
 const json=(value:unknown,status=200)=>new Response(JSON.stringify(value),{status,headers:{'Content-Type':'application/json','Cache-Control':'no-store'}});
@@ -39,7 +40,7 @@ export default {
  async scheduled(controller:ScheduledController,env:Env,ctx:ExecutionContext){
   const when=controller.scheduledTime,c=clock(when);
   if(c.date<START)return existing.scheduled(controller,env,ctx);
-  // This owner never falls through to an expired campaign or extends beyond approved November content.
+  // This owner never falls through to an expired campaign or extends beyond approved content (through 2026-12-31).
   await env.KV.put(LOG+'last-cron',JSON.stringify({at:new Date().toISOString(),scheduledAt:new Date(when).toISOString(),cron:controller.cron,date:c.date,hour:c.hour}),{expirationTtl:5184000});
   if(c.date>END)return;
   const p=select(when);if(!p)return;

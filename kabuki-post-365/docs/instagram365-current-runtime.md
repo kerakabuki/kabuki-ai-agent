@@ -4,13 +4,22 @@
 
 ## 現在の予定と記録
 
-- 対象期間：2026-10-30〜2026-11-30、朝8時32件、夕19時4件（11/11・12・25・26）。計36件、11月分は34件。
+- 対象期間：2026-10-30〜2026-12-31。11月までは朝8時32件・夕19時4件（11/11・12・25・26）の36件、12月は朝8時31件（2026-11-27 承認、下記）。計67件。
 - UTC cron：`*/15 23 * * *` と `*/15 10-12 * * *`。期間内の割当済み8時・19時枠だけを選ぶ。20時・21時や未割当の夕枠では公開しない。
-- 11月30日終了後は新しい自動投稿を作成せず、旧日次処理へ戻らない。12月以降の新規計画は今回の対象外。
+- 12月31日終了後は新しい自動投稿を作成せず、旧日次処理へ戻らない。2027年1月以降の計画は未設定。
 - 計画は `src/instagram365/lib/policies.ts`、実績は D1 `manual_announcements`。従来の `posts` の未投稿・下書き表示は、この36枠の実行成否を表さない。
 - 認証済み GET `/api/v1/instagram-schedule-20261029/summary?date=YYYY-MM-DD` と `?from=YYYY-MM-DD&to=YYYY-MM-DD` は表示専用。SELECTのみで、投稿・照合処理・外部API呼び出しを起こさない。最大31日の差まで。
 - `/` と `/calendar` は上記実績を表示し、保存済み公開URLへリンクする。未確認は未確認として表示し、自動的に成功や再送へ変えない。記録表示自体はInstagramの投稿を毎回再取得する機能ではない。
 - APIの `/plan`、`/health`、各日 `/status`、`/readiness` は既存経路を維持。`/publish` や旧手動実行APIは監査・表示確認で呼び出さない。
+
+## 2026年12月の朝8時31枠（2026-11-27 追加）
+
+- 正本はユーザー承認済みの `気良歌舞伎事務/SNS投稿/2026-11-27_12月朝の写真予約/12月朝_予約案.json`（第4版。曽根崎心中の撮影者表記を足した第5版の写しは `.cache/dec-2026/source/12月朝_予約案.v5.json`）。本文は `text + "\n\n" + plays[play].credit + "\n\n" + cta_text + "\n" + plays[play].tags` の固定文（撮影者表記がある枠は credit の後に `"\n" + requiredCredit`）（`fixedCaption: true`、`youtubeRules: []`、`youtubeCta` は `cta_text`）。12月に夕方枠は無い（夕方19:35のリールは Meta 側の予約で、この Worker は触らない）。
+- 撮影者表記は『曽根崎心中』の6枠（12/26〜31）だけ（2026-11-27 ユーザー決定）。本番 `settings.image_required_credits` の文字列（#245・#268「撮影:篠田重規 様」、#284・#295・#298・#300「撮影：カヤバデザイン」）を `requiredCredit` に入れ、本文では credit の文の次の行に置く（11月の与三「撮影：山田浩二」と同じ形）。投稿前の照合（`required_photo_credit_changed`）は本文の行（前後の空白を除く）に設定の文字列と完全一致する行があるかを見る。ほかの25枠（2023年の与三の役者写真を含む）は表記なし（`requiredCredit` 空）。
+- requestId は `instagram-scheduled-20261029:2026-12-DD:morning`、承認参照は `instagram-december-20261127:<requestId>:<deliverySha256>:<captionSha256>`。既存36件は1バイトも変えず、`policies.ts` の末尾に足した。`index.ts` の `END` と `summary.ts` の `endDate` は 2026-12-31。
+- 同じ写真は14日以上あける（11月末の #306・#324・#326・#330 の使用を含め、最短14日）。
+- Instagram の縦横比の下限（4:5）を下回る縦長写真（既存 #137 と、2023年『切られ与三』の役者写真3枚）は 4:5 に切った配信画像を新しい D1 写真として登録して使う（#137 の R2 原本は変えない）。登録前の `policies.ts` ではこの5枠の imageId が仮の負の値で、そのまま配備しても投稿前の照合で止まる。
+- 作業一式は `kabuki-post-365/.cache/dec-2026/`（gitignore）。`read-state.mjs`（本番の読み取り）→ `prepare-photos.py`（配信画像）→ `build.mjs`（policies.ts）→ `test.mjs`（オフライン検証）、本番への書き込みは `register-and-upload.mjs --execute` だけ（既定は dry-run）。手順と結果は同フォルダの `result.md`。
 
 ## 実装の境界
 

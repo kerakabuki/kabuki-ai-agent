@@ -12,7 +12,7 @@ function instagramLink(value:string|null):string|null {
 // This endpoint performs SELECTs only; it cannot claim, publish or reconcile a post.
 export async function readFeedSummary(env:Env,date:string|null){
  if(!date||!/^\d{4}-\d{2}-\d{2}$/.test(date)||!Number.isFinite(Date.parse(date+'T00:00:00Z'))||new Date(date+'T00:00:00Z').toISOString().slice(0,10)!==date)throw new ManualError('valid_date_required',400);
- const startDate='2026-10-30',endDate='2026-11-30';
+ const startDate='2026-10-30',endDate='2026-12-31';
  const mode=date<startDate?'legacy':date>endDate?'ended':'scheduled';
  const entries=[];
  for(const p of POLICIES.filter(p=>p.date===date)){
