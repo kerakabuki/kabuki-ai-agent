@@ -2,6 +2,7 @@ import type { Env } from '../types';
 import { logGeminiUsage, type GeminiUsage } from './gemini-usage';
 import { buildCtaText } from './cta';
 import { pickCompositionStyle, fetchRecentOpenings, buildVariationPrompt } from './post-style';
+import { threePlayOwnsDate } from './three-plays';
 
 interface GeneratedTexts {
   instagram_text: string;
@@ -22,6 +23,7 @@ export async function generatePostText(
   platform?: string,
   customPrompt?: string,
 ): Promise<GeneratedTexts> {
+  if (threePlayOwnsDate(settings, String(post.post_date))) throw new Error('3演目モードでは出典と一致する承認済み本文を使用します');
   // character_name は添付画像に紐づくキャラクターのみ（JOIN側で保証）。無ければ空
   const characterName = post.character_name as string || '';
   const characterDesc = post.character_description as string || '';
@@ -179,6 +181,14 @@ X・Blueskyの本文末尾に追記するクイズの正解と解説を書いて
   const style = pickCompositionStyle(postDate, theme, !!characterName, !!(visualFeatures || sceneType));
   const recentOpenings = await fetchRecentOpenings(env);
   const variationPrompt = buildVariationPrompt(style, recentOpenings);
+  const editorialPhoto = ['公演写真','役者ブロマイド'].includes(theme);
+  const editorialRules = editorialPhoto ? `【公演写真・ブロマイドの編集方針（長い構成型より優先）】
+本文は40〜160字。気良歌舞伎自身の公演記録として、写真や資料で確認できる内容を一つだけ届ける。
+衣裳の色・手・視線を並べただけの説明で終わらない。役名・場面・人物の関係は検品済みの根拠がある場合だけ書く。
+写真だけでは役名・出演者名・台詞・心情を推測しない。稽古の苦労や観客の反応を創作しない。
+『写真からも想像します』『伝わってきます』『感じられます』『一瞬を切り取った』『目が留まります』で水増ししない。
+根拠不足なら公演日・演目・写真の位置付けを簡潔に記す。無理に感想、まとめ、問いかけ、フォロー誘導を足さない。
+写真に指定された撮影者表記を省略しない。` : '';
   console.log(`Composition style for ${postDate} (${theme}): ${style ? style.id : 'none (fixed-format theme)'}`);
 
   const userPrompt = `以下の情報をもとに、SNS投稿文を作成してください。
@@ -206,6 +216,7 @@ Instagramだけの投稿文を作成してください。他SNSの文章は出�
 写真の撮影日が不明な場合、「今日」「今夜の稽古」など現在の出来事として書かないでください。
 本文は150〜250字を目安に、ハッシュタグは最大5個。読み上げ用の台本やMarkdownは不要です。
 ${promptParts}
+${editorialRules}
 以下のJSON形式だけで回答してください：
 {"instagram_text":"...","instagram_hashtags":"..."}`;
 

@@ -1,5 +1,6 @@
 import type { Env } from '../types';
 import { creditedCaption, requiredImageCredits, isPhotoOnlyDate } from './publication-policy';
+import { threePlayOwnsDate } from './three-plays';
 
 export interface ReelPhoto { id: number; key: string; caption: string }
 export interface ReelManifest {
@@ -46,6 +47,7 @@ export async function makeManifest(env: Env, postId: number): Promise<ReelManife
   if (!s.reel_bgm_key) return null;
   const p = await env.DB.prepare(`SELECT p.*,i.r2_key,i.verified,i.privacy_excluded,i.play_name,i.scene_type
     FROM posts p LEFT JOIN images i ON i.id=p.image_id WHERE p.id=?`).bind(postId).first<SourceRow>();
+  if (p && threePlayOwnsDate(s, p.post_date)) return null;
   if (!p || !p.image_id || !p.r2_key || !p.verified || p.privacy_excluded || !p.instagram_text) return null;
   const photos: ReelPhoto[] = [{id:p.image_id,key:p.r2_key,caption:p.play_name || '気良歌舞伎'}];
   // Supporting photos must belong to the same verified play. Never mix unrelated scenes.
@@ -72,6 +74,7 @@ export async function prepareReels(env: Env) {
     ORDER BY post_date,id`).bind(today,through,s.reels_start_date || today).all<{id:number;post_date:string}>();
   let queued=0;
   for (const p of results) {
+    if (threePlayOwnsDate(s, p.post_date)) continue;
     if (isPhotoOnlyDate(s,p.post_date)) continue;
     const manifest=await makeManifest(env,p.id);
     if (!manifest) continue;

@@ -1,8 +1,10 @@
 import type { Env } from '../types';
+import { currentFeedSlot, type FeedSlot } from './feed-slots';
 import { requiredImageCredits, isPhotoOnlyDate } from './publication-policy';
 import { assetUrl,captionFor,currentJob,ensureCrossposts,jstDate,publicBase,settings } from './reels';
-interface PublishPost {
-  id:number; image_id:number; post_date:string; auto_publish:number; status:string; instagram_posted:number;
+import { guardThreePlayPublication, type ThreePlayPost } from './three-plays';
+interface PublishPost extends ThreePlayPost {
+  publish_slot:FeedSlot; id:number; image_id:number; post_date:string; auto_publish:number; status:string; instagram_posted:number;
   instagram_text:string|null; instagram_hashtags:string|null; r2_key:string|null;
   verified:number; privacy_excluded:number; content_type:string; publish_state:string;
   publish_container_id:string|null; publish_started_at:string|null; published_media_key:string|null;
@@ -44,7 +46,7 @@ export async function publishInstagram(env:Env,postId:number,automatic=false):Pr
   const s=await settings(env);
   if((s.disabled_platforms||'').split(',').map(x=>x.trim()).includes('instagram')) return fail('Instagramは停止中です');
   if(!env.INSTAGRAM_USER_ID||!env.META_ACCESS_TOKEN) return fail('Instagram認証が未設定です');
-  if(automatic&&(!p.auto_publish||p.post_date!==jstDate()||!['draft','approved'].includes(p.status))) return fail('自動投稿の対象ではありません');
+  if(automatic&&(!p.auto_publish||p.post_date!==jstDate()||p.publish_slot!==currentFeedSlot(s)||!['draft','approved'].includes(p.status))) return fail('自動投稿の対象ではありません');
   if(!p.r2_key||p.privacy_excluded||(automatic&&!p.verified)) return fail('検品済みの使用可能な写真が必要です');
   if(!p.instagram_text) return fail('投稿文がありません');
   // Never resend a publish request with an uncertain response.
@@ -62,11 +64,13 @@ export async function publishInstagram(env:Env,postId:number,automatic=false):Pr
     }
     return fail('公開結果を確認中です。重複防止のため再送信しません');
   }
+  const curated = await guardThreePlayPublication(env,s,p,{date:jstDate(),slot:currentFeedSlot(s)});
+  if (curated.error) return fail(curated.error);
   if(!p.publish_container_id) {
     if(p.publish_state==='creating'&&p.publish_started_at&&Date.now()-Date.parse(p.publish_started_at.replace(' ','T')+'Z')<120000)
       return {platform:'instagram',success:false,pending:true,error:'メディアを登録しています'};
     let key=p.r2_key,isReel=false;
-    let caption=captionFor(p.instagram_text,p.instagram_hashtags,requiredImageCredits(s,[p.image_id]));
+    let caption=curated.caption || captionFor(p.instagram_text,p.instagram_hashtags,requiredImageCredits(s,[p.image_id]));
     if(p.content_type==='reel'&&s.reels_enabled==='1'&&!isPhotoOnlyDate(s,p.post_date)) {
       const job=await currentJob(env,p.id);
       if(job?.status==='ready'&&job.video_key){
@@ -78,9 +82,10 @@ export async function publishInstagram(env:Env,postId:number,automatic=false):Pr
     const lock=await env.DB.prepare(`UPDATE posts SET publish_state='creating',publish_started_at=datetime('now'),published_media_key=?,published_caption=?,publish_error=NULL
       WHERE id=? AND instagram_posted=0 AND publish_container_id IS NULL
       AND (publish_state IN ('idle','failed') OR (publish_state='creating' AND publish_started_at<datetime('now','-2 minutes')))
-      ${automatic?`AND NOT EXISTS(SELECT 1 FROM posts other WHERE other.post_date=posts.post_date AND other.id<>posts.id AND (other.instagram_posted=1 OR other.publish_state IN ('creating','processing','publishing','uncertain')))` : ''}
+      ${automatic || curated.managed?`AND NOT EXISTS(SELECT 1 FROM posts other WHERE other.post_date=posts.post_date AND other.publish_slot=posts.publish_slot AND other.id<>posts.id AND (other.instagram_posted=1 OR other.publish_state IN ('creating','processing','publishing','uncertain')))` : ''}
+      ${curated.managed?`AND NOT EXISTS(SELECT 1 FROM posts other WHERE other.id<>posts.id AND other.instagram_posted=0 AND other.publish_state IN ('publishing','uncertain'))`:''}
       RETURNING id`).bind(key,caption,p.id).first();
-    if(!lock) return {platform:'instagram',success:false,skipped:true,error:'処理中、または当日の投稿は完了しています'};
+    if(!lock) return {platform:'instagram',success:false,skipped:true,error:'処理中、またはこの時間帯の投稿は完了しています'};
     try {
       const media=await graph(env,`${env.INSTAGRAM_USER_ID}/media`,isReel
         ?{media_type:'REELS',video_url:assetUrl(publicBase(s),key),caption,share_to_feed:true}
@@ -111,10 +116,39 @@ export async function publishInstagram(env:Env,postId:number,automatic=false):Pr
       return fail('公開済みメディアの照合が必要です');
     }
     if(status!=='FINISHED') return {platform:'instagram',success:false,pending:true,error:'Instagramで動画を処理中です'};
-    const claim=await env.DB.prepare(`UPDATE posts SET publish_state='publishing',publish_started_at=datetime('now') WHERE id=? AND publish_state='processing' AND instagram_posted=0 RETURNING id`).bind(p.id).first();
+    // Re-read both policy and row immediately before the irreversible publication request.
+    const latestSettings=await settings(env);
+    if ((latestSettings.disabled_platforms||'').split(',').map(x=>x.trim()).includes('instagram')) return fail('Instagramは停止中です');
+    const latest=await env.DB.prepare('SELECT * FROM posts WHERE id=?').bind(p.id).first<PublishPost>();
+    if (!latest) return fail('公開直前に投稿が変更されました');
+    if (latest.publish_container_id!==p.publish_container_id) return fail('処理を確認したコンテナが変更されています');
+    const finalGuard=await guardThreePlayPublication(env,latestSettings,latest,{date:jstDate(),slot:currentFeedSlot(latestSettings)});
+    if (finalGuard.error) return fail(finalGuard.error);
+    if (!latest.publish_container_id) return fail('公開直前にコンテナが変更されました');
+    const photo=finalGuard.photo;
+    if (photo && (latest.post_date!==jstDate() || latest.publish_slot!==currentFeedSlot(latestSettings))) return fail('公開枠の時刻を過ぎたためスキップします');
+    const claim=await env.DB.prepare(`UPDATE posts SET publish_state='publishing',publish_started_at=datetime('now') WHERE id=? AND publish_state='processing' AND instagram_posted=0
+      ${photo ? `AND theme=? AND image_id=? AND instagram_text=? AND COALESCE(instagram_hashtags,'')=? AND content_type='photo'
+      AND post_date=? AND publish_slot=? AND auto_publish=1 AND character_id IS ? AND status='approved'
+      AND publish_container_id=? AND published_media_key=? AND published_caption=?
+      AND EXISTS(SELECT 1 FROM settings WHERE key='ig_editorial_mode' AND value=?)
+      AND EXISTS(SELECT 1 FROM settings WHERE key='ig_three_plays_manifest_v1' AND value=?)
+      AND COALESCE((SELECT value FROM settings WHERE key='disabled_platforms'),'')=?
+      AND COALESCE((SELECT value FROM settings WHERE key='image_required_credits'),'')=?
+      AND EXISTS(SELECT 1 FROM images i LEFT JOIN characters c ON c.id=i.character_id WHERE i.id=posts.image_id
+        AND i.verified=1 AND i.privacy_excluded=0 AND i.r2_key=? AND i.play_name=? AND COALESCE(i.scene_type,'') NOT LIKE '%AI生成%'
+        ${photo.kind==='portrait' ? `AND i.character_id=? AND c.name=? AND c.navi_enmoku_id=? AND c.navi_cast_id=?
+          AND (i.scene_type LIKE '%ポートレート%' OR LOWER(i.scene_type) LIKE '%portrait%' OR i.scene_type LIKE '%ブロマイド%')`
+          : `AND (i.scene_type LIKE '%舞台%' OR LOWER(i.scene_type) LIKE '%stage%') AND i.scene_type NOT LIKE '%ポートレート%' AND LOWER(i.scene_type) NOT LIKE '%portrait%' AND i.scene_type NOT LIKE '%ブロマイド%'`})
+      AND NOT EXISTS(SELECT 1 FROM posts other WHERE other.post_date=posts.post_date AND other.publish_slot=posts.publish_slot AND other.id<>posts.id AND (other.instagram_posted=1 OR other.publish_state IN ('creating','processing','publishing','uncertain')))
+      AND NOT EXISTS(SELECT 1 FROM posts other WHERE other.id<>posts.id AND other.instagram_posted=0 AND other.publish_state IN ('publishing','uncertain'))` : ''} RETURNING id`)
+      .bind(p.id,...(photo ? [latest.theme,latest.image_id,latest.instagram_text,latest.instagram_hashtags||'',latest.post_date,latest.publish_slot,
+        latest.character_id,latest.publish_container_id,latest.published_media_key,latest.published_caption,
+        latestSettings.ig_editorial_mode,latestSettings.ig_three_plays_manifest_v1,latestSettings.disabled_platforms||'',latestSettings.image_required_credits||'',photo.r2Key,photo.playName,
+        ...(photo.kind==='portrait' ? [photo.characterId,photo.characterName,photo.playId,photo.naviCastId] : [])] : [])).first();
     if(!claim) return fail('別の処理が公開確認中です');
     try {
-      const published=await graph(env,`${env.INSTAGRAM_USER_ID}/media_publish`,{creation_id:p.publish_container_id});
+      const published=await graph(env,`${env.INSTAGRAM_USER_ID}/media_publish`,{creation_id:latest.publish_container_id});
       if(!published.id) throw new Error('公開IDが返りませんでした');
       return await finished(env,p,published.id);
     }catch(e){

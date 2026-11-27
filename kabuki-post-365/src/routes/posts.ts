@@ -60,12 +60,14 @@ postsRoutes.get('/:id', async (c) => {
 postsRoutes.post('/', async (c) => {
   const body = await c.req.json();
   const imageId = body.image_id ? Number(body.image_id) : null;
+  const slot=body.publish_slot||'morning';
+  if(!['morning','evening'].includes(slot)) return c.json({error:'Invalid feed slot'},400);
   if (imageId && await isPrivacyExcluded(c.env, imageId)) {
     return c.json({ error: 'この写真は個人情報保護のため投稿対象外です' }, 400);
   }
   const result = await c.env.DB.prepare(
-    `INSERT INTO posts (post_date, day_of_week, theme, image_id, character_id, special_day, instagram_text, instagram_hashtags, x_text, x_hashtags, facebook_text, facebook_hashtags, cta_type, cta_url, status, auto_publish)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    `INSERT INTO posts (post_date, day_of_week, theme, image_id, character_id, special_day, instagram_text, instagram_hashtags, x_text, x_hashtags, facebook_text, facebook_hashtags, cta_type, cta_url, status, auto_publish, publish_slot)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).bind(
     body.post_date, body.day_of_week, body.theme,
     imageId, body.character_id || null, body.special_day || null,
@@ -73,7 +75,7 @@ postsRoutes.post('/', async (c) => {
     body.x_text || null, body.x_hashtags || null,
     body.facebook_text || null, body.facebook_hashtags || null,
     body.cta_type || null, body.cta_url || null,
-    body.status || 'draft', body.auto_publish===1?1:0
+    body.status || 'draft', body.auto_publish===1?1:0,slot
   ).run();
   return c.json({ id: result.meta.last_row_id }, 201);
 });
@@ -84,10 +86,11 @@ postsRoutes.put('/:id',async c=>{
  const old=await c.env.DB.prepare('SELECT * FROM posts WHERE id=?').bind(id).first<Record<string,unknown>>();
  if(!old)return c.json({error:'Not found'},404);
  if(old.instagram_posted||!['idle','failed'].includes(String(old.publish_state)))return c.json({error:'公開済み・処理中の投稿は変更できません'},409);
- const allowed=['theme','image_id','character_id','special_day','instagram_text','instagram_hashtags','cta_type','cta_url','quiz_answer_comment','auto_publish','content_type'];
+ const allowed=['theme','image_id','character_id','special_day','instagram_text','instagram_hashtags','cta_type','cta_url','quiz_answer_comment','auto_publish','content_type','publish_slot'];
  const updates:Record<string,unknown>={};for(const k of allowed)if(k in b)updates[k]=b[k];
  if('image_id' in updates && updates.image_id && await isPrivacyExcluded(c.env,Number(updates.image_id)))return c.json({error:'投稿除外の写真です'},400);
  if('auto_publish' in updates)updates.auto_publish=updates.auto_publish===1?1:0;
+ if('publish_slot' in updates&&!['morning','evening'].includes(String(updates.publish_slot)))return c.json({error:'Invalid feed slot'},400);
  if('content_type' in updates&&!['photo','reel'].includes(String(updates.content_type)))return c.json({error:'Invalid content type'},400);
  if('image_id' in updates&&updates.image_id!==old.image_id&&(!('instagram_text' in updates)||updates.instagram_text===old.instagram_text)){
    updates.instagram_text=null;updates.instagram_hashtags=null;
@@ -105,10 +108,10 @@ postsRoutes.post('/:id/schedule',async c=>{
   if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||date<new Date(Date.now()+32400000).toISOString().slice(0,10))return c.json({error:'今日以降の日付を指定してください'},400);
   const p=await c.env.DB.prepare(`SELECT p.*,i.verified,i.privacy_excluded FROM posts p LEFT JOIN images i ON i.id=p.image_id WHERE p.id=?`).bind(id).first<Record<string,unknown>>();
   if(!p||p.instagram_posted||!p.verified||p.privacy_excluded||!['idle','failed'].includes(String(p.publish_state)))return c.json({error:'未公開で写真チェック済みの投稿を指定してください'},409);
-  const active=await c.env.DB.prepare(`SELECT id FROM posts WHERE post_date=? AND (instagram_posted=1 OR publish_state IN ('creating','processing','publishing','uncertain'))`).bind(date).first();
-  if(active)return c.json({error:'この日の投稿は処理中または公開済みです'},409);
+  const active=await c.env.DB.prepare(`SELECT id FROM posts WHERE post_date=? AND publish_slot=? AND (instagram_posted=1 OR publish_state IN ('creating','processing','publishing','uncertain'))`).bind(date,p.publish_slot).first();
+  if(active)return c.json({error:'この日の同じ時間帯は処理中または公開済みです'},409);
   await c.env.DB.batch([
-    c.env.DB.prepare(`UPDATE posts SET auto_publish=0 WHERE post_date=? AND instagram_posted=0 AND publish_state IN ('idle','failed')`).bind(date),
+    c.env.DB.prepare(`UPDATE posts SET auto_publish=0 WHERE post_date=? AND publish_slot=? AND instagram_posted=0 AND publish_state IN ('idle','failed')`).bind(date,p.publish_slot),
     c.env.DB.prepare(`UPDATE posts SET post_date=?,day_of_week=?,auto_publish=1,status='approved',content_type='reel',publish_state='idle',publish_container_id=NULL,updated_at=datetime('now') WHERE id=? AND instagram_posted=0 AND publish_state IN ('idle','failed')`).bind(date,new Date(`${date}T00:00:00Z`).getUTCDay(),id),
   ]);
   return c.json({success:true});

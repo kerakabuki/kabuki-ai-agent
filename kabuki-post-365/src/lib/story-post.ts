@@ -3,6 +3,7 @@ import { getJSTNow } from './daily-run';
 import { getDisabledPlatforms, getWorkerBaseUrl, buildR2ImageUrl } from './auto-post';
 import { postInstagramStory, type MetaConfig } from './sns/meta-api';
 import { notifyAdmin } from './line-notify';
+import { readThreePlaySettings, threePlayOwnsDate } from './three-plays';
 
 // ── 夕方の舞台裏ストーリーズ自動投稿 ──
 // 朝のフィード投稿（キャラ写真）とは別に、夕方19時台に舞台裏系の写真を1枚
@@ -34,6 +35,7 @@ function pickStorySlotForDate(date: string): { hour: number; minute: number } {
 /** 現在のcron発火がその日のストーリーズ実行スロットか判定。19:45は未実行時のキャッチアップ */
 export async function shouldRunStoryNow(env: Env): Promise<{ run: boolean; reason: string }> {
   const now = getJSTNow();
+  if (threePlayOwnsDate(await readThreePlaySettings(env), now.date)) return { run: false, reason: '3演目モードではStoriesを追加実行しません' };
   const target = pickStorySlotForDate(now.date);
 
   const doneKey = `story_done:${now.date}`;
@@ -102,6 +104,7 @@ export const STORY_POOL_WHERE = `verified = 1
  */
 export async function runEveningStory(env: Env): Promise<void> {
   const now = getJSTNow();
+  if (threePlayOwnsDate(await readThreePlaySettings(env), now.date)) return;
   console.log(`[story-post] Evening story start for ${now.date}`);
 
   // 全体を try/catch で包む。ここは waitUntil 内から呼ばれるため、D1/KV/ネットワークの

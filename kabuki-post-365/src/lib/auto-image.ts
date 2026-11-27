@@ -1,6 +1,7 @@
 import type { Env } from '../types';
 import { generateImage } from './image-gen';
 import { PREFERRED_IMAGE_PLAY_SQL, PREFERRED_IMAGE_REUSE_DAYS } from './image-priority';
+import { readThreePlaySettings, threePlayOwnsDate } from './three-plays';
 
 export interface ImageAssignResult {
   assigned: number;   // ライブラリから割当した件数
@@ -34,6 +35,7 @@ interface ImageRow {
  */
 export async function ensureImages(env: Env, date: string): Promise<ImageAssignResult> {
   const result: ImageAssignResult = { assigned: 0, generated: 0, errors: [] };
+  if (threePlayOwnsDate(await readThreePlaySettings(env), date)) return result;
 
   const { results: posts } = await env.DB.prepare(
     `SELECT id, theme, special_day FROM posts

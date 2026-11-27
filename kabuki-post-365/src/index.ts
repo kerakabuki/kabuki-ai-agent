@@ -1,3 +1,5 @@
+import { eveningFeedEnabled } from './lib/feed-slots';
+import { settings as readSettings } from './lib/reels';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import type { Env } from './types';
@@ -140,7 +142,8 @@ export default {
   async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
     // 夕方の舞台裏ストーリーズ窓（19:00-19:45 JST = 10:00-10:45 UTC）は別フローで処理する。
     // 日替わりで選ばれた1スロットだけ実投稿し、朝のフィード投稿フローには影響させない。
-    if (event.cron === '*/15 10 * * *') {
+    const eveningWindow = event.cron === '*/15 10 * * *' || event.cron === '*/15 10-12 * * *';
+    if (eveningWindow && !eveningFeedEnabled(await readSettings(env), getJSTNow().date)) {
       ctx.waitUntil((async () => {
         const { run, reason } = await shouldRunStoryNow(env);
         console.log(`[scheduled:story] ${reason}`);
@@ -152,12 +155,12 @@ export default {
 
     // Retry processing containers in the morning until a confirmed publication.
     ctx.waitUntil((async () => {
-      const { run, reason } = await shouldRunNow(env);
+      const { run, reason, slot } = await shouldRunNow(env);
       console.log(`[scheduled] ${reason}`);
       if (!run) return;
       const date = getJSTNow().date;
-      const report=await runDailyPipeline(env, date);
-      if(report.results.some(r=>r.platforms.some(p=>p.success))) await markDone(env,date);
+      const report=await runDailyPipeline(env, date, slot);
+      if(report.results.some(r=>r.platforms.some(p=>p.success))) await markDone(env,date,slot);
     })());
   },
 };

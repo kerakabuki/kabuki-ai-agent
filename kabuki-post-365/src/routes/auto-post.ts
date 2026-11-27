@@ -1,3 +1,5 @@
+import { eveningFeedEnabled } from '../lib/feed-slots';
+import { settings } from '../lib/reels';
 import { Hono } from 'hono';
 import type { Env } from '../types';
 import { executeAutoPost, postSinglePlatform } from '../lib/instagram-auto-post';
@@ -13,14 +15,16 @@ autoPostRoutes.post('/daily-run', async (c) => {
 });
 
 // GET /api/v1/auto-post/schedule — 今日・明日の投稿予定時刻（JST）を確認
-autoPostRoutes.get('/schedule', (c) => {
+autoPostRoutes.get('/schedule', async (c) => {
+  const s=await settings(c.env);
   const today = getJSTNow().date;
   const tomorrow = new Date(new Date(today).getTime() + 86400000).toISOString().slice(0, 10);
   const fmt = (d: string) => {
     const s = pickSlotForDate(d);
     return `${s.hour}:${String(s.minute).padStart(2, '0')}`;
   };
-  return c.json({ today: { date: today, time_jst: fmt(today) }, tomorrow: { date: tomorrow, time_jst: fmt(tomorrow) } });
+  const day=(date:string)=>({date,time_jst:fmt(date),slots:[{slot:'morning',time_jst:'09:00'},...(eveningFeedEnabled(s,date)?[{slot:'evening',time_jst:'19:00'}]:[])]});
+  return c.json({today:day(today),tomorrow:day(tomorrow)});
 });
 
 // POST /api/v1/auto-post/trigger — trigger auto-post for today (JST)

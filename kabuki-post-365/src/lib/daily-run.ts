@@ -1,9 +1,12 @@
+import { currentFeedSlot, doneKey, type FeedSlot } from './feed-slots';
+import { settings as readSettings } from './reels';
 import type { Env } from '../types';
 import { generatePostText } from './claude';
 import { executeAutoPost, type AutoPostReport } from './instagram-auto-post';
 import { prepareReels } from './reels';
 import { notifyAdmin } from './line-notify';
 import { ensureImages, type ImageAssignResult } from './auto-image';
+import { readThreePlaySettings, threePlayOwnsDate } from './three-plays';
 
 // ── JST時刻ユーティリティ ──
 
@@ -23,37 +26,17 @@ function addDays(date: string, days: number): string {
   return value.toISOString().slice(0, 10);
 }
 
-// Daily feed at 09:00 JST, with processing retries until 11:45.
-export const SLOT_START_HOUR_JST=9;
-export const SLOT_COUNT=12;
+// Separate completion keys for the 09:00 and 19:00 feed slots.
 export function pickSlotForDate(_date:string){return {hour:9,minute:0};}
-
-/** 現在のcron発火がその日の実行スロットか判定。最終スロットはフォールバック（未実行なら実行） */
-export async function shouldRunNow(env: Env): Promise<{ run: boolean; reason: string }> {
-  const now = getJSTNow();
-  const target = pickSlotForDate(now.date);
-
-  const doneKey = `autopost_done:${now.date}`;
-  const alreadyDone = await env.KV.get(doneKey);
-  if (alreadyDone) return { run: false, reason: 'already done today' };
-
-  if (now.hour >= 9 && now.hour < 12) {
-    return { run: true, reason: `scheduled slot ${target.hour}:${String(target.minute).padStart(2, '0')} JST` };
-  }
-
-  // フォールバック: 最終スロット（11:45〜）でまだ未実行なら必ず実行する
-  const lastHour = SLOT_START_HOUR_JST + Math.floor((SLOT_COUNT - 1) / 4);
-  const lastMinute = ((SLOT_COUNT - 1) % 4) * 15;
-  if (now.hour === lastHour && now.minute >= lastMinute) {
-    return { run: true, reason: 'fallback (last slot, not yet done)' };
-  }
-
-  return { run: false, reason: `waiting for slot ${target.hour}:${String(target.minute).padStart(2, '0')} JST` };
+export async function shouldRunNow(env: Env): Promise<{run:boolean;reason:string;slot?:FeedSlot}> {
+  const slot=currentFeedSlot(await readSettings(env));
+  if(!slot) return {run:false,reason:'outside feed windows'};
+  const date=getJSTNow().date;
+  if(await env.KV.get(doneKey(date,slot))) return {run:false,reason:`already done: ${slot}`};
+  return {run:true,slot,reason:`${slot} feed slot`};
 }
-
-export async function markDone(env: Env, date: string): Promise<void> {
-  // 2日で自動失効（翌日以降のキーを汚さない）
-  await env.KV.put(`autopost_done:${date}`, new Date().toISOString(), { expirationTtl: 60 * 60 * 48 });
+export async function markDone(env:Env,date:string,slot:FeedSlot='morning'):Promise<void> {
+  await env.KV.put(doneKey(date,slot),new Date().toISOString(),{expirationTtl:60*60*48});
 }
 
 // ── 本文の自動生成 ──
@@ -66,6 +49,7 @@ interface GenerationResult {
 
 /** 当日分の投稿のうち本文未生成のものをGeminiで生成してDBに保存する */
 export async function generateMissingTexts(env: Env, date: string): Promise<GenerationResult> {
+  if (threePlayOwnsDate(await readThreePlaySettings(env), date)) return { generated: 0, failed: 0, errors: [] };
   const { results: posts } = await env.DB.prepare(
     `SELECT p.*, c.name as character_name, c.description as character_description,
      c.personality_tags, i.visual_features, i.scene_type,
@@ -174,8 +158,12 @@ async function getPrepareDaysAhead(env: Env): Promise<number> {
 
 // ── 日次パイプライン: 生成 → 投稿 → 先読み準備 → LINE通知 ──
 
-export async function runDailyPipeline(env: Env, targetDate?: string): Promise<AutoPostReport> {
+export async function runDailyPipeline(env: Env, targetDate?: string, slot?: FeedSlot): Promise<AutoPostReport> {
   const date = targetDate || getJSTNow().date;
+  if (threePlayOwnsDate(await readThreePlaySettings(env), date)) {
+    // The curated path includes no live generation, prepare-ahead, reel work or new notifications.
+    return executeAutoPost(env, date, slot);
+  }
   console.log(`[daily-run] Pipeline start for ${date}`);
 
   // 1. 画像の自動割当（未割当分のみ。先に画像を決めることで人物情報が本文生成に反映される）
@@ -185,7 +173,7 @@ export async function runDailyPipeline(env: Env, targetDate?: string): Promise<A
   const gen = await generateMissingTexts(env, date);
 
   // 3. 自動投稿
-  const report = await executeAutoPost(env, date);
+  const report = await executeAutoPost(env, date, slot);
 
   // 4. 先読み準備（明日以降N日先まで素材を揃える。失敗しても後続のLINE通知は続行）
   const daysAhead = await getPrepareDaysAhead(env);
@@ -253,7 +241,7 @@ function buildNotificationText(
     const okCount = report.results.flatMap(r => r.platforms).filter(p => p.success && !p.skipped).length;
     if (okCount > 0) {
       lines.push('');
-      lines.push('Facebook・Xへの転記はCodexが20時に確認します。');
+      lines.push('Facebook・Xは19時・20時・21時とPC起動・復帰時にCodexが確認し、未転記を古い順に処理します。');
       if (hasFacebookPermalink) {
         lines.push('Facebookはページ投稿だけだとほぼ届きません。シェア画面リンクを開いて「投稿する」を押すだけ。グループへのシェアもその画面から選べます。');
       }

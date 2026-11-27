@@ -1,5 +1,5 @@
 name = "kabuki-post-365"
-main = "src/index.ts"
+main = "src/instagram365/index.ts"
 compatibility_date = "2026-02-11"
 
 assets = { directory = "frontend/dist", not_found_handling = "single-page-application" }
@@ -25,9 +25,8 @@ bucket_name = "kabuki-post-365-images"
 binding = "KV"
 id = "9983894f85534eb598c5d56f0224d9ef"
 
-# 毎朝9時に公開し、動画処理中は11:45まで15分間隔で確認する
-# 0:00-2:45 UTC = 9:00-11:45 JST
-# "*/15 10 * * *" = 19:00-19:45 JST: 舞台裏ストーリーズ窓（日替わりスロット）
+# 現行36枠: 朝08時、承認済み夕4枠19時。詳細 docs/instagram365-current-runtime.md
+# UTC23時 = 翌日08時JST。夕方10-12時UTCのうち割当済み19時枠のみ公開。
 [triggers]
-crons = ["*/15 0-2 * * *", "*/15 10 * * *"]
+crons = ["*/15 10-12 * * *", "*/15 23 * * *"]
 

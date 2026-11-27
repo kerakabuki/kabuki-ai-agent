@@ -105,33 +105,31 @@ try{
  check(concurrent.filter(r=>r.status===200).length===1&&concurrent.filter(r=>r.status===409).length===1,'concurrent starts claim one slot');
  check((await start(oldest,'x')).status===200,'platform daily slots are independent');
  await result(oldest,'facebook');await result(oldest,'x','uncertain');
- check((await start(yesterday)).status===409,'one successful Facebook post blocks another source on the same day');
  check((await start(yesterday,'x')).status===409,'uncertain X blocks other sources too');
  q=await queue();
- check(q.platforms[0].blocked_reason==='daily_limit'&&q.platforms[0].next===null,'queue exposes daily cap without a new candidate');
+ check(q.platforms[0].daily_limit===null&&q.platforms[0].blocked_reason===null&&q.platforms[0].next.post_id===yesterday,
+  'queue offers the next source after a same-day publication without a daily cap');
  check(q.platforms[1].blocked_reason==='needs_review'&&q.platforms[1].needs_review[0].post_id===oldest,'queue exposes unresolved publication for reconciliation');
- await db.prepare("UPDATE crossposts SET started_at=datetime('now','-1 day'),updated_at=datetime('now','-1 day') WHERE post_id=?").bind(oldest).run();
- q=await queue();
- check(q.platforms[0].next.post_id===yesterday,'previous day success allows next pending source');
- check(q.platforms[1].blocked_reason==='needs_review','uncertainty keeps its hold across days');
  const competing=await Promise.all([start(yesterday),start(current)]);
  check(competing[0].status===200&&competing[1].status===409,'different sources cannot acquire simultaneous platform slots');
  await result(yesterday,'facebook','failed');
  check((await start(yesterday)).status===200,'confirmed failure may retry the same source');
  await result(yesterday,'facebook');
- check((await start(current)).status===409,'successful retry uses the day allowance');
+ q=await queue();
+ check(q.platforms[0].next.post_id===current,'two same-day publications still leave the next source available');
  await result(oldest,'x');
  q=await queue();
- check(q.platforms[1].blocked_reason==='daily_limit','late success reconciliation counts on the confirmation day');
- // Pin saved timestamps to the Japanese midnight boundary without changing the runtime clock.
- const midnight=Date.parse(today+'T00:00:00Z')-9*3600000;
- const sqlTime=t=>new Date(t).toISOString().slice(0,19).replace('T',' ');
- await db.prepare("UPDATE crossposts SET started_at=?,updated_at=? WHERE platform='facebook' AND status='published'")
-  .bind(sqlTime(midnight-1000),sqlTime(midnight-1000)).run();
- check((await queue()).platforms[0].next.post_id===current,'23:59:59 JST previous day does not use today quota');
- await db.prepare("UPDATE crossposts SET started_at=?,updated_at=? WHERE platform='facebook' AND post_id=?")
-  .bind(sqlTime(midnight),sqlTime(midnight),yesterday).run();
- check((await queue()).platforms[0].blocked_reason==='daily_limit','00:00:00 JST uses today quota');
+ check(q.platforms[1].blocked_reason===null&&q.platforms[1].next.post_id===yesterday,
+  'reconciled X publication releases the next source without a daily cap');
+ check((await start(current)).status===200,'third Facebook source can start on the same day');
+ await result(current,'facebook');
+ check((await start(yesterday,'x')).status===200,'X catch-up continues in original order');
+ await result(yesterday,'x');
+ check((await start(current,'x')).status===200,'third X source can start on the same day');
+ await result(current,'x');
+ q=await queue();
+ check(q.platforms.every(p=>p.backlog_count===0&&p.next===null&&p.blocked_reason===null),
+  'queue is empty after catch-up on both platforms');
  check(publishes===count,'catch-up checks never publish to an actual SNS API');
  console.log(JSON.stringify({passed:checks,publishes,containers}));
 }finally{await mf.dispose();}

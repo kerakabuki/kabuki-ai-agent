@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import type { Env } from '../types';
 import { generatePostText } from '../lib/claude';
 import { settings } from '../lib/reels';
+import { threePlayOwnsDate } from '../lib/three-plays';
 export const generateRoutes=new Hono<{Bindings:Env}>();
 async function generate(env:Env,id:number,prompt?:string) {
   const p=await env.DB.prepare(`SELECT p.*,c.name character_name,c.description character_description,c.personality_tags,
@@ -12,7 +13,9 @@ async function generate(env:Env,id:number,prompt?:string) {
     LEFT JOIN quiz_posts qp ON qp.post_id=p.id WHERE p.id=?`).bind(id).first<Record<string,unknown>>();
   if(!p) throw new Error('投稿がありません');
   if(p.instagram_posted||!['idle','failed'].includes(String(p.publish_state))) throw new Error('公開済み・処理中の本文は再生成できません');
-  const texts=await generatePostText(env,p,await settings(env),'instagram',prompt);
+  const s=await settings(env);
+  if (threePlayOwnsDate(s,String(p.post_date))) throw new Error('3演目モードでは検証済みの登録文を使います。自動再生成しません');
+  const texts=await generatePostText(env,p,s,'instagram',prompt);
   if(!texts.instagram_text.trim()) throw new Error('本文を生成できませんでした');
   await env.DB.prepare(`UPDATE posts SET instagram_text=?,instagram_hashtags=?,publish_container_id=NULL,publish_state='idle',updated_at=datetime('now')
     WHERE id=? AND instagram_posted=0 AND publish_state IN ('idle','failed')`).bind(texts.instagram_text,texts.instagram_hashtags,id).run();

@@ -26,8 +26,8 @@ crosspostRoutes.get('/queue',async c=>{
         WHERE platform=? AND status IN ('publishing','uncertain') ORDER BY started_at,post_id`).bind(platform),
       c.env.DB.prepare(`SELECT post_id,permalink FROM crossposts WHERE platform=? AND (${usedToday})`).bind(platform)
     ]);
-    const blocked=review.results.length?'needs_review':used.results.length?'daily_limit':null;
-    return {platform,blocked_reason:blocked,backlog_count:pending.results.length,
+    const blocked=review.results.length?'needs_review':null;
+    return {platform,daily_limit:null,remaining_today:null,blocked_reason:blocked,backlog_count:pending.results.length,
       next:!blocked&&pending.results.length?decorate(pending.results[0] as TransferRow,s):null,
       needs_review:review.results,published_today:used.results};
   }));
@@ -59,10 +59,9 @@ crosspostRoutes.post('/:id/:platform/start',async c=>{
     AND post_id=(SELECT x.post_id FROM crossposts x JOIN posts p ON p.id=x.post_id
       WHERE x.platform=? AND x.status IN ('pending','failed') AND ${sourceReady}
       AND p.post_date BETWEEN ? AND ? ORDER BY p.post_date,p.id LIMIT 1)
-    AND NOT EXISTS(SELECT 1 FROM crossposts WHERE platform=? AND
-      (status IN ('publishing','uncertain') OR (${usedToday}))) RETURNING *`)
+    AND NOT EXISTS(SELECT 1 FROM crossposts WHERE platform=? AND status IN ('publishing','uncertain')) RETURNING *`)
     .bind(caption.slice(0,5000),c.req.param('id'),platform,platform,s.crosspost_start_date||today,today,platform).first();
-  if(!r) return c.json({error:'本日の上限、結果確認待ち、または次の転記対象ではありません。queueを再確認してください'},409);
+  if(!r) return c.json({error:'結果確認待ち、または次の転記対象ではありません。queueを再確認してください'},409);
   return c.json(r);
 });
 crosspostRoutes.post('/:id/:platform/result',async c=>{

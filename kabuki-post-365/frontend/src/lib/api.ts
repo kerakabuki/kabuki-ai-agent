@@ -47,6 +47,7 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 
 // Characters
 export const api = {
+  instagramSchedule: {summary: (date:string) => request<InstagramFeedSummary>(`/instagram-schedule-20261029/summary?date=${encodeURIComponent(date)}`), range: (from:string,to:string) => request<InstagramFeedRange>(`/instagram-schedule-20261029/summary?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`)},
   reels: {
     status: () => request<{enabled:boolean;bgm_key:string;jobs:unknown[]}>('/reels/status'),
     post: (id:number) => request<{status:string;video_url:string|null;error?:string}|null>(`/reels/post/${id}`),
@@ -151,3 +152,8 @@ export const api = {
     },
   },
 };
+
+export interface InstagramFeedEntry {date:string;requestId:string;slot:'morning'|'evening';timeJST:string;imageId:number;playName:string;imageUrl:string;altText:string;caption:string;state:string;publishedAt:string|null;permalink:string|null;needsAttention:boolean;errorClass:string|null}
+export interface InstagramFeedSummary {date:string;startDate:string;endDate:string;mode:'legacy'|'scheduled'|'ended';entries:InstagramFeedEntry[];readOnly:true}
+
+export interface InstagramFeedRange {from:string;to:string;startDate:string;endDate:string;entries:InstagramFeedEntry[];readOnly:true}
